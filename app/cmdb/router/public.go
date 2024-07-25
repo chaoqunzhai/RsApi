@@ -9,7 +9,7 @@ import (
 )
 
 func init() {
-	routerCheckRole = append(routerCheckRole, registerPublicApiRouter)
+	routerCheckCMDB = append(routerCheckCMDB, registerPublicApiRouter)
 }
 
 // registerSysApiRouter

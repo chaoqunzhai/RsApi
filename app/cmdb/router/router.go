@@ -14,8 +14,8 @@ import (
 )
 
 var (
-	routerNoCheckRole = make([]func(*gin.RouterGroup), 0)
-	routerCheckRole   = make([]func(v1 *gin.RouterGroup, authMiddleware *jwt.GinJWTMiddleware), 0)
+	routerNoCheckCMDB = make([]func(*gin.RouterGroup), 0)
+	routerCheckCMDB  = make([]func(v1 *gin.RouterGroup, authMiddleware *jwt.GinJWTMiddleware), 0)
 )
 
 // InitRouter 路由初始化
@@ -59,7 +59,7 @@ func noCheckRoleRouter(r *gin.Engine) {
 	// 可根据业务需求来设置接口版本
 	v := r.Group("/api/v1")
 
-	for _, f := range routerNoCheckRole {
+	for _, f := range routerNoCheckCMDB {
 		f(v)
 	}
 }
@@ -69,7 +69,7 @@ func checkRoleRouter(r *gin.Engine, authMiddleware *jwtauth.GinJWTMiddleware) {
 	// 可根据业务需求来设置接口版本
 	v := r.Group("/api/v1")
 
-	for _, f := range routerCheckRole {
+	for _, f := range routerCheckCMDB {
 		f(v, authMiddleware)
 	}
 }

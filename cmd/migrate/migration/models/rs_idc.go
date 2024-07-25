@@ -22,7 +22,7 @@ type Idc struct {
 }
 
 func (Idc) TableName() string {
-	return "rc_idc"
+	return "rs_idc"
 }
 
 //机房宽带
@@ -40,5 +40,5 @@ type IdcBandwidth struct {
 }
 
 func (IdcBandwidth) TableName() string {
-	return "rc_bandwidth"
+	return "rs_bandwidth"
 }

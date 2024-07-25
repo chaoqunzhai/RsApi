@@ -6,5 +6,5 @@ type RsCloud struct {
 }
 
 func (RsCloud) TableName() string {
-	return "rc_cloud"
+	return "rs_cloud"
 }
