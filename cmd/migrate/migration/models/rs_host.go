@@ -1,6 +1,9 @@
 package models
 
-import "go-admin/common/models"
+import (
+	"go-admin/common/models"
+	"time"
+)
 
 const (
 	YIDONG      = 1
@@ -40,10 +43,11 @@ func (Host) TableName() string {
 
 type HostSoftware struct {
 	models.Model
-	HostId int    `json:"host_id" gorm:"index;comment:关联主机ID"`
-	Key    string `json:"key" gorm:"type:varchar(30);comment:服务名称"`
-	Value  string `json:"value" gorm:"type:varchar(100);comment:服务内容"`
-	Desc   string `json:"desc" gorm:"type:varchar(30);comment:备注"`
+	UpdatedAt time.Time `json:"updatedAt" gorm:"comment:更新时间"`
+	HostId    int       `json:"host_id" gorm:"index;comment:关联主机ID"`
+	Key       string    `json:"key" gorm:"type:varchar(30);comment:服务名称"`
+	Value     string    `json:"value" gorm:"type:varchar(100);comment:服务内容"`
+	Desc      string    `json:"desc" gorm:"type:varchar(30);comment:备注"`
 	models.ModelTime
 }
 
@@ -53,11 +57,12 @@ func (HostSoftware) TableName() string {
 
 type HostSystem struct {
 	models.Model
-	HostId         int     `json:"host_id" gorm:"index;comment:关联主机ID"`
-	Balance        float64 `json:"balance" gorm:"type:varchar(30);comment:总带宽"`
-	TransmitNumber float64 `json:"transmit_number" gorm:"type:varchar(30);comment:TransmitNumber"`
-	ReceiveNumber  float64 `json:"receive_number" gorm:"type:varchar(30);comment:ReceiveNumber"`
-	MemoryData     string  `json:"memory" gorm:"type:varchar(255);comment:当前内容使用率"`
+	UpdatedAt      time.Time `json:"updatedAt" gorm:"comment:更新时间"`
+	HostId         int       `json:"host_id" gorm:"index;comment:关联主机ID"`
+	Balance        float64   `json:"balance" gorm:"type:varchar(30);comment:总带宽"`
+	TransmitNumber float64   `json:"transmit_number" gorm:"type:varchar(30);comment:TransmitNumber"`
+	ReceiveNumber  float64   `json:"receive_number" gorm:"type:varchar(30);comment:ReceiveNumber"`
+	MemoryData     string    `json:"memory" gorm:"type:varchar(255);comment:当前内容使用率"`
 }
 
 func (HostSystem) TableName() string {

@@ -59,6 +59,7 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 	hostInstance.CPU = req.CPU
 	hostInstance.Disk = req.Disk
 	hostInstance.Kernel = req.Kernel
+	hostInstance.Status = 1
 	hostInstance.Memory = req.Memory
 	hostInstance.Remark = req.Remark
 	hostInstance.City = req.City
@@ -76,7 +77,10 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 
 		return string(dat)
 	}()
-	hostSystem.Balance = req.Balance
+	if req.Balance > 0 {
+		hostSystem.Balance = req.Balance
+	}
+
 	hostSystem.TransmitNumber = req.TransmitNumber
 	hostSystem.ReceiveNumber = req.ReceiveNumber
 	hostSystem.HostId = hostInstance.Id
