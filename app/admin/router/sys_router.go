@@ -41,7 +41,7 @@ func sysBaseRouter(r *gin.RouterGroup) {
 	if config.ApplicationConfig.Mode != "prod" {
 		r.GET("/", apis.GoAdmin)
 	}
-	r.GET("/info", handler.Ping)
+	r.GET("/healthy", handler.Ping)
 }
 
 func sysStaticFileRouter(r *gin.RouterGroup) {
