@@ -45,6 +45,8 @@ func _1599190683659Tables(db *gorm.DB, version string) error {
 			new(models.Idc),
 			new(models.IdcBandwidth),
 			new(models.Host),
+			new(models.HostSystem),
+			new(models.HostSoftware),
 		)
 		if err != nil {
 			return err

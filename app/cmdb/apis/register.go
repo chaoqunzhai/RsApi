@@ -1,10 +1,12 @@
-/**
+/*
+*
 @Author: chaoqun
 * @Date: 2024/7/25 22:35
 */
 package apis
 
 import (
+	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-admin-team/go-admin-core/sdk/api"
@@ -19,6 +21,7 @@ import (
 type RegisterApi struct {
 	api.Api
 }
+
 // GetPage
 // @Summary 主机存活注册
 // @Description 主动上报
@@ -26,10 +29,9 @@ type RegisterApi struct {
 // @Header RsRole
 // @Success 200 {object} response.Response "{"code": 200, "data": "","msg":"successful"}"
 // @Router /api/v1/register/healthy [post]
-//
 func (e *RegisterApi) Healthy(c *gin.Context) {
 	s := service.RegisterApi{}
-	req:=dto.RegisterHost{}
+	req := dto.RegisterMetrics{}
 	err := e.MakeContext(c).
 		MakeOrm().
 		MakeService(&s.Service).
@@ -40,62 +42,60 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 		e.Error(500, err, err.Error())
 		return
 	}
-	registerHeaderKey :=c.GetHeader("RsRole")
+	registerHeaderKey := c.GetHeader("RsRole")
 
-	if strings.TrimSpace(registerHeaderKey) != "rs-sre"{
+	if strings.TrimSpace(registerHeaderKey) != "rs-sre" {
 
-		e.Error(http.StatusUnauthorized,nil,"you set Header")
-		return
-	}
-	if req.Sn == ""{
-		e.Error(-1,nil,"sn uniqueness")
+		e.Error(http.StatusUnauthorized, nil, "you set Header")
 		return
 	}
 
 	var hostInstance models2.Host
-	e.Orm.Model(&hostInstance).Where("sn = ?",req.Sn).First(&hostInstance)
-
-	if hostInstance.Id == 0 {
-		e.Error(-1,nil,"not sn")
-		return
-	}
+	e.Orm.Model(&hostInstance).Where("sn = ?", req.Sn).First(&hostInstance)
 
 	hostInstance.Sn = req.Sn
-	hostInstance.HostName = req.HostName
+	hostInstance.HostName = req.Hostname
 	hostInstance.Ip = req.Ip
 	hostInstance.CPU = req.CPU
 	hostInstance.Disk = req.Disk
+	hostInstance.Kernel = req.Kernel
 	hostInstance.Memory = req.Memory
 	hostInstance.Remark = req.Remark
+	hostInstance.City = req.City
+	hostInstance.Isp = req.Isp
+	hostInstance.NetDevice = req.NetDevice
 	hostInstance.UpdatedAt = time.Now()
 	e.Orm.Save(&hostInstance)
 
-	for _,softWare:=range req.Software{
+	var hostSystem models2.HostSystem
+
+	e.Orm.Model(&models2.HostSystem{}).Where("id = ?", hostInstance.Id).First(&hostSystem)
+	MemoryData := func() string {
+
+		dat, _ := json.Marshal(req.MemoryMap)
+
+		return string(dat)
+	}()
+	hostSystem.Balance = req.Balance
+	hostSystem.TransmitNumber = req.TransmitNumber
+	hostSystem.ReceiveNumber = req.ReceiveNumber
+	hostSystem.HostId = hostInstance.Id
+	hostSystem.MemoryData = MemoryData
+	e.Orm.Save(&hostSystem)
+
+	for _, softWare := range req.ExtendMap {
 		var (
-			softRow []models2.HostSoftware
+			softRow models2.HostSoftware
 		)
 		e.Orm.Model(&models2.HostSoftware{}).Where("host_id = ? and key = ?",
-			hostInstance.Id, softWare.Key).Find(&softRow)
+			hostInstance.Id, softWare.Key).First(&softRow)
 
-		if len(softRow) == 0 {
-			softErr:=e.Orm.Create(&models2.HostSoftware{
-				HostId: hostInstance.Id,
-				Key: softWare.Key,
-				Value: softWare.Value,
-				Desc: softWare.Desc,
-			})
-			if softErr!=nil{
-				e.Error(http.StatusBadRequest,softErr.Error,"error")
-				return
-			}
-		}else {
-			firstRow :=softRow[0]
-			firstRow.Value = softWare.Value
-			firstRow.Desc = softWare.Desc
-			e.Orm.Save(&firstRow)
-		}
+		softRow.Id = hostInstance.Id
+		softRow.Value = softWare.Value
+		softRow.Desc = softWare.Desc
+		e.Orm.Save(&softRow)
 
 	}
-	e.OK("","successful")
+	e.OK("", "successful")
 	return
 }
