@@ -26,7 +26,6 @@ type RegisterApi struct {
 // @Summary 主机存活注册
 // @Description 主动上报
 // @Tags 主机上报
-// @Header RsRole
 // @Success 200 {object} response.Response "{"code": 200, "data": "","msg":"successful"}"
 // @Router /api/v1/register/healthy [post]
 func (e *RegisterApi) Healthy(c *gin.Context) {

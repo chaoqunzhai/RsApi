@@ -11,8 +11,7 @@ const docTemplateadmin = `{
         "title": "{{.Title}}",
         "contact": {},
         "license": {
-            "name": "MIT",
-            "url": "https://github.com/go-admin-team/go-admin/blob/master/LICENSE.md"
+            "name": "MIT"
         },
         "version": "{{.Version}}"
     },
@@ -1290,6 +1289,23 @@ const docTemplateadmin = `{
                 }
             }
         },
+        "/api/v1/register/healthy": {
+            "post": {
+                "description": "主动上报",
+                "tags": [
+                    "主机上报"
+                ],
+                "summary": "主机存活注册",
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": \"\",\"msg\":\"successful\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/role": {
             "get": {
                 "security": [
@@ -1502,6 +1518,283 @@ const docTemplateadmin = `{
                 "responses": {
                     "200": {
                         "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rs-host": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取RsHost列表",
+                "tags": [
+                    "RsHost"
+                ],
+                "summary": "获取RsHost列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "开关",
+                        "name": "enable",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "主机名",
+                        "name": "hostName",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "sn",
+                        "name": "sn",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "ip",
+                        "name": "ip",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "内核版本",
+                        "name": "kernel",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "机器归属",
+                        "name": "belong",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "备注",
+                        "name": "remark",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "运营商",
+                        "name": "operator",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "主机状态",
+                        "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "业务SN",
+                        "name": "businessSn",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "省份",
+                        "name": "province",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页条数",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageIndex",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.Page"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/models.RsHost"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "创建RsHost",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RsHost"
+                ],
+                "summary": "创建RsHost",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsHostInsertReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"添加成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "删除RsHost",
+                "tags": [
+                    "RsHost"
+                ],
+                "summary": "删除RsHost",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsHostDeleteReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"删除成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rs-host/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取RsHost",
+                "tags": [
+                    "RsHost"
+                ],
+                "summary": "获取RsHost",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.RsHost"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "修改RsHost",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RsHost"
+                ],
+                "summary": "修改RsHost",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsHostUpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"修改成功\"}",
                         "schema": {
                             "$ref": "#/definitions/response.Response"
                         }
@@ -2850,6 +3143,163 @@ const docTemplateadmin = `{
                 }
             }
         },
+        "dto.RsHostDeleteReq": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "dto.RsHostInsertReq": {
+            "type": "object",
+            "properties": {
+                "balance": {
+                    "type": "string"
+                },
+                "belong": {
+                    "type": "string"
+                },
+                "businessSn": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "cpu": {
+                    "type": "string"
+                },
+                "createBy": {
+                    "type": "integer"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "disk": {
+                    "type": "string"
+                },
+                "enable": {
+                    "type": "string"
+                },
+                "hostName": {
+                    "type": "string"
+                },
+                "ip": {
+                    "type": "string"
+                },
+                "isp": {
+                    "type": "string"
+                },
+                "kernel": {
+                    "type": "string"
+                },
+                "layer": {
+                    "type": "string"
+                },
+                "memory": {
+                    "type": "string"
+                },
+                "netDevice": {
+                    "type": "string"
+                },
+                "operator": {
+                    "type": "string"
+                },
+                "province": {
+                    "type": "string"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "sn": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "updateBy": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.RsHostUpdateReq": {
+            "type": "object",
+            "properties": {
+                "balance": {
+                    "type": "string"
+                },
+                "belong": {
+                    "type": "string"
+                },
+                "businessSn": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "cpu": {
+                    "type": "string"
+                },
+                "createBy": {
+                    "type": "integer"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "disk": {
+                    "type": "string"
+                },
+                "enable": {
+                    "type": "string"
+                },
+                "hostName": {
+                    "type": "string"
+                },
+                "id": {
+                    "description": "主键编码",
+                    "type": "integer"
+                },
+                "ip": {
+                    "type": "string"
+                },
+                "isp": {
+                    "type": "string"
+                },
+                "kernel": {
+                    "type": "string"
+                },
+                "layer": {
+                    "type": "string"
+                },
+                "memory": {
+                    "type": "string"
+                },
+                "netDevice": {
+                    "type": "string"
+                },
+                "operator": {
+                    "type": "string"
+                },
+                "province": {
+                    "type": "string"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "sn": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "updateBy": {
+                    "type": "integer"
+                }
+            }
+        },
         "dto.SysApiDeleteReq": {
             "type": "object",
             "properties": {
@@ -4039,6 +4489,86 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "uuid": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.RsHost": {
+            "type": "object",
+            "properties": {
+                "balance": {
+                    "type": "string"
+                },
+                "belong": {
+                    "type": "string"
+                },
+                "businessSn": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "cpu": {
+                    "type": "string"
+                },
+                "createBy": {
+                    "type": "integer"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "disk": {
+                    "type": "string"
+                },
+                "enable": {
+                    "type": "string"
+                },
+                "hostName": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "ip": {
+                    "type": "string"
+                },
+                "isp": {
+                    "type": "string"
+                },
+                "kernel": {
+                    "type": "string"
+                },
+                "layer": {
+                    "type": "string"
+                },
+                "memory": {
+                    "type": "string"
+                },
+                "netDevice": {
+                    "type": "string"
+                },
+                "operator": {
+                    "type": "string"
+                },
+                "province": {
+                    "type": "string"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "sn": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "updateBy": {
+                    "type": "integer"
+                },
+                "updatedAt": {
                     "type": "string"
                 }
             }
