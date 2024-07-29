@@ -40,5 +40,5 @@ type IdcBandwidth struct {
 }
 
 func (IdcBandwidth) TableName() string {
-	return "rs_bandwidth"
+	return "rs_idc_bandwidth"
 }
