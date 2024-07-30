@@ -1289,23 +1289,6 @@ const docTemplateadmin = `{
                 }
             }
         },
-        "/api/v1/register/healthy": {
-            "post": {
-                "description": "主动上报",
-                "tags": [
-                    "主机上报"
-                ],
-                "summary": "主机存活注册",
-                "responses": {
-                    "200": {
-                        "description": "{\"code\": 200, \"data\": \"\",\"msg\":\"successful\"}",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
         "/api/v1/role": {
             "get": {
                 "security": [
@@ -1518,6 +1501,229 @@ const docTemplateadmin = `{
                 "responses": {
                     "200": {
                         "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rs-business": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取RsBusiness列表",
+                "tags": [
+                    "RsBusiness"
+                ],
+                "summary": "获取RsBusiness列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "开关",
+                        "name": "enable",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "业务云名称",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页条数",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageIndex",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.Page"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/models.RsBusiness"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "创建RsBusiness",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RsBusiness"
+                ],
+                "summary": "创建RsBusiness",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsBusinessInsertReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"添加成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "删除RsBusiness",
+                "tags": [
+                    "RsBusiness"
+                ],
+                "summary": "删除RsBusiness",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsBusinessDeleteReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"删除成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rs-business/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取RsBusiness",
+                "tags": [
+                    "RsBusiness"
+                ],
+                "summary": "获取RsBusiness",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.RsBusiness"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "修改RsBusiness",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RsBusiness"
+                ],
+                "summary": "修改RsBusiness",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsBusinessUpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"修改成功\"}",
                         "schema": {
                             "$ref": "#/definitions/response.Response"
                         }
@@ -1789,6 +1995,506 @@ const docTemplateadmin = `{
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/dto.RsHostUpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"修改成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rs-idc": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取RsIdc列表",
+                "tags": [
+                    "RsIdc"
+                ],
+                "summary": "获取RsIdc列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "开关",
+                        "name": "enable",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "机房名称",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "机房状态",
+                        "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "机房归属",
+                        "name": "belong",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "机房类型",
+                        "name": "typeId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "商务人员",
+                        "name": "businessUser",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "所属客户",
+                        "name": "customUser",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "所在区域",
+                        "name": "region",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "计费方式",
+                        "name": "charging",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "是否跨省",
+                        "name": "transProvince",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "详细地址",
+                        "name": "address",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页条数",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageIndex",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.Page"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/models.RsIdc"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "创建RsIdc",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RsIdc"
+                ],
+                "summary": "创建RsIdc",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsIdcInsertReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"添加成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "删除RsIdc",
+                "tags": [
+                    "RsIdc"
+                ],
+                "summary": "删除RsIdc",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsIdcDeleteReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"删除成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rs-idc/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取RsIdc",
+                "tags": [
+                    "RsIdc"
+                ],
+                "summary": "获取RsIdc",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.RsIdc"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "修改RsIdc",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RsIdc"
+                ],
+                "summary": "修改RsIdc",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsIdcUpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"修改成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rs-tag": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取RsTag列表",
+                "tags": [
+                    "RsTag"
+                ],
+                "summary": "获取RsTag列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "开关",
+                        "name": "enable",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "业务云名称",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页条数",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageIndex",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.Page"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/models.RsTag"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "创建RsTag",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RsTag"
+                ],
+                "summary": "创建RsTag",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsTagInsertReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"添加成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "删除RsTag",
+                "tags": [
+                    "RsTag"
+                ],
+                "summary": "删除RsTag",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsTagDeleteReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"删除成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rs-tag/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取RsTag",
+                "tags": [
+                    "RsTag"
+                ],
+                "summary": "获取RsTag",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.RsTag"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "修改RsTag",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RsTag"
+                ],
+                "summary": "修改RsTag",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsTagUpdateReq"
                         }
                     }
                 ],
@@ -3143,6 +3849,73 @@ const docTemplateadmin = `{
                 }
             }
         },
+        "dto.RsBusinessDeleteReq": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "dto.RsBusinessInsertReq": {
+            "type": "object",
+            "properties": {
+                "algorithm": {
+                    "type": "string"
+                },
+                "createBy": {
+                    "type": "integer"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "enable": {
+                    "type": "string"
+                },
+                "layer": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updateBy": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.RsBusinessUpdateReq": {
+            "type": "object",
+            "properties": {
+                "algorithm": {
+                    "type": "string"
+                },
+                "createBy": {
+                    "type": "integer"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "enable": {
+                    "type": "string"
+                },
+                "id": {
+                    "description": "主键编码",
+                    "type": "integer"
+                },
+                "layer": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updateBy": {
+                    "type": "integer"
+                }
+            }
+        },
         "dto.RsHostDeleteReq": {
             "type": "object",
             "properties": {
@@ -3157,16 +3930,16 @@ const docTemplateadmin = `{
         "dto.RsHostInsertReq": {
             "type": "object",
             "properties": {
-                "balance": {
+                "address": {
                     "type": "string"
+                },
+                "balance": {
+                    "type": "number"
                 },
                 "belong": {
-                    "type": "string"
+                    "type": "integer"
                 },
-                "businessSn": {
-                    "type": "string"
-                },
-                "city": {
+                "business": {
                     "type": "string"
                 },
                 "cpu": {
@@ -3191,7 +3964,7 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "isp": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "kernel": {
                     "type": "string"
@@ -3200,7 +3973,7 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "memory": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "netDevice": {
                     "type": "string"
@@ -3208,7 +3981,7 @@ const docTemplateadmin = `{
                 "operator": {
                     "type": "string"
                 },
-                "province": {
+                "region": {
                     "type": "string"
                 },
                 "remark": {
@@ -3218,7 +3991,7 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "status": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "updateBy": {
                     "type": "integer"
@@ -3228,16 +4001,16 @@ const docTemplateadmin = `{
         "dto.RsHostUpdateReq": {
             "type": "object",
             "properties": {
-                "balance": {
+                "address": {
                     "type": "string"
+                },
+                "balance": {
+                    "type": "number"
                 },
                 "belong": {
-                    "type": "string"
+                    "type": "integer"
                 },
-                "businessSn": {
-                    "type": "string"
-                },
-                "city": {
+                "business": {
                     "type": "string"
                 },
                 "cpu": {
@@ -3266,7 +4039,7 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "isp": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "kernel": {
                     "type": "string"
@@ -3275,15 +4048,12 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "memory": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "netDevice": {
                     "type": "string"
                 },
-                "operator": {
-                    "type": "string"
-                },
-                "province": {
+                "region": {
                     "type": "string"
                 },
                 "remark": {
@@ -3293,6 +4063,200 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "status": {
+                    "type": "integer"
+                },
+                "updateBy": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.RsIdcDeleteReq": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "dto.RsIdcInsertReq": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "belong": {
+                    "type": "string"
+                },
+                "businessUser": {
+                    "type": "string"
+                },
+                "charging": {
+                    "type": "string"
+                },
+                "createBy": {
+                    "type": "integer"
+                },
+                "customUser": {
+                    "type": "string"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "enable": {
+                    "type": "string"
+                },
+                "ipV6": {
+                    "type": "string"
+                },
+                "layer": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "string"
+                },
+                "region": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "transProvince": {
+                    "type": "string"
+                },
+                "typeId": {
+                    "type": "string"
+                },
+                "updateBy": {
+                    "type": "integer"
+                },
+                "weChatName": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.RsIdcUpdateReq": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "belong": {
+                    "type": "string"
+                },
+                "businessUser": {
+                    "type": "string"
+                },
+                "charging": {
+                    "type": "string"
+                },
+                "createBy": {
+                    "type": "integer"
+                },
+                "customUser": {
+                    "type": "string"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "enable": {
+                    "type": "string"
+                },
+                "id": {
+                    "description": "主键编码",
+                    "type": "integer"
+                },
+                "ipV6": {
+                    "type": "string"
+                },
+                "layer": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "string"
+                },
+                "region": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "transProvince": {
+                    "type": "string"
+                },
+                "typeId": {
+                    "type": "string"
+                },
+                "updateBy": {
+                    "type": "integer"
+                },
+                "weChatName": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.RsTagDeleteReq": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "dto.RsTagInsertReq": {
+            "type": "object",
+            "properties": {
+                "createBy": {
+                    "type": "integer"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "enable": {
+                    "type": "string"
+                },
+                "layer": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updateBy": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.RsTagUpdateReq": {
+            "type": "object",
+            "properties": {
+                "createBy": {
+                    "type": "integer"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "enable": {
+                    "type": "string"
+                },
+                "id": {
+                    "description": "主键编码",
+                    "type": "integer"
+                },
+                "layer": {
+                    "type": "string"
+                },
+                "name": {
                     "type": "string"
                 },
                 "updateBy": {
@@ -4493,19 +5457,54 @@ const docTemplateadmin = `{
                 }
             }
         },
+        "models.RsBusiness": {
+            "type": "object",
+            "properties": {
+                "algorithm": {
+                    "type": "string"
+                },
+                "createBy": {
+                    "type": "integer"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "enable": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "layer": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updateBy": {
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
         "models.RsHost": {
             "type": "object",
             "properties": {
-                "balance": {
+                "address": {
                     "type": "string"
+                },
+                "balance": {
+                    "type": "number"
                 },
                 "belong": {
-                    "type": "string"
+                    "type": "integer"
                 },
-                "businessSn": {
-                    "type": "string"
-                },
-                "city": {
+                "business": {
                     "type": "string"
                 },
                 "cpu": {
@@ -4526,6 +5525,9 @@ const docTemplateadmin = `{
                 "enable": {
                     "type": "string"
                 },
+                "healthy": {
+                    "$ref": "#/definitions/sql.NullTime"
+                },
                 "hostName": {
                     "type": "string"
                 },
@@ -4536,7 +5538,7 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "isp": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "kernel": {
                     "type": "string"
@@ -4544,16 +5546,16 @@ const docTemplateadmin = `{
                 "layer": {
                     "type": "string"
                 },
+                "lineType": {
+                    "type": "integer"
+                },
                 "memory": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "netDevice": {
                     "type": "string"
                 },
-                "operator": {
-                    "type": "string"
-                },
-                "province": {
+                "region": {
                     "type": "string"
                 },
                 "remark": {
@@ -4563,6 +5565,109 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "status": {
+                    "type": "integer"
+                },
+                "transProd": {
+                    "type": "boolean"
+                },
+                "updateBy": {
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.RsIdc": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "belong": {
+                    "type": "string"
+                },
+                "businessUser": {
+                    "type": "string"
+                },
+                "charging": {
+                    "type": "string"
+                },
+                "createBy": {
+                    "type": "integer"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "customUser": {
+                    "type": "string"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "enable": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "ipV6": {
+                    "type": "string"
+                },
+                "layer": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "string"
+                },
+                "region": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "transProvince": {
+                    "type": "string"
+                },
+                "typeId": {
+                    "type": "string"
+                },
+                "updateBy": {
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "weChatName": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.RsTag": {
+            "type": "object",
+            "properties": {
+                "createBy": {
+                    "type": "integer"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "enable": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "layer": {
+                    "type": "string"
+                },
+                "name": {
                     "type": "string"
                 },
                 "updateBy": {
@@ -4602,6 +5707,18 @@ const docTemplateadmin = `{
                 },
                 "status": {
                     "type": "string"
+                }
+            }
+        },
+        "sql.NullTime": {
+            "type": "object",
+            "properties": {
+                "time": {
+                    "type": "string"
+                },
+                "valid": {
+                    "description": "Valid is true if Time is not NULL",
+                    "type": "boolean"
                 }
             }
         },

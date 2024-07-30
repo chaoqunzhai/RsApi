@@ -10,17 +10,15 @@ import (
 )
 
 func init() {
-	routerCheckCMDB = append(routerCheckCMDB, registerRsHostRouter)
+	routerCheckCMDB = append(routerCheckCMDB, registerRsIdcRouter)
 }
 
-// registerRsHostRouter
-func registerRsHostRouter(v1 *gin.RouterGroup, authMiddleware *jwt.GinJWTMiddleware) {
-	api := apis.RsHost{}
-	r := v1.Group("/rs-host").Use(authMiddleware.MiddlewareFunc()).Use(middleware.AuthCheckRole())
+// registerRsIdcRouter
+func registerRsIdcRouter(v1 *gin.RouterGroup, authMiddleware *jwt.GinJWTMiddleware) {
+	api := apis.RsIdc{}
+	r := v1.Group("/rs-idc").Use(authMiddleware.MiddlewareFunc()).Use(middleware.AuthCheckRole())
 	{
 		r.GET("", actions.PermissionAction(), api.GetPage)
-		r.GET("/count", actions.PermissionAction(), api.Count)
-		r.POST("/switch", actions.PermissionAction(), api.Switch)
 		r.GET("/:id", actions.PermissionAction(), api.Get)
 		r.POST("", api.Insert)
 		r.PUT("/:id", actions.PermissionAction(), api.Update)

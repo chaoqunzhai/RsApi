@@ -1,9 +1,11 @@
 package service
 
 import (
+	"encoding/json"
 	"errors"
-
-    "github.com/go-admin-team/go-admin-core/sdk/service"
+	"fmt"
+	"github.com/go-admin-team/go-admin-core/sdk/service"
+	models2 "go-admin/cmd/migrate/migration/models"
 	"gorm.io/gorm"
 
 	"go-admin/app/cmdb/models"
@@ -43,7 +45,7 @@ func (e *RsHost) Get(d *dto.RsHostGetReq, p *actions.DataPermission, model *mode
 	err := e.Orm.Model(&data).
 		Scopes(
 			actions.Permission(data.TableName(), p),
-		).
+		).Preload("Business").Preload("Idc").Preload("Tag").
 		First(model, d.GetId()).Error
 	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
 		err = errors.New("查看对象不存在或无权查看")
@@ -59,9 +61,9 @@ func (e *RsHost) Get(d *dto.RsHostGetReq, p *actions.DataPermission, model *mode
 
 // Insert 创建RsHost对象
 func (e *RsHost) Insert(c *dto.RsHostInsertReq) error {
-    var err error
-    var data models.RsHost
-    c.Generate(&data)
+	var err error
+	var data models.RsHost
+	c.Generate(&data)
 	err = e.Orm.Create(&data).Error
 	if err != nil {
 		e.Log.Errorf("RsHostService Insert error:%s \r\n", err)
@@ -72,22 +74,22 @@ func (e *RsHost) Insert(c *dto.RsHostInsertReq) error {
 
 // Update 修改RsHost对象
 func (e *RsHost) Update(c *dto.RsHostUpdateReq, p *actions.DataPermission) error {
-    var err error
-    var data = models.RsHost{}
-    e.Orm.Scopes(
-            actions.Permission(data.TableName(), p),
-        ).First(&data, c.GetId())
-    c.Generate(&data)
+	var err error
+	var data = models.RsHost{}
+	e.Orm.Scopes(
+		actions.Permission(data.TableName(), p),
+	).First(&data, c.GetId())
+	c.Generate(&data)
 
-    db := e.Orm.Save(&data)
-    if err = db.Error; err != nil {
-        e.Log.Errorf("RsHostService Save error:%s \r\n", err)
-        return err
-    }
-    if db.RowsAffected == 0 {
-        return errors.New("无权更新该数据")
-    }
-    return nil
+	db := e.Orm.Save(&data)
+	if err = db.Error; err != nil {
+		e.Log.Errorf("RsHostService Save error:%s \r\n", err)
+		return err
+	}
+	if db.RowsAffected == 0 {
+		return errors.New("无权更新该数据")
+	}
+	return nil
 }
 
 // Remove 删除RsHost
@@ -99,11 +101,91 @@ func (e *RsHost) Remove(d *dto.RsHostDeleteReq, p *actions.DataPermission) error
 			actions.Permission(data.TableName(), p),
 		).Delete(&data, d.GetId())
 	if err := db.Error; err != nil {
-        e.Log.Errorf("Service RemoveRsHost error:%s \r\n", err)
-        return err
-    }
-    if db.RowsAffected == 0 {
-        return errors.New("无权删除该数据")
-    }
+		e.Log.Errorf("Service RemoveRsHost error:%s \r\n", err)
+		return err
+	}
+	if db.RowsAffected == 0 {
+		return errors.New("无权删除该数据")
+	}
 	return nil
+}
+
+func (e *RsHost) GetMonitorData(row models.RsHost) map[string]interface{} {
+	var monitor models2.HostSystem
+
+	result := make(map[string]interface{}, 0)
+	e.Orm.Model(&models2.HostSystem{}).Where("host_id = ?", row.Id).Limit(1).Find(&monitor)
+
+	if monitor.Id == 0 {
+		return result
+	}
+
+	result = map[string]interface{}{
+		"transmit": monitor.TransmitNumber,
+		"receive":  monitor.ReceiveNumber,
+	}
+
+	if monitor.MemoryData != "" {
+
+		HostMemory := dto.HostMemory{}
+		if unErr := json.Unmarshal([]byte(monitor.MemoryData), &HostMemory); unErr != nil {
+			return result
+
+		}
+		result["used_percent"] = fmt.Sprintf("%.2f", 100*float64(HostMemory.U)/float64(HostMemory.T))      //已使用百分比
+		result["available_percent"] = fmt.Sprintf("%.2f", 100*float64(HostMemory.A)/float64(HostMemory.T)) //可使用百分比
+	}
+
+	return result
+}
+
+func (e *RsHost) GetIdcInfo(row models.RsHost) map[string]interface{} {
+
+	var idc models.RsIdc
+	hostBindIdc := fmt.Sprintf("select idc_id from host_bind_idc where `host_id` = %v", row.Id)
+	var bindIdcId []interface{}
+	e.Orm.Raw(hostBindIdc).Scan(&bindIdcId)
+
+	if len(bindIdcId) == 0 {
+
+		return map[string]interface{}{
+			"id":   0,
+			"name": "",
+		}
+	}
+	e.Orm.Model(&idc).Select("name,id").Where("id in ?", bindIdcId).Limit(1).Find(&idc)
+
+	return map[string]interface{}{
+		"id":   idc.Id,
+		"name": idc.Name,
+	}
+}
+func (e *RsHost) GetCity(row models.RsHost) string {
+
+	return ""
+}
+
+func (e *RsHost) GetBusiness(row models.RsHost) []map[string]interface{} {
+
+	list := make([]map[string]interface{}, 0)
+	var RsBusinessList []models.RsBusiness
+	hostBindIdc := fmt.Sprintf("select business_id from host_bind_business where `host_id` = %v", row.Id)
+	var bindIds []interface{}
+	e.Orm.Raw(hostBindIdc).Scan(&bindIds)
+
+	if len(bindIds) == 0 {
+
+		return list
+	}
+	e.Orm.Model(&models.RsBusiness{}).Select("name,id").Where("id in ?", bindIds).Find(&RsBusinessList)
+
+	for _, b := range RsBusinessList {
+
+		list = append(list, map[string]interface{}{
+			"id":   b.Id,
+			"name": b.Name,
+		})
+	}
+	return list
+
 }

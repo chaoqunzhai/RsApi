@@ -12,14 +12,14 @@ import (
 	cDto "go-admin/common/dto"
 )
 
-type RcIdc struct {
+type RsTag struct {
 	service.Service
 }
 
-// GetPage 获取RcIdc列表
-func (e *RcIdc) GetPage(c *dto.RcIdcGetPageReq, p *actions.DataPermission, list *[]models.RcIdc, count *int64) error {
+// GetPage 获取RsTag列表
+func (e *RsTag) GetPage(c *dto.RsTagGetPageReq, p *actions.DataPermission, list *[]models.RsTag, count *int64) error {
 	var err error
-	var data models.RcIdc
+	var data models.RsTag
 
 	err = e.Orm.Model(&data).
 		Scopes(
@@ -30,15 +30,15 @@ func (e *RcIdc) GetPage(c *dto.RcIdcGetPageReq, p *actions.DataPermission, list 
 		Find(list).Limit(-1).Offset(-1).
 		Count(count).Error
 	if err != nil {
-		e.Log.Errorf("RcIdcService GetPage error:%s \r\n", err)
+		e.Log.Errorf("RsTagService GetPage error:%s \r\n", err)
 		return err
 	}
 	return nil
 }
 
-// Get 获取RcIdc对象
-func (e *RcIdc) Get(d *dto.RcIdcGetReq, p *actions.DataPermission, model *models.RcIdc) error {
-	var data models.RcIdc
+// Get 获取RsTag对象
+func (e *RsTag) Get(d *dto.RsTagGetReq, p *actions.DataPermission, model *models.RsTag) error {
+	var data models.RsTag
 
 	err := e.Orm.Model(&data).
 		Scopes(
@@ -47,7 +47,7 @@ func (e *RcIdc) Get(d *dto.RcIdcGetReq, p *actions.DataPermission, model *models
 		First(model, d.GetId()).Error
 	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
 		err = errors.New("查看对象不存在或无权查看")
-		e.Log.Errorf("Service GetRcIdc error:%s \r\n", err)
+		e.Log.Errorf("Service GetRsTag error:%s \r\n", err)
 		return err
 	}
 	if err != nil {
@@ -57,23 +57,23 @@ func (e *RcIdc) Get(d *dto.RcIdcGetReq, p *actions.DataPermission, model *models
 	return nil
 }
 
-// Insert 创建RcIdc对象
-func (e *RcIdc) Insert(c *dto.RcIdcInsertReq) error {
+// Insert 创建RsTag对象
+func (e *RsTag) Insert(c *dto.RsTagInsertReq) error {
     var err error
-    var data models.RcIdc
+    var data models.RsTag
     c.Generate(&data)
 	err = e.Orm.Create(&data).Error
 	if err != nil {
-		e.Log.Errorf("RcIdcService Insert error:%s \r\n", err)
+		e.Log.Errorf("RsTagService Insert error:%s \r\n", err)
 		return err
 	}
 	return nil
 }
 
-// Update 修改RcIdc对象
-func (e *RcIdc) Update(c *dto.RcIdcUpdateReq, p *actions.DataPermission) error {
+// Update 修改RsTag对象
+func (e *RsTag) Update(c *dto.RsTagUpdateReq, p *actions.DataPermission) error {
     var err error
-    var data = models.RcIdc{}
+    var data = models.RsTag{}
     e.Orm.Scopes(
             actions.Permission(data.TableName(), p),
         ).First(&data, c.GetId())
@@ -81,7 +81,7 @@ func (e *RcIdc) Update(c *dto.RcIdcUpdateReq, p *actions.DataPermission) error {
 
     db := e.Orm.Save(&data)
     if err = db.Error; err != nil {
-        e.Log.Errorf("RcIdcService Save error:%s \r\n", err)
+        e.Log.Errorf("RsTagService Save error:%s \r\n", err)
         return err
     }
     if db.RowsAffected == 0 {
@@ -90,16 +90,16 @@ func (e *RcIdc) Update(c *dto.RcIdcUpdateReq, p *actions.DataPermission) error {
     return nil
 }
 
-// Remove 删除RcIdc
-func (e *RcIdc) Remove(d *dto.RcIdcDeleteReq, p *actions.DataPermission) error {
-	var data models.RcIdc
+// Remove 删除RsTag
+func (e *RsTag) Remove(d *dto.RsTagDeleteReq, p *actions.DataPermission) error {
+	var data models.RsTag
 
 	db := e.Orm.Model(&data).
 		Scopes(
 			actions.Permission(data.TableName(), p),
 		).Delete(&data, d.GetId())
 	if err := db.Error; err != nil {
-        e.Log.Errorf("Service RemoveRcIdc error:%s \r\n", err)
+        e.Log.Errorf("Service RemoveRsTag error:%s \r\n", err)
         return err
     }
     if db.RowsAffected == 0 {
