@@ -9,7 +9,7 @@ type RsHost struct {
 	models.Model
 	HealthyAt     sql.NullTime `json:"healthy" gorm:"comment:存活上报时间"`
 	Layer         int          `json:"layer" gorm:"default:1;type:tinyint;comment:排序"`
-	Enable        bool         `json:"enable" gorm:"default:true;type:tinyint(1);comment:开关"`
+	Enable        int          `json:"enable" gorm:"default:1;type:tinyint(1);comment:开关"`
 	Desc          string       `json:"desc" gorm:"type:varchar(35);comment:描述信息"`
 	HostName      string       `json:"hostname" gorm:"type:varchar(100);comment:主机名"`
 	Sn            string       `json:"sn" gorm:"type:varchar(191);comment:sn"`
@@ -26,10 +26,10 @@ type RsHost struct {
 	Region        string       `json:"region" gorm:"type:varchar(50)comment:省份城市多ID"`
 	Address       string       `json:"address" gorm:"type:varchar(100);comment:详细地址"`
 	Isp           int          `json:"isp" gorm:"type:varchar(16);comment:运营商"`
-	TransProvince bool         `json:"transProd" gorm:"default:false;comment:是否跨省"`
+	TransProvince int          `json:"transProvince" gorm:"default:0;comment:是否跨省"`
 	LineType      int          `json:"lineType" gorm:"type:int(1);default:0;comment:线路类型"`
+	Idc           int          `json:"idc" gorm:"type:int(11);comment:idc"`
 	Business      []RsBusiness `json:"business" gorm:"many2many:host_bind_business;foreignKey:id;joinForeignKey:host_id;references:id;joinReferences:business_id;"`
-	Idc           []RsIdc      `json:"idc" gorm:"many2many:host_bind_idc;foreignKey:id;joinForeignKey:host_id;references:id;joinReferences:idc_id;"`
 	Tag           []RsTag      `json:"tag" gorm:"many2many:host_bind_tag;foreignKey:id;joinForeignKey:host_id;references:id;joinReferences:tag_id;"`
 	models.ModelTime
 	models.ControlBy

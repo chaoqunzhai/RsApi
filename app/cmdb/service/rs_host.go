@@ -142,22 +142,23 @@ func (e *RsHost) GetMonitorData(row models.RsHost) map[string]interface{} {
 func (e *RsHost) GetIdcInfo(row models.RsHost) map[string]interface{} {
 
 	var idc models.RsIdc
-	hostBindIdc := fmt.Sprintf("select idc_id from host_bind_idc where `host_id` = %v", row.Id)
-	var bindIdcId []interface{}
-	e.Orm.Raw(hostBindIdc).Scan(&bindIdcId)
 
-	if len(bindIdcId) == 0 {
+	if row.Idc == 0 {
 
 		return map[string]interface{}{
-			"id":   0,
-			"name": "",
+			"id":     0,
+			"name":   "",
+			"number": "",
+			"region": "",
 		}
 	}
-	e.Orm.Model(&idc).Select("name,id").Where("id in ?", bindIdcId).Limit(1).Find(&idc)
+	e.Orm.Model(&idc).Select("name,id").Where("id = ?", row.Idc).Limit(1).Find(&idc)
 
 	return map[string]interface{}{
-		"id":   idc.Id,
-		"name": idc.Name,
+		"id":     idc.Id,
+		"name":   idc.Name,
+		"number": idc.Number,
+		"region": idc.Region,
 	}
 }
 func (e *RsHost) GetCity(row models.RsHost) string {
@@ -165,9 +166,9 @@ func (e *RsHost) GetCity(row models.RsHost) string {
 	return ""
 }
 
-func (e *RsHost) GetBusiness(row models.RsHost) []map[string]interface{} {
+func (e *RsHost) GetBusiness(row models.RsHost) []interface{} {
 
-	list := make([]map[string]interface{}, 0)
+	list := make([]interface{}, 0)
 	var RsBusinessList []models.RsBusiness
 	hostBindIdc := fmt.Sprintf("select business_id from host_bind_business where `host_id` = %v", row.Id)
 	var bindIds []interface{}
@@ -181,11 +182,11 @@ func (e *RsHost) GetBusiness(row models.RsHost) []map[string]interface{} {
 
 	for _, b := range RsBusinessList {
 
-		list = append(list, map[string]interface{}{
-			"id":   b.Id,
-			"name": b.Name,
+		list = append(list, dto.LabelRow{
+			Id:    b.Id,
+			Label: b.Name,
+			Value: fmt.Sprintf("%v", b.Id),
 		})
 	}
 	return list
-
 }

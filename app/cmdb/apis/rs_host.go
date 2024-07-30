@@ -31,6 +31,51 @@ type RsHost struct {
 // @Router /api/v1/rs-host/switch [POST]
 // @Security Bearer
 
+func (e RsHost) BindIdc(c *gin.Context) {
+	req := dto.HostBindIdc{}
+	s := service.RsHost{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
+
+	if req.IdcId == 0 || len(req.HostIds) == 0 {
+
+		e.Error(500, nil, "请输入IDC或者主机ID列表")
+		return
+	}
+	var idcCount int64
+	e.Orm.Model(&models.RsIdc{}).Where("id = ?", req.IdcId).Count(&idcCount)
+
+	if idcCount == 0 {
+		e.Error(500, nil, "IDC不存在")
+		return
+	}
+
+	for _, host := range req.HostIds {
+
+		e.Orm.Model(&models.RsHost{}).Where("id = ?", host).Updates(map[string]interface{}{
+			"idc": req.IdcId,
+		})
+	}
+	e.OK("", "绑定IDC成功")
+	return
+}
+
+// GetPage 进行业务切换
+// @Summary 进行业务切换
+// @Description 进行业务切换
+// @Tags 主机业务切换
+// @Success 200 {object} response.Response{data=response.Page{list=[]models.RsHost}} "{"code": 200, "data": [...]}"
+// @Router /api/v1/rs-host/switch [POST]
+// @Security Bearer
+
 func (e RsHost) Switch(c *gin.Context) {
 	req := dto.BusinessSwitch{}
 	s := service.RsHost{}
@@ -224,7 +269,7 @@ func (e RsHost) GetPage(c *gin.Context) {
 	nowTime := time.Now()
 	for _, row := range list {
 		customRow := make(map[string]interface{}, 1)
-		customRow["updated_at"] = fmt.Sprintf("%v", row.UpdatedAt.Format(time.DateTime))
+		customRow["updatedAt"] = fmt.Sprintf("%v", row.UpdatedAt.Format(time.DateTime))
 		customRow["status"] = global.HostSuccess
 
 		if row.HealthyAt.Valid {
@@ -242,15 +287,29 @@ func (e RsHost) GetPage(c *gin.Context) {
 		var businessSnList []models2.HostSoftware
 		e.Orm.Model(&models2.HostSoftware{}).Where("host_id = ? ", row.Id).Find(&businessSnList)
 
-		snMap := map[string]interface{}{
-			"sn_host": row.Sn,
-		}
+		snList := make([]dto.LabelRow, 0)
+
+		snList = append(snList, dto.LabelRow{
+			Label: "主机SN",
+			Value: row.Sn,
+		})
 		for _, item := range businessSnList {
 			if strings.HasPrefix(item.Key, "sn_") {
-				snMap[item.Key] = item.Value
+				Label := ""
+				switch item.Key {
+				case "sn_baishan":
+					Label = "白山"
+				case "sn_jinshan":
+					Label = "金山"
+
+				}
+				snList = append(snList, dto.LabelRow{
+					Label: Label,
+					Value: item.Value,
+				})
 			}
 		}
-		customRow["sn"] = snMap
+		customRow["sn"] = snList
 		customRow["system"] = map[string]interface{}{
 			"cpu": row.Cpu,
 			"ip":  row.Ip,
@@ -264,6 +323,10 @@ func (e RsHost) GetPage(c *gin.Context) {
 			"disk":   row.Disk,
 			"kernel": row.Kernel,
 		}
+		if row.HealthyAt.Valid {
+			customRow["healthyAt"] = row.HealthyAt.Time.Format("2006-01-02 15:04:05")
+		}
+
 		customRow["id"] = row.Id
 		customRow["transProd"] = row.TransProvince
 		customRow["isp"] = row.Isp

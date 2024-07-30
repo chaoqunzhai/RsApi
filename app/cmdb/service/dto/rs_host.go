@@ -24,6 +24,16 @@ type BusinessSwitch struct {
 	Business []HostBusiness `json:"business" form:"business" `
 }
 
+type HostBindIdc struct {
+	IdcId   int   `json:"idc_id" form:"idc_id" `
+	HostIds []int `json:"host_ids" form:"host_ids" `
+}
+
+type LabelRow struct {
+	Id    int    `json:"id"`
+	Label string `json:"label" form:"label" `
+	Value string `json:"value" form:"value" `
+}
 type RsHostGetPageReq struct {
 	dto.Pagination `search:"-"`
 	Enable         string `form:"enable"  search:"type:exact;column:enable;table:rs_host" comment:"开关"`
@@ -36,7 +46,6 @@ type RsHostGetPageReq struct {
 	Isp            string `form:"isp"  search:"type:exact;column:isp;table:rs_host" comment:"运营商"`
 	Status         string `form:"status"  search:"type:exact;column:status;table:rs_host" comment:"主机状态"`
 	BusinessSn     string `form:"businessSn"  search:"type:contains;column:business_sn;table:rs_host" comment:"业务SN"`
-	Province       string `form:"province"  search:"type:exact;column:province;table:rs_host" comment:"省份"`
 	RsHostOrder
 }
 
@@ -73,7 +82,6 @@ func (m *RsHostGetPageReq) GetNeedSearch() interface{} {
 type RsHostInsertReq struct {
 	Id        int     `json:"-" comment:"主键编码"` // 主键编码
 	Layer     int     `json:"layer" comment:"排序"`
-	Enable    bool    `json:"enable" comment:"开关"`
 	Desc      string  `json:"desc" comment:"描述信息"`
 	HostName  string  `json:"hostName" comment:"主机名"`
 	Sn        string  `json:"sn" comment:"sn"`
@@ -100,7 +108,7 @@ func (s *RsHostInsertReq) Generate(model *models.RsHost) {
 	}
 	model.CreateBy = s.CreateBy // 添加这而，需要记录是被谁创建的
 	model.Layer = s.Layer
-	model.Enable = s.Enable
+
 	model.Desc = s.Desc
 	model.HostName = s.HostName
 	model.Sn = s.Sn
@@ -127,7 +135,6 @@ func (s *RsHostInsertReq) GetId() interface{} {
 type RsHostUpdateReq struct {
 	Id        int     `uri:"id" comment:"主键编码"` // 主键编码
 	Layer     int     `json:"layer" comment:"排序"`
-	Enable    bool    `json:"enable" comment:"开关"`
 	Desc      string  `json:"desc" comment:"描述信息"`
 	HostName  string  `json:"hostName" comment:"主机名"`
 	Sn        string  `json:"sn" comment:"sn"`
@@ -153,7 +160,7 @@ func (s *RsHostUpdateReq) Generate(model *models.RsHost) {
 	}
 	model.UpdateBy = s.UpdateBy // 添加这而，需要记录是被谁更新的
 	model.Layer = s.Layer
-	model.Enable = s.Enable
+
 	model.Desc = s.Desc
 	model.HostName = s.HostName
 	model.Sn = s.Sn

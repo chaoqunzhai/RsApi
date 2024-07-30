@@ -36,8 +36,8 @@ type Host struct {
 	Address       string       `json:"address" gorm:"type:varchar(100);comment:详细地址"`
 	TransProvince bool         `json:"transProd" gorm:"default:false;comment:是否跨省"`
 	LineType      int          `json:"lineType" gorm:"type:int(1);default:0;comment:线路类型"`
+	Idc           int          `json:"idc" gorm:"index;type:int(11);comment:关联的IDC"`
 	Business      []Business   `gorm:"many2many:host_bind_business;foreignKey:id;joinForeignKey:host_id;references:id;joinReferences:business_id;"`
-	Idc           []Idc        `gorm:"many2many:host_bind_idc;foreignKey:id;joinForeignKey:host_id;references:id;joinReferences:idc_id;"`
 	Tag           []Tag        `gorm:"many2many:host_bind_tag;foreignKey:id;joinForeignKey:host_id;references:id;joinReferences:tag_id;"`
 }
 
