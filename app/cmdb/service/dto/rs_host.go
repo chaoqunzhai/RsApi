@@ -37,15 +37,22 @@ type LabelRow struct {
 type RsHostGetPageReq struct {
 	dto.Pagination `search:"-"`
 	Enable         string `form:"enable"  search:"type:exact;column:enable;table:rs_host" comment:"开关"`
+	Idc            string `form:"idc"  search:"type:exact;column:idc;table:rs_host" comment:"关联机房"`
+	IdcName        string `form:"idcName" search:"-"`
+	IdcNumber      string `form:"idcNumber" search:"-"`
+	BusinessId     int    `form:"businessId" search:"-"`
+	LineType       int    `form:"lineType" search:"type:exact;column:line_type;table:rs_host" comment:"线路类型"`
 	HostName       string `form:"hostname"  search:"type:contains;column:host_name;table:rs_host" comment:"主机名"`
 	Sn             string `form:"sn"  search:"type:contains;column:sn;table:rs_host" comment:"sn"`
 	Ip             string `form:"ip"  search:"type:contains;column:ip;table:rs_host" comment:"ip"`
+	NetworkType    int    `form:"networkType" search:"type:exact;column:network_type;table:rs_host" comment:"网络类型"`
 	Kernel         string `form:"kernel"  search:"type:exact;column:kernel;table:rs_host" comment:"内核版本"`
 	Belong         string `form:"belong"  search:"type:exact;column:belong;table:rs_host" comment:"机器归属"`
 	Remark         string `form:"remark"  search:"type:contains;column:remark;table:rs_host" comment:"备注"`
 	Isp            string `form:"isp"  search:"type:exact;column:isp;table:rs_host" comment:"运营商"`
 	Status         string `form:"status"  search:"type:exact;column:status;table:rs_host" comment:"主机状态"`
 	BusinessSn     string `form:"businessSn"  search:"type:contains;column:business_sn;table:rs_host" comment:"业务SN"`
+	TransProvince  int    `form:"transProvince" search:"type:exact;column:trans_province;table:rs_host" comment:"是否跨省"`
 	RsHostOrder
 }
 

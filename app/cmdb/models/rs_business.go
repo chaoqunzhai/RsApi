@@ -12,6 +12,7 @@ type RsBusiness struct {
 	Desc      string `json:"desc" gorm:"type:varchar(35);comment:描述信息"`
 	Name      string `json:"name" gorm:"type:varchar(50);comment:业务云名称"`
 	Algorithm string `json:"algorithm" gorm:"type:varchar(120);comment:算法备注"`
+
 	models.ModelTime
 	models.ControlBy
 }

@@ -333,6 +333,7 @@ func (e RsHost) GetPage(c *gin.Context) {
 		customRow["balance"] = fmt.Sprintf("%vGbps", row.Balance)
 		customRow["remark"] = row.Remark
 		customRow["belong"] = row.Belong
+		customRow["networkType"] = row.NetworkType
 		customRow["monitor"] = s.GetMonitorData(row)
 		customRow["idc"] = s.GetIdcInfo(row)
 		customRow["line_type"] = row.LineType

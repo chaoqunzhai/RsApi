@@ -24,6 +24,7 @@ type Host struct {
 	CPU           int          `json:"cpu" gorm:"comment:总核数"`
 	Ip            string       `json:"ip" gorm:"type:varchar(20);comment:ip"`
 	Memory        uint64       `json:"memory" gorm:"comment:总内存"`
+	NetworkType   int          `json:"networkType" gorm:"default:2;comment:网络类型"`
 	Disk          string       `json:"disk" gorm:"type:varchar(20);comment:总磁盘"`
 	NetDevice     string       `json:"netDevice" gorm:"type:varchar(120);comment:网卡信息"`
 	Kernel        string       `json:"kernel" gorm:"type:varchar(100);comment:内核版本"`
@@ -34,7 +35,7 @@ type Host struct {
 	Status        int          `json:"status" gorm:"type:int(1);default:0;comment:主机状态"`
 	Region        string       `json:"region" gorm:"type:varchar(50);comment:省份城市多ID"`
 	Address       string       `json:"address" gorm:"type:varchar(100);comment:详细地址"`
-	TransProvince bool         `json:"transProd" gorm:"default:false;comment:是否跨省"`
+	TransProvince bool         `json:"transProvince" gorm:"default:false;comment:是否跨省"`
 	LineType      int          `json:"lineType" gorm:"type:int(1);default:0;comment:线路类型"`
 	Idc           int          `json:"idc" gorm:"index;type:int(11);comment:关联的IDC"`
 	Business      []Business   `gorm:"many2many:host_bind_business;foreignKey:id;joinForeignKey:host_id;references:id;joinReferences:business_id;"`

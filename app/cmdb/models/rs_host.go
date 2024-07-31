@@ -11,6 +11,7 @@ type RsHost struct {
 	Layer         int          `json:"layer" gorm:"default:1;type:tinyint;comment:排序"`
 	Enable        int          `json:"enable" gorm:"default:1;type:tinyint(1);comment:开关"`
 	Desc          string       `json:"desc" gorm:"type:varchar(35);comment:描述信息"`
+	NetworkType   int          `json:"networkType" gorm:"default:2;comment:网络类型"`
 	HostName      string       `json:"hostname" gorm:"type:varchar(100);comment:主机名"`
 	Sn            string       `json:"sn" gorm:"type:varchar(191);comment:sn"`
 	Cpu           string       `json:"cpu" gorm:"type:bigint;comment:总核数"`

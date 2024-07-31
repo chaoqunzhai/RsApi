@@ -23,12 +23,38 @@ func (e *RsHost) GetPage(c *dto.RsHostGetPageReq, p *actions.DataPermission, lis
 	var err error
 	var data models.RsHost
 
-	err = e.Orm.Model(&data).
-		Scopes(
-			cDto.MakeCondition(c.GetNeedSearch()),
-			cDto.Paginate(c.GetPageSize(), c.GetPageIndex()),
-			actions.Permission(data.TableName(), p),
-		).
+	orm := e.Orm.Model(&data)
+	if c.IdcName != "" {
+		var idcList []models.RsIdc
+		e.Orm.Model(&models.RsIdc{}).Select("id").Where("name like ?", fmt.Sprintf("%%%v%%", c.IdcName)).Find(&idcList)
+		var cache []int
+		for _, idc := range idcList {
+			cache = append(cache, idc.Id)
+		}
+		orm = orm.Where("idc in (?)", cache)
+	}
+	if c.IdcNumber != "" {
+		var idcList []models.RsIdc
+		e.Orm.Model(&models.RsIdc{}).Select("id").Where("number like ?", fmt.Sprintf("%%%v%%", c.IdcName)).Find(&idcList)
+		var cache []int
+		for _, idc := range idcList {
+			cache = append(cache, idc.Id)
+		}
+		orm = orm.Where("idc in (?)", cache)
+	}
+
+	if c.BusinessId > 0 {
+		var bindHostId []int
+
+		e.Orm.Raw(fmt.Sprintf("select host_id from host_bind_business where business_id = %v", c.BusinessId)).Scan(&bindHostId)
+
+		orm = orm.Where("id in (?)", bindHostId)
+	}
+	err = orm.Scopes(
+		cDto.MakeCondition(c.GetNeedSearch()),
+		cDto.Paginate(c.GetPageSize(), c.GetPageIndex()),
+		actions.Permission(data.TableName(), p),
+	).
 		Find(list).Limit(-1).Offset(-1).
 		Count(count).Error
 	if err != nil {
@@ -152,7 +178,7 @@ func (e *RsHost) GetIdcInfo(row models.RsHost) map[string]interface{} {
 			"region": "",
 		}
 	}
-	e.Orm.Model(&idc).Select("name,id").Where("id = ?", row.Idc).Limit(1).Find(&idc)
+	e.Orm.Model(&idc).Select("name,id,number,region").Where("id = ?", row.Idc).Limit(1).Find(&idc)
 
 	return map[string]interface{}{
 		"id":     idc.Id,
