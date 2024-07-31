@@ -5,13 +5,12 @@ import (
 	"errors"
 	"fmt"
 	"github.com/go-admin-team/go-admin-core/sdk/service"
-	models2 "go-admin/cmd/migrate/migration/models"
-	"gorm.io/gorm"
-
 	"go-admin/app/cmdb/models"
 	"go-admin/app/cmdb/service/dto"
+	models2 "go-admin/cmd/migrate/migration/models"
 	"go-admin/common/actions"
 	cDto "go-admin/common/dto"
+	"gorm.io/gorm"
 )
 
 type RsHost struct {
@@ -43,10 +42,10 @@ func (e *RsHost) GetPage(c *dto.RsHostGetPageReq, p *actions.DataPermission, lis
 		orm = orm.Where("idc in (?)", cache)
 	}
 
-	if c.BusinessId > 0 {
+	if c.BusinessId != "" {
 		var bindHostId []int
 
-		e.Orm.Raw(fmt.Sprintf("select host_id from host_bind_business where business_id = %v", c.BusinessId)).Scan(&bindHostId)
+		e.Orm.Raw(fmt.Sprintf("select host_id from host_bind_business where business_id in (%v)", c.BusinessId)).Scan(&bindHostId)
 
 		orm = orm.Where("id in (?)", bindHostId)
 	}

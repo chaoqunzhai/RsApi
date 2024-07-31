@@ -25,7 +25,6 @@ type RsHost struct {
 	NetDevice     string       `json:"netDevice" gorm:"type:varchar(120);comment:网卡信息"`
 	Balance       float64      `json:"balance" gorm:"type:varchar(50);comment:总带宽"`
 	Region        string       `json:"region" gorm:"type:varchar(80)comment:省份城市多ID"`
-	Address       string       `json:"address" gorm:"type:varchar(100);comment:详细地址"`
 	Isp           int          `json:"isp" gorm:"type:varchar(16);comment:运营商"`
 	TransProvince int          `json:"transProvince" gorm:"default:0;comment:是否跨省"`
 	LineType      int          `json:"lineType" gorm:"type:int(1);default:0;comment:线路类型"`

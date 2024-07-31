@@ -17,8 +17,6 @@ type Idc struct {
 	Status          int     `json:"status" gorm:"type:int(1);default:1;comment:机房状态"`
 	Belong          int     `json:"belong" gorm:"type:int(1);default:0;comment:机房归属"`
 	Isp             int     `json:"isp" gorm:"type:int(1);default:1;comment:运营商"`
-	AllBandwidth    string  `json:"all_bandwidth" gorm:"type:varchar(35);comment:机房总带宽"`
-	AllLine         int     `json:"all_line" gorm:"type:int(1);default:0;comment:机房总线路"`
 	Up              string  `json:"up" gorm:"default:0;comment:上行带宽"`
 	Down            string  `json:"down" gorm:"default:0;comment:下行带宽"`
 	Price           float64 `json:"price" gorm:"comment:单价"`

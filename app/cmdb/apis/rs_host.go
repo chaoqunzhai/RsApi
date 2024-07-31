@@ -96,16 +96,14 @@ func (e RsHost) Switch(c *gin.Context) {
 		e.Error(500, nil, "请选择主机")
 		return
 	}
-	if len(req.Business) == 0 {
+	if len(req.BusinessIds) == 0 {
 
 		e.Error(500, nil, "请选择业务")
 		return
 	}
 	busIds := make([]int, 0)
-	idBindSN := make(map[int]string, 0)
-	for _, i := range req.Business {
-		busIds = append(busIds, i.Id)
-		idBindSN[i.Id] = i.Sn
+	for _, i := range req.BusinessIds {
+		busIds = append(busIds, i)
 	}
 	e.Orm.Model(&models.RsBusiness{}).Select("id,name").Where("id in ?", busIds).Find(&BusinessList)
 	var hostList []models.RsHost
@@ -139,12 +137,14 @@ func (e RsHost) Switch(c *gin.Context) {
 
 		for _, bu := range BusinessList {
 
+			//记录下 新的业务SN
+			//记录下 主机之前的sn列表,需要通过sn去查询监控数据
 			event := models2.HostSwitchLog{
 				BusinessId: bu.Id,
 				HostId:     host.Id,
 				JobId:      uuid.New().String(),
 				CreateBy:   user.GetUserId(c),
-				BusinessSn: idBindSN[bu.Id],
+				//BusinessSn: idBindSN[bu.Id],
 			}
 			e.Orm.Create(&event)
 		}
@@ -281,6 +281,7 @@ func (e RsHost) GetPage(c *gin.Context) {
 					})
 				}
 			}
+			customRow["healthyAt"] = row.HealthyAt.Time.Format("2006-01-02 15:04:05")
 		}
 
 		customRow["hostname"] = row.HostName

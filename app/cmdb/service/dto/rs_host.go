@@ -15,13 +15,10 @@ type HostMemory struct {
 	ST uint64 `json:"s_t"` //swap_total
 }
 
-type HostBusiness struct {
-	Id int    `json:"id" form:"id"`
-	Sn string `json:"sn" from:"sn" `
-}
 type BusinessSwitch struct {
-	HostIds  []int          `json:"host_ids" form:"host_ids" `
-	Business []HostBusiness `json:"business" form:"business" `
+	HostIds     []int  `json:"host_ids" form:"host_ids" comment:"需要切换的主机"`
+	BusinessIds []int  `json:"business_ids" form:"business_ids" comment:"切换的新业务ID"`
+	Desc        string `json:"desc"  form:"desc"`
 }
 
 type HostBindIdc struct {
@@ -40,7 +37,7 @@ type RsHostGetPageReq struct {
 	Idc            string `form:"idc"  search:"type:exact;column:idc;table:rs_host" comment:"关联机房"`
 	IdcName        string `form:"idcName" search:"-"`
 	IdcNumber      string `form:"idcNumber" search:"-"`
-	BusinessId     int    `form:"businessId" search:"-"`
+	BusinessId     string `form:"businessId" search:"-"`
 	Region         string `form:"region"  search:"type:exact;column:region;table:rs_host" comment:"所在区域"`
 	LineType       int    `form:"lineType" search:"type:exact;column:line_type;table:rs_host" comment:"线路类型"`
 	HostName       string `form:"hostname"  search:"type:contains;column:host_name;table:rs_host" comment:"主机名"`
