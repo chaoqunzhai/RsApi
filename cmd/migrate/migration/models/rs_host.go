@@ -33,7 +33,7 @@ type Host struct {
 	Remark        string       `json:"remark" gorm:"type:varchar(60);comment:备注;default:'';"`
 	Isp           int          `json:"isp" gorm:"type:int(1);default:1;comment:运营商"`
 	Status        int          `json:"status" gorm:"type:int(1);default:0;comment:主机状态"`
-	Region        string       `json:"region" gorm:"type:varchar(50);comment:省份城市多ID"`
+	Region        string       `json:"region" gorm:"type:varchar(80);comment:省份城市多ID"`
 	Address       string       `json:"address" gorm:"type:varchar(100);comment:详细地址"`
 	TransProvince bool         `json:"transProvince" gorm:"default:false;comment:是否跨省"`
 	LineType      int          `json:"lineType" gorm:"type:int(1);default:0;comment:线路类型"`
