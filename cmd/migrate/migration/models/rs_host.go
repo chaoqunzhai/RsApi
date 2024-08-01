@@ -39,6 +39,8 @@ type Host struct {
 	AllLine       int          `json:"allLine" gorm:"type:int(1);default:0;comment:机房总线路"`
 	LineBandwidth float64      `json:"lineBandwidth"  gorm:"default:0;comment:单条线路带宽"`
 	Idc           int          `json:"idc" gorm:"index;type:int(11);comment:关联的IDC"`
+	Auth          bool         `json:"auth" gorm:"default:true;comment:是否有主机权限"`
+	ProbeShell    string       `json:"probeShell" gorm:"type:varchar(100);comment:主动探测主机命令"`
 	Business      []Business   `gorm:"many2many:host_bind_business;foreignKey:id;joinForeignKey:host_id;references:id;joinReferences:business_id;"`
 	Tag           []Tag        `gorm:"many2many:host_bind_tag;foreignKey:id;joinForeignKey:host_id;references:id;joinReferences:tag_id;"`
 }

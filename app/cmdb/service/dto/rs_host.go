@@ -128,7 +128,6 @@ func (s *RsHostInsertReq) Generate(model *models.RsHost) {
 	model.NetDevice = s.NetDevice
 	model.Balance = s.Balance
 
-	model.Address = s.Address
 	model.Region = s.Region
 	model.Isp = s.Isp
 }
@@ -181,7 +180,6 @@ func (s *RsHostUpdateReq) Generate(model *models.RsHost) {
 	model.NetDevice = s.NetDevice
 	model.Balance = s.Balance
 
-	model.Address = s.Address
 	model.Region = s.Region
 	model.Isp = s.Isp
 }

@@ -318,7 +318,6 @@ func (e RsHost) GetPage(c *gin.Context) {
 				if row.Memory == 0 {
 					return 0
 				}
-
 				return int(row.Memory / 1024 / 1024 / 1024)
 			}(),
 			"disk":   row.Disk,
@@ -340,7 +339,6 @@ func (e RsHost) GetPage(c *gin.Context) {
 		customRow["line_type"] = row.LineType
 		customRow["region"] = row.Region
 		customRow["business"] = s.GetBusiness(row)
-		customRow["address"] = row.Address
 		result = append(result, customRow)
 	}
 

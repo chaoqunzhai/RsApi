@@ -171,19 +171,21 @@ func (e *RsHost) GetIdcInfo(row models.RsHost) map[string]interface{} {
 	if row.Idc == 0 {
 
 		return map[string]interface{}{
-			"id":     0,
-			"name":   "",
-			"number": "",
-			"region": "",
+			"id":      0,
+			"name":    "",
+			"number":  "",
+			"region":  "",
+			"address": "",
 		}
 	}
 	e.Orm.Model(&idc).Select("name,id,number,region").Where("id = ?", row.Idc).Limit(1).Find(&idc)
 
 	return map[string]interface{}{
-		"id":     idc.Id,
-		"name":   idc.Name,
-		"number": idc.Number,
-		"region": idc.Region,
+		"id":      idc.Id,
+		"name":    idc.Name,
+		"number":  idc.Number,
+		"region":  idc.Region,
+		"address": idc.Address,
 	}
 }
 func (e *RsHost) GetCity(row models.RsHost) string {
