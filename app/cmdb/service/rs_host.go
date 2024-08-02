@@ -10,7 +10,9 @@ import (
 	models2 "go-admin/cmd/migrate/migration/models"
 	"go-admin/common/actions"
 	cDto "go-admin/common/dto"
+	"go-admin/common/utils"
 	"gorm.io/gorm"
+	"strings"
 )
 
 type RsHost struct {
@@ -134,86 +136,140 @@ func (e *RsHost) Remove(d *dto.RsHostDeleteReq, p *actions.DataPermission) error
 	}
 	return nil
 }
+func (e *RsHost) GetIdcList(ids []int) map[int][]interface{} {
 
-func (e *RsHost) GetMonitorData(row models.RsHost) map[string]interface{} {
-	var monitor models2.HostSystem
+	RowMap := make(map[int][]interface{}, 0)
 
-	result := make(map[string]interface{}, 0)
-	e.Orm.Model(&models2.HostSystem{}).Where("host_id = ?", row.Id).Limit(1).Find(&monitor)
+	ids = utils.RemoveRepeatInt(ids)
+	var RowList []models.RsIdc
+	e.Orm.Model(&models.RsIdc{}).Where("id in ? ", ids).Find(&RowList)
 
-	if monitor.Id == 0 {
-		return result
-	}
-
-	result = map[string]interface{}{
-		"transmit": monitor.TransmitNumber,
-		"receive":  monitor.ReceiveNumber,
-	}
-
-	if monitor.MemoryData != "" {
-
-		HostMemory := dto.HostMemory{}
-		if unErr := json.Unmarshal([]byte(monitor.MemoryData), &HostMemory); unErr != nil {
-			return result
-
+	for _, idc := range RowList {
+		cache, ok := RowMap[idc.Id]
+		if !ok {
+			cache = make([]interface{}, 0)
 		}
-		result["used_percent"] = fmt.Sprintf("%.2f", 100*float64(HostMemory.U)/float64(HostMemory.T))      //已使用百分比
-		result["available_percent"] = fmt.Sprintf("%.2f", 100*float64(HostMemory.A)/float64(HostMemory.T)) //可使用百分比
+		dat := map[string]interface{}{
+			"id":      idc.Id,
+			"name":    idc.Name,
+			"number":  idc.Number,
+			"region":  idc.Region,
+			"address": idc.Address,
+		}
+		cache = append(cache, dat)
+		RowMap[idc.Id] = cache
+	}
+	return RowMap
+
+}
+func (e *RsHost) GetHostSoftware(ids []int) map[int][]models2.HostSoftware {
+	HostSoftwareMap := make(map[int][]models2.HostSoftware, 0)
+
+	var HostSoftwareList []models2.HostSoftware
+	e.Orm.Model(&models2.HostSoftware{}).Where("host_id in ? ", ids).Find(&HostSoftwareList)
+
+	for _, row := range HostSoftwareList {
+		cache, ok := HostSoftwareMap[row.HostId]
+		if !ok {
+			cache = make([]models2.HostSoftware, 0)
+		}
+		cache = append(cache, row)
+		HostSoftwareMap[row.HostId] = cache
+	}
+	return HostSoftwareMap
+
+}
+func (e *RsHost) GetMonitorData(ids []int) map[int][]interface{} {
+	var monitorList []models2.HostSystem
+
+	result := make(map[int][]interface{}, 0)
+	e.Orm.Model(&models2.HostSystem{}).Where("host_id in ?", ids).Find(&monitorList)
+
+	if len(monitorList) == 0 {
+		return map[int][]interface{}{}
+	}
+
+	for _, row := range monitorList {
+		dat := map[string]interface{}{
+			"transmit": row.TransmitNumber,
+			"receive":  row.ReceiveNumber,
+		}
+
+		if row.MemoryData != "" {
+
+			HostMemory := dto.HostMemory{}
+			if unErr := json.Unmarshal([]byte(row.MemoryData), &HostMemory); unErr != nil {
+				continue
+
+			}
+			dat["used_percent"] = fmt.Sprintf("%.2f", 100*float64(HostMemory.U)/float64(HostMemory.T))      //已使用百分比
+			dat["available_percent"] = fmt.Sprintf("%.2f", 100*float64(HostMemory.A)/float64(HostMemory.T)) //可使用百分比
+		}
+
+		cache, ok := result[row.HostId]
+		if !ok {
+			cache = make([]interface{}, 0)
+		}
+		cache = append(cache, dat)
+		result[row.Id] = cache
 	}
 
 	return result
 }
 
-func (e *RsHost) GetIdcInfo(row models.RsHost) map[string]interface{} {
-
-	var idc models.RsIdc
-
-	if row.Idc == 0 {
-
-		return map[string]interface{}{
-			"id":      0,
-			"name":    "",
-			"number":  "",
-			"region":  "",
-			"address": "",
-		}
-	}
-	e.Orm.Model(&idc).Select("name,id,number,region").Where("id = ?", row.Idc).Limit(1).Find(&idc)
-
-	return map[string]interface{}{
-		"id":      idc.Id,
-		"name":    idc.Name,
-		"number":  idc.Number,
-		"region":  idc.Region,
-		"address": idc.Address,
-	}
-}
 func (e *RsHost) GetCity(row models.RsHost) string {
 
 	return ""
 }
 
-func (e *RsHost) GetBusiness(row models.RsHost) []interface{} {
+func (e *RsHost) GetBusinessMap(ids []int) map[int][]dto.LabelRow {
 
-	list := make([]interface{}, 0)
+	result := make(map[int][]dto.LabelRow, 0)
 	var RsBusinessList []models.RsBusiness
-	hostBindIdc := fmt.Sprintf("select business_id from host_bind_business where `host_id` = %v", row.Id)
-	var bindIds []interface{}
+	var cacheIds []string
+	for _, i := range ids {
+		cacheIds = append(cacheIds, fmt.Sprintf("%v", i))
+	}
+	hostBindIdc := fmt.Sprintf("select business_id,host_id from host_bind_business where `host_id` in (%v)", strings.Join(cacheIds, ","))
+	var bindIds []struct {
+		HostId     int `json:"host_id"`
+		BusinessId int `json:"business_id"`
+	}
 	e.Orm.Raw(hostBindIdc).Scan(&bindIds)
 
 	if len(bindIds) == 0 {
 
-		return list
+		return map[int][]dto.LabelRow{}
 	}
-	e.Orm.Model(&models.RsBusiness{}).Select("name,id").Where("id in ?", bindIds).Find(&RsBusinessList)
 
+	var cacheBuIds []int
+	for _, r := range bindIds {
+		cacheBuIds = append(cacheBuIds, r.BusinessId)
+	}
+	e.Orm.Model(&models.RsBusiness{}).Select("name,id").Where("id in ?", cacheBuIds).Find(&RsBusinessList)
+
+	BusinessMap := make(map[int]dto.LabelRow, 0)
 	for _, b := range RsBusinessList {
-
-		list = append(list, dto.LabelRow{
+		LabelRow := dto.LabelRow{
 			Id:    b.Id,
 			Label: b.Name,
 			Value: fmt.Sprintf("%v", b.Id),
-		})
+		}
+		BusinessMap[b.Id] = LabelRow
 	}
-	return list
+	for _, row := range bindIds {
+		buDat, buOk := BusinessMap[row.BusinessId]
+		if !buOk {
+			continue
+		}
+		cache, ok := result[row.HostId]
+		if !ok {
+			cache = make([]dto.LabelRow, 0)
+		}
+		cache = append(cache, buDat)
+		result[row.HostId] = cache
+
+	}
+
+	return result
 }

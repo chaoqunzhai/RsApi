@@ -6,6 +6,8 @@ import (
 	common "go-admin/common/models"
 )
 
+// 内存使用率的格式化
+
 type HostMemory struct {
 	T  uint64 `json:"t"`   //total
 	A  uint64 `json:"a"`   //available
@@ -13,6 +15,17 @@ type HostMemory struct {
 	SC uint64 `json:"s_c"` //swap_cached
 	SF uint64 `json:"s_f"` //swap_free
 	ST uint64 `json:"s_t"` //swap_total
+}
+
+//磁盘的JSON格式化
+
+type HDDevUsage struct {
+	Dev string `json:"dev"`
+	FS  string `json:"fs"`
+	U   string `json:"u"`  //用户使用
+	T   string `json:"t"`  //总量
+	M   string `json:"m"`  //挂载点
+	UP  string `json:"up"` // fmt.Sprintf("%.2f%%", (float64(disk.Used)/float64(disk.All))*100) 用户的使用占比
 }
 type HostBusiness struct {
 	Id int `json:"id" form:"id"`

@@ -282,6 +282,21 @@ func (e RsHost) GetPage(c *gin.Context) {
 	}
 	result := make([]map[string]interface{}, 0)
 	nowTime := time.Now()
+
+	hostIds := make([]int, 0)
+	idcIds := make([]int, 0)
+	for _, row := range list {
+
+		hostIds = append(hostIds, row.Id)
+		idcIds = append(idcIds, row.Idc)
+	}
+	HostSoftwareMap := s.GetHostSoftware(hostIds)
+
+	HostMapMonitorData := s.GetMonitorData(hostIds)
+
+	IdcMapData := s.GetIdcList(idcIds)
+
+	BusinessMapData := s.GetBusinessMap(hostIds)
 	for _, row := range list {
 		customRow := make(map[string]interface{}, 1)
 		customRow["updatedAt"] = fmt.Sprintf("%v", row.UpdatedAt.Format(time.DateTime))
@@ -300,8 +315,6 @@ func (e RsHost) GetPage(c *gin.Context) {
 		}
 
 		customRow["hostname"] = row.HostName
-		var businessSnList []models2.HostSoftware
-		e.Orm.Model(&models2.HostSoftware{}).Where("host_id = ? ", row.Id).Find(&businessSnList)
 
 		snList := make([]dto.LabelRow, 0)
 
@@ -309,20 +322,22 @@ func (e RsHost) GetPage(c *gin.Context) {
 			Label: "主机SN",
 			Value: row.Sn,
 		})
-		for _, item := range businessSnList {
-			if strings.HasPrefix(item.Key, "sn_") {
-				Label := ""
-				switch item.Key {
-				case "sn_baishan":
-					Label = "白山"
-				case "sn_jinshan":
-					Label = "金山"
+		if businessSnList, ok := HostSoftwareMap[row.Id]; ok {
+			for _, item := range businessSnList {
+				if strings.HasPrefix(item.Key, "sn_") {
+					Label := ""
+					switch item.Key {
+					case "sn_baishan":
+						Label = "白山"
+					case "sn_jinshan":
+						Label = "金山"
 
+					}
+					snList = append(snList, dto.LabelRow{
+						Label: Label,
+						Value: item.Value,
+					})
 				}
-				snList = append(snList, dto.LabelRow{
-					Label: Label,
-					Value: item.Value,
-				})
 			}
 		}
 		customRow["sn"] = snList
@@ -349,11 +364,18 @@ func (e RsHost) GetPage(c *gin.Context) {
 		customRow["remark"] = row.Remark
 		customRow["belong"] = row.Belong
 		customRow["networkType"] = row.NetworkType
-		customRow["monitor"] = s.GetMonitorData(row)
-		customRow["idc"] = s.GetIdcInfo(row)
+		if monitorDat, ok := HostMapMonitorData[row.Id]; ok {
+			customRow["monitor"] = monitorDat
+		}
+		if idcInfo, ok := IdcMapData[row.Idc]; ok {
+			customRow["idc"] = idcInfo
+		}
 		customRow["line_type"] = row.LineType
 		customRow["region"] = row.Region
-		customRow["business"] = s.GetBusiness(row)
+
+		if BusinessDat, ok := BusinessMapData[row.Id]; ok {
+			customRow["business"] = BusinessDat
+		}
 		result = append(result, customRow)
 	}
 
