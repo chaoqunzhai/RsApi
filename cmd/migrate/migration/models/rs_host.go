@@ -25,8 +25,8 @@ type Host struct {
 	Ip            string       `json:"ip" gorm:"type:varchar(20);comment:ip"`
 	Memory        uint64       `json:"memory" gorm:"comment:总内存"`
 	NetworkType   int          `json:"networkType" gorm:"default:2;comment:网络类型"`
-	Disk          string       `json:"disk" gorm:"type:varchar(20);comment:总磁盘"`
-	NetDevice     string       `json:"netDevice" gorm:"type:varchar(120);comment:网卡信息"`
+	Disk          string       `json:"disk" gorm:"type:varchar(255);comment:所有磁盘信息"`
+	NetDevice     string       `json:"netDevice" gorm:"type:varchar(200);comment:网卡信息"`
 	Kernel        string       `json:"kernel" gorm:"type:varchar(100);comment:内核版本"`
 	Balance       float64      `json:"balance" gorm:"type:varchar(50);comment:总带宽"`
 	Belong        int          `json:"belong" gorm:"type:int(1);default:0;comment:机器归属"`
@@ -85,8 +85,8 @@ type HostSwitchLog struct {
 	JobId      string    `json:"job_id" gorm:"type:varchar(50);comment:任务ID" `
 	HostId     int       `json:"host_id" gorm:"index;comment:切换的主机ID"`
 	BusinessId int       `json:"business_id" gorm:"index;comment:切换的新业务ID"`
-	BusinessSn string    `json:"business_sn" gorm:"type:varchar(30);index;comment:原来的业务SN"`
-	Desc       string    `json:"desc" gorm:"type:varchar(120);comment:切换业务备注" `
+	BusinessSn string    `json:"business_sn" gorm:"type:varchar(255);index;comment:原来的业务SN"`
+	Desc       string    `json:"desc" gorm:"type:varchar(100);comment:切换业务备注" `
 }
 
 func (HostSwitchLog) TableName() string {

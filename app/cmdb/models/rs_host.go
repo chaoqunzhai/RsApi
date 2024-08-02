@@ -2,7 +2,9 @@ package models
 
 import (
 	"database/sql"
+	models2 "go-admin/cmd/migrate/migration/models"
 	"go-admin/common/models"
+	"gorm.io/gorm"
 )
 
 type RsHost struct {
@@ -20,7 +22,7 @@ type RsHost struct {
 	Disk          string       `json:"disk" gorm:"type:longtext;comment:总磁盘"`
 	Kernel        string       `json:"kernel" gorm:"type:varchar(100);comment:内核版本"`
 	Belong        int          `json:"belong" gorm:"type:int;comment:机器归属"`
-	Remark        string       `json:"remark" gorm:"type:varchar(60);comment:备注"`
+	Remark        string       `json:"remark" gorm:"type:varchar(60);comment:备注"` //166陕西延安宜川集义郭东机房电信1-2-11(30*100M) 拆分解析到线路和带宽
 	Status        int          `json:"status" gorm:"type:int;comment:主机状态"`
 	NetDevice     string       `json:"netDevice" gorm:"type:varchar(120);comment:网卡信息"`
 	Balance       float64      `json:"balance" gorm:"type:varchar(50);comment:总带宽"`
@@ -31,6 +33,7 @@ type RsHost struct {
 	Idc           int          `json:"idc" gorm:"type:int(11);comment:idc"`
 	Business      []RsBusiness `json:"business" gorm:"many2many:host_bind_business;foreignKey:id;joinForeignKey:host_id;references:id;joinReferences:business_id;"`
 	Tag           []RsTag      `json:"tag" gorm:"many2many:host_bind_tag;foreignKey:id;joinForeignKey:host_id;references:id;joinReferences:tag_id;"`
+	models.ExtendUserBy
 	models.ModelTime
 	models.ControlBy
 }
@@ -43,7 +46,19 @@ func (e *RsHost) Generate() models.ActiveRecord {
 	o := *e
 	return &o
 }
+func (e *RsHost) AfterFind(tx *gorm.DB) (err error) {
+	var user models2.SysUser
+	userId := e.CreateBy
+	if e.UpdateBy != 0 {
+		userId = e.UpdateBy
+	}
+	tx.Model(&user).Select("user_id,username").Where("user_id = ?", userId).Limit(1).Find(&user)
 
+	if user.UserId > 0 {
+		e.UpdatedUser = user.Username
+	}
+	return
+}
 func (e *RsHost) GetId() interface{} {
 	return e.Id
 }

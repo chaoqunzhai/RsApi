@@ -155,7 +155,12 @@ func (e RsBusiness) Update(c *gin.Context) {
 	}
 	req.SetUpdateBy(user.GetUserId(c))
 	p := actions.GetPermissionFromContext(c)
-
+	var count int64
+	e.Orm.Model(&models.RsBusiness{}).Where("name = ? ", req.Name).Count(&count)
+	if count > 1 {
+		e.Error(500, nil, "已经存在")
+		return
+	}
 	err = s.Update(&req, p)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("修改RsBusiness失败，\r\n失败信息 %s", err.Error()))

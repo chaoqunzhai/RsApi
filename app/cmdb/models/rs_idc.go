@@ -33,6 +33,7 @@ type RsIdc struct {
 	Charging        int     `json:"charging" gorm:"type:int;comment:计费方式"`
 	TransProvince   int     `json:"transProvince" gorm:"type:tinyint(1);comment:是否跨省"`
 	MoreDialing     int     `json:"moreDialing" gorm:"type:tinyint(1);comment:是否支持多拨"`
+	models.ExtendUserBy
 	models.ModelTime
 	models.ControlBy
 }

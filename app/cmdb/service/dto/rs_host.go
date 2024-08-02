@@ -14,11 +14,13 @@ type HostMemory struct {
 	SF uint64 `json:"s_f"` //swap_free
 	ST uint64 `json:"s_t"` //swap_total
 }
-
+type HostBusiness struct {
+	Id int `json:"id" form:"id"`
+}
 type BusinessSwitch struct {
-	HostIds     []int  `json:"host_ids" form:"host_ids" comment:"需要切换的主机"`
-	BusinessIds []int  `json:"business_ids" form:"business_ids" comment:"切换的新业务ID"`
-	Desc        string `json:"desc"  form:"desc"`
+	HostIds  []int          `json:"host_ids" form:"host_ids" comment:"需要切换的主机"`
+	Business []HostBusiness `json:"business" form:"business_ids" comment:"切换的新业务ID"`
+	Desc     string         `json:"desc"  form:"desc"`
 }
 
 type HostBindIdc struct {

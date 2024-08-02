@@ -35,6 +35,7 @@ type RsBusinessInsertReq struct {
 
 	Desc      string `json:"desc" comment:"描述信息"`
 	Name      string `json:"name" comment:"业务云名称"`
+	EnName    string `json:"en_name" gorm:"index;type:varchar(30);comment:业务别名"`
 	Algorithm string `json:"algorithm" comment:"算法备注"`
 	common.ControlBy
 }
@@ -44,7 +45,7 @@ func (s *RsBusinessInsertReq) Generate(model *models.RsBusiness) {
 		model.Model = common.Model{Id: s.Id}
 	}
 	model.CreateBy = s.CreateBy // 添加这而，需要记录是被谁创建的
-
+	model.EnName = s.EnName
 	model.Desc = s.Desc
 	model.Name = s.Name
 	model.Algorithm = s.Algorithm
@@ -59,6 +60,7 @@ type RsBusinessUpdateReq struct {
 
 	Desc      string `json:"desc" comment:"描述信息"`
 	Name      string `json:"name" comment:"业务云名称"`
+	EnName    string `json:"en_name" gorm:"index;type:varchar(30);comment:业务别名"`
 	Algorithm string `json:"algorithm" comment:"算法备注"`
 	common.ControlBy
 }
@@ -69,6 +71,7 @@ func (s *RsBusinessUpdateReq) Generate(model *models.RsBusiness) {
 	}
 	model.UpdateBy = s.UpdateBy // 添加这而，需要记录是被谁更新的
 	model.Desc = s.Desc
+	model.EnName = s.EnName
 	model.Name = s.Name
 	model.Algorithm = s.Algorithm
 }

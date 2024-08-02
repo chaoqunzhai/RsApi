@@ -33,6 +33,7 @@ func (e *RsBusiness) GetPage(c *dto.RsBusinessGetPageReq, p *actions.DataPermiss
 		e.Log.Errorf("RsBusinessService GetPage error:%s \r\n", err)
 		return err
 	}
+
 	return nil
 }
 

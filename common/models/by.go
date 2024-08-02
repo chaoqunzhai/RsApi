@@ -9,8 +9,8 @@ import (
 )
 
 type ControlBy struct {
-	CreateBy int `json:"createBy" gorm:"index;comment:创建者"`
-	UpdateBy int `json:"updateBy" gorm:"index;comment:更新者"`
+	CreateBy int `json:"-" gorm:"index;comment:创建者"`
+	UpdateBy int `json:"-" gorm:"index;comment:更新者"`
 }
 
 // SetCreateBy 设置创建人id
@@ -28,7 +28,7 @@ type Model struct {
 }
 
 type ModelTime struct {
-	CreatedAt XTime          `json:"createdAt" gorm:"comment:创建时间"`
+	CreatedAt XTime          `json:"-" gorm:"comment:创建时间"`
 	UpdatedAt XTime          `json:"updatedAt" gorm:"comment:最后更新时间"`
 	DeletedAt gorm.DeletedAt `json:"-" gorm:"index;comment:删除时间"`
 }
