@@ -25,7 +25,7 @@ type HDDevUsage struct {
 	U   string `json:"u"`  //用户使用
 	T   string `json:"t"`  //总量
 	M   string `json:"m"`  //挂载点
-	UP  string `json:"up"` // fmt.Sprintf("%.2f%%", (float64(disk.Used)/float64(disk.All))*100) 用户的使用占比
+	UP  string `json:"up"` //用户使用占比
 }
 type HostBusiness struct {
 	Id int `json:"id" form:"id"`
@@ -135,12 +135,12 @@ func (s *RsHostInsertReq) Generate(model *models.RsHost) {
 	model.Cpu = s.Cpu
 	model.Ip = s.Ip
 	model.Memory = s.Memory
-	model.Disk = s.Disk
+
 	model.Kernel = s.Kernel
 	model.Belong = s.Belong
 	model.Remark = s.Remark
 	model.Status = s.Status
-	model.NetDevice = s.NetDevice
+
 	model.Balance = s.Balance
 
 	model.Region = s.Region
@@ -186,13 +186,13 @@ func (s *RsHostUpdateReq) Generate(model *models.RsHost) {
 	model.Cpu = s.Cpu
 	model.Ip = s.Ip
 	model.Memory = s.Memory
-	model.Disk = s.Disk
+
 	model.Kernel = s.Kernel
 	model.Belong = s.Belong
 	model.Remark = s.Remark
 
 	model.Status = s.Status
-	model.NetDevice = s.NetDevice
+
 	model.Balance = s.Balance
 
 	model.Region = s.Region

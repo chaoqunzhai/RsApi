@@ -20,13 +20,11 @@ type Host struct {
 	RichGlobal
 	HealthyAt     sql.NullTime `json:"healthy" gorm:"comment:存活上报时间"`
 	HostName      string       `json:"hostname" gorm:"type:varchar(100);comment:主机名;not null"`
-	Sn            string       `json:"sn" gorm:"index;comment:sn"`
+	Sn            string       `json:"sn" gorm:"type:varchar(100);index;comment:sn"`
 	CPU           int          `json:"cpu" gorm:"comment:总核数"`
 	Ip            string       `json:"ip" gorm:"type:varchar(20);comment:ip"`
 	Memory        uint64       `json:"memory" gorm:"comment:总内存"`
 	NetworkType   int          `json:"networkType" gorm:"default:2;comment:网络类型"`
-	Disk          string       `json:"disk" gorm:"type:varchar(255);comment:所有磁盘信息"`
-	NetDevice     string       `json:"netDevice" gorm:"type:varchar(200);comment:网卡信息"`
 	Kernel        string       `json:"kernel" gorm:"type:varchar(100);comment:内核版本"`
 	Balance       float64      `json:"balance" gorm:"type:varchar(50);comment:总带宽"`
 	Belong        int          `json:"belong" gorm:"type:int(1);default:0;comment:机器归属"`
@@ -49,13 +47,25 @@ func (Host) TableName() string {
 	return "rs_host"
 }
 
+type HostNetDevice struct {
+	models.Model
+	HostId    int          `json:"host_id" gorm:"index;comment:关联主机ID"`
+	UpdatedAt models.XTime `json:"updatedAt" gorm:"comment:更新时间"`
+	Name      string       `json:"name" gorm:"type:varchar(20);comment:网卡名称"`
+	Status    int          `json:"status" gorm:"type:int(1);default:0;comment:网卡状态,1:正常 非1:异常"`
+}
+
+func (HostNetDevice) TableName() string {
+	return "rs_host_netdevice"
+}
+
 type HostSoftware struct {
 	models.Model
-	UpdatedAt time.Time `json:"updatedAt" gorm:"comment:更新时间"`
-	HostId    int       `json:"host_id" gorm:"index;comment:关联主机ID"`
-	Key       string    `json:"key" gorm:"type:varchar(30);comment:服务名称"`
-	Value     string    `json:"value" gorm:"type:varchar(100);comment:服务内容"`
-	Desc      string    `json:"desc" gorm:"type:varchar(30);comment:备注"`
+	UpdatedAt models.XTime `json:"updatedAt" gorm:"comment:更新时间"`
+	HostId    int          `json:"host_id" gorm:"index;comment:关联主机ID"`
+	Key       string       `json:"key" gorm:"type:varchar(30);comment:服务名称"`
+	Value     string       `json:"value" gorm:"type:varchar(100);comment:服务内容"`
+	Desc      string       `json:"desc" gorm:"type:varchar(30);comment:备注"`
 	models.ModelTime
 }
 
@@ -70,6 +80,7 @@ type HostSystem struct {
 	TransmitNumber float64   `json:"transmit_number" gorm:"type:varchar(30);comment:TransmitNumber"`
 	ReceiveNumber  float64   `json:"receive_number" gorm:"type:varchar(30);comment:ReceiveNumber"`
 	MemoryData     string    `json:"memory" gorm:"type:varchar(255);comment:当前内容使用率"`
+	Disk           string    `json:"disk" gorm:"type:varchar(255);comment:所有磁盘信息"`
 }
 
 func (HostSystem) TableName() string {

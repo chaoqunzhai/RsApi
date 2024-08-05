@@ -350,7 +350,6 @@ func (e RsHost) GetPage(c *gin.Context) {
 				}
 				return int(row.Memory / 1024 / 1024 / 1024)
 			}(),
-			"disk":   row.Disk,
 			"kernel": row.Kernel,
 		}
 		if row.HealthyAt.Valid {
@@ -365,12 +364,14 @@ func (e RsHost) GetPage(c *gin.Context) {
 		customRow["belong"] = row.Belong
 		customRow["networkType"] = row.NetworkType
 		if monitorDat, ok := HostMapMonitorData[row.Id]; ok {
-			customRow["monitor"] = monitorDat
+			customRow["monitor"] = monitorDat["memory"]
 		}
 		if idcInfo, ok := IdcMapData[row.Idc]; ok {
-			customRow["idc"] = idcInfo
+			if len(idcInfo) > 0 {
+				customRow["idcInfo"] = idcInfo[0]
+			}
 		}
-		customRow["line_type"] = row.LineType
+		customRow["lineType"] = row.LineType
 		customRow["region"] = row.Region
 
 		if BusinessDat, ok := BusinessMapData[row.Id]; ok {

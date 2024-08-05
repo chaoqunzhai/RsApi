@@ -48,6 +48,8 @@ func _1599190683659Tables(db *gorm.DB, version string) error {
 			new(models.HostSystem),
 			new(models.HostSoftware),
 			new(models.HostSwitchLog),
+			new(models.HostNetDevice),
+			new(models.Dial),
 			new(models.HostChargingDay),
 		)
 		if err != nil {

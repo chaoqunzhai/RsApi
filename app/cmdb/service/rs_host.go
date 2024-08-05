@@ -72,8 +72,7 @@ func (e *RsHost) Get(d *dto.RsHostGetReq, p *actions.DataPermission, model *mode
 	err := e.Orm.Model(&data).
 		Scopes(
 			actions.Permission(data.TableName(), p),
-		).Preload("Business").Preload("Idc").Preload("Tag").
-		First(model, d.GetId()).Error
+		).Preload("Business").Preload("Tag").First(model, d.GetId()).Error
 	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
 		err = errors.New("查看对象不存在或无权查看")
 		e.Log.Errorf("Service GetRsHost error:%s \r\n", err)
@@ -83,6 +82,49 @@ func (e *RsHost) Get(d *dto.RsHostGetReq, p *actions.DataPermission, model *mode
 		e.Log.Errorf("db error:%s", err)
 		return err
 	}
+
+	//做一下扩充字段补齐
+
+	var NetDevice []models2.HostNetDevice
+	e.Orm.Model(&models2.HostNetDevice{}).Where("host_id = ?", d.Id).Find(&NetDevice)
+
+	var DialList []models2.Dial
+	e.Orm.Model(&models2.Dial{}).Where("host_id = ?", d.Id).Find(&DialList)
+
+	system := map[string]interface{}{
+		"cpu": model.Cpu,
+		"ip":  model.Ip,
+		"memory": func() int {
+			if model.Memory == 0 {
+				return 0
+			}
+			return int(model.Memory / 1024 / 1024 / 1024)
+		}(),
+		"kernel": model.Kernel,
+	}
+
+	ids := []int{d.Id}
+
+	HostMapMonitorData := e.GetMonitorData(ids)
+
+	IdcMapData := e.GetIdcList([]int{model.Idc})
+
+	ExtendHostInfo := models.ExtendHostInfo{
+		NetDevice: NetDevice,
+		System:    system,
+		DialList:  DialList,
+	}
+	if dat, ok := HostMapMonitorData[d.Id]; ok {
+		ExtendHostInfo.MemoryMonitor = dat["memory"]
+		ExtendHostInfo.Disk = dat["disk"]
+	}
+	if idcInfo, ok := IdcMapData[model.Idc]; ok {
+		if len(idcInfo) > 0 {
+			model.IdcInfo = idcInfo[0]
+		}
+	}
+
+	model.ExtendHostInfo = ExtendHostInfo
 	return nil
 }
 
@@ -179,14 +221,14 @@ func (e *RsHost) GetHostSoftware(ids []int) map[int][]models2.HostSoftware {
 	return HostSoftwareMap
 
 }
-func (e *RsHost) GetMonitorData(ids []int) map[int][]interface{} {
+func (e *RsHost) GetMonitorData(ids []int) map[int]map[string]interface{} {
 	var monitorList []models2.HostSystem
 
-	result := make(map[int][]interface{}, 0)
+	result := make(map[int]map[string]interface{}, 0)
 	e.Orm.Model(&models2.HostSystem{}).Where("host_id in ?", ids).Find(&monitorList)
 
 	if len(monitorList) == 0 {
-		return map[int][]interface{}{}
+		return map[int]map[string]interface{}{}
 	}
 
 	for _, row := range monitorList {
@@ -194,24 +236,30 @@ func (e *RsHost) GetMonitorData(ids []int) map[int][]interface{} {
 			"transmit": row.TransmitNumber,
 			"receive":  row.ReceiveNumber,
 		}
-
+		cache, ok := result[row.HostId]
+		if !ok {
+			cache = make(map[string]interface{}, 0)
+		}
 		if row.MemoryData != "" {
 
 			HostMemory := dto.HostMemory{}
-			if unErr := json.Unmarshal([]byte(row.MemoryData), &HostMemory); unErr != nil {
-				continue
-
+			if unErr := json.Unmarshal([]byte(row.MemoryData), &HostMemory); unErr == nil {
+				dat["used_percent"] = fmt.Sprintf("%.2f", 100*float64(HostMemory.U)/float64(HostMemory.T))      //已使用百分比
+				dat["available_percent"] = fmt.Sprintf("%.2f", 100*float64(HostMemory.A)/float64(HostMemory.T)) //可使用百分比
 			}
-			dat["used_percent"] = fmt.Sprintf("%.2f", 100*float64(HostMemory.U)/float64(HostMemory.T))      //已使用百分比
-			dat["available_percent"] = fmt.Sprintf("%.2f", 100*float64(HostMemory.A)/float64(HostMemory.T)) //可使用百分比
 		}
 
-		cache, ok := result[row.HostId]
-		if !ok {
-			cache = make([]interface{}, 0)
+		cache["memory"] = dat
+
+		if row.Disk != "" {
+			HostDisk := dto.HDDevUsage{}
+
+			if unErr := json.Unmarshal([]byte(row.Disk), &HostDisk); unErr == nil {
+				cache["disk"] = HostDisk
+			}
+
 		}
-		cache = append(cache, dat)
-		result[row.Id] = cache
+		result[row.HostId] = cache
 	}
 
 	return result

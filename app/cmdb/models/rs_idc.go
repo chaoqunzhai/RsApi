@@ -7,7 +7,7 @@ import (
 type RsIdc struct {
 	models.Model
 	Layer           int     `json:"layer" gorm:"type:tinyint;comment:排序"`
-	Enable          bool    `json:"enable" gorm:"type:tinyint(1);comment:开关"`
+	Enable          int     `json:"enable" gorm:"type:tinyint(1);comment:开关"`
 	Desc            string  `json:"desc" gorm:"type:varchar(35);comment:描述信息"`
 	Number          int     `json:"number" gorm:"type:bigint;comment:机房编号"`
 	Name            string  `json:"name" gorm:"type:varchar(100);comment:机房名称"`

@@ -15,6 +15,8 @@ import (
 	"go-admin/app/cmdb/service"
 	"go-admin/app/cmdb/service/dto"
 	models2 "go-admin/cmd/migrate/migration/models"
+	_ "go-admin/common/dial"
+	"go-admin/common/models"
 	"go-admin/global"
 	"net/http"
 	"strings"
@@ -60,7 +62,6 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 	hostInstance.HostName = req.Hostname
 	hostInstance.Ip = req.Ip
 	hostInstance.CPU = req.CPU
-	hostInstance.Disk = req.Disk
 	hostInstance.Kernel = req.Kernel
 	hostInstance.Status = global.HostSuccess
 	hostInstance.Memory = req.Memory
@@ -81,13 +82,32 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 		hostInstance.Balance = req.Balance
 	}
 	hostInstance.Isp = ispNumber
-	hostInstance.NetDevice = req.NetDevice
 	hostInstance.HealthyAt = sql.NullTime{
 		Time:  time.Now(),
 		Valid: true,
 	}
 	e.Orm.Save(&hostInstance)
 
+	if req.NetDevice != "" {
+
+		NetDeviceList := strings.Split(req.NetDevice, ",")
+
+		for _, NetDeviceName := range NetDeviceList {
+			var (
+				DeviceRow models2.HostNetDevice
+			)
+			e.Orm.Model(&models2.HostNetDevice{}).Where("host_id = ? and `name` = ?",
+				hostInstance.Id, NetDeviceName).First(&DeviceRow)
+			DeviceRow.HostId = hostInstance.Id
+			DeviceRow.Name = NetDeviceName
+			DeviceRow.UpdatedAt = models.XTime{
+				Time: time.Now(),
+			}
+			DeviceRow.Status = 1
+			e.Orm.Save(&DeviceRow)
+		}
+
+	}
 	var hostSystem models2.HostSystem
 
 	e.Orm.Model(&models2.HostSystem{}).Where("host_id = ?", hostInstance.Id).First(&hostSystem)
@@ -97,7 +117,7 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 
 		return string(dat)
 	}()
-
+	hostSystem.Disk = req.Disk
 	hostSystem.TransmitNumber = req.TransmitNumber
 	hostSystem.ReceiveNumber = req.ReceiveNumber
 	hostSystem.HostId = hostInstance.Id
