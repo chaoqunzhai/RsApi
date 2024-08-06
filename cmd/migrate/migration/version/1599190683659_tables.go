@@ -50,7 +50,9 @@ func _1599190683659Tables(db *gorm.DB, version string) error {
 			new(models.HostSwitchLog),
 			new(models.HostNetDevice),
 			new(models.Dial),
+			new(models.Customer),
 			new(models.HostChargingDay),
+			new(models.Contacts),
 		)
 		if err != nil {
 			return err
