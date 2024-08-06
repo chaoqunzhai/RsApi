@@ -6,6 +6,16 @@ import (
 	common "go-admin/common/models"
 )
 
+// 主机拨号的信息
+
+type RegisterDial struct {
+	A string `json:"a"` //账号
+	P string `json:"p"` //密码
+	I string `json:"i"` //绑定物理网卡
+	D string `json:"d"` //ppo线路名称
+	S int    `json:"s"` //状态
+}
+
 // 内存使用率的格式化
 
 type HostMemory struct {
@@ -127,7 +137,6 @@ func (s *RsHostInsertReq) Generate(model *models.RsHost) {
 		model.Model = common.Model{Id: s.Id}
 	}
 	model.CreateBy = s.CreateBy // 添加这而，需要记录是被谁创建的
-	model.Layer = s.Layer
 
 	model.Desc = s.Desc
 	model.HostName = s.HostName
@@ -178,7 +187,6 @@ func (s *RsHostUpdateReq) Generate(model *models.RsHost) {
 		model.Model = common.Model{Id: s.Id}
 	}
 	model.UpdateBy = s.UpdateBy // 添加这而，需要记录是被谁更新的
-	model.Layer = s.Layer
 
 	model.Desc = s.Desc
 	model.HostName = s.HostName

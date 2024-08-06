@@ -88,8 +88,8 @@ func (e *RsHost) Get(d *dto.RsHostGetReq, p *actions.DataPermission, model *mode
 	var NetDevice []models2.HostNetDevice
 	e.Orm.Model(&models2.HostNetDevice{}).Where("host_id = ?", d.Id).Find(&NetDevice)
 
-	var DialList []models2.Dial
-	e.Orm.Model(&models2.Dial{}).Where("host_id = ?", d.Id).Find(&DialList)
+	var DialList []models.RsDial
+	e.Orm.Model(&models.RsDial{}).Where("host_id = ?", d.Id).Find(&DialList)
 
 	system := map[string]interface{}{
 		"cpu": model.Cpu,

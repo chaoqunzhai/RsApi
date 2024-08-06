@@ -10,8 +10,6 @@ import (
 type RsHost struct {
 	models.Model
 	HealthyAt     sql.NullTime `json:"healthy" gorm:"comment:存活上报时间"`
-	Layer         int          `json:"layer" gorm:"default:1;type:tinyint;comment:排序"`
-	Enable        int          `json:"enable" gorm:"default:1;type:tinyint(1);comment:开关"`
 	Desc          string       `json:"desc" gorm:"type:varchar(35);comment:描述信息"`
 	NetworkType   int          `json:"networkType" gorm:"default:2;comment:网络类型"`
 	HostName      string       `json:"hostname" gorm:"type:varchar(100);comment:主机名"`

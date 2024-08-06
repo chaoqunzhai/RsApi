@@ -23,9 +23,16 @@ type RsDial struct {
 // @Summary 获取RsDial列表
 // @Description 获取RsDial列表
 // @Tags RsDial
-// @Param enable query int64 false "开关"
-// @Param user query string false "用户名"
+// @Param customUser query int64 false "所属客户"
+// @Param isp query int64 false "运营商"
+// @Param charging query int64 false "计费方式"
+// @Param bandwidthType query int64 false "宽带类型"
+// @Param transProvince query int64 false "是否跨省"
+// @Param moreDialing query int64 false "是否支持多拨"
+// @Param account query string false "账号"
+// @Param dialName query string false "线路名称"
 // @Param status query int64 false "拨号状态,1:正常 非1:异常"
+// @Param source query int64 false "拨号状态,0:录入 1:自动上报"
 // @Param idcId query int64 false "关联的IDC"
 // @Param hostId query int64 false "关联主机ID"
 // @Param deviceId query int64 false "关联网卡ID"
@@ -119,7 +126,12 @@ func (e RsDial) Insert(c *gin.Context) {
 	}
 	// 设置创建人
 	req.SetCreateBy(user.GetUserId(c))
-
+	var count int64
+	e.Orm.Model(&models.RsDial{}).Where("account = ?", req.Account).Count(&count)
+	if count > 0 {
+		e.Error(500, nil, "拨号已存在")
+		return
+	}
 	err = s.Insert(&req)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("创建RsDial失败，\r\n失败信息 %s", err.Error()))
@@ -127,9 +139,9 @@ func (e RsDial) Insert(c *gin.Context) {
 	}
 	//新增了拨号 需要set到全局的拨号字典中,
 	event := dial.MapEvent{
-		Idc: req.IdcId,
+		Idc: int(req.IdcId),
 	}
-	dial.MapCnf.Set(req.Number, &event)
+	dial.MapCnf.Set(req.Account, &event)
 	e.OK(req.GetId(), "创建成功")
 }
 

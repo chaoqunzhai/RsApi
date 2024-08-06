@@ -24,6 +24,7 @@ type RegisterMetrics struct {
 	TransmitNumber float64           `json:"transmitNumber"`
 	ReceiveNumber  float64           `json:"receiveNumber"`
 	MemoryMap      map[string]uint64 `json:"memoryMap"`
+	Dial           []*RegisterDial   `json:"dial"` //拨号列表
 	ExtendMap      []SoftwareRow     `json:"extendMap"`
 }
 

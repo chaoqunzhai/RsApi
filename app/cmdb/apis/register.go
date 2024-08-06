@@ -14,9 +14,12 @@ import (
 	"github.com/go-admin-team/go-admin-core/sdk/api"
 	"go-admin/app/cmdb/service"
 	"go-admin/app/cmdb/service/dto"
+
+	"go-admin/app/cmdb/models"
 	models2 "go-admin/cmd/migrate/migration/models"
+	"go-admin/common/dial"
 	_ "go-admin/common/dial"
-	"go-admin/common/models"
+	models3 "go-admin/common/models"
 	"go-admin/global"
 	"net/http"
 	"strings"
@@ -67,6 +70,43 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 	hostInstance.Memory = req.Memory
 	hostInstance.Remark = req.Remark
 
+	var IdcId int
+	//拨号列表,
+	for _, DialRow := range req.Dial {
+
+		if setEvents, ok := dial.MapCnf.Get(DialRow.A); ok {
+			if setEvents.Idc > 0 {
+				IdcId = setEvents.Idc
+			}
+		}
+		//如果列表存在 全局的缓存中 那就自动归到idc下
+		var (
+			DialRowModel models.RsDial
+			DialCount    int64
+		)
+		//对于自动上报数据的数据,做一个特定创建,防止 已经创建了这个账号，被自动创建也冲掉
+		e.Orm.Model(&models.RsDial{}).Where("account = ? and source = 1", DialRow.A).Count(&DialCount)
+		if DialCount > 0 {
+			e.Orm.Model(&models.RsDial{}).Where("account = ? and source = 1", DialRow.A).Updates(map[string]interface{}{
+				"host_id":   hostInstance.Id,
+				"idc_id":    hostInstance.Idc,
+				"account":   DialRow.A,
+				"pass":      DialRow.P,
+				"status":    DialRow.S,
+				"source":    1,
+				"dial_name": DialRow.D,
+			})
+		} else {
+			DialRowModel.HostId = int64(hostInstance.Id)
+			DialRowModel.IdcId = int64(IdcId)
+			DialRowModel.Account = DialRow.A
+			DialRowModel.Pass = DialRow.P
+			DialRowModel.DialName = DialRow.D
+			DialRowModel.Source = 1
+			DialRowModel.Status = int64(DialRow.S)
+			e.Orm.Save(&DialRowModel)
+		}
+	}
 	var ispNumber int
 	switch strings.TrimSpace(req.Isp) {
 	case "移动":
@@ -82,6 +122,10 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 		hostInstance.Balance = req.Balance
 	}
 	hostInstance.Isp = ispNumber
+
+	if hostInstance.Idc == 0 { //防止已经关联了IDC,被其他原因冲掉
+		hostInstance.Idc = IdcId
+	}
 	hostInstance.HealthyAt = sql.NullTime{
 		Time:  time.Now(),
 		Valid: true,
@@ -100,7 +144,7 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 				hostInstance.Id, NetDeviceName).First(&DeviceRow)
 			DeviceRow.HostId = hostInstance.Id
 			DeviceRow.Name = NetDeviceName
-			DeviceRow.UpdatedAt = models.XTime{
+			DeviceRow.UpdatedAt = models3.XTime{
 				Time: time.Now(),
 			}
 			DeviceRow.Status = 1

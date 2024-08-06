@@ -64,7 +64,6 @@ func (e *RsBusiness) Insert(c *dto.RsBusinessInsertReq) error {
 	var data models.RsBusiness
 	c.Generate(&data)
 	data.Layer = 1
-	data.Enable = 1
 	err = e.Orm.Create(&data).Error
 	if err != nil {
 		e.Log.Errorf("RsBusinessService Insert error:%s \r\n", err)

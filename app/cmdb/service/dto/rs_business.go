@@ -31,8 +31,8 @@ func (m *RsBusinessGetPageReq) GetNeedSearch() interface{} {
 }
 
 type RsBusinessInsertReq struct {
-	Id int `json:"-" comment:"主键编码"` // 主键编码
-
+	Id        int    `json:"-" comment:"主键编码"` // 主键编码
+	Status    int    `json:"status" comment:"状态"`
 	Desc      string `json:"desc" comment:"描述信息"`
 	Name      string `json:"name" comment:"业务云名称"`
 	EnName    string `json:"en_name" gorm:"index;type:varchar(30);comment:业务别名"`
@@ -48,6 +48,7 @@ func (s *RsBusinessInsertReq) Generate(model *models.RsBusiness) {
 	model.EnName = s.EnName
 	model.Desc = s.Desc
 	model.Name = s.Name
+	model.Status = s.Status
 	model.Algorithm = s.Algorithm
 }
 
@@ -56,8 +57,8 @@ func (s *RsBusinessInsertReq) GetId() interface{} {
 }
 
 type RsBusinessUpdateReq struct {
-	Id int `uri:"id" comment:"主键编码"` // 主键编码
-
+	Id        int    `uri:"id" comment:"主键编码"` // 主键编码
+	Status    int    `json:"status" comment:"状态"`
 	Desc      string `json:"desc" comment:"描述信息"`
 	Name      string `json:"name" comment:"业务云名称"`
 	EnName    string `json:"en_name" gorm:"index;type:varchar(30);comment:业务别名"`
@@ -73,6 +74,7 @@ func (s *RsBusinessUpdateReq) Generate(model *models.RsBusiness) {
 	model.Desc = s.Desc
 	model.EnName = s.EnName
 	model.Name = s.Name
+	model.Status = s.Status
 	model.Algorithm = s.Algorithm
 }
 

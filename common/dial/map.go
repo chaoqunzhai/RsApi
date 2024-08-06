@@ -8,7 +8,7 @@ type Map struct {
 }
 
 type MapEvent struct {
-	Idc int64 `json:"idc"`
+	Idc int `json:"idc"`
 }
 
 var (

@@ -20,7 +20,5 @@ type RichGlobal struct {
 	Model
 	ControlBy
 	ModelTime
-	Layer  int    `json:"layer" gorm:"size:1;default:1;index;comment:排序"` //排序
-	Enable bool   `json:"enable" gorm:"default:true;comment:开关"`
-	Desc   string `json:"desc" gorm:"size:35;comment:描述信息"` //描述
+	Desc string `json:"desc" gorm:"size:35;comment:描述信息"` //描述
 }
