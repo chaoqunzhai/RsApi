@@ -1,7 +1,7 @@
 package apis
 
 import (
-    "fmt"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-admin-team/go-admin-core/sdk/api"
@@ -35,18 +35,18 @@ type RsIdc struct {
 // @Router /api/v1/rs-idc [get]
 // @Security Bearer
 func (e RsIdc) GetPage(c *gin.Context) {
-    req := dto.RsIdcGetPageReq{}
-    s := service.RsIdc{}
-    err := e.MakeContext(c).
-        MakeOrm().
-        Bind(&req).
-        MakeService(&s.Service).
-        Errors
-   	if err != nil {
-   		e.Logger.Error(err)
-   		e.Error(500, err, err.Error())
-   		return
-   	}
+	req := dto.RsIdcGetPageReq{}
+	s := service.RsIdc{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
 
 	p := actions.GetPermissionFromContext(c)
 	list := make([]models.RsIdc, 0)
@@ -55,7 +55,7 @@ func (e RsIdc) GetPage(c *gin.Context) {
 	err = s.GetPage(&req, p, &list, &count)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("获取RsIdc失败，\r\n失败信息 %s", err.Error()))
-        return
+		return
 	}
 
 	e.PageOK(list, int(count), req.GetPageIndex(), req.GetPageSize(), "查询成功")
@@ -72,7 +72,7 @@ func (e RsIdc) GetPage(c *gin.Context) {
 func (e RsIdc) Get(c *gin.Context) {
 	req := dto.RsIdcGetReq{}
 	s := service.RsIdc{}
-    err := e.MakeContext(c).
+	err := e.MakeContext(c).
 		MakeOrm().
 		Bind(&req).
 		MakeService(&s.Service).
@@ -88,10 +88,10 @@ func (e RsIdc) Get(c *gin.Context) {
 	err = s.Get(&req, p, &object)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("获取RsIdc失败，\r\n失败信息 %s", err.Error()))
-        return
+		return
 	}
 
-	e.OK( object, "查询成功")
+	e.OK(object, "查询成功")
 }
 
 // Insert 创建RsIdc
@@ -105,25 +105,30 @@ func (e RsIdc) Get(c *gin.Context) {
 // @Router /api/v1/rs-idc [post]
 // @Security Bearer
 func (e RsIdc) Insert(c *gin.Context) {
-    req := dto.RsIdcInsertReq{}
-    s := service.RsIdc{}
-    err := e.MakeContext(c).
-        MakeOrm().
-        Bind(&req).
-        MakeService(&s.Service).
-        Errors
-    if err != nil {
-        e.Logger.Error(err)
-        e.Error(500, err, err.Error())
-        return
-    }
+	req := dto.RsIdcInsertReq{}
+	s := service.RsIdc{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
 	// 设置创建人
 	req.SetCreateBy(user.GetUserId(c))
-
+	var count int64
+	e.Orm.Model(&models.RsIdc{}).Where("name = ?", req.Name).Count(&count)
+	if count > 0 {
+		e.Error(500, nil, "机房名称已存在")
+		return
+	}
 	err = s.Insert(&req)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("创建RsIdc失败，\r\n失败信息 %s", err.Error()))
-        return
+		return
 	}
 
 	e.OK(req.GetId(), "创建成功")
@@ -141,27 +146,27 @@ func (e RsIdc) Insert(c *gin.Context) {
 // @Router /api/v1/rs-idc/{id} [put]
 // @Security Bearer
 func (e RsIdc) Update(c *gin.Context) {
-    req := dto.RsIdcUpdateReq{}
-    s := service.RsIdc{}
-    err := e.MakeContext(c).
-        MakeOrm().
-        Bind(&req).
-        MakeService(&s.Service).
-        Errors
-    if err != nil {
-        e.Logger.Error(err)
-        e.Error(500, err, err.Error())
-        return
-    }
+	req := dto.RsIdcUpdateReq{}
+	s := service.RsIdc{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
 	req.SetUpdateBy(user.GetUserId(c))
 	p := actions.GetPermissionFromContext(c)
 
 	err = s.Update(&req, p)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("修改RsIdc失败，\r\n失败信息 %s", err.Error()))
-        return
+		return
 	}
-	e.OK( req.GetId(), "修改成功")
+	e.OK(req.GetId(), "修改成功")
 }
 
 // Delete 删除RsIdc
@@ -173,18 +178,18 @@ func (e RsIdc) Update(c *gin.Context) {
 // @Router /api/v1/rs-idc [delete]
 // @Security Bearer
 func (e RsIdc) Delete(c *gin.Context) {
-    s := service.RsIdc{}
-    req := dto.RsIdcDeleteReq{}
-    err := e.MakeContext(c).
-        MakeOrm().
-        Bind(&req).
-        MakeService(&s.Service).
-        Errors
-    if err != nil {
-        e.Logger.Error(err)
-        e.Error(500, err, err.Error())
-        return
-    }
+	s := service.RsIdc{}
+	req := dto.RsIdcDeleteReq{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
 
 	// req.SetUpdateBy(user.GetUserId(c))
 	p := actions.GetPermissionFromContext(c)
@@ -192,7 +197,7 @@ func (e RsIdc) Delete(c *gin.Context) {
 	err = s.Remove(&req, p)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("删除RsIdc失败，\r\n失败信息 %s", err.Error()))
-        return
+		return
 	}
-	e.OK( req.GetId(), "删除成功")
+	e.OK(req.GetId(), "删除成功")
 }

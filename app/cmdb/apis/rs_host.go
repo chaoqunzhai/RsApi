@@ -441,7 +441,12 @@ func (e RsHost) Insert(c *gin.Context) {
 	}
 	// 设置创建人
 	req.SetCreateBy(user.GetUserId(c))
-
+	var count int64
+	e.Orm.Model(&models.RsHost{}).Where("hostname = ?", req.HostName).Count(&count)
+	if count > 0 {
+		e.Error(500, nil, "主机名已存在")
+		return
+	}
 	err = s.Insert(&req)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("创建RsHost失败，\r\n失败信息 %s", err.Error()))
