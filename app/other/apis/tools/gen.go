@@ -76,6 +76,13 @@ func (e Gen) Preview(c *gin.Context) {
 		return
 	}
 
+	t8, err := template.ParseFiles("template/v4/vue-detail.go.template")
+	if err != nil {
+		log.Error(err)
+		e.Error(500, err, fmt.Sprintf("service模版读取失败！错误详情：%s", err.Error()))
+		return
+	}
+
 	db, err := pkg.GetOrm(c)
 	if err != nil {
 		log.Errorf("get db connection error, %s", err.Error())
@@ -83,7 +90,7 @@ func (e Gen) Preview(c *gin.Context) {
 		return
 	}
 
-	tab, _ := table.Get(db,false)
+	tab, _ := table.Get(db, false)
 	var b1 bytes.Buffer
 	err = t1.Execute(&b1, tab)
 	var b2 bytes.Buffer
@@ -98,7 +105,8 @@ func (e Gen) Preview(c *gin.Context) {
 	err = t6.Execute(&b6, tab)
 	var b7 bytes.Buffer
 	err = t7.Execute(&b7, tab)
-
+	var b8 bytes.Buffer
+	err = t8.Execute(&b8, tab)
 	mp := make(map[string]interface{})
 	mp["template/model.go.template"] = b1.String()
 	mp["template/api.go.template"] = b2.String()
@@ -107,6 +115,7 @@ func (e Gen) Preview(c *gin.Context) {
 	mp["template/router.go.template"] = b5.String()
 	mp["template/dto.go.template"] = b6.String()
 	mp["template/service.go.template"] = b7.String()
+	mp["template/vue-detail.go.template"] = b8.String()
 	e.OK(mp, "")
 }
 
@@ -129,7 +138,7 @@ func (e Gen) GenCode(c *gin.Context) {
 	}
 
 	table.TableId = id
-	tab, _ := table.Get(db,false)
+	tab, _ := table.Get(db, false)
 
 	e.NOActionsGen(c, tab)
 
@@ -155,7 +164,7 @@ func (e Gen) GenApiToFile(c *gin.Context) {
 	}
 
 	table.TableId = id
-	tab, _ := table.Get(db,false)
+	tab, _ := table.Get(db, false)
 	e.genApiToFile(c, tab)
 
 	e.OK("", "Code generated successfully！")
@@ -302,7 +311,7 @@ func (e Gen) GenMenuAndApi(c *gin.Context) {
 	}
 
 	table.TableId = id
-	tab, _ := table.Get(e.Orm,true)
+	tab, _ := table.Get(e.Orm, true)
 	tab.MLTBName = strings.Replace(tab.TBName, "_", "-", -1)
 
 	Mmenu := dto.SysMenuInsertReq{}
