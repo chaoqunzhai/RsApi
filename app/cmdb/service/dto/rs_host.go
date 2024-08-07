@@ -71,6 +71,7 @@ type RsHostGetPageReq struct {
 	NetworkType    int    `form:"networkType" search:"type:exact;column:network_type;table:rs_host" comment:"网络类型"`
 	Kernel         string `form:"kernel"  search:"type:exact;column:kernel;table:rs_host" comment:"内核版本"`
 	Belong         string `form:"belong"  search:"type:exact;column:belong;table:rs_host" comment:"机器归属"`
+	TransProd      string `form:"transProd"  search:"type:exact;column:trans_province;table:rs_host" comment:"是否跨省"`
 	Remark         string `form:"remark"  search:"type:contains;column:remark;table:rs_host" comment:"备注"`
 	Isp            string `form:"isp"  search:"type:exact;column:isp;table:rs_host" comment:"运营商"`
 	Status         string `form:"status"  search:"type:exact;column:status;table:rs_host" comment:"主机状态"`
