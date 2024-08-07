@@ -121,25 +121,19 @@
                         <el-button
                            size="mini"
                            type="text"
-                           con="el-icon-view"
+                           icon="el-icon-view"
                            @click="handleView(scope.row,scope.index)"
                         >详情
                          </el-button>
-                         <el-popconfirm
-                           class="delete-popconfirm"
-                           title="确认要修改吗?"
-                           confirm-button-text="修改"
-                           @confirm="handleUpdate(scope.row)"
-                         >
-                           <el-button
-                             slot="reference"
-                             v-permisaction="['{{.PackageName}}:{{.BusinessName}}:edit']"
-                             size="mini"
-                             type="text"
-                             icon="el-icon-edit"
-                           >修改
-                           </el-button>
-                         </el-popconfirm>
+                         <el-button
+                            slot="reference"
+                            v-permisaction="['{{.PackageName}}:{{.BusinessName}}:edit']"
+                            size="mini"
+                            type="text"
+                            @click="handleUpdate(scope.row)"
+                            icon="el-icon-edit"
+                            >修改
+                         </el-button>
                          <el-popconfirm
                             class="delete-popconfirm"
                             title="确认要删除吗?"
