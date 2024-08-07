@@ -78,6 +78,7 @@ type RsDialInsertReq struct {
 	IdcId           int64   `json:"idcId" comment:"关联的IDC"`
 	HostId          int64   `json:"hostId" comment:"关联主机ID"`
 	DeviceId        int64   `json:"deviceId" comment:"关联网卡ID"`
+	RunTime         string  `json:"runTime"`
 	common.ControlBy
 }
 
@@ -98,6 +99,7 @@ func (s *RsDialInsertReq) Generate(model *models.RsDial) {
 	model.TransProvince = s.TransProvince
 	model.MoreDialing = s.MoreDialing
 	model.IsManager = s.IsManager
+	model.RunTime = s.RunTime
 	model.Account = s.Account
 	model.Pass = s.Pass
 	model.DialName = s.DialName
@@ -134,6 +136,7 @@ type RsDialUpdateReq struct {
 	IdcId           int64   `json:"idcId" comment:"关联的IDC"`
 	HostId          int64   `json:"hostId" comment:"关联主机ID"`
 	DeviceId        int64   `json:"deviceId" comment:"关联网卡ID"`
+	RunTime         string  `json:"runTime"`
 	common.ControlBy
 }
 
@@ -141,6 +144,7 @@ func (s *RsDialUpdateReq) Generate(model *models.RsDial) {
 	if s.Id == 0 {
 		model.Model = common.Model{Id: s.Id}
 	}
+	model.RunTime = s.RunTime
 	model.UpdateBy = s.UpdateBy // 添加这而，需要记录是被谁更新的
 	model.Desc = s.Desc
 	model.CustomUser = s.CustomUser

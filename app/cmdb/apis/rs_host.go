@@ -355,12 +355,15 @@ func (e RsHost) GetPage(c *gin.Context) {
 		if row.HealthyAt.Valid {
 			customRow["healthyAt"] = row.HealthyAt.Time.Format("2006-01-02 15:04:05")
 		}
-
+		customRow["ip"] = row.Ip
 		customRow["id"] = row.Id
 		customRow["transProd"] = row.TransProvince
 		customRow["isp"] = row.Isp
 		customRow["balance"] = fmt.Sprintf("%vGbps", row.Balance)
 		customRow["remark"] = row.Remark
+		if row.Belong == 0 {
+			row.Belong = 1
+		}
 		customRow["belong"] = row.Belong
 		customRow["networkType"] = row.NetworkType
 		if monitorDat, ok := HostMapMonitorData[row.Id]; ok {

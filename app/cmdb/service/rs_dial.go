@@ -3,7 +3,7 @@ package service
 import (
 	"errors"
 
-    "github.com/go-admin-team/go-admin-core/sdk/service"
+	"github.com/go-admin-team/go-admin-core/sdk/service"
 	"gorm.io/gorm"
 
 	"go-admin/app/cmdb/models"
@@ -54,14 +54,19 @@ func (e *RsDial) Get(d *dto.RsDialGetReq, p *actions.DataPermission, model *mode
 		e.Log.Errorf("db error:%s", err)
 		return err
 	}
+	var IdcRow models.RsIdc
+	if data.IdcId > 0 {
+		e.Orm.Model(&models.RsIdc{}).Where("id = ?", data.IdcId).Find(&IdcRow)
+		data.IdcInfo = IdcRow
+	}
 	return nil
 }
 
 // Insert 创建RsDial对象
 func (e *RsDial) Insert(c *dto.RsDialInsertReq) error {
-    var err error
-    var data models.RsDial
-    c.Generate(&data)
+	var err error
+	var data models.RsDial
+	c.Generate(&data)
 	err = e.Orm.Create(&data).Error
 	if err != nil {
 		e.Log.Errorf("RsDialService Insert error:%s \r\n", err)
@@ -72,22 +77,22 @@ func (e *RsDial) Insert(c *dto.RsDialInsertReq) error {
 
 // Update 修改RsDial对象
 func (e *RsDial) Update(c *dto.RsDialUpdateReq, p *actions.DataPermission) error {
-    var err error
-    var data = models.RsDial{}
-    e.Orm.Scopes(
-            actions.Permission(data.TableName(), p),
-        ).First(&data, c.GetId())
-    c.Generate(&data)
+	var err error
+	var data = models.RsDial{}
+	e.Orm.Scopes(
+		actions.Permission(data.TableName(), p),
+	).First(&data, c.GetId())
+	c.Generate(&data)
 
-    db := e.Orm.Save(&data)
-    if err = db.Error; err != nil {
-        e.Log.Errorf("RsDialService Save error:%s \r\n", err)
-        return err
-    }
-    if db.RowsAffected == 0 {
-        return errors.New("无权更新该数据")
-    }
-    return nil
+	db := e.Orm.Save(&data)
+	if err = db.Error; err != nil {
+		e.Log.Errorf("RsDialService Save error:%s \r\n", err)
+		return err
+	}
+	if db.RowsAffected == 0 {
+		return errors.New("无权更新该数据")
+	}
+	return nil
 }
 
 // Remove 删除RsDial
@@ -99,11 +104,11 @@ func (e *RsDial) Remove(d *dto.RsDialDeleteReq, p *actions.DataPermission) error
 			actions.Permission(data.TableName(), p),
 		).Delete(&data, d.GetId())
 	if err := db.Error; err != nil {
-        e.Log.Errorf("Service RemoveRsDial error:%s \r\n", err)
-        return err
-    }
-    if db.RowsAffected == 0 {
-        return errors.New("无权删除该数据")
-    }
+		e.Log.Errorf("Service RemoveRsDial error:%s \r\n", err)
+		return err
+	}
+	if db.RowsAffected == 0 {
+		return errors.New("无权删除该数据")
+	}
 	return nil
 }

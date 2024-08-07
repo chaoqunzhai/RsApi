@@ -27,7 +27,7 @@ type Host struct {
 	NetworkType   int          `json:"networkType" gorm:"default:2;comment:网络类型"`
 	Kernel        string       `json:"kernel" gorm:"type:varchar(100);comment:内核版本"`
 	Balance       float64      `json:"balance" gorm:"type:varchar(50);comment:总带宽"`
-	Belong        int          `json:"belong" gorm:"type:int(1);default:0;comment:机器归属"`
+	Belong        int          `json:"belong" gorm:"type:int(1);default:1;comment:机器归属"`
 	Remark        string       `json:"remark" gorm:"type:varchar(60);comment:备注;default:'';"`
 	Isp           int          `json:"isp" gorm:"type:int(1);default:1;comment:运营商"`
 	Status        int          `json:"status" gorm:"type:int(1);default:0;comment:主机状态"`
