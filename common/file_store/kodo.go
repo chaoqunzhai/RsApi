@@ -40,8 +40,8 @@ func (e *QiNiuKODO) getToken() string {
 	return upToken
 }
 
-//Setup 装载
-//endpoint sss
+// Setup 装载
+// endpoint sss
 func (e *QiNiuKODO) Setup(endpoint, accessKeyID, accessKeySecret, BucketName string, options ...ClientOption) error {
 
 	mac := qbox.NewMac(accessKeyID, accessKeySecret)

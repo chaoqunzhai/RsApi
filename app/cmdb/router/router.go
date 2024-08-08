@@ -1,6 +1,5 @@
 package router
 
-
 import (
 	"github.com/gin-gonic/gin"
 	_ "github.com/gin-gonic/gin"
@@ -15,7 +14,7 @@ import (
 
 var (
 	routerNoCheckCMDB = make([]func(*gin.RouterGroup), 0)
-	routerCheckCMDB  = make([]func(v1 *gin.RouterGroup, authMiddleware *jwt.GinJWTMiddleware), 0)
+	routerCheckCMDB   = make([]func(v1 *gin.RouterGroup, authMiddleware *jwt.GinJWTMiddleware), 0)
 )
 
 // InitRouter 路由初始化

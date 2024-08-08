@@ -1,4 +1,40 @@
 definitions:
+  dto.AssetWarehouseDeleteReq:
+    properties:
+      ids:
+        items:
+          type: integer
+        type: array
+    type: object
+  dto.AssetWarehouseInsertReq:
+    properties:
+      administratorId:
+        type: string
+      createBy:
+        type: integer
+      remark:
+        type: string
+      updateBy:
+        type: integer
+      warehouseName:
+        type: string
+    type: object
+  dto.AssetWarehouseUpdateReq:
+    properties:
+      administratorId:
+        type: string
+      createBy:
+        type: integer
+      id:
+        description: 主键
+        type: integer
+      remark:
+        type: string
+      updateBy:
+        type: integer
+      warehouseName:
+        type: string
+    type: object
   dto.GetSetSysConfigReq:
     properties:
       configKey:
@@ -11,6 +47,94 @@ definitions:
       newPassword:
         type: string
       oldPassword:
+        type: string
+    type: object
+  dto.RcIdcDeleteReq:
+    properties:
+      ids:
+        items:
+          type: integer
+        type: array
+    type: object
+  dto.RcIdcInsertReq:
+    properties:
+      address:
+        type: string
+      belong:
+        type: string
+      businessUser:
+        type: string
+      charging:
+        type: string
+      createBy:
+        type: integer
+      customUser:
+        type: string
+      desc:
+        type: string
+      enable:
+        type: string
+      ipV6:
+        type: string
+      layer:
+        type: string
+      name:
+        type: string
+      price:
+        type: string
+      region:
+        type: string
+      status:
+        type: string
+      transProvince:
+        type: string
+      typeId:
+        type: string
+      updateBy:
+        type: integer
+      weChatName:
+        type: string
+    type: object
+  dto.RcIdcUpdateReq:
+    properties:
+      address:
+        type: string
+      belong:
+        type: string
+      businessUser:
+        type: string
+      charging:
+        type: string
+      createBy:
+        type: integer
+      customUser:
+        type: string
+      desc:
+        type: string
+      enable:
+        type: string
+      id:
+        description: 主键编码
+        type: integer
+      ipV6:
+        type: string
+      layer:
+        type: string
+      name:
+        type: string
+      price:
+        type: string
+      region:
+        type: string
+      status:
+        type: string
+      transProvince:
+        type: string
+      typeId:
+        type: string
+      updateBy:
+        type: integer
+      weChatName:
         type: string
     type: object
   dto.ResetSysUserPwdReq:
@@ -955,6 +1079,70 @@ definitions:
     - username
     - uuid
     type: object
+  models.AssetWarehouse:
+    properties:
+      administratorId:
+        type: string
+      createBy:
+        type: integer
+      createdAt:
+        type: string
+      id:
+        type: integer
+      remark:
+        type: string
+      updateBy:
+        type: integer
+      updatedAt:
+        type: string
+      warehouseName:
+        type: string
+    type: object
+  models.RcIdc:
+    properties:
+      address:
+        type: string
+      belong:
+        type: string
+      businessUser:
+        type: string
+      charging:
+        type: string
+      createBy:
+        type: integer
+      createdAt:
+        type: string
+      customUser:
+        type: string
+      desc:
+        type: string
+      enable:
+        type: string
+      id:
+        type: integer
+      ipV6:
+        type: string
+      layer:
+        type: string
+      name:
+        type: string
+      price:
+        type: string
+      region:
+        type: string
+      status:
+        type: string
+      transProvince:
+        type: string
+      typeId:
+        type: string
+      updateBy:
+        type: integer
+      updatedAt:
+        type: string
+      weChatName:
+        type: string
+    type: object
   models.RsHost:
     properties:
       balance:
@@ -1233,6 +1421,137 @@ paths:
       summary: 获取系统前台配置信息，主要注意这里不在验证权限
       tags:
       - 配置管理
+  /api/v1/asset-warehouse:
+    delete:
+      description: 删除库房
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetWarehouseDeleteReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "删除成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 删除库房
+      tags:
+      - 库房
+    get:
+      description: 获取库房列表
+      parameters:
+      - description: 库房名称
+        in: query
+        name: warehouseName
+        type: string
+      - description: 管理员编码
+        in: query
+        name: administratorId
+        type: string
+      - description: 页条数
+        in: query
+        name: pageSize
+        type: integer
+      - description: 页码
+        in: query
+        name: pageIndex
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/response.Page'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/models.AssetWarehouse'
+                        type: array
+                    type: object
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取库房列表
+      tags:
+      - 库房
+    post:
+      consumes:
+      - application/json
+      description: 创建库房
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetWarehouseInsertReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "添加成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 创建库房
+      tags:
+      - 库房
+  /api/v1/asset-warehouse/{id}:
+    get:
+      description: 获取库房
+      parameters:
+      - description: id
+        in: path
+        name: id
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.AssetWarehouse'
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取库房
+      tags:
+      - 库房
+    put:
+      consumes:
+      - application/json
+      description: 修改库房
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetWarehouseUpdateReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "修改成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 修改库房
+      tags:
+      - 库房
   /api/v1/captcha:
     get:
       description: 获取验证码
@@ -2005,6 +2324,161 @@ paths:
       summary: 上传图片
       tags:
       - 公共接口
+  /api/v1/rc-idc:
+    delete:
+      description: 删除RcIdc
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RcIdcDeleteReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "删除成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 删除RcIdc
+      tags:
+      - RcIdc
+    get:
+      description: 获取RcIdc列表
+      parameters:
+      - description: 开关
+        in: query
+        name: enable
+        type: string
+      - description: 机房名称
+        in: query
+        name: name
+        type: string
+      - description: 机房状态
+        in: query
+        name: status
+        type: string
+      - description: 机房归属
+        in: query
+        name: belong
+        type: string
+      - description: 机房类型
+        in: query
+        name: typeId
+        type: string
+      - description: 商务人员
+        in: query
+        name: businessUser
+        type: string
+      - description: 所在区域
+        in: query
+        name: region
+        type: string
+      - description: 是否跨省
+        in: query
+        name: transProvince
+        type: string
+      - description: 页条数
+        in: query
+        name: pageSize
+        type: integer
+      - description: 页码
+        in: query
+        name: pageIndex
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/response.Page'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/models.RcIdc'
+                        type: array
+                    type: object
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取RcIdc列表
+      tags:
+      - RcIdc
+    post:
+      consumes:
+      - application/json
+      description: 创建RcIdc
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RcIdcInsertReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "添加成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 创建RcIdc
+      tags:
+      - RcIdc
+  /api/v1/rc-idc/{id}:
+    get:
+      description: 获取RcIdc
+      parameters:
+      - description: id
+        in: path
+        name: id
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.RcIdc'
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取RcIdc
+      tags:
+      - RcIdc
+    put:
+      consumes:
+      - application/json
+      description: 修改RcIdc
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RcIdcUpdateReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "修改成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 修改RcIdc
+      tags:
+      - RcIdc
   /api/v1/register/healthy:
     post:
       description: 主动上报

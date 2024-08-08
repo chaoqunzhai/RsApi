@@ -42,6 +42,229 @@
                 }
             }
         },
+        "/api/v1/asset-warehouse": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取库房列表",
+                "tags": [
+                    "库房"
+                ],
+                "summary": "获取库房列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "库房名称",
+                        "name": "warehouseName",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "管理员编码",
+                        "name": "administratorId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页条数",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageIndex",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.Page"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/models.AssetWarehouse"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "创建库房",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "库房"
+                ],
+                "summary": "创建库房",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetWarehouseInsertReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"添加成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "删除库房",
+                "tags": [
+                    "库房"
+                ],
+                "summary": "删除库房",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetWarehouseDeleteReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"删除成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/asset-warehouse/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取库房",
+                "tags": [
+                    "库房"
+                ],
+                "summary": "获取库房",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.AssetWarehouse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "修改库房",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "库房"
+                ],
+                "summary": "修改库房",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetWarehouseUpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"修改成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/captcha": {
             "get": {
                 "description": "获取验证码",
@@ -1276,6 +1499,265 @@
                         "description": "{\"code\": -1, \"message\": \"添加失败\"}",
                         "schema": {
                             "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rc-idc": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取RcIdc列表",
+                "tags": [
+                    "RcIdc"
+                ],
+                "summary": "获取RcIdc列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "开关",
+                        "name": "enable",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "机房名称",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "机房状态",
+                        "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "机房归属",
+                        "name": "belong",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "机房类型",
+                        "name": "typeId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "商务人员",
+                        "name": "businessUser",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "所在区域",
+                        "name": "region",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "是否跨省",
+                        "name": "transProvince",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页条数",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageIndex",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.Page"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/models.RcIdc"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "创建RcIdc",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RcIdc"
+                ],
+                "summary": "创建RcIdc",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RcIdcInsertReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"添加成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "删除RcIdc",
+                "tags": [
+                    "RcIdc"
+                ],
+                "summary": "删除RcIdc",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RcIdcDeleteReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"删除成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rc-idc/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取RcIdc",
+                "tags": [
+                    "RcIdc"
+                ],
+                "summary": "获取RcIdc",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.RcIdc"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "修改RcIdc",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RcIdc"
+                ],
+                "summary": "修改RcIdc",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RcIdcUpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"修改成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -3074,6 +3556,61 @@
         }
     },
     "definitions": {
+        "dto.AssetWarehouseDeleteReq": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "dto.AssetWarehouseInsertReq": {
+            "type": "object",
+            "properties": {
+                "administratorId": {
+                    "type": "string"
+                },
+                "createBy": {
+                    "type": "integer"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "updateBy": {
+                    "type": "integer"
+                },
+                "warehouseName": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.AssetWarehouseUpdateReq": {
+            "type": "object",
+            "properties": {
+                "administratorId": {
+                    "type": "string"
+                },
+                "createBy": {
+                    "type": "integer"
+                },
+                "id": {
+                    "description": "主键",
+                    "type": "integer"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "updateBy": {
+                    "type": "integer"
+                },
+                "warehouseName": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.GetSetSysConfigReq": {
             "type": "object",
             "properties": {
@@ -3092,6 +3629,139 @@
                     "type": "string"
                 },
                 "oldPassword": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.RcIdcDeleteReq": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "dto.RcIdcInsertReq": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "belong": {
+                    "type": "string"
+                },
+                "businessUser": {
+                    "type": "string"
+                },
+                "charging": {
+                    "type": "string"
+                },
+                "createBy": {
+                    "type": "integer"
+                },
+                "customUser": {
+                    "type": "string"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "enable": {
+                    "type": "string"
+                },
+                "ipV6": {
+                    "type": "string"
+                },
+                "layer": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "string"
+                },
+                "region": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "transProvince": {
+                    "type": "string"
+                },
+                "typeId": {
+                    "type": "string"
+                },
+                "updateBy": {
+                    "type": "integer"
+                },
+                "weChatName": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.RcIdcUpdateReq": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "belong": {
+                    "type": "string"
+                },
+                "businessUser": {
+                    "type": "string"
+                },
+                "charging": {
+                    "type": "string"
+                },
+                "createBy": {
+                    "type": "integer"
+                },
+                "customUser": {
+                    "type": "string"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "enable": {
+                    "type": "string"
+                },
+                "id": {
+                    "description": "主键编码",
+                    "type": "integer"
+                },
+                "ipV6": {
+                    "type": "string"
+                },
+                "layer": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "string"
+                },
+                "region": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "transProvince": {
+                    "type": "string"
+                },
+                "typeId": {
+                    "type": "string"
+                },
+                "updateBy": {
+                    "type": "integer"
+                },
+                "weChatName": {
                     "type": "string"
                 }
             }
@@ -4481,6 +5151,103 @@
                     "type": "string"
                 },
                 "uuid": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.AssetWarehouse": {
+            "type": "object",
+            "properties": {
+                "administratorId": {
+                    "type": "string"
+                },
+                "createBy": {
+                    "type": "integer"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "updateBy": {
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "warehouseName": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.RcIdc": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "belong": {
+                    "type": "string"
+                },
+                "businessUser": {
+                    "type": "string"
+                },
+                "charging": {
+                    "type": "string"
+                },
+                "createBy": {
+                    "type": "integer"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "customUser": {
+                    "type": "string"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "enable": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "ipV6": {
+                    "type": "string"
+                },
+                "layer": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "string"
+                },
+                "region": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "transProvince": {
+                    "type": "string"
+                },
+                "typeId": {
+                    "type": "string"
+                },
+                "updateBy": {
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "weChatName": {
                     "type": "string"
                 }
             }

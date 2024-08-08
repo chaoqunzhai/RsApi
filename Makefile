@@ -52,3 +52,26 @@ deploy:
 	#@git pull origin master
 	make build-linux
 	make run
+
+
+# use to develop environment by yunbyte
+.PHONY: build-dev
+build-dev:
+	go mod tidy
+	go fmt ./...
+	CGO_ENABLED=0 go build -ldflags="-w -s" -a -installsuffix "" -o rs-api .
+
+.PHONY: run-dev
+run-dev: build-dev
+	./rs-api server -a=true -c=config/settings.dev.yml 
+
+.PHONY: validate-dev
+validate-dev:
+	go fmt ./...
+	# go install golang.org/x/lint/golint
+	# golint -set_exit_status ./...
+	go vet ./...
+
+.PHONY: test-dev
+test-dev: validate-dev
+	go test -count=1 ./...
