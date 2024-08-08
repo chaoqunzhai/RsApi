@@ -6,19 +6,6 @@ import (
 	common "go-admin/common/models"
 )
 
-type MonitorResult struct {
-	Title string `json:"title"`
-
-	Data    []interface{}  `json:"data"`
-	Compute MonitorCompute `json:"compute"`
-}
-type MonitorCompute struct {
-	Max     float64
-	Min     float64
-	Avg     float64
-	Percent float64
-}
-
 // 主机拨号的信息
 
 type RegisterDial struct {

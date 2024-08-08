@@ -42,7 +42,7 @@ func GetPromResult(u *url.URL) (result *QueryInfo, err error) {
 	// 设置 Authorization 头
 	auth := fmt.Sprintf("%s:%s", username, password)
 	authEncoded := base64.StdEncoding.EncodeToString([]byte(auth))
-	fmt.Println("URL", urlPath)
+	//fmt.Println("URL", urlPath)
 	// 创建一个新的请求
 	req, err := http.NewRequest("GET", urlPath, nil)
 	if err != nil {

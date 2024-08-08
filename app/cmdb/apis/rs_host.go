@@ -6,12 +6,7 @@ import (
 	"github.com/google/uuid"
 	models2 "go-admin/cmd/migrate/migration/models"
 	"go-admin/common/prometheus"
-	"go-admin/common/utils"
-	"go-admin/config"
 	"go-admin/global"
-	"net/url"
-	"sort"
-	"strconv"
 	"strings"
 	"time"
 
@@ -257,69 +252,27 @@ func (e RsHost) MonitorFlow(c *gin.Context) {
 	}
 	//获取这个主机的主机名
 
-	result := dto.MonitorResult{}
 	var hostInstance models.RsHost
-	e.Orm.Model(&hostInstance).Where("id = ?", req.Id).Limit(1).Find(&hostInstance)
+	e.Orm.Model(&hostInstance).Select("host_name,id").Where("id = ?", req.Id).Limit(1).Find(&hostInstance)
 
 	if hostInstance.Id == 0 {
 		e.Error(500, nil, "主机不存在")
 		return
 	}
-	//主机监控内容
-	transmitQuery := fmt.Sprintf("sum(rate(phy_nic_network_transmit_bytes_total{instance=\"%v\"}[5m]))*8", hostInstance.HostName)
 
-	//查询普罗米修斯数据
-	queryUrl, err := url.Parse(func() string {
-		vv, _ := url.JoinPath(config.ExtConfig.Prometheus.Endpoint, "/api/v1/query_range")
-		return vv
-	}())
-
-	parameters := url.Values{}
-	parameters.Add("start", req.Start)
-	parameters.Add("end", req.End)
-	parameters.Add("step", fmt.Sprintf("%v", req.Setup))
-	parameters.Add("query", transmitQuery)
-
-	queryUrl.RawQuery = parameters.Encode()
-
-	ProResult, err := prometheus.GetPromResult(queryUrl)
-
-	if err != nil {
-		e.Error(500, err, err.Error())
-		return
+	if req.Start == "" {
+		req.Start = fmt.Sprintf("%v", time.Now().Add(-time.Hour).Unix())
 	}
-
-	XData := make([]interface{}, 0)
-	XValue := make([]float64, 0)
-
-	if len(ProResult.Data.Result) > 0 {
-
-		for _, row := range ProResult.Data.Result[0].Value {
-
-			if len(row) != 2 {
-				continue
-			}
-			unixStr := row[0].(float64)
-			valueStr := row[1].(string)
-			valueFloat, _ := strconv.ParseFloat(valueStr, 64)
-
-			unixTime := time.Unix(int64(unixStr), 0)
-			XData = append(XData, []interface{}{unixTime.Format(time.DateTime), valueStr})
-			XValue = append(XValue, valueFloat)
-
-		}
+	if req.End == "" {
+		req.End = fmt.Sprintf("%v", time.Now().Unix())
 	}
-	sort.Float64s(XValue)
+	if req.Setup == 0 {
+		req.Setup = 60
+	}
+	HostName := hostInstance.HostName
 
-	//计算95值
-	result.Compute.Percent = utils.Percentile(XValue, 0.95)
-	//计算max
-	result.Compute.Max = utils.Max(XValue)
-	//计算最小
-	result.Compute.Min = utils.Min(XValue)
-
-	//计算平均
-	result.Compute.Avg = utils.Avg(XValue)
+	HostName = "jkwl-zjtd-qhhxmgzzzzzz-ltnw-01"
+	result := prometheus.Transmit(HostName, &req)
 	e.OK(result, "successful")
 	return
 }
