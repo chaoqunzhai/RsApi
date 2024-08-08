@@ -16,7 +16,7 @@ import (
 	"strings"
 )
 
-const path = "static/uploadfile/"
+const UploadPath = "static/uploadfile/"
 
 type FileResponse struct {
 	Size     int64  `json:"size"`

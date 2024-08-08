@@ -5,7 +5,13 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	models2 "go-admin/cmd/migrate/migration/models"
+	"go-admin/common/prometheus"
+	"go-admin/common/utils"
+	"go-admin/config"
 	"go-admin/global"
+	"net/url"
+	"sort"
+	"strconv"
 	"strings"
 	"time"
 
@@ -197,14 +203,14 @@ func (e RsHost) Count(c *gin.Context) {
 
 	var offlineCount int64
 
-	e.Orm.Model(&models.RsHost{}).Where("updated_at < DATE_SUB(NOW(), INTERVAL 5 MINUTE)").Count(&offlineCount)
+	e.Orm.Model(&models.RsHost{}).Where("healthy_at < DATE_SUB(NOW(), INTERVAL 5 MINUTE)").Count(&offlineCount)
 
 	//离线-自建机房数量
 	var ZjCount int64
-	e.Orm.Model(&models.RsHost{}).Where("belong = 1 and updated_at < DATE_SUB(NOW(), INTERVAL 5 MINUTE)").Count(&ZjCount)
+	e.Orm.Model(&models.RsHost{}).Where("belong = 1 and healthy_at < DATE_SUB(NOW(), INTERVAL 5 MINUTE)").Count(&ZjCount)
 
 	var ZMCount int64
-	e.Orm.Model(&models.RsHost{}).Where("belong = 2 and updated_at < DATE_SUB(NOW(), INTERVAL 5 MINUTE)").Count(&ZMCount)
+	e.Orm.Model(&models.RsHost{}).Where("belong = 2 and healthy_at < DATE_SUB(NOW(), INTERVAL 5 MINUTE)").Count(&ZMCount)
 
 	offlineMap := map[string]int64{
 		"zj":  ZjCount,
@@ -215,13 +221,13 @@ func (e RsHost) Count(c *gin.Context) {
 	//在线
 
 	var onlineCount int64
-	e.Orm.Model(&models.RsHost{}).Where(" updated_at >= DATE_SUB(NOW(), INTERVAL 5 MINUTE)").Count(&onlineCount)
+	e.Orm.Model(&models.RsHost{}).Where(" healthy_at >= DATE_SUB(NOW(), INTERVAL 5 MINUTE)").Count(&onlineCount)
 
 	var ZjLineCount int64
-	e.Orm.Model(&models.RsHost{}).Where("belong = 1 and updated_at >= DATE_SUB(NOW(), INTERVAL 5 MINUTE)").Count(&ZjLineCount)
+	e.Orm.Model(&models.RsHost{}).Where("belong = 1 and healthy_at >= DATE_SUB(NOW(), INTERVAL 5 MINUTE)").Count(&ZjLineCount)
 
 	var ZMLineCount int64
-	e.Orm.Model(&models.RsHost{}).Where("belong = 2 and updated_at >= DATE_SUB(NOW(), INTERVAL 5 MINUTE)").Count(&ZMLineCount)
+	e.Orm.Model(&models.RsHost{}).Where("belong = 2 and healthy_at >= DATE_SUB(NOW(), INTERVAL 5 MINUTE)").Count(&ZMLineCount)
 	onlineMap := map[string]int64{
 		"zj":  ZjLineCount,
 		"zm":  ZMLineCount,
@@ -233,6 +239,87 @@ func (e RsHost) Count(c *gin.Context) {
 		"online":  onlineMap,
 	}
 
+	e.OK(result, "successful")
+	return
+}
+
+func (e RsHost) MonitorFlow(c *gin.Context) {
+	req := dto.RsHostMonitorFlow{}
+
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
+	//获取这个主机的主机名
+
+	result := dto.MonitorResult{}
+	var hostInstance models.RsHost
+	e.Orm.Model(&hostInstance).Where("id = ?", req.Id).Limit(1).Find(&hostInstance)
+
+	if hostInstance.Id == 0 {
+		e.Error(500, nil, "主机不存在")
+		return
+	}
+	//主机监控内容
+	transmitQuery := fmt.Sprintf("sum(rate(phy_nic_network_transmit_bytes_total{instance=\"%v\"}[5m]))*8", hostInstance.HostName)
+
+	//查询普罗米修斯数据
+	queryUrl, err := url.Parse(func() string {
+		vv, _ := url.JoinPath(config.ExtConfig.Prometheus.Endpoint, "/api/v1/query_range")
+		return vv
+	}())
+
+	parameters := url.Values{}
+	parameters.Add("start", req.Start)
+	parameters.Add("end", req.End)
+	parameters.Add("step", fmt.Sprintf("%v", req.Setup))
+	parameters.Add("query", transmitQuery)
+
+	queryUrl.RawQuery = parameters.Encode()
+
+	ProResult, err := prometheus.GetPromResult(queryUrl)
+
+	if err != nil {
+		e.Error(500, err, err.Error())
+		return
+	}
+
+	XData := make([]interface{}, 0)
+	XValue := make([]float64, 0)
+
+	if len(ProResult.Data.Result) > 0 {
+
+		for _, row := range ProResult.Data.Result[0].Value {
+
+			if len(row) != 2 {
+				continue
+			}
+			unixStr := row[0].(float64)
+			valueStr := row[1].(string)
+			valueFloat, _ := strconv.ParseFloat(valueStr, 64)
+
+			unixTime := time.Unix(int64(unixStr), 0)
+			XData = append(XData, []interface{}{unixTime.Format(time.DateTime), valueStr})
+			XValue = append(XValue, valueFloat)
+
+		}
+	}
+	sort.Float64s(XValue)
+
+	//计算95值
+	result.Compute.Percent = utils.Percentile(XValue, 0.95)
+	//计算max
+	result.Compute.Max = utils.Max(XValue)
+	//计算最小
+	result.Compute.Min = utils.Min(XValue)
+
+	//计算平均
+	result.Compute.Avg = utils.Avg(XValue)
 	e.OK(result, "successful")
 	return
 }
@@ -296,34 +383,37 @@ func (e RsHost) GetPage(c *gin.Context) {
 
 	IdcMapData := s.GetIdcList(idcIds)
 
-	BusinessMapData := s.GetBusinessMap(hostIds)
+	BusinessMapData := service.GetHostBindBusinessMap(e.Orm, hostIds)
 	for _, row := range list {
 		customRow := make(map[string]interface{}, 1)
 		customRow["updatedAt"] = fmt.Sprintf("%v", row.UpdatedAt.Format(time.DateTime))
 
 		validStatus := row.Status
 		//只做在线数据的检查
-		if row.Auth > 0 { //只有主机有权限的时候去检查
+		if row.Auth > 0 { //只有主机有权限的时候去检查 + 主机是正常的时候
+			if row.Status == global.HostSuccess {
 
-			if row.HealthyAt.Valid {
-				if int(nowTime.Sub(row.HealthyAt.Time).Minutes()) > 6 { //如果上报的时间大于5分钟 那就删掉线了
+				if row.HealthyAt.Valid {
+					if int(nowTime.Sub(row.HealthyAt.Time).Minutes()) > 6 { //如果上报的时间大于5分钟 那就删掉线了
 
+						e.Orm.Model(&models.RsHost{}).Where("id = ?", row.Id).Updates(map[string]interface{}{
+							"status": global.HostOffline,
+						})
+
+					} else { //在5分钟内
+						validStatus = global.HostSuccess
+					}
+					customRow["healthyAt"] = row.HealthyAt.Time.Format("2006-01-02 15:04:05")
+				} else { //是一个没有注册到节点的机器，因为没有健康时间
+					validStatus = global.HostOffline
+				}
+
+				if validStatus == global.HostOffline {
 					e.Orm.Model(&models.RsHost{}).Where("id = ?", row.Id).Updates(map[string]interface{}{
 						"status": global.HostOffline,
 					})
-
-				} else { //在5分钟内
-					validStatus = global.HostSuccess
 				}
-				customRow["healthyAt"] = row.HealthyAt.Time.Format("2006-01-02 15:04:05")
-			} else { //是一个没有注册到节点的机器，因为没有健康时间
-				validStatus = global.HostOffline
-			}
 
-			if validStatus == global.HostOffline {
-				e.Orm.Model(&models.RsHost{}).Where("id = ?", row.Id).Updates(map[string]interface{}{
-					"status": global.HostOffline,
-				})
 			}
 
 		} else {

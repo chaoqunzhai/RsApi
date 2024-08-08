@@ -1,7 +1,8 @@
 package apis
 
 import (
-    "fmt"
+	"fmt"
+	"go-admin/common/utils"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-admin-team/go-admin-core/sdk/api"
@@ -31,30 +32,50 @@ type RsHostSwitchLog struct {
 // @Router /api/v1/rs-host-switch-log [get]
 // @Security Bearer
 func (e RsHostSwitchLog) GetPage(c *gin.Context) {
-    req := dto.RsHostSwitchLogGetPageReq{}
-    s := service.RsHostSwitchLog{}
-    err := e.MakeContext(c).
-        MakeOrm().
-        Bind(&req).
-        MakeService(&s.Service).
-        Errors
-   	if err != nil {
-   		e.Logger.Error(err)
-   		e.Error(500, err, err.Error())
-   		return
-   	}
+	req := dto.RsHostSwitchLogGetPageReq{}
+	s := service.RsHostSwitchLog{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
 
 	p := actions.GetPermissionFromContext(c)
 	list := make([]models.RsHostSwitchLog, 0)
 	var count int64
 
+	var businessLis []int
+
 	err = s.GetPage(&req, p, &list, &count)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("获取RsHostSwitchLog失败，\r\n失败信息 %s", err.Error()))
-        return
+		return
 	}
 
-	e.PageOK(list, int(count), req.GetPageIndex(), req.GetPageSize(), "查询成功")
+	for _, row := range list {
+		if row.BusinessId > 0 {
+			businessLis = append(businessLis, row.BusinessId)
+		}
+	}
+	businessLis = utils.RemoveRepeatInt(businessLis)
+	BusinessMapData := service.GetBusinessMap(e.Orm, businessLis)
+	result := make([]interface{}, 0)
+	for _, row := range list {
+
+		buInfo, ok := BusinessMapData[row.BusinessId]
+		if ok {
+			row.BusinessInfo = buInfo
+		}
+		result = append(result, row)
+
+	}
+
+	e.PageOK(result, int(count), req.GetPageIndex(), req.GetPageSize(), "查询成功")
 }
 
 // Get 获取RsHostSwitchLog
@@ -68,7 +89,7 @@ func (e RsHostSwitchLog) GetPage(c *gin.Context) {
 func (e RsHostSwitchLog) Get(c *gin.Context) {
 	req := dto.RsHostSwitchLogGetReq{}
 	s := service.RsHostSwitchLog{}
-    err := e.MakeContext(c).
+	err := e.MakeContext(c).
 		MakeOrm().
 		Bind(&req).
 		MakeService(&s.Service).
@@ -84,10 +105,10 @@ func (e RsHostSwitchLog) Get(c *gin.Context) {
 	err = s.Get(&req, p, &object)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("获取RsHostSwitchLog失败，\r\n失败信息 %s", err.Error()))
-        return
+		return
 	}
 
-	e.OK( object, "查询成功")
+	e.OK(object, "查询成功")
 }
 
 // Insert 创建RsHostSwitchLog
@@ -101,25 +122,25 @@ func (e RsHostSwitchLog) Get(c *gin.Context) {
 // @Router /api/v1/rs-host-switch-log [post]
 // @Security Bearer
 func (e RsHostSwitchLog) Insert(c *gin.Context) {
-    req := dto.RsHostSwitchLogInsertReq{}
-    s := service.RsHostSwitchLog{}
-    err := e.MakeContext(c).
-        MakeOrm().
-        Bind(&req).
-        MakeService(&s.Service).
-        Errors
-    if err != nil {
-        e.Logger.Error(err)
-        e.Error(500, err, err.Error())
-        return
-    }
+	req := dto.RsHostSwitchLogInsertReq{}
+	s := service.RsHostSwitchLog{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
 	// 设置创建人
 	req.SetCreateBy(user.GetUserId(c))
 
 	err = s.Insert(&req)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("创建RsHostSwitchLog失败，\r\n失败信息 %s", err.Error()))
-        return
+		return
 	}
 
 	e.OK(req.GetId(), "创建成功")
@@ -137,27 +158,27 @@ func (e RsHostSwitchLog) Insert(c *gin.Context) {
 // @Router /api/v1/rs-host-switch-log/{id} [put]
 // @Security Bearer
 func (e RsHostSwitchLog) Update(c *gin.Context) {
-    req := dto.RsHostSwitchLogUpdateReq{}
-    s := service.RsHostSwitchLog{}
-    err := e.MakeContext(c).
-        MakeOrm().
-        Bind(&req).
-        MakeService(&s.Service).
-        Errors
-    if err != nil {
-        e.Logger.Error(err)
-        e.Error(500, err, err.Error())
-        return
-    }
+	req := dto.RsHostSwitchLogUpdateReq{}
+	s := service.RsHostSwitchLog{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
 	req.SetUpdateBy(user.GetUserId(c))
 	p := actions.GetPermissionFromContext(c)
 
 	err = s.Update(&req, p)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("修改RsHostSwitchLog失败，\r\n失败信息 %s", err.Error()))
-        return
+		return
 	}
-	e.OK( req.GetId(), "修改成功")
+	e.OK(req.GetId(), "修改成功")
 }
 
 // Delete 删除RsHostSwitchLog
@@ -169,18 +190,18 @@ func (e RsHostSwitchLog) Update(c *gin.Context) {
 // @Router /api/v1/rs-host-switch-log [delete]
 // @Security Bearer
 func (e RsHostSwitchLog) Delete(c *gin.Context) {
-    s := service.RsHostSwitchLog{}
-    req := dto.RsHostSwitchLogDeleteReq{}
-    err := e.MakeContext(c).
-        MakeOrm().
-        Bind(&req).
-        MakeService(&s.Service).
-        Errors
-    if err != nil {
-        e.Logger.Error(err)
-        e.Error(500, err, err.Error())
-        return
-    }
+	s := service.RsHostSwitchLog{}
+	req := dto.RsHostSwitchLogDeleteReq{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
 
 	// req.SetUpdateBy(user.GetUserId(c))
 	p := actions.GetPermissionFromContext(c)
@@ -188,7 +209,7 @@ func (e RsHostSwitchLog) Delete(c *gin.Context) {
 	err = s.Remove(&req, p)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("删除RsHostSwitchLog失败，\r\n失败信息 %s", err.Error()))
-        return
+		return
 	}
-	e.OK( req.GetId(), "删除成功")
+	e.OK(req.GetId(), "删除成功")
 }

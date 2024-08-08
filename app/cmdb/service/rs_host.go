@@ -116,6 +116,7 @@ func (e *RsHost) Get(d *dto.RsHostGetReq, p *actions.DataPermission, model *mode
 		DialList:  DialList,
 	}
 	if dat, ok := HostMapMonitorData[d.Id]; ok {
+
 		ExtendHostInfo.MemoryMonitor = dat["memory"]
 		ExtendHostInfo.Disk = dat["disk"]
 	}
@@ -251,15 +252,13 @@ func (e *RsHost) GetMonitorData(ids []int) map[int]map[string]interface{} {
 		}
 
 		cache["memory"] = dat
-
+		HostDisk := make([]dto.HDDevUsage, 0)
 		if row.Disk != "" {
-			HostDisk := dto.HDDevUsage{}
 
-			if unErr := json.Unmarshal([]byte(row.Disk), &HostDisk); unErr == nil {
-				cache["disk"] = HostDisk
-			}
+			_ = json.Unmarshal([]byte(row.Disk), &HostDisk)
 
 		}
+		cache["disk"] = HostDisk
 		result[row.HostId] = cache
 	}
 
@@ -271,7 +270,7 @@ func (e *RsHost) GetCity(row models.RsHost) string {
 	return ""
 }
 
-func (e *RsHost) GetBusinessMap(ids []int) map[int][]dto.LabelRow {
+func GetHostBindBusinessMap(orm *gorm.DB, ids []int) map[int][]dto.LabelRow {
 
 	result := make(map[int][]dto.LabelRow, 0)
 	var RsBusinessList []models.RsBusiness
@@ -287,7 +286,7 @@ func (e *RsHost) GetBusinessMap(ids []int) map[int][]dto.LabelRow {
 		HostId     int `json:"host_id"`
 		BusinessId int `json:"business_id"`
 	}
-	e.Orm.Raw(hostBindIdc).Scan(&bindIds)
+	orm.Raw(hostBindIdc).Scan(&bindIds)
 
 	if len(bindIds) == 0 {
 
@@ -297,7 +296,7 @@ func (e *RsHost) GetBusinessMap(ids []int) map[int][]dto.LabelRow {
 	for _, r := range bindIds {
 		cacheBuIds = append(cacheBuIds, r.BusinessId)
 	}
-	e.Orm.Model(&models.RsBusiness{}).Select("name,id").Where("id in ?", cacheBuIds).Find(&RsBusinessList)
+	orm.Model(&models.RsBusiness{}).Select("name,id").Where("id in ?", cacheBuIds).Find(&RsBusinessList)
 
 	BusinessMap := make(map[int]dto.LabelRow, 0)
 	for _, b := range RsBusinessList {

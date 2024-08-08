@@ -6,6 +6,19 @@ import (
 	common "go-admin/common/models"
 )
 
+type MonitorResult struct {
+	Title string `json:"title"`
+
+	Data    []interface{}  `json:"data"`
+	Compute MonitorCompute `json:"compute"`
+}
+type MonitorCompute struct {
+	Max     float64
+	Min     float64
+	Avg     float64
+	Percent float64
+}
+
 // 主机拨号的信息
 
 type RegisterDial struct {
@@ -55,6 +68,13 @@ type LabelRow struct {
 	Id    int    `json:"id"`
 	Label string `json:"label" form:"label" `
 	Value string `json:"value" form:"value" `
+}
+
+type RsHostMonitorFlow struct {
+	Id    int    `uri:"id"`
+	Start string `form:"start"`
+	End   string `form:"end"`
+	Setup int    `json:"setup"`
 }
 type RsHostGetPageReq struct {
 	dto.Pagination `search:"-"`

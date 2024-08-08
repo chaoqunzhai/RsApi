@@ -2,7 +2,6 @@ package service
 
 import (
 	"errors"
-
 	"github.com/go-admin-team/go-admin-core/sdk/service"
 	"gorm.io/gorm"
 
@@ -14,6 +13,21 @@ import (
 
 type RsBusiness struct {
 	service.Service
+}
+
+func GetBusinessMap(orm *gorm.DB, ids []int) map[int]*models.RsBusiness {
+
+	var RsBusinessList []*models.RsBusiness
+
+	orm.Model(&models.RsBusiness{}).Where("id in ?", ids).Find(&RsBusinessList)
+
+	BusinessMap := make(map[int]*models.RsBusiness, 0)
+	for _, b := range RsBusinessList {
+
+		BusinessMap[b.Id] = b
+	}
+
+	return BusinessMap
 }
 
 // GetPage 获取RsBusiness列表

@@ -19,6 +19,8 @@ func registerRsHostRouter(v1 *gin.RouterGroup, authMiddleware *jwt.GinJWTMiddlew
 	r := v1.Group("/rs-host").Use(authMiddleware.MiddlewareFunc()).Use(middleware.AuthCheckRole())
 	{
 		r.GET("", actions.PermissionAction(), api.GetPage)
+
+		r.GET("/monitor_flow/:id", api.MonitorFlow)
 		r.GET("/count", actions.PermissionAction(), api.Count)
 		r.POST("/switch", actions.PermissionAction(), api.Switch)
 		r.POST("/bindIdc", actions.PermissionAction(), api.BindIdc)

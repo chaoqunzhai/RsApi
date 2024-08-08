@@ -9,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/shopspring/decimal"
+	"go-admin/global"
 	"math/rand"
 	"os"
 	"path/filepath"
@@ -203,6 +204,11 @@ func TimeCheckRange(start, end string) bool {
 
 	return dbStartTimer.Before(nowParse) && nowParse.Before(dbEndTimer)
 }
+func ParseStrTime(timeStr string) (t time.Time, err error) {
+
+	layout := fmt.Sprintf("2006-01-02 15:04")
+	return time.ParseInLocation(layout, timeStr, global.LOC)
+}
 func ParInt(n float64) float64 {
 
 	value, err := strconv.ParseFloat(fmt.Sprintf("%.2f", n), 64)
@@ -251,25 +257,30 @@ func Avg(a []float64) float64 {
 	return ParInt(sum / float64(len(a)))
 }
 func Min(a []float64) float64 {
-	min := a[0]
+	minV := a[0]
 	for i := 0; i < len(a); i++ {
 		if a[i] == 0 {
 			continue
 		}
-		if a[i] < min {
-			min = a[i]
+		if a[i] < minV {
+			minV = a[i]
 		}
 	}
-	return ParInt(min)
+	return ParInt(minV)
 }
 func Max(a []float64) float64 {
-	max := a[0]
+	maxV := a[0]
 	for i := 0; i < len(a); i++ {
-		if a[i] > max {
-			max = a[i]
+		if a[i] > maxV {
+			maxV = a[i]
 		}
 	}
-	return ParInt(max)
+	return ParInt(maxV)
+}
+func Percentile(N []float64, P float64) float64 {
+	i := int(P * float64(len(N)))
+
+	return N[i-1]
 }
 
 func RoundDecimal(value interface{}) decimal.Decimal {
