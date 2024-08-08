@@ -35,7 +35,7 @@ type RsBusinessInsertReq struct {
 	Status    int    `json:"status" comment:"状态"`
 	Desc      string `json:"desc" comment:"描述信息"`
 	Name      string `json:"name" comment:"业务云名称"`
-	EnName    string `json:"en_name" gorm:"index;type:varchar(30);comment:业务别名"`
+	EnName    string `json:"enName" gorm:"index;type:varchar(30);comment:业务别名"`
 	Algorithm string `json:"algorithm" comment:"算法备注"`
 	common.ControlBy
 }
@@ -61,7 +61,7 @@ type RsBusinessUpdateReq struct {
 	Status    int    `json:"status" comment:"状态"`
 	Desc      string `json:"desc" comment:"描述信息"`
 	Name      string `json:"name" comment:"业务云名称"`
-	EnName    string `json:"en_name" gorm:"index;type:varchar(30);comment:业务别名"`
+	EnName    string `json:"enName" gorm:"index;type:varchar(30);comment:业务别名"`
 	Algorithm string `json:"algorithm" comment:"算法备注"`
 	common.ControlBy
 }
