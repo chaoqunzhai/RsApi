@@ -300,20 +300,36 @@ func (e RsHost) GetPage(c *gin.Context) {
 	for _, row := range list {
 		customRow := make(map[string]interface{}, 1)
 		customRow["updatedAt"] = fmt.Sprintf("%v", row.UpdatedAt.Format(time.DateTime))
-		customRow["status"] = global.HostSuccess
 
-		if row.HealthyAt.Valid {
-			if int(nowTime.Sub(row.HealthyAt.Time).Minutes()) > 5 {
-				customRow["status"] = global.HostOffline
-				if row.Status != global.HostOffline {
+		validStatus := row.Status
+		//只做在线数据的检查
+		if row.Auth > 0 { //只有主机有权限的时候去检查
+
+			if row.HealthyAt.Valid {
+				if int(nowTime.Sub(row.HealthyAt.Time).Minutes()) > 6 { //如果上报的时间大于5分钟 那就删掉线了
+
 					e.Orm.Model(&models.RsHost{}).Where("id = ?", row.Id).Updates(map[string]interface{}{
 						"status": global.HostOffline,
 					})
-				}
-			}
-			customRow["healthyAt"] = row.HealthyAt.Time.Format("2006-01-02 15:04:05")
-		}
 
+				} else { //在5分钟内
+					validStatus = global.HostSuccess
+				}
+				customRow["healthyAt"] = row.HealthyAt.Time.Format("2006-01-02 15:04:05")
+			} else { //是一个没有注册到节点的机器，因为没有健康时间
+				validStatus = global.HostOffline
+			}
+
+			if validStatus == global.HostOffline {
+				e.Orm.Model(&models.RsHost{}).Where("id = ?", row.Id).Updates(map[string]interface{}{
+					"status": global.HostOffline,
+				})
+			}
+
+		} else {
+			//主机没有权限.执行ProbeShell的命令去进行异步探测
+		}
+		customRow["status"] = validStatus
 		customRow["hostname"] = row.HostName
 
 		snList := make([]dto.LabelRow, 0)
@@ -340,6 +356,7 @@ func (e RsHost) GetPage(c *gin.Context) {
 				}
 			}
 		}
+		customRow["auth"] = row.Auth
 		customRow["sn"] = snList
 		customRow["system"] = map[string]interface{}{
 			"cpu": row.Cpu,
@@ -361,9 +378,7 @@ func (e RsHost) GetPage(c *gin.Context) {
 		customRow["isp"] = row.Isp
 		customRow["balance"] = fmt.Sprintf("%vGbps", row.Balance)
 		customRow["remark"] = row.Remark
-		if row.Belong == 0 {
-			row.Belong = 1
-		}
+
 		customRow["belong"] = row.Belong
 		customRow["networkType"] = row.NetworkType
 		if monitorDat, ok := HostMapMonitorData[row.Id]; ok {

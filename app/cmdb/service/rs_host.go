@@ -34,9 +34,10 @@ func (e *RsHost) GetPage(c *dto.RsHostGetPageReq, p *actions.DataPermission, lis
 		}
 		orm = orm.Where("idc in (?)", cache)
 	}
+
 	if c.IdcNumber != "" {
 		var idcList []models.RsIdc
-		e.Orm.Model(&models.RsIdc{}).Select("id").Where("number like ?", fmt.Sprintf("%%%v%%", c.IdcName)).Find(&idcList)
+		e.Orm.Model(&models.RsIdc{}).Select("id").Where("number like ?", fmt.Sprintf("%%%v%%", c.IdcNumber)).Find(&idcList)
 		var cache []int
 		for _, idc := range idcList {
 			cache = append(cache, idc.Id)
@@ -278,6 +279,9 @@ func (e *RsHost) GetBusinessMap(ids []int) map[int][]dto.LabelRow {
 	for _, i := range ids {
 		cacheIds = append(cacheIds, fmt.Sprintf("%v", i))
 	}
+	if len(cacheIds) == 0 {
+		return map[int][]dto.LabelRow{}
+	}
 	hostBindIdc := fmt.Sprintf("select business_id,host_id from host_bind_business where `host_id` in (%v)", strings.Join(cacheIds, ","))
 	var bindIds []struct {
 		HostId     int `json:"host_id"`
@@ -289,7 +293,6 @@ func (e *RsHost) GetBusinessMap(ids []int) map[int][]dto.LabelRow {
 
 		return map[int][]dto.LabelRow{}
 	}
-
 	var cacheBuIds []int
 	for _, r := range bindIds {
 		cacheBuIds = append(cacheBuIds, r.BusinessId)

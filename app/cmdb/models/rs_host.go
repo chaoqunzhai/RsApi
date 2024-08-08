@@ -26,6 +26,8 @@ type RsHost struct {
 	Isp           int          `json:"isp" gorm:"type:varchar(16);comment:运营商"`
 	TransProvince int          `json:"transProvince" gorm:"default:0;comment:是否跨省"`
 	LineType      int          `json:"lineType" gorm:"type:int(1);default:0;comment:线路类型"`
+	Auth          int          `json:"auth" gorm:"type:int(1);default:1;comment:是否有主机权限"`
+	ProbeShell    string       `json:"probeShell" gorm:"type:varchar(100);comment:主动探测主机命令"`
 	Idc           int          `json:"idc" gorm:"type:int(11);comment:idc"`
 	IdcInfo       interface{}  `json:"idcInfo" gorm:"-"`
 	Business      []RsBusiness `json:"business" gorm:"many2many:host_bind_business;foreignKey:id;joinForeignKey:host_id;references:id;joinReferences:business_id;"`
@@ -57,6 +59,9 @@ func (e *RsHost) AfterFind(tx *gorm.DB) (err error) {
 	userId := e.CreateBy
 	if e.UpdateBy != 0 {
 		userId = e.UpdateBy
+	}
+	if userId == 0 {
+		return
 	}
 	tx.Model(&user).Select("user_id,username").Where("user_id = ?", userId).Limit(1).Find(&user)
 
