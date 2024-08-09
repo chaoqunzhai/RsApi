@@ -61,7 +61,7 @@ type RsHostMonitorFlow struct {
 	Id    int    `uri:"id"`
 	Start string `form:"start"`
 	End   string `form:"end"`
-	Setup int    `json:"setup"`
+	Setup int    `form:"setup"`
 }
 type RsHostGetPageReq struct {
 	dto.Pagination `search:"-"`

@@ -63,8 +63,6 @@ func GetPromResult(u *url.URL) (result *QueryInfo, err error) {
 	resultBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		fmt.Println("NewDecoder err!", err)
-		//fmt.Printf("%s", debug.Stack())
-		//debug.PrintStack()
 		return result, err
 	}
 
