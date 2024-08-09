@@ -13,7 +13,7 @@
                             {{- else if eq .GoField "DeletedAt" -}}
                             {{- else if eq .GoField "CreateBy" -}}
                             {{- else }}
-                                <el-col :span="12">
+                                <el-col :span="8">
                                     <el-form-item label="{{.ColumnComment}}：" prop="{{.JsonField}}">
                                         {{ if eq "input" .HtmlType -}}
                                         {{"{{"}} form.{{.JsonField}} {{"}}"}}
@@ -70,6 +70,13 @@
             id: {
               type: String,
               default: ''
+            }
+        },
+        watch: {
+            id(newVal, oldVal) {
+              if (newVal != oldVal) {
+                this.getDataById()
+              }
             }
         },
         components: {
