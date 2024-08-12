@@ -464,3 +464,23 @@ func RemoveDirectory(dir string) error {
 	}
 	return os.Remove(dir) // 删除空目录本身
 }
+func GetLayoutUnix(day, layout string) (start int64, end int64) {
+	date, err := time.Parse(layout, day)
+	if err != nil {
+		fmt.Println("Error parsing date:", err)
+		return
+	}
+
+	// 计算这一天的开始时间戳（0点）
+	thisNow := time.Date(2024, date.Month(), date.Day(), 0, 0, 0, 0, global.LOC)
+	startOfDayTimestamp := thisNow.Unix()
+	fmt.Printf("Start of Day (2024-08-09 00:00:00) Timestamp: %d\n", startOfDayTimestamp)
+
+	// 计算这一天的结束时间戳（23:59:59）
+	// 通过将日期设置为下一天的0点，然后减去1秒来实现
+	endOfDay := thisNow.Add(24 * time.Hour).Add(-time.Second)
+	endOfDayTimestamp := endOfDay.Unix()
+	fmt.Printf("End of Day (2024-08-09 23:59:59) Timestamp: %d\n", endOfDayTimestamp)
+
+	return startOfDayTimestamp, endOfDayTimestamp
+}

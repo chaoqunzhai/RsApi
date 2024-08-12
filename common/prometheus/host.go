@@ -12,6 +12,7 @@ import (
 )
 
 type MonitorResult struct {
+	Title   string         `json:"title"`
 	Data    []interface{}  `json:"data"`
 	Compute MonitorCompute `json:"compute"`
 }
@@ -22,7 +23,22 @@ type MonitorCompute struct {
 	Percent float64 `json:"percent"`
 }
 
-func requestPromResult(query string, req *dto.RsHostMonitorFlow) interface{} {
+//	func funUnit(value float64) string  {
+//		var unit string
+//		if (value > 999999999) {
+//			unit = fmt.Sprintf("%.2f",value / 1000000000)
+//		} else if (Number(value) > 999999) {
+//			unit = fmt.Sprintf("%.2f",value / 1000000000)
+//			n = (Number(value / 1000000)).toFixed(2) + " M";
+//		} else if (Number(value) > 999) {
+//			unit = fmt.Sprintf("%.2f",value / 1000)
+//			n = (Number(value / 1000)).toFixed(2) + " K";
+//		} else {
+//			n = Number(value).toFixed(2) + " b";
+//			unit = fmt.Sprintf("%.2f",value)
+//		}
+//	}
+func requestPromResult(title, query string, req *dto.RsHostMonitorFlow) interface{} {
 
 	result := MonitorResult{}
 	//查询普罗米修斯数据
@@ -36,7 +52,6 @@ func requestPromResult(query string, req *dto.RsHostMonitorFlow) interface{} {
 	parameters.Add("end", req.End)
 	parameters.Add("step", fmt.Sprintf("%v", req.Setup))
 	parameters.Add("query", query)
-
 	queryUrl.RawQuery = parameters.Encode()
 
 	ProResult, err := GetPromResult(queryUrl)
@@ -99,16 +114,19 @@ func requestPromResult(query string, req *dto.RsHostMonitorFlow) interface{} {
 	}
 	sort.Float64s(XValue)
 
+	result.Title = title
 	result.Data = XData
 	//计算95值
-	result.Compute.Percent = utils.Percentile(XValue, 0.95)
-	//计算max
-	result.Compute.Max = utils.Max(XValue)
-	//计算最小
-	result.Compute.Min = utils.Min(XValue)
+	if len(XValue) > 1 {
+		result.Compute.Percent = utils.Percentile(XValue, 0.95)
+		//计算max
+		result.Compute.Max = utils.Max(XValue)
+		//计算最小
+		result.Compute.Min = utils.Min(XValue)
 
-	//计算平均
-	result.Compute.Avg = utils.Avg(XValue)
+		//计算平均
+		result.Compute.Avg = utils.Avg(XValue)
+	}
 
 	return result
 }
@@ -118,17 +136,17 @@ func Transmit(hostname string, req *dto.RsHostMonitorFlow) map[string]interface{
 
 	transmitQuery := fmt.Sprintf("sum(rate(phy_nic_network_transmit_bytes_total{instance=\"%v\"}[5m]))*8", hostname)
 
-	transmitData := requestPromResult(transmitQuery, req)
+	transmitData := requestPromResult("上行", transmitQuery, req)
 
 	receiveQuery := fmt.Sprintf("sum(rate(phy_nic_network_receive_bytes_total{instance=\"%v\"}[5m]))*8", hostname)
 
-	receiveData := requestPromResult(receiveQuery, req)
+	receiveData := requestPromResult("下行", receiveQuery, req)
 
 	provinceOutQuery := fmt.Sprintf("avg(province_out_percent{instance=\"%v\"}) by (instance) * sum(rate(phy_nic_network_transmit_bytes_total{instance=\"%v\"}[5m]))by(instance)*8",
 		hostname, hostname,
 	)
 
-	provinceOutData := requestPromResult(provinceOutQuery, req)
+	provinceOutData := requestPromResult("出省流量", provinceOutQuery, req)
 
 	response := map[string]interface{}{
 		"transmit":     transmitData,

@@ -270,8 +270,6 @@ func (e RsHost) MonitorFlow(c *gin.Context) {
 		req.Setup = 60
 	}
 	HostName := hostInstance.HostName
-
-	HostName = "jkwl-zjtd-qhhxmgzzzzzz-ltnw-01"
 	result := prometheus.Transmit(HostName, &req)
 	e.OK(result, "successful")
 	return
