@@ -9,8 +9,7 @@
                         {{- if (eq $x "1") -}}
                             <el-form-item label="{{.ColumnComment}}" prop="{{.JsonField}}">
                                 {{- if ne .FkTableName "" -}}
-                                <el-select v-model="queryParams.{{.JsonField}}"
-                                           placeholder="请选择" clearable size="small" {{if eq .IsEdit "false" -}} :disabled="isEdit" {{- end }}>
+                                <el-select v-model="queryParams.{{.JsonField}}" placeholder="请选择" clearable size="small" {{if eq .IsEdit "false" -}} :disabled="isEdit" {{- end }}>
                                     <el-option
                                             v-for="dict in {{.JsonField}}Options"
                                             :key="dict.key"
@@ -20,11 +19,9 @@
                                 </el-select>
                                 {{- else -}}
                                 {{if eq .DictType "" -}}
-                                    <el-input v-model="queryParams.{{.JsonField}}" placeholder="请输入{{.ColumnComment}}" clearable
-                                              size="small" @keyup.enter.native="handleQuery"/>
+                                    <el-input v-model="queryParams.{{.JsonField}}" placeholder="请输入{{.ColumnComment}}" clearable size="small" @keyup.enter.native="handleQuery"/>
                                 {{- else -}}
-                                    <el-select v-model="queryParams.{{.JsonField}}"
-                                               placeholder="{{$tableComment}}{{.ColumnComment}}" clearable size="small">
+                                    <el-select v-model="queryParams.{{.JsonField}}" placeholder="{{$tableComment}}{{.ColumnComment}}" clearable size="small">
                                         <el-option
                                                 v-for="dict in {{.JsonField}}Options"
                                                 :key="dict.value"
@@ -90,25 +87,21 @@
 
                             {{- else -}}
                             {{- if ne .DictType "" -}}
-                                <el-table-column label="{{.ColumnComment}}" align="center" prop="{{.JsonField}}"
-                                                 :formatter="{{.JsonField}}Format" width="100">
+                                <el-table-column label="{{.ColumnComment}}" align="center" prop="{{.JsonField}}" :formatter="{{.JsonField}}Format" width="100">
                                     <template slot-scope="scope">
                                         {{ "{{" }} {{.JsonField}}Format(scope.row) {{"}}"}}
                                     </template>
                                 </el-table-column>
-
                             {{- end -}}
                             {{- if eq .DictType "" -}}
                                 {{- if eq .HtmlType "datetime" -}}
-                                <el-table-column label="{{.ColumnComment}}" align="center" prop="{{.JsonField}}"
-                                                 :show-overflow-tooltip="true">
+                                <el-table-column label="{{.ColumnComment}}" align="center" prop="{{.JsonField}}" :show-overflow-tooltip="true">
                                     <template slot-scope="scope">
                                     <span>{{ "{{" }} parseTime(scope.row.{{.JsonField}}) {{"}}"}}</span>
                                     </template>
                                 </el-table-column>
                                 {{- else -}}
-                                <el-table-column label="{{.ColumnComment}}" align="center" prop="{{.JsonField}}"
-                                                 :show-overflow-tooltip="true"/>
+                                <el-table-column label="{{.ColumnComment}}" align="center" prop="{{.JsonField}}" :show-overflow-tooltip="true"/>
                                 {{- end -}}
                             {{- end -}}
                             {{- end -}}
@@ -259,7 +252,7 @@
 </template>
 
 <script>
-    import {add{{.ClassName}}, del{{.ClassName}}, get{{.ClassName}}, list{{.ClassName}}, update{{.ClassName}}} from '@/api/{{ .PackageName}}/{{ .MLTBName}}'
+    import { add{{.ClassName}}, del{{.ClassName}}, get{{.ClassName}}, list{{.ClassName}}, update{{.ClassName}} } from '@/api/{{ .PackageName}}/{{ .MLTBName}}'
     {{ $package:=.PackageName }}
     {{range .Columns}}
     {{- if ne .FkTableName "" -}}
@@ -377,11 +370,22 @@
             }
                 this.resetForm('form')
             },
-            getImgList: function() {
-              this.form[this.fileIndex] = this.$refs['fileChoose'].resultList[0].fullUrl
-            },
-            fileClose: function() {
-              this.fileOpen = false
+            convertFields(data, mode = 'toString') {
+              const fieldsToConvert = []
+              {{range .Columns}}
+                  {{- if ne .DictType "" -}}
+                  fieldsToConvert.push('{{.JsonField}}')
+              {{ end -}}
+              {{- end -}}
+              // 遍历字段并进行转换
+              fieldsToConvert.forEach(field => {
+                if (mode === 'toString' && typeof data[field] === 'number') {
+                  data[field] = data[field].toString()
+                } else if (mode === 'toNumber' && typeof data[field] === 'string' && !isNaN(data[field])) {
+                  data[field] = Number(data[field])
+                }
+              })
+              return data
             },
             {{range .Columns}}
             {{- if ne .DictType "" -}}
@@ -452,7 +456,7 @@
                 const {{.PkJsonField}} =
                 row.{{.PkJsonField}} || this.ids
                 get{{.ClassName}}({{.PkJsonField}}).then(response => {
-                    this.form = response.data
+                    this.form = this.convertFields(response.data, 'toString')
                     this.open = true
                     this.title = '修改{{.TableComment}}'
                     this.isEdit = true
@@ -463,7 +467,7 @@
                 this.$refs['form'].validate(valid => {
                     if (valid) {
                         if (this.form.{{.PkJsonField}} !== undefined) {
-                            update{{.ClassName}}(this.form).then(response => {
+                            update{{.ClassName}}(this.convertFields(this.form, 'toNumber')).then(response => {
                                 if (response.code === 200) {
                                     this.msgSuccess(response.msg)
                                     this.open = false
