@@ -12,7 +12,7 @@ type RsBusiness struct {
 	Layer     int    `json:"layer" gorm:"type:tinyint;comment:排序"`
 	Desc      string `json:"desc" gorm:"type:varchar(35);comment:描述信息"`
 	Name      string `json:"name" gorm:"type:varchar(50);comment:业务云名称"`
-	Algorithm string `json:"algorithm" gorm:"type:varchar(120);comment:算法备注"`
+	Algorithm string `json:"algorithm" gorm:"type:varchar(30);comment:计费算法标记"`
 	EnName    string `json:"enName" gorm:"index;type:varchar(30);comment:业务英文名字"`
 	models.ExtendUserBy
 	models.ModelTime

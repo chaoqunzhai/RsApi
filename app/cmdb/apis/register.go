@@ -93,17 +93,21 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 				"account":   DialRow.A,
 				"pass":      DialRow.P,
 				"status":    DialRow.S,
+				"ip":        DialRow.Ip,
+				"mac":       DialRow.Mac,
 				"source":    1,
 				"dial_name": DialRow.D,
 			})
 		} else {
-			DialRowModel.HostId = int64(hostInstance.Id)
-			DialRowModel.IdcId = int64(IdcId)
+			DialRowModel.HostId = hostInstance.Id
+			DialRowModel.IdcId = IdcId
 			DialRowModel.Account = DialRow.A
 			DialRowModel.Pass = DialRow.P
+			DialRowModel.Ip = DialRow.Ip
+			DialRowModel.Mac = DialRow.Mac
 			DialRowModel.DialName = DialRow.D
 			DialRowModel.Source = 1
-			DialRowModel.Status = int64(DialRow.S)
+			DialRowModel.Status = DialRow.S
 			e.Orm.Save(&DialRowModel)
 		}
 	}

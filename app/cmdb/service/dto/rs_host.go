@@ -9,11 +9,13 @@ import (
 // 主机拨号的信息
 
 type RegisterDial struct {
-	A string `json:"a"` //账号
-	P string `json:"p"` //密码
-	I string `json:"i"` //绑定物理网卡
-	D string `json:"d"` //ppo线路名称
-	S int    `json:"s"` //状态
+	A   string `json:"a"` //账号
+	P   string `json:"p"` //密码
+	I   string `json:"i"` //绑定物理网卡
+	D   string `json:"d"` //ppo线路名称
+	S   int    `json:"s"` //状态
+	Ip  string `json:"ip"`
+	Mac string `json:"mac"`
 }
 
 // 内存使用率的格式化
@@ -88,29 +90,30 @@ type RsHostGetPageReq struct {
 }
 
 type RsHostOrder struct {
-	Id        string `form:"idOrder"  search:"type:order;column:id;table:rs_host"`
-	CreateBy  string `form:"createByOrder"  search:"type:order;column:create_by;table:rs_host"`
-	UpdateBy  string `form:"updateByOrder"  search:"type:order;column:update_by;table:rs_host"`
-	CreatedAt string `form:"createdAtOrder"  search:"type:order;column:created_at;table:rs_host"`
-	UpdatedAt string `form:"updatedAtOrder"  search:"type:order;column:updated_at;table:rs_host"`
-	DeletedAt string `form:"deletedAtOrder"  search:"type:order;column:deleted_at;table:rs_host"`
-	Layer     string `form:"layerOrder"  search:"type:order;column:layer;table:rs_host"`
-	Enable    string `form:"enableOrder"  search:"type:order;column:enable;table:rs_host"`
-	Desc      string `form:"descOrder"  search:"type:order;column:desc;table:rs_host"`
-	HostName  string `form:"hostNameOrder"  search:"type:order;column:host_name;table:rs_host"`
-	Sn        string `form:"snOrder"  search:"type:order;column:sn;table:rs_host"`
-	Cpu       string `form:"cpuOrder"  search:"type:order;column:cpu;table:rs_host"`
-	Ip        string `form:"ipOrder"  search:"type:order;column:ip;table:rs_host"`
-	Memory    string `form:"memoryOrder"  search:"type:order;column:memory;table:rs_host"`
-	Disk      string `form:"diskOrder"  search:"type:order;column:disk;table:rs_host"`
-	Kernel    string `form:"kernelOrder"  search:"type:order;column:kernel;table:rs_host"`
-	Belong    string `form:"belongOrder"  search:"type:order;column:belong;table:rs_host"`
-	Remark    string `form:"remarkOrder"  search:"type:order;column:remark;table:rs_host"`
-	Operator  string `form:"operatorOrder"  search:"type:order;column:operator;table:rs_host"`
-	Status    string `form:"statusOrder"  search:"type:order;column:status;table:rs_host"`
-	NetDevice string `form:"netDeviceOrder"  search:"type:order;column:net_device;table:rs_host"`
-	Balance   string `form:"balanceOrder"  search:"type:order;column:balance;table:rs_host"`
-	Isp       string `form:"ispOrder"  search:"type:order;column:isp;table:rs_host"`
+	Id            string `form:"idOrder"  search:"type:order;column:id;table:rs_host"`
+	CreateBy      string `form:"createByOrder"  search:"type:order;column:create_by;table:rs_host"`
+	UpdateBy      string `form:"updateByOrder"  search:"type:order;column:update_by;table:rs_host"`
+	CreatedAt     string `form:"createdAtOrder"  search:"type:order;column:created_at;table:rs_host"`
+	UpdatedAt     string `form:"updatedAtOrder"  search:"type:order;column:updated_at;table:rs_host"`
+	DeletedAt     string `form:"deletedAtOrder"  search:"type:order;column:deleted_at;table:rs_host"`
+	Layer         string `form:"layerOrder"  search:"type:order;column:layer;table:rs_host"`
+	Enable        string `form:"enableOrder"  search:"type:order;column:enable;table:rs_host"`
+	Desc          string `form:"descOrder"  search:"type:order;column:desc;table:rs_host"`
+	HostName      string `form:"hostNameOrder"  search:"type:order;column:host_name;table:rs_host"`
+	Sn            string `form:"snOrder"  search:"type:order;column:sn;table:rs_host"`
+	Cpu           string `form:"cpuOrder"  search:"type:order;column:cpu;table:rs_host"`
+	Ip            string `form:"ipOrder"  search:"type:order;column:ip;table:rs_host"`
+	Memory        string `form:"memoryOrder"  search:"type:order;column:memory;table:rs_host"`
+	Disk          string `form:"diskOrder"  search:"type:order;column:disk;table:rs_host"`
+	Kernel        string `form:"kernelOrder"  search:"type:order;column:kernel;table:rs_host"`
+	Belong        string `form:"belongOrder"  search:"type:order;column:belong;table:rs_host"`
+	TransProvince string `form:"transProvinceOrder"  search:"type:order;column:trans_province;table:rs_host"`
+	Remark        string `form:"remarkOrder"  search:"type:order;column:remark;table:rs_host"`
+	Operator      string `form:"operatorOrder"  search:"type:order;column:operator;table:rs_host"`
+	Status        string `form:"statusOrder"  search:"type:order;column:status;table:rs_host"`
+	NetDevice     string `form:"netDeviceOrder"  search:"type:order;column:net_device;table:rs_host"`
+	Balance       string `form:"balanceOrder"  search:"type:order;column:balance;table:rs_host"`
+	Isp           string `form:"ispOrder"  search:"type:order;column:isp;table:rs_host"`
 }
 
 func (m *RsHostGetPageReq) GetNeedSearch() interface{} {
