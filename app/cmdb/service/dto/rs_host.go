@@ -9,6 +9,7 @@ import (
 // 主机拨号的信息
 
 type RegisterDial struct {
+	BU  string `json:"bu"`
 	A   string `json:"a"` //账号
 	P   string `json:"p"` //密码
 	I   string `json:"i"` //绑定物理网卡

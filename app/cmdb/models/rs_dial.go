@@ -24,6 +24,7 @@ type RsDial struct {
 	Source           int          `json:"source" gorm:"type:int;comment:拨号状态,0:录入 1:自动上报"`
 	IdcId            int          `json:"idcId" gorm:"type:bigint;comment:关联的IDC"`
 	HostId           int          `json:"hostId" gorm:"type:bigint;comment:关联主机ID"`
+	DeviceName       string       `json:"deviceName" gorm:"type:varchar(20);comment:自动获取的物理网卡名称"`
 	DeviceId         int          `json:"deviceId" gorm:"type:bigint;comment:关联网卡ID"`
 	RunTime          sql.NullTime `json:"-" gorm:"type:datetime(3);comment:RunTime"`
 	RunTimeAt        string       `json:"runTimeAt" gorm:"-"`

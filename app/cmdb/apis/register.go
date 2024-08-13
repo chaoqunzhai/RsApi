@@ -88,15 +88,16 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 		e.Orm.Model(&models.RsDial{}).Where("account = ? and source = 1", DialRow.A).Count(&DialCount)
 		if DialCount > 0 {
 			e.Orm.Model(&models.RsDial{}).Where("account = ? and source = 1", DialRow.A).Updates(map[string]interface{}{
-				"host_id":   hostInstance.Id,
-				"idc_id":    hostInstance.Idc,
-				"account":   DialRow.A,
-				"pass":      DialRow.P,
-				"status":    DialRow.S,
-				"ip":        DialRow.Ip,
-				"mac":       DialRow.Mac,
-				"source":    1,
-				"dial_name": DialRow.D,
+				"host_id":     hostInstance.Id,
+				"idc_id":      hostInstance.Idc,
+				"account":     DialRow.A,
+				"pass":        DialRow.P,
+				"status":      DialRow.S,
+				"ip":          DialRow.Ip,
+				"mac":         DialRow.Mac,
+				"source":      1,
+				"device_name": DialRow.I,
+				"dial_name":   DialRow.D,
 			})
 		} else {
 			DialRowModel.HostId = hostInstance.Id
@@ -107,6 +108,7 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 			DialRowModel.Mac = DialRow.Mac
 			DialRowModel.DialName = DialRow.D
 			DialRowModel.Source = 1
+			DialRowModel.DeviceName = DialRow.I
 			DialRowModel.Status = DialRow.S
 			e.Orm.Save(&DialRowModel)
 		}
