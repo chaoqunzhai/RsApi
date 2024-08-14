@@ -8,7 +8,7 @@ import (
 
 type RsDial struct {
 	models.Model
-
+	Bu               string       `json:"bu" gorm:"type:varchar(10);comment:bu业务"`
 	Desc             string       `json:"desc" gorm:"type:varchar(35);comment:描述信息"`
 	CustomId         int          `json:"customId" gorm:"type:bigint;comment:所属客户"`
 	ContractId       int          `json:"contractId" gorm:"type:bigint;comment:关联合同"`

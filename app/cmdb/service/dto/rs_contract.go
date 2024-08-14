@@ -56,25 +56,85 @@ func (m *RsContractGetPageReq) GetNeedSearch() interface{} {
 	return *m
 }
 
+type RsBandwidthFeesInsertReq struct {
+	Id int `json:"id" comment:"主键编码"` // 主键编码
+
+	Isp             int     `json:"isp" gorm:"type:int(1);default:1;comment:运营商"`
+	Up              float64 `json:"up" gorm:"default:0;comment:上行带宽"`
+	Down            float64 `json:"down" gorm:"default:0;comment:下行带宽"`
+	LinePrice       float64 `json:"LinePrice" gorm:"comment:业务线单价"`
+	ManagerLineCost float64 `json:"managerLineCost" gorm:"comment:管理线价格"`
+	Charging        int     `json:"charging" gorm:"type:int(1);default:0;comment:计费方式"`
+	TransProvince   int     `json:"transProd" gorm:"default:false;comment:是否跨省"`
+	MoreDialing     int     `json:"moreDialing" gorm:"default:false;comment:是否支持多拨"`
+}
+
+func (s *RsBandwidthFeesInsertReq) Generate(model *models.RsBandwidthFees) {
+	if s.Id == 0 {
+		model.Model = common.Model{Id: s.Id}
+	}
+
+	model.Isp = s.Isp
+	model.Up = s.Up
+	model.Down = s.Down
+	model.LinePrice = s.LinePrice
+	model.ManagerLineCost = s.ManagerLineCost
+	model.Charging = s.Charging
+	model.TransProvince = s.TransProvince
+	model.MoreDialing = s.MoreDialing
+}
+func (s *RsBandwidthFeesInsertReq) GetId() interface{} {
+	return s.Id
+}
+
+type RsBandwidthFeesUpdateReq struct {
+	Id              int     `uri:"id" comment:"主键编码"` // 主键编码
+	Isp             int     `json:"isp" gorm:"type:int(1);default:1;comment:运营商"`
+	Up              float64 `json:"up" gorm:"default:0;comment:上行带宽"`
+	Down            float64 `json:"down" gorm:"default:0;comment:下行带宽"`
+	LinePrice       float64 `json:"linePrice" gorm:"comment:业务线单价"`
+	ManagerLineCost float64 `json:"managerLineCost" gorm:"comment:管理线价格"`
+	Charging        int     `json:"charging" gorm:"type:int(1);default:0;comment:计费方式"`
+	TransProvince   int     `json:"transProd" gorm:"default:false;comment:是否跨省"`
+	MoreDialing     int     `json:"moreDialing" gorm:"default:false;comment:是否支持多拨"`
+	common.ControlBy
+}
+
+func (s *RsBandwidthFeesUpdateReq) Generate(model *models.RsBandwidthFees) {
+	if s.Id == 0 {
+		model.Model = common.Model{Id: s.Id}
+	}
+
+	model.Isp = s.Isp
+	model.Up = s.Up
+	model.Down = s.Down
+	model.LinePrice = s.LinePrice
+	model.ManagerLineCost = s.ManagerLineCost
+	model.Charging = s.Charging
+	model.TransProvince = s.TransProvince
+	model.MoreDialing = s.MoreDialing
+}
+
 type RsContractInsertReq struct {
-	Id             int    `json:"-" comment:"主键编码"` // 主键编码
-	Desc           string `json:"desc" comment:"描述信息"`
-	Name           string `json:"name" comment:"合同名称"`
-	Number         string `json:"number" comment:"合同编号"`
-	BuId           int    `json:"buId" comment:"商务人员"`
-	CustomId       int    `json:"customId" comment:"所属客户ID"`
-	SignatoryId    int    `json:"signatoryId" comment:"签订人"`
-	User           string `json:"user" comment:"联系人名称"`
-	Type           int    `json:"type" comment:"合同类型,contract_type"`
-	SettlementType int    `json:"settlementType" comment:"结算方式,settlement_type"`
-	StartTime      string `json:"startTime" comment:"合同开始时间"`
-	EndTime        string `json:"endTime" comment:"合同结束时间"`
-	AccountName    string `json:"accountName" comment:"开户名称"`
-	BankAccount    string `json:"bankAccount" comment:"银行账号"`
-	BankName       string `json:"bankName" comment:"开户银行"`
-	IdentifyNumber string `json:"identifyNumber" comment:"纳税人识别号"`
-	Address        string `json:"address" comment:"地址"`
-	Phone          string `json:"phone" comment:"电话"`
+	Id             int                        `json:"-" comment:"主键编码"` // 主键编码
+	Desc           string                     `json:"desc" comment:"描述信息"`
+	Name           string                     `json:"name" comment:"合同名称"`
+	Number         string                     `json:"number" comment:"合同编号"`
+	BuId           int                        `json:"buId" comment:"商务人员"`
+	CustomId       int                        `json:"customId" comment:"所属客户ID"`
+	SignatoryId    int                        `json:"signatoryId" comment:"签订人"`
+	User           string                     `json:"user" comment:"联系人名称"`
+	Type           int                        `json:"type" comment:"合同类型,contract_type"`
+	SettlementType int                        `json:"settlementType" comment:"结算方式,settlement_type"`
+	StartTime      string                     `json:"startTime" comment:"合同开始时间"`
+	EndTime        string                     `json:"endTime" comment:"合同结束时间"`
+	AccountName    string                     `json:"accountName" comment:"开户名称"`
+	BankAccount    string                     `json:"bankAccount" comment:"银行账号"`
+	BankName       string                     `json:"bankName" comment:"开户银行"`
+	IdentifyNumber string                     `json:"identifyNumber" comment:"纳税人识别号"`
+	Address        string                     `json:"address" comment:"地址"`
+	Phone          string                     `json:"phone" comment:"电话"`
+	BandwidthFees  []RsBandwidthFeesInsertReq `json:"bandwidthFees"`
 	common.ControlBy
 }
 
@@ -129,24 +189,25 @@ func (s *RsContractInsertReq) GetId() interface{} {
 }
 
 type RsContractUpdateReq struct {
-	Id             int    `uri:"id" comment:"主键编码"` // 主键编码
-	Desc           string `json:"desc" comment:"描述信息"`
-	Name           string `json:"name" comment:"合同名称"`
-	Number         string `json:"number" comment:"合同编号"`
-	BuId           int    `json:"buId" comment:"商务人员"`
-	CustomId       int    `json:"customId" comment:"所属客户ID"`
-	SignatoryId    int    `json:"signatoryId" comment:"签订人"`
-	User           string `json:"user" comment:"联系人名称"`
-	Type           int    `json:"type" comment:"合同类型,contract_type"`
-	SettlementType int    `json:"settlementType" comment:"结算方式,settlement_type"`
-	StartTime      string `json:"startTime" comment:"合同开始时间"`
-	EndTime        string `json:"endTime" comment:"合同结束时间"`
-	AccountName    string `json:"accountName" comment:"开户名称"`
-	BankAccount    string `json:"bankAccount" comment:"银行账号"`
-	BankName       string `json:"bankName" comment:"开户银行"`
-	IdentifyNumber string `json:"identifyNumber" comment:"纳税人识别号"`
-	Address        string `json:"address" comment:"地址"`
-	Phone          string `json:"phone" comment:"电话"`
+	Id             int                        `uri:"id" comment:"主键编码"` // 主键编码
+	Desc           string                     `json:"desc" comment:"描述信息"`
+	Name           string                     `json:"name" comment:"合同名称"`
+	Number         string                     `json:"number" comment:"合同编号"`
+	BuId           int                        `json:"buId" comment:"商务人员"`
+	CustomId       int                        `json:"customId" comment:"所属客户ID"`
+	SignatoryId    int                        `json:"signatoryId" comment:"签订人"`
+	User           string                     `json:"user" comment:"联系人名称"`
+	Type           int                        `json:"type" comment:"合同类型,contract_type"`
+	SettlementType int                        `json:"settlementType" comment:"结算方式,settlement_type"`
+	StartTime      string                     `json:"startTime" comment:"合同开始时间"`
+	EndTime        string                     `json:"endTime" comment:"合同结束时间"`
+	AccountName    string                     `json:"accountName" comment:"开户名称"`
+	BankAccount    string                     `json:"bankAccount" comment:"银行账号"`
+	BankName       string                     `json:"bankName" comment:"开户银行"`
+	IdentifyNumber string                     `json:"identifyNumber" comment:"纳税人识别号"`
+	Address        string                     `json:"address" comment:"地址"`
+	Phone          string                     `json:"phone" comment:"电话"`
+	BandwidthFees  []RsBandwidthFeesInsertReq `json:"bandwidthFees"`
 	common.ControlBy
 }
 

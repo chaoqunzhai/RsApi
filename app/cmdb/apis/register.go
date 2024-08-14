@@ -98,8 +98,10 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 				"source":      1,
 				"device_name": DialRow.I,
 				"dial_name":   DialRow.D,
+				"bu":          DialRow.BU,
 			})
 		} else {
+			DialRowModel.Bu = DialRow.BU
 			DialRowModel.HostId = hostInstance.Id
 			DialRowModel.IdcId = IdcId
 			DialRowModel.Account = DialRow.A

@@ -4,6 +4,8 @@ import "database/sql"
 
 type Dial struct {
 	RichGlobal
+	Bu               string       `json:"bu" gorm:"type:varchar(10);comment:bu业务"`
+	Enable           bool         `json:"enable" gorm:"default:true"`
 	CustomId         int          `json:"customId" gorm:"comment:所属客户"`
 	ContractId       int          `json:"contractId" gorm:"comment:关联合同"`
 	BroadbandType    int          `json:"broadbandType" gorm:"comment:带宽类型,broadband_type"`
