@@ -126,8 +126,8 @@ type RsContractInsertReq struct {
 	User           string                     `json:"user" comment:"联系人名称"`
 	Type           int                        `json:"type" comment:"合同类型,contract_type"`
 	SettlementType int                        `json:"settlementType" comment:"结算方式,settlement_type"`
-	StartTime      string                     `json:"startTime" comment:"合同开始时间"`
-	EndTime        string                     `json:"endTime" comment:"合同结束时间"`
+	StartTimeAt    string                     `json:"startTimeAt" comment:"合同开始时间"`
+	EndTimeAt      string                     `json:"endTimeAt" comment:"合同结束时间"`
 	AccountName    string                     `json:"accountName" comment:"开户名称"`
 	BankAccount    string                     `json:"bankAccount" comment:"银行账号"`
 	BankName       string                     `json:"bankName" comment:"开户银行"`
@@ -153,8 +153,8 @@ func (s *RsContractInsertReq) Generate(model *models.RsContract) {
 	model.Type = s.Type
 	model.SettlementType = s.SettlementType
 
-	if s.StartTime != "" {
-		if star, err := time.ParseInLocation(time.DateTime, s.StartTime, global.LOC); err == nil {
+	if s.StartTimeAt != "" {
+		if star, err := time.ParseInLocation(time.DateTime, s.StartTimeAt, global.LOC); err == nil {
 			model.StartTime = sql.NullTime{
 				Time:  star,
 				Valid: true,
@@ -165,8 +165,8 @@ func (s *RsContractInsertReq) Generate(model *models.RsContract) {
 		model.StartTime = sql.NullTime{}
 	}
 
-	if s.EndTime != "" {
-		if end, err := time.ParseInLocation(time.DateTime, s.StartTime, global.LOC); err == nil {
+	if s.EndTimeAt != "" {
+		if end, err := time.ParseInLocation(time.DateTime, s.EndTimeAt, global.LOC); err == nil {
 			model.EndTime = sql.NullTime{
 				Time:  end,
 				Valid: true,
@@ -199,8 +199,8 @@ type RsContractUpdateReq struct {
 	User           string                     `json:"user" comment:"联系人名称"`
 	Type           int                        `json:"type" comment:"合同类型,contract_type"`
 	SettlementType int                        `json:"settlementType" comment:"结算方式,settlement_type"`
-	StartTime      string                     `json:"startTime" comment:"合同开始时间"`
-	EndTime        string                     `json:"endTime" comment:"合同结束时间"`
+	StartTimeAt    string                     `json:"startTimeAt" comment:"合同开始时间"`
+	EndTimeAt      string                     `json:"endTimeAt" comment:"合同结束时间"`
 	AccountName    string                     `json:"accountName" comment:"开户名称"`
 	BankAccount    string                     `json:"bankAccount" comment:"银行账号"`
 	BankName       string                     `json:"bankName" comment:"开户银行"`
@@ -226,8 +226,8 @@ func (s *RsContractUpdateReq) Generate(model *models.RsContract) {
 	model.Type = s.Type
 	model.SettlementType = s.SettlementType
 
-	if s.StartTime != "" {
-		if star, err := time.ParseInLocation(time.DateTime, s.StartTime, global.LOC); err == nil {
+	if s.StartTimeAt != "" {
+		if star, err := time.ParseInLocation(time.DateTime, s.StartTimeAt, global.LOC); err == nil {
 			model.StartTime = sql.NullTime{
 				Time:  star,
 				Valid: true,
@@ -238,8 +238,8 @@ func (s *RsContractUpdateReq) Generate(model *models.RsContract) {
 		model.StartTime = sql.NullTime{}
 	}
 
-	if s.EndTime != "" {
-		if end, err := time.ParseInLocation(time.DateTime, s.StartTime, global.LOC); err == nil {
+	if s.EndTimeAt != "" {
+		if end, err := time.ParseInLocation(time.DateTime, s.EndTimeAt, global.LOC); err == nil {
 			model.EndTime = sql.NullTime{
 				Time:  end,
 				Valid: true,
