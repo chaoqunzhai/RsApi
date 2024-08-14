@@ -24,7 +24,7 @@ type AssetGroupMember struct {
 // @Tags 资产组合成员
 // @Param assetGroupId query string false "资产组合编码"
 // @Param assetId query string false "资产编码"
-// @Param isMain query string false "是否为主资产"
+// @Param isMain query string false "是否为主资产(1=是,0=否)"
 // @Param pageSize query int false "页条数"
 // @Param pageIndex query int false "页码"
 // @Success 200 {object} response.Response{data=response.Page{list=[]models.AssetGroupMember}} "{"code": 200, "data": [...]}"

@@ -25,7 +25,6 @@ type AssetOutboundOrder struct {
 	OutboundTo  string `form:"outboundToOrder"  search:"type:order;column:outbound_to;table:asset_outbound"`
 	OutboundBy  string `form:"outboundByOrder"  search:"type:order;column:outbound_by;table:asset_outbound"`
 	OutboundAt  string `form:"outboundAtOrder"  search:"type:order;column:outbound_at;table:asset_outbound"`
-	Attachment  string `form:"attachmentOrder"  search:"type:order;column:attachment;table:asset_outbound"`
 	Remark      string `form:"remarkOrder"  search:"type:order;column:remark;table:asset_outbound"`
 	CreatedAt   string `form:"createdAtOrder"  search:"type:order;column:created_at;table:asset_outbound"`
 	UpdatedAt   string `form:"updatedAtOrder"  search:"type:order;column:updated_at;table:asset_outbound"`
@@ -40,12 +39,11 @@ func (m *AssetOutboundGetPageReq) GetNeedSearch() interface{} {
 
 type AssetOutboundInsertReq struct {
 	Id          int       `json:"-" comment:"主键"` // 主键
-	AssetId     string    `json:"assetId" comment:"资产编码"`
-	WarehouseId string    `json:"warehouseId" comment:"库房编码"`
-	OutboundTo  string    `json:"outboundTo" comment:"出库去向(客户编码)"`
-	OutboundBy  string    `json:"outboundBy" comment:"出库人编码"`
+	AssetId     int       `json:"assetId" comment:"资产编码"`
+	WarehouseId int       `json:"warehouseId" comment:"库房编码"`
+	OutboundTo  int       `json:"outboundTo" comment:"出库去向(客户编码)"`
+	OutboundBy  int       `json:"outboundBy" comment:"出库人编码"`
 	OutboundAt  time.Time `json:"outboundAt" comment:"出库时间"`
-	Attachment  string    `json:"attachment" comment:"附件"`
 	Remark      string    `json:"remark" comment:"备注"`
 	common.ControlBy
 }
@@ -59,7 +57,6 @@ func (s *AssetOutboundInsertReq) Generate(model *models.AssetOutbound) {
 	model.OutboundTo = s.OutboundTo
 	model.OutboundBy = s.OutboundBy
 	model.OutboundAt = s.OutboundAt
-	model.Attachment = s.Attachment
 	model.Remark = s.Remark
 	model.CreateBy = s.CreateBy // 添加这而，需要记录是被谁创建的
 }
@@ -70,12 +67,11 @@ func (s *AssetOutboundInsertReq) GetId() interface{} {
 
 type AssetOutboundUpdateReq struct {
 	Id          int       `uri:"id" comment:"主键"` // 主键
-	AssetId     string    `json:"assetId" comment:"资产编码"`
-	WarehouseId string    `json:"warehouseId" comment:"库房编码"`
-	OutboundTo  string    `json:"outboundTo" comment:"出库去向(客户编码)"`
-	OutboundBy  string    `json:"outboundBy" comment:"出库人编码"`
+	AssetId     int       `json:"assetId" comment:"资产编码"`
+	WarehouseId int       `json:"warehouseId" comment:"库房编码"`
+	OutboundTo  int       `json:"outboundTo" comment:"出库去向(客户编码)"`
+	OutboundBy  int       `json:"outboundBy" comment:"出库人编码"`
 	OutboundAt  time.Time `json:"outboundAt" comment:"出库时间"`
-	Attachment  string    `json:"attachment" comment:"附件"`
 	Remark      string    `json:"remark" comment:"备注"`
 	common.ControlBy
 }
@@ -89,7 +85,6 @@ func (s *AssetOutboundUpdateReq) Generate(model *models.AssetOutbound) {
 	model.OutboundTo = s.OutboundTo
 	model.OutboundBy = s.OutboundBy
 	model.OutboundAt = s.OutboundAt
-	model.Attachment = s.Attachment
 	model.Remark = s.Remark
 	model.UpdateBy = s.UpdateBy // 添加这而，需要记录是被谁更新的
 }

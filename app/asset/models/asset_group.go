@@ -8,7 +8,7 @@ type AssetGroup struct {
 	models.Model
 
 	GroupName   string `json:"groupName" gorm:"type:varchar(128);comment:资产组合名称"`
-	MainAssetId string `json:"mainAssetId" gorm:"type:int;comment:主资产编码"`
+	MainAssetId int    `json:"mainAssetId" gorm:"type:int;comment:主资产编码"`
 	Remark      string `json:"remark" gorm:"type:text;comment:备注"`
 	models.ModelTime
 	models.ControlBy

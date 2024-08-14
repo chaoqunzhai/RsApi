@@ -32,7 +32,7 @@ func (m *AssetGroupGetPageReq) GetNeedSearch() interface{} {
 type AssetGroupInsertReq struct {
 	Id          int    `json:"-" comment:"主键"` // 主键
 	GroupName   string `json:"groupName" comment:"资产组合名称"`
-	MainAssetId string `json:"mainAssetId" comment:"主资产编码"`
+	MainAssetId int    `json:"mainAssetId" comment:"主资产编码"`
 	Remark      string `json:"remark" comment:"备注"`
 	common.ControlBy
 }
@@ -54,7 +54,7 @@ func (s *AssetGroupInsertReq) GetId() interface{} {
 type AssetGroupUpdateReq struct {
 	Id          int    `uri:"id" comment:"主键"` // 主键
 	GroupName   string `json:"groupName" comment:"资产组合名称"`
-	MainAssetId string `json:"mainAssetId" comment:"主资产编码"`
+	MainAssetId int    `json:"mainAssetId" comment:"主资产编码"`
 	Remark      string `json:"remark" comment:"备注"`
 	common.ControlBy
 }

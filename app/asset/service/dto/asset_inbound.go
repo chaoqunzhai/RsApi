@@ -10,12 +10,11 @@ import (
 
 type AssetInboundGetPageReq struct {
 	dto.Pagination `search:"-"`
-	AssetId        string    `form:"assetId"  search:"type:exact;column:asset_id;table:asset_inbound" comment:"资产编码"`
-	WarehouseId    string    `form:"warehouseId"  search:"type:exact;column:warehouse_id;table:asset_inbound" comment:"库房编码"`
-	InboundFrom    string    `form:"inboundFrom"  search:"type:exact;column:inbound_from;table:asset_inbound" comment:"来源(采购、自产、租赁、其它)"`
-	FromCode       string    `form:"fromCode"  search:"type:exact;column:from_code;table:asset_inbound" comment:"来源凭证编码"`
-	InboundBy      string    `form:"inboundBy"  search:"type:exact;column:inbound_by;table:asset_inbound" comment:"入库人编码"`
-	InboundAt      time.Time `form:"inboundAt"  search:"type:exact;column:inbound_at;table:asset_inbound" comment:"入库时间"`
+	AssetId        int    `form:"assetId"  search:"type:exact;column:asset_id;table:asset_inbound" comment:"资产编码"`
+	WarehouseId    int    `form:"warehouseId"  search:"type:exact;column:warehouse_id;table:asset_inbound" comment:"库房编码"`
+	InboundFrom    int    `form:"inboundFrom"  search:"type:exact;column:inbound_from;table:asset_inbound" comment:"来源(1=采购、0=直接入库)"`
+	FromCode       string `form:"fromCode"  search:"type:exact;column:from_code;table:asset_inbound" comment:"来源凭证编码(采购编码)"`
+	InboundBy      int    `form:"inboundBy"  search:"type:exact;column:inbound_by;table:asset_inbound" comment:"入库人编码"`
 	AssetInboundOrder
 }
 
@@ -27,7 +26,6 @@ type AssetInboundOrder struct {
 	FromCode    string `form:"fromCodeOrder"  search:"type:order;column:from_code;table:asset_inbound"`
 	InboundBy   string `form:"inboundByOrder"  search:"type:order;column:inbound_by;table:asset_inbound"`
 	InboundAt   string `form:"inboundAtOrder"  search:"type:order;column:inbound_at;table:asset_inbound"`
-	Attachment  string `form:"attachmentOrder"  search:"type:order;column:attachment;table:asset_inbound"`
 	Remark      string `form:"remarkOrder"  search:"type:order;column:remark;table:asset_inbound"`
 	CreatedAt   string `form:"createdAtOrder"  search:"type:order;column:created_at;table:asset_inbound"`
 	UpdatedAt   string `form:"updatedAtOrder"  search:"type:order;column:updated_at;table:asset_inbound"`
@@ -42,13 +40,12 @@ func (m *AssetInboundGetPageReq) GetNeedSearch() interface{} {
 
 type AssetInboundInsertReq struct {
 	Id          int       `json:"-" comment:"主键"` // 主键
-	AssetId     string    `json:"assetId" comment:"资产编码"`
-	WarehouseId string    `json:"warehouseId" comment:"库房编码"`
-	InboundFrom string    `json:"inboundFrom" comment:"来源(采购、自产、租赁、其它)"`
-	FromCode    string    `json:"fromCode" comment:"来源凭证编码"`
-	InboundBy   string    `json:"inboundBy" comment:"入库人编码"`
+	AssetId     int       `json:"assetId" comment:"资产编码"`
+	WarehouseId int       `json:"warehouseId" comment:"库房编码"`
+	InboundFrom int8      `json:"inboundFrom" comment:"来源(1=采购、0=直接入库)"`
+	FromCode    string    `json:"fromCode" comment:"来源凭证编号(采购单编号)"`
+	InboundBy   int       `json:"inboundBy" comment:"入库人编码"`
 	InboundAt   time.Time `json:"inboundAt" comment:"入库时间"`
-	Attachment  string    `json:"attachment" comment:"附件"`
 	Remark      string    `json:"remark" comment:"备注"`
 	common.ControlBy
 }
@@ -63,7 +60,6 @@ func (s *AssetInboundInsertReq) Generate(model *models.AssetInbound) {
 	model.FromCode = s.FromCode
 	model.InboundBy = s.InboundBy
 	model.InboundAt = s.InboundAt
-	model.Attachment = s.Attachment
 	model.Remark = s.Remark
 	model.CreateBy = s.CreateBy // 添加这而，需要记录是被谁创建的
 }
@@ -74,13 +70,12 @@ func (s *AssetInboundInsertReq) GetId() interface{} {
 
 type AssetInboundUpdateReq struct {
 	Id          int       `uri:"id" comment:"主键"` // 主键
-	AssetId     string    `json:"assetId" comment:"资产编码"`
-	WarehouseId string    `json:"warehouseId" comment:"库房编码"`
-	InboundFrom string    `json:"inboundFrom" comment:"来源(采购、自产、租赁、其它)"`
-	FromCode    string    `json:"fromCode" comment:"来源凭证编码"`
-	InboundBy   string    `json:"inboundBy" comment:"入库人编码"`
+	AssetId     int       `json:"assetId" comment:"资产编码"`
+	WarehouseId int       `json:"warehouseId" comment:"库房编码"`
+	InboundFrom int8      `json:"inboundFrom" comment:"来源(1=采购、0=直接入库)"`
+	FromCode    string    `json:"fromCode" comment:"来源凭证编码(采购编码)"`
+	InboundBy   int       `json:"inboundBy" comment:"入库人编码"`
 	InboundAt   time.Time `json:"inboundAt" comment:"入库时间"`
-	Attachment  string    `json:"attachment" comment:"附件"`
 	Remark      string    `json:"remark" comment:"备注"`
 	common.ControlBy
 }
@@ -95,7 +90,6 @@ func (s *AssetInboundUpdateReq) Generate(model *models.AssetInbound) {
 	model.FromCode = s.FromCode
 	model.InboundBy = s.InboundBy
 	model.InboundAt = s.InboundAt
-	model.Attachment = s.Attachment
 	model.Remark = s.Remark
 	model.UpdateBy = s.UpdateBy // 添加这而，需要记录是被谁更新的
 }

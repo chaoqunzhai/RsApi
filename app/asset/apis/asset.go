@@ -29,7 +29,7 @@ type Asset struct {
 // @Param brand query string false "品牌"
 // @Param unit query string false "计量单位"
 // @Param unitPrice query string false "单价"
-// @Param status query string false "状态(在库、出库)"
+// @Param status query string false "状态(0=在库, 1=出库, 2=在用, 3=处置)"
 // @Param pageSize query int false "页条数"
 // @Param pageIndex query int false "页码"
 // @Success 200 {object} response.Response{data=response.Page{list=[]models.Asset}} "{"code": 200, "data": [...]}"

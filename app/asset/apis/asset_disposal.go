@@ -22,10 +22,6 @@ type AssetDisposal struct {
 // @Summary 获取资产处置记录列表
 // @Description 获取资产处置记录列表
 // @Tags 资产处置记录
-// @Param assetId query string false "资产编码"
-// @Param disposalPerson query string false "处置人编码"
-// @Param reason query string false "处置原因"
-// @Param disposalType query string false "处置方式(报废、出售、出租、退租、捐赠、其它)"
 // @Param pageSize query int false "页条数"
 // @Param pageIndex query int false "页码"
 // @Success 200 {object} response.Response{data=response.Page{list=[]models.AssetDisposal}} "{"code": 200, "data": [...]}"

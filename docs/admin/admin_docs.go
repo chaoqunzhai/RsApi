@@ -107,7 +107,7 @@ const docTemplateadmin = `{
                     },
                     {
                         "type": "string",
-                        "description": "状态(在库、出库)",
+                        "description": "状态(0=在库, 1=出库, 2=在用, 3=处置)",
                         "name": "status",
                         "in": "query"
                     },
@@ -456,30 +456,6 @@ const docTemplateadmin = `{
                 ],
                 "summary": "获取资产处置记录列表",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "资产编码",
-                        "name": "assetId",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "处置人编码",
-                        "name": "disposalPerson",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "处置原因",
-                        "name": "reason",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "处置方式(报废、出售、出租、退租、捐赠、其它)",
-                        "name": "disposalType",
-                        "in": "query"
-                    },
                     {
                         "type": "integer",
                         "description": "页条数",
@@ -845,7 +821,7 @@ const docTemplateadmin = `{
                     },
                     {
                         "type": "string",
-                        "description": "是否为主资产",
+                        "description": "是否为主资产(1=是,0=否)",
                         "name": "isMain",
                         "in": "query"
                     },
@@ -1157,13 +1133,13 @@ const docTemplateadmin = `{
                     },
                     {
                         "type": "string",
-                        "description": "来源(采购、自产、租赁、其它)",
+                        "description": "来源(1=采购、0=直接入库)",
                         "name": "inboundFrom",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "来源凭证编码",
+                        "description": "来源凭证编码(采购编码)",
                         "name": "fromCode",
                         "in": "query"
                     },
@@ -1662,12 +1638,6 @@ const docTemplateadmin = `{
                         "in": "query"
                     },
                     {
-                        "type": "string",
-                        "description": "备注",
-                        "name": "remark",
-                        "in": "query"
-                    },
-                    {
                         "type": "integer",
                         "description": "页条数",
                         "name": "pageSize",
@@ -1835,12 +1805,6 @@ const docTemplateadmin = `{
                         "type": "string",
                         "description": "申购日期",
                         "name": "applyAt",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "申购状态(待审批、已审批、已拒绝)",
-                        "name": "status",
                         "in": "query"
                     },
                     {
@@ -2150,15 +2114,21 @@ const docTemplateadmin = `{
                 "summary": "获取资产退还记录列表",
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "资产编码",
                         "name": "assetId",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "退还人编码",
                         "name": "returnPerson",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "退还原因",
+                        "name": "reason",
                         "in": "query"
                     },
                     {
@@ -2373,13 +2343,13 @@ const docTemplateadmin = `{
                 "summary": "获取资产库存列表",
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "库房编码",
                         "name": "warehouseId",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "资产类别编码",
                         "name": "categoryId",
                         "in": "query"
@@ -6483,13 +6453,10 @@ const docTemplateadmin = `{
             "type": "object",
             "properties": {
                 "amount": {
-                    "type": "string"
+                    "type": "number"
                 },
                 "assetId": {
-                    "type": "string"
-                },
-                "attachment": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "createBy": {
                     "type": "integer"
@@ -6498,10 +6465,16 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "disposalPerson": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "disposalType": {
-                    "type": "string"
+                    "type": "integer"
+                },
+                "disposalWay": {
+                    "type": "integer"
+                },
+                "locationId": {
+                    "type": "integer"
                 },
                 "reason": {
                     "type": "string"
@@ -6518,13 +6491,10 @@ const docTemplateadmin = `{
             "type": "object",
             "properties": {
                 "amount": {
-                    "type": "string"
+                    "type": "number"
                 },
                 "assetId": {
-                    "type": "string"
-                },
-                "attachment": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "createBy": {
                     "type": "integer"
@@ -6533,13 +6503,19 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "disposalPerson": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "disposalType": {
-                    "type": "string"
+                    "type": "integer"
+                },
+                "disposalWay": {
+                    "type": "integer"
                 },
                 "id": {
                     "description": "主键",
+                    "type": "integer"
+                },
+                "locationId": {
                     "type": "integer"
                 },
                 "reason": {
@@ -6574,7 +6550,7 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "mainAssetId": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "remark": {
                     "type": "string"
@@ -6599,16 +6575,16 @@ const docTemplateadmin = `{
             "type": "object",
             "properties": {
                 "assetGroupId": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "assetId": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "createBy": {
                     "type": "integer"
                 },
                 "isMain": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "updateBy": {
                     "type": "integer"
@@ -6619,10 +6595,10 @@ const docTemplateadmin = `{
             "type": "object",
             "properties": {
                 "assetGroupId": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "assetId": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "createBy": {
                     "type": "integer"
@@ -6632,7 +6608,7 @@ const docTemplateadmin = `{
                     "type": "integer"
                 },
                 "isMain": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "updateBy": {
                     "type": "integer"
@@ -6653,7 +6629,7 @@ const docTemplateadmin = `{
                     "type": "integer"
                 },
                 "mainAssetId": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "remark": {
                     "type": "string"
@@ -6678,10 +6654,7 @@ const docTemplateadmin = `{
             "type": "object",
             "properties": {
                 "assetId": {
-                    "type": "string"
-                },
-                "attachment": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "createBy": {
                     "type": "integer"
@@ -6693,10 +6666,10 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "inboundBy": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "inboundFrom": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "remark": {
                     "type": "string"
@@ -6705,7 +6678,7 @@ const docTemplateadmin = `{
                     "type": "integer"
                 },
                 "warehouseId": {
-                    "type": "string"
+                    "type": "integer"
                 }
             }
         },
@@ -6713,10 +6686,7 @@ const docTemplateadmin = `{
             "type": "object",
             "properties": {
                 "assetId": {
-                    "type": "string"
-                },
-                "attachment": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "createBy": {
                     "type": "integer"
@@ -6732,10 +6702,10 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "inboundBy": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "inboundFrom": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "remark": {
                     "type": "string"
@@ -6744,7 +6714,7 @@ const docTemplateadmin = `{
                     "type": "integer"
                 },
                 "warehouseId": {
-                    "type": "string"
+                    "type": "integer"
                 }
             }
         },
@@ -6754,14 +6724,11 @@ const docTemplateadmin = `{
                 "assetCode": {
                     "type": "string"
                 },
-                "attachment": {
-                    "type": "string"
-                },
                 "brand": {
                     "type": "string"
                 },
                 "categoryId": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "createBy": {
                     "type": "integer"
@@ -6776,13 +6743,13 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "status": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "unit": {
                     "type": "string"
                 },
                 "unitPrice": {
-                    "type": "string"
+                    "type": "number"
                 },
                 "updateBy": {
                     "type": "integer"
@@ -6804,10 +6771,7 @@ const docTemplateadmin = `{
             "type": "object",
             "properties": {
                 "assetId": {
-                    "type": "string"
-                },
-                "attachment": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "createBy": {
                     "type": "integer"
@@ -6816,10 +6780,10 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "outboundBy": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "outboundTo": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "remark": {
                     "type": "string"
@@ -6828,7 +6792,7 @@ const docTemplateadmin = `{
                     "type": "integer"
                 },
                 "warehouseId": {
-                    "type": "string"
+                    "type": "integer"
                 }
             }
         },
@@ -6836,10 +6800,7 @@ const docTemplateadmin = `{
             "type": "object",
             "properties": {
                 "assetId": {
-                    "type": "string"
-                },
-                "attachment": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "createBy": {
                     "type": "integer"
@@ -6852,10 +6813,10 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "outboundBy": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "outboundTo": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "remark": {
                     "type": "string"
@@ -6864,7 +6825,7 @@ const docTemplateadmin = `{
                     "type": "integer"
                 },
                 "warehouseId": {
-                    "type": "string"
+                    "type": "integer"
                 }
             }
         },
@@ -6892,28 +6853,25 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "applyUser": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "approveAt": {
                     "type": "string"
                 },
                 "approver": {
-                    "type": "string"
-                },
-                "attachment": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "brand": {
                     "type": "string"
                 },
                 "categoryId": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "createBy": {
                     "type": "integer"
                 },
                 "quantity": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "remark": {
                     "type": "string"
@@ -6922,19 +6880,19 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "status": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "supplierId": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "totalAmount": {
-                    "type": "string"
+                    "type": "number"
                 },
                 "unit": {
                     "type": "string"
                 },
                 "unitPrice": {
-                    "type": "string"
+                    "type": "number"
                 },
                 "updateBy": {
                     "type": "integer"
@@ -6954,22 +6912,19 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "applyUser": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "approveAt": {
                     "type": "string"
                 },
                 "approver": {
-                    "type": "string"
-                },
-                "attachment": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "brand": {
                     "type": "string"
                 },
                 "categoryId": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "createBy": {
                     "type": "integer"
@@ -6979,7 +6934,7 @@ const docTemplateadmin = `{
                     "type": "integer"
                 },
                 "quantity": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "remark": {
                     "type": "string"
@@ -6988,19 +6943,19 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "status": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "supplierId": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "totalAmount": {
-                    "type": "string"
+                    "type": "number"
                 },
                 "unit": {
                     "type": "string"
                 },
                 "unitPrice": {
-                    "type": "string"
+                    "type": "number"
                 },
                 "updateBy": {
                     "type": "integer"
@@ -7021,14 +6976,11 @@ const docTemplateadmin = `{
         "dto.AssetPurchaseInsertReq": {
             "type": "object",
             "properties": {
-                "attachment": {
-                    "type": "string"
-                },
                 "brand": {
                     "type": "string"
                 },
                 "categoryId": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "createBy": {
                     "type": "integer"
@@ -7040,10 +6992,10 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "purchaseUser": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "quantity": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "remark": {
                     "type": "string"
@@ -7052,16 +7004,16 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "supplierId": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "totalAmount": {
-                    "type": "string"
+                    "type": "number"
                 },
                 "unit": {
                     "type": "string"
                 },
                 "unitPrice": {
-                    "type": "string"
+                    "type": "number"
                 },
                 "updateBy": {
                     "type": "integer"
@@ -7071,14 +7023,11 @@ const docTemplateadmin = `{
         "dto.AssetPurchaseUpdateReq": {
             "type": "object",
             "properties": {
-                "attachment": {
-                    "type": "string"
-                },
                 "brand": {
                     "type": "string"
                 },
                 "categoryId": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "createBy": {
                     "type": "integer"
@@ -7094,10 +7043,10 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "purchaseUser": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "quantity": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "remark": {
                     "type": "string"
@@ -7106,16 +7055,16 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "supplierId": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "totalAmount": {
-                    "type": "string"
+                    "type": "number"
                 },
                 "unit": {
                     "type": "string"
                 },
                 "unitPrice": {
-                    "type": "string"
+                    "type": "number"
                 },
                 "updateBy": {
                     "type": "integer"
@@ -7137,10 +7086,7 @@ const docTemplateadmin = `{
             "type": "object",
             "properties": {
                 "assetId": {
-                    "type": "string"
-                },
-                "attachment": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "createBy": {
                     "type": "integer"
@@ -7155,7 +7101,7 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "returnPerson": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "updateBy": {
                     "type": "integer"
@@ -7166,10 +7112,7 @@ const docTemplateadmin = `{
             "type": "object",
             "properties": {
                 "assetId": {
-                    "type": "string"
-                },
-                "attachment": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "createBy": {
                     "type": "integer"
@@ -7188,7 +7131,7 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "returnPerson": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "updateBy": {
                     "type": "integer"
@@ -7210,13 +7153,13 @@ const docTemplateadmin = `{
             "type": "object",
             "properties": {
                 "categoryId": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "createBy": {
                     "type": "integer"
                 },
                 "quantity": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "remark": {
                     "type": "string"
@@ -7225,7 +7168,7 @@ const docTemplateadmin = `{
                     "type": "integer"
                 },
                 "warehouseId": {
-                    "type": "string"
+                    "type": "integer"
                 }
             }
         },
@@ -7233,7 +7176,7 @@ const docTemplateadmin = `{
             "type": "object",
             "properties": {
                 "categoryId": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "createBy": {
                     "type": "integer"
@@ -7243,7 +7186,7 @@ const docTemplateadmin = `{
                     "type": "integer"
                 },
                 "quantity": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "remark": {
                     "type": "string"
@@ -7252,7 +7195,7 @@ const docTemplateadmin = `{
                     "type": "integer"
                 },
                 "warehouseId": {
-                    "type": "string"
+                    "type": "integer"
                 }
             }
         },
@@ -7335,14 +7278,11 @@ const docTemplateadmin = `{
                 "assetCode": {
                     "type": "string"
                 },
-                "attachment": {
-                    "type": "string"
-                },
                 "brand": {
                     "type": "string"
                 },
                 "categoryId": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "createBy": {
                     "type": "integer"
@@ -7361,13 +7301,13 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "status": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "unit": {
                     "type": "string"
                 },
                 "unitPrice": {
-                    "type": "string"
+                    "type": "number"
                 },
                 "updateBy": {
                     "type": "integer"
@@ -7389,7 +7329,7 @@ const docTemplateadmin = `{
             "type": "object",
             "properties": {
                 "administratorId": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "createBy": {
                     "type": "integer"
@@ -7409,7 +7349,7 @@ const docTemplateadmin = `{
             "type": "object",
             "properties": {
                 "administratorId": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "createBy": {
                     "type": "integer"
@@ -8979,14 +8919,11 @@ const docTemplateadmin = `{
                 "assetCode": {
                     "type": "string"
                 },
-                "attachment": {
-                    "type": "string"
-                },
                 "brand": {
                     "type": "string"
                 },
                 "categoryId": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "createBy": {
                     "type": "integer"
@@ -9007,13 +8944,13 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "status": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "unit": {
                     "type": "string"
                 },
                 "unitPrice": {
-                    "type": "string"
+                    "type": "number"
                 },
                 "updateBy": {
                     "type": "integer"
@@ -9053,13 +8990,10 @@ const docTemplateadmin = `{
             "type": "object",
             "properties": {
                 "amount": {
-                    "type": "string"
+                    "type": "number"
                 },
                 "assetId": {
-                    "type": "string"
-                },
-                "attachment": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "createBy": {
                     "type": "integer"
@@ -9071,12 +9005,18 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "disposalPerson": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "disposalType": {
-                    "type": "string"
+                    "type": "integer"
+                },
+                "disposalWay": {
+                    "type": "integer"
                 },
                 "id": {
+                    "type": "integer"
+                },
+                "locationId": {
                     "type": "integer"
                 },
                 "reason": {
@@ -9109,7 +9049,7 @@ const docTemplateadmin = `{
                     "type": "integer"
                 },
                 "mainAssetId": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "remark": {
                     "type": "string"
@@ -9126,10 +9066,10 @@ const docTemplateadmin = `{
             "type": "object",
             "properties": {
                 "assetGroupId": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "assetId": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "createBy": {
                     "type": "integer"
@@ -9141,7 +9081,7 @@ const docTemplateadmin = `{
                     "type": "integer"
                 },
                 "isMain": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "updateBy": {
                     "type": "integer"
@@ -9155,10 +9095,7 @@ const docTemplateadmin = `{
             "type": "object",
             "properties": {
                 "assetId": {
-                    "type": "string"
-                },
-                "attachment": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "createBy": {
                     "type": "integer"
@@ -9176,10 +9113,10 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "inboundBy": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "inboundFrom": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "remark": {
                     "type": "string"
@@ -9191,7 +9128,7 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "warehouseId": {
-                    "type": "string"
+                    "type": "integer"
                 }
             }
         },
@@ -9199,10 +9136,7 @@ const docTemplateadmin = `{
             "type": "object",
             "properties": {
                 "assetId": {
-                    "type": "string"
-                },
-                "attachment": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "createBy": {
                     "type": "integer"
@@ -9217,10 +9151,10 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "outboundBy": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "outboundTo": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "remark": {
                     "type": "string"
@@ -9232,21 +9166,18 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "warehouseId": {
-                    "type": "string"
+                    "type": "integer"
                 }
             }
         },
         "models.AssetPurchase": {
             "type": "object",
             "properties": {
-                "attachment": {
-                    "type": "string"
-                },
                 "brand": {
                     "type": "string"
                 },
                 "categoryId": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "createBy": {
                     "type": "integer"
@@ -9264,10 +9195,10 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "purchaseUser": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "quantity": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "remark": {
                     "type": "string"
@@ -9276,16 +9207,16 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "supplierId": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "totalAmount": {
-                    "type": "string"
+                    "type": "number"
                 },
                 "unit": {
                     "type": "string"
                 },
                 "unitPrice": {
-                    "type": "string"
+                    "type": "number"
                 },
                 "updateBy": {
                     "type": "integer"
@@ -9308,22 +9239,19 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "applyUser": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "approveAt": {
                     "type": "string"
                 },
                 "approver": {
-                    "type": "string"
-                },
-                "attachment": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "brand": {
                     "type": "string"
                 },
                 "categoryId": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "createBy": {
                     "type": "integer"
@@ -9335,7 +9263,7 @@ const docTemplateadmin = `{
                     "type": "integer"
                 },
                 "quantity": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "remark": {
                     "type": "string"
@@ -9344,19 +9272,19 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "status": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "supplierId": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "totalAmount": {
-                    "type": "string"
+                    "type": "number"
                 },
                 "unit": {
                     "type": "string"
                 },
                 "unitPrice": {
-                    "type": "string"
+                    "type": "number"
                 },
                 "updateBy": {
                     "type": "integer"
@@ -9370,10 +9298,7 @@ const docTemplateadmin = `{
             "type": "object",
             "properties": {
                 "assetId": {
-                    "type": "string"
-                },
-                "attachment": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "createBy": {
                     "type": "integer"
@@ -9394,7 +9319,7 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "returnPerson": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "updateBy": {
                     "type": "integer"
@@ -9408,7 +9333,7 @@ const docTemplateadmin = `{
             "type": "object",
             "properties": {
                 "categoryId": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "createBy": {
                     "type": "integer"
@@ -9420,7 +9345,7 @@ const docTemplateadmin = `{
                     "type": "integer"
                 },
                 "quantity": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "remark": {
                     "type": "string"
@@ -9432,7 +9357,7 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "warehouseId": {
-                    "type": "string"
+                    "type": "integer"
                 }
             }
         },
@@ -9478,7 +9403,7 @@ const docTemplateadmin = `{
             "type": "object",
             "properties": {
                 "administratorId": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "createBy": {
                     "type": "integer"

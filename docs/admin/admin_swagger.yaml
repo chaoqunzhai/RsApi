@@ -48,19 +48,21 @@ definitions:
   dto.AssetDisposalInsertReq:
     properties:
       amount:
-        type: string
+        type: number
       assetId:
-        type: string
-      attachment:
-        type: string
+        type: integer
       createBy:
         type: integer
       disposalAt:
         type: string
       disposalPerson:
-        type: string
+        type: integer
       disposalType:
-        type: string
+        type: integer
+      disposalWay:
+        type: integer
+      locationId:
+        type: integer
       reason:
         type: string
       remark:
@@ -71,21 +73,23 @@ definitions:
   dto.AssetDisposalUpdateReq:
     properties:
       amount:
-        type: string
+        type: number
       assetId:
-        type: string
-      attachment:
-        type: string
+        type: integer
       createBy:
         type: integer
       disposalAt:
         type: string
       disposalPerson:
-        type: string
+        type: integer
       disposalType:
-        type: string
+        type: integer
+      disposalWay:
+        type: integer
       id:
         description: 主键
+        type: integer
+      locationId:
         type: integer
       reason:
         type: string
@@ -108,7 +112,7 @@ definitions:
       groupName:
         type: string
       mainAssetId:
-        type: string
+        type: integer
       remark:
         type: string
       updateBy:
@@ -124,29 +128,29 @@ definitions:
   dto.AssetGroupMemberInsertReq:
     properties:
       assetGroupId:
-        type: string
+        type: integer
       assetId:
-        type: string
+        type: integer
       createBy:
         type: integer
       isMain:
-        type: string
+        type: integer
       updateBy:
         type: integer
     type: object
   dto.AssetGroupMemberUpdateReq:
     properties:
       assetGroupId:
-        type: string
+        type: integer
       assetId:
-        type: string
+        type: integer
       createBy:
         type: integer
       id:
         description: 主键
         type: integer
       isMain:
-        type: string
+        type: integer
       updateBy:
         type: integer
     type: object
@@ -160,7 +164,7 @@ definitions:
         description: 主键
         type: integer
       mainAssetId:
-        type: string
+        type: integer
       remark:
         type: string
       updateBy:
@@ -176,9 +180,7 @@ definitions:
   dto.AssetInboundInsertReq:
     properties:
       assetId:
-        type: string
-      attachment:
-        type: string
+        type: integer
       createBy:
         type: integer
       fromCode:
@@ -186,22 +188,20 @@ definitions:
       inboundAt:
         type: string
       inboundBy:
-        type: string
+        type: integer
       inboundFrom:
-        type: string
+        type: integer
       remark:
         type: string
       updateBy:
         type: integer
       warehouseId:
-        type: string
+        type: integer
     type: object
   dto.AssetInboundUpdateReq:
     properties:
       assetId:
-        type: string
-      attachment:
-        type: string
+        type: integer
       createBy:
         type: integer
       fromCode:
@@ -212,26 +212,24 @@ definitions:
       inboundAt:
         type: string
       inboundBy:
-        type: string
+        type: integer
       inboundFrom:
-        type: string
+        type: integer
       remark:
         type: string
       updateBy:
         type: integer
       warehouseId:
-        type: string
+        type: integer
     type: object
   dto.AssetInsertReq:
     properties:
       assetCode:
         type: string
-      attachment:
-        type: string
       brand:
         type: string
       categoryId:
-        type: string
+        type: integer
       createBy:
         type: integer
       remark:
@@ -241,11 +239,11 @@ definitions:
       specification:
         type: string
       status:
-        type: string
+        type: integer
       unit:
         type: string
       unitPrice:
-        type: string
+        type: number
       updateBy:
         type: integer
     type: object
@@ -259,30 +257,26 @@ definitions:
   dto.AssetOutboundInsertReq:
     properties:
       assetId:
-        type: string
-      attachment:
-        type: string
+        type: integer
       createBy:
         type: integer
       outboundAt:
         type: string
       outboundBy:
-        type: string
+        type: integer
       outboundTo:
-        type: string
+        type: integer
       remark:
         type: string
       updateBy:
         type: integer
       warehouseId:
-        type: string
+        type: integer
     type: object
   dto.AssetOutboundUpdateReq:
     properties:
       assetId:
-        type: string
-      attachment:
-        type: string
+        type: integer
       createBy:
         type: integer
       id:
@@ -291,15 +285,15 @@ definitions:
       outboundAt:
         type: string
       outboundBy:
-        type: string
+        type: integer
       outboundTo:
-        type: string
+        type: integer
       remark:
         type: string
       updateBy:
         type: integer
       warehouseId:
-        type: string
+        type: integer
     type: object
   dto.AssetPurchaseApplyDeleteReq:
     properties:
@@ -317,35 +311,33 @@ definitions:
       applyReason:
         type: string
       applyUser:
-        type: string
+        type: integer
       approveAt:
         type: string
       approver:
-        type: string
-      attachment:
-        type: string
+        type: integer
       brand:
         type: string
       categoryId:
-        type: string
+        type: integer
       createBy:
         type: integer
       quantity:
-        type: string
+        type: integer
       remark:
         type: string
       specification:
         type: string
       status:
-        type: string
+        type: integer
       supplierId:
-        type: string
+        type: integer
       totalAmount:
-        type: string
+        type: number
       unit:
         type: string
       unitPrice:
-        type: string
+        type: number
       updateBy:
         type: integer
     type: object
@@ -358,38 +350,36 @@ definitions:
       applyReason:
         type: string
       applyUser:
-        type: string
+        type: integer
       approveAt:
         type: string
       approver:
-        type: string
-      attachment:
-        type: string
+        type: integer
       brand:
         type: string
       categoryId:
-        type: string
+        type: integer
       createBy:
         type: integer
       id:
         description: 主键
         type: integer
       quantity:
-        type: string
+        type: integer
       remark:
         type: string
       specification:
         type: string
       status:
-        type: string
+        type: integer
       supplierId:
-        type: string
+        type: integer
       totalAmount:
-        type: string
+        type: number
       unit:
         type: string
       unitPrice:
-        type: string
+        type: number
       updateBy:
         type: integer
     type: object
@@ -402,12 +392,10 @@ definitions:
     type: object
   dto.AssetPurchaseInsertReq:
     properties:
-      attachment:
-        type: string
       brand:
         type: string
       categoryId:
-        type: string
+        type: integer
       createBy:
         type: integer
       purchaseAt:
@@ -415,32 +403,30 @@ definitions:
       purchaseCode:
         type: string
       purchaseUser:
-        type: string
+        type: integer
       quantity:
-        type: string
+        type: integer
       remark:
         type: string
       specification:
         type: string
       supplierId:
-        type: string
+        type: integer
       totalAmount:
-        type: string
+        type: number
       unit:
         type: string
       unitPrice:
-        type: string
+        type: number
       updateBy:
         type: integer
     type: object
   dto.AssetPurchaseUpdateReq:
     properties:
-      attachment:
-        type: string
       brand:
         type: string
       categoryId:
-        type: string
+        type: integer
       createBy:
         type: integer
       id:
@@ -451,21 +437,21 @@ definitions:
       purchaseCode:
         type: string
       purchaseUser:
-        type: string
+        type: integer
       quantity:
-        type: string
+        type: integer
       remark:
         type: string
       specification:
         type: string
       supplierId:
-        type: string
+        type: integer
       totalAmount:
-        type: string
+        type: number
       unit:
         type: string
       unitPrice:
-        type: string
+        type: number
       updateBy:
         type: integer
     type: object
@@ -479,9 +465,7 @@ definitions:
   dto.AssetReturnInsertReq:
     properties:
       assetId:
-        type: string
-      attachment:
-        type: string
+        type: integer
       createBy:
         type: integer
       reason:
@@ -491,16 +475,14 @@ definitions:
       returnAt:
         type: string
       returnPerson:
-        type: string
+        type: integer
       updateBy:
         type: integer
     type: object
   dto.AssetReturnUpdateReq:
     properties:
       assetId:
-        type: string
-      attachment:
-        type: string
+        type: integer
       createBy:
         type: integer
       id:
@@ -513,7 +495,7 @@ definitions:
       returnAt:
         type: string
       returnPerson:
-        type: string
+        type: integer
       updateBy:
         type: integer
     type: object
@@ -527,35 +509,35 @@ definitions:
   dto.AssetStockInsertReq:
     properties:
       categoryId:
-        type: string
+        type: integer
       createBy:
         type: integer
       quantity:
-        type: string
+        type: integer
       remark:
         type: string
       updateBy:
         type: integer
       warehouseId:
-        type: string
+        type: integer
     type: object
   dto.AssetStockUpdateReq:
     properties:
       categoryId:
-        type: string
+        type: integer
       createBy:
         type: integer
       id:
         description: 主键
         type: integer
       quantity:
-        type: string
+        type: integer
       remark:
         type: string
       updateBy:
         type: integer
       warehouseId:
-        type: string
+        type: integer
     type: object
   dto.AssetSupplierDeleteReq:
     properties:
@@ -609,12 +591,10 @@ definitions:
     properties:
       assetCode:
         type: string
-      attachment:
-        type: string
       brand:
         type: string
       categoryId:
-        type: string
+        type: integer
       createBy:
         type: integer
       id:
@@ -627,11 +607,11 @@ definitions:
       specification:
         type: string
       status:
-        type: string
+        type: integer
       unit:
         type: string
       unitPrice:
-        type: string
+        type: number
       updateBy:
         type: integer
     type: object
@@ -645,7 +625,7 @@ definitions:
   dto.AssetWarehouseInsertReq:
     properties:
       administratorId:
-        type: string
+        type: integer
       createBy:
         type: integer
       remark:
@@ -658,7 +638,7 @@ definitions:
   dto.AssetWarehouseUpdateReq:
     properties:
       administratorId:
-        type: string
+        type: integer
       createBy:
         type: integer
       id:
@@ -1719,12 +1699,10 @@ definitions:
     properties:
       assetCode:
         type: string
-      attachment:
-        type: string
       brand:
         type: string
       categoryId:
-        type: string
+        type: integer
       createBy:
         type: integer
       createdAt:
@@ -1738,11 +1716,11 @@ definitions:
       specification:
         type: string
       status:
-        type: string
+        type: integer
       unit:
         type: string
       unitPrice:
-        type: string
+        type: number
       updateBy:
         type: integer
       updatedAt:
@@ -1768,11 +1746,9 @@ definitions:
   models.AssetDisposal:
     properties:
       amount:
-        type: string
+        type: number
       assetId:
-        type: string
-      attachment:
-        type: string
+        type: integer
       createBy:
         type: integer
       createdAt:
@@ -1780,10 +1756,14 @@ definitions:
       disposalAt:
         type: string
       disposalPerson:
-        type: string
+        type: integer
       disposalType:
-        type: string
+        type: integer
+      disposalWay:
+        type: integer
       id:
+        type: integer
+      locationId:
         type: integer
       reason:
         type: string
@@ -1805,7 +1785,7 @@ definitions:
       id:
         type: integer
       mainAssetId:
-        type: string
+        type: integer
       remark:
         type: string
       updateBy:
@@ -1816,9 +1796,9 @@ definitions:
   models.AssetGroupMember:
     properties:
       assetGroupId:
-        type: string
+        type: integer
       assetId:
-        type: string
+        type: integer
       createBy:
         type: integer
       createdAt:
@@ -1826,7 +1806,7 @@ definitions:
       id:
         type: integer
       isMain:
-        type: string
+        type: integer
       updateBy:
         type: integer
       updatedAt:
@@ -1835,9 +1815,7 @@ definitions:
   models.AssetInbound:
     properties:
       assetId:
-        type: string
-      attachment:
-        type: string
+        type: integer
       createBy:
         type: integer
       createdAt:
@@ -1849,9 +1827,9 @@ definitions:
       inboundAt:
         type: string
       inboundBy:
-        type: string
+        type: integer
       inboundFrom:
-        type: string
+        type: integer
       remark:
         type: string
       updateBy:
@@ -1859,14 +1837,12 @@ definitions:
       updatedAt:
         type: string
       warehouseId:
-        type: string
+        type: integer
     type: object
   models.AssetOutbound:
     properties:
       assetId:
-        type: string
-      attachment:
-        type: string
+        type: integer
       createBy:
         type: integer
       createdAt:
@@ -1876,9 +1852,9 @@ definitions:
       outboundAt:
         type: string
       outboundBy:
-        type: string
+        type: integer
       outboundTo:
-        type: string
+        type: integer
       remark:
         type: string
       updateBy:
@@ -1886,16 +1862,14 @@ definitions:
       updatedAt:
         type: string
       warehouseId:
-        type: string
+        type: integer
     type: object
   models.AssetPurchase:
     properties:
-      attachment:
-        type: string
       brand:
         type: string
       categoryId:
-        type: string
+        type: integer
       createBy:
         type: integer
       createdAt:
@@ -1907,21 +1881,21 @@ definitions:
       purchaseCode:
         type: string
       purchaseUser:
-        type: string
+        type: integer
       quantity:
-        type: string
+        type: integer
       remark:
         type: string
       specification:
         type: string
       supplierId:
-        type: string
+        type: integer
       totalAmount:
-        type: string
+        type: number
       unit:
         type: string
       unitPrice:
-        type: string
+        type: number
       updateBy:
         type: integer
       updatedAt:
@@ -1936,17 +1910,15 @@ definitions:
       applyReason:
         type: string
       applyUser:
-        type: string
+        type: integer
       approveAt:
         type: string
       approver:
-        type: string
-      attachment:
-        type: string
+        type: integer
       brand:
         type: string
       categoryId:
-        type: string
+        type: integer
       createBy:
         type: integer
       createdAt:
@@ -1954,21 +1926,21 @@ definitions:
       id:
         type: integer
       quantity:
-        type: string
+        type: integer
       remark:
         type: string
       specification:
         type: string
       status:
-        type: string
+        type: integer
       supplierId:
-        type: string
+        type: integer
       totalAmount:
-        type: string
+        type: number
       unit:
         type: string
       unitPrice:
-        type: string
+        type: number
       updateBy:
         type: integer
       updatedAt:
@@ -1977,9 +1949,7 @@ definitions:
   models.AssetReturn:
     properties:
       assetId:
-        type: string
-      attachment:
-        type: string
+        type: integer
       createBy:
         type: integer
       createdAt:
@@ -1993,7 +1963,7 @@ definitions:
       returnAt:
         type: string
       returnPerson:
-        type: string
+        type: integer
       updateBy:
         type: integer
       updatedAt:
@@ -2002,7 +1972,7 @@ definitions:
   models.AssetStock:
     properties:
       categoryId:
-        type: string
+        type: integer
       createBy:
         type: integer
       createdAt:
@@ -2010,7 +1980,7 @@ definitions:
       id:
         type: integer
       quantity:
-        type: string
+        type: integer
       remark:
         type: string
       updateBy:
@@ -2018,7 +1988,7 @@ definitions:
       updatedAt:
         type: string
       warehouseId:
-        type: string
+        type: integer
     type: object
   models.AssetSupplier:
     properties:
@@ -2048,7 +2018,7 @@ definitions:
   models.AssetWarehouse:
     properties:
       administratorId:
-        type: string
+        type: integer
       createBy:
         type: integer
       createdAt:
@@ -2438,7 +2408,7 @@ paths:
         in: query
         name: unitPrice
         type: string
-      - description: 状态(在库、出库)
+      - description: 状态(0=在库, 1=出库, 2=在用, 3=处置)
         in: query
         name: status
         type: string
@@ -2643,22 +2613,6 @@ paths:
     get:
       description: 获取资产处置记录列表
       parameters:
-      - description: 资产编码
-        in: query
-        name: assetId
-        type: string
-      - description: 处置人编码
-        in: query
-        name: disposalPerson
-        type: string
-      - description: 处置原因
-        in: query
-        name: reason
-        type: string
-      - description: 处置方式(报废、出售、出租、退租、捐赠、其它)
-        in: query
-        name: disposalType
-        type: string
       - description: 页条数
         in: query
         name: pageSize
@@ -2872,7 +2826,7 @@ paths:
         in: query
         name: assetId
         type: string
-      - description: 是否为主资产
+      - description: 是否为主资产(1=是,0=否)
         in: query
         name: isMain
         type: string
@@ -3056,11 +3010,11 @@ paths:
         in: query
         name: warehouseId
         type: string
-      - description: 来源(采购、自产、租赁、其它)
+      - description: 来源(1=采购、0=直接入库)
         in: query
         name: inboundFrom
         type: string
-      - description: 来源凭证编码
+      - description: 来源凭证编码(采购编码)
         in: query
         name: fromCode
         type: string
@@ -3358,10 +3312,6 @@ paths:
         in: query
         name: purchaseAt
         type: string
-      - description: 备注
-        in: query
-        name: remark
-        type: string
       - description: 页条数
         in: query
         name: pageSize
@@ -3463,10 +3413,6 @@ paths:
       - description: 申购日期
         in: query
         name: applyAt
-        type: string
-      - description: 申购状态(待审批、已审批、已拒绝)
-        in: query
-        name: status
         type: string
       - description: 审批人编码
         in: query
@@ -3651,10 +3597,14 @@ paths:
       - description: 资产编码
         in: query
         name: assetId
-        type: string
+        type: integer
       - description: 退还人编码
         in: query
         name: returnPerson
+        type: integer
+      - description: 退还原因
+        in: query
+        name: reason
         type: string
       - description: 页条数
         in: query
@@ -3782,11 +3732,11 @@ paths:
       - description: 库房编码
         in: query
         name: warehouseId
-        type: string
+        type: integer
       - description: 资产类别编码
         in: query
         name: categoryId
-        type: string
+        type: integer
       - description: 页条数
         in: query
         name: pageSize

@@ -29,7 +29,6 @@ type AssetPurchase struct {
 // @Param specification query string false "规格型号"
 // @Param brand query string false "品牌"
 // @Param purchaseAt query string false "采购日期"
-// @Param remark query string false "备注"
 // @Param pageSize query int false "页条数"
 // @Param pageIndex query int false "页码"
 // @Success 200 {object} response.Response{data=response.Page{list=[]models.AssetPurchase}} "{"code": 200, "data": [...]}"

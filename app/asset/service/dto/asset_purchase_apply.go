@@ -4,6 +4,7 @@ import (
 	"go-admin/app/asset/models"
 	"go-admin/common/dto"
 	common "go-admin/common/models"
+	"time"
 )
 
 type AssetPurchaseApplyGetPageReq struct {
@@ -15,7 +16,6 @@ type AssetPurchaseApplyGetPageReq struct {
 	Specification  string `form:"specification"  search:"type:exact;column:specification;table:asset_purchase_apply" comment:"规格型号"`
 	Brand          string `form:"brand"  search:"type:exact;column:brand;table:asset_purchase_apply" comment:"品牌"`
 	ApplyAt        string `form:"applyAt"  search:"type:exact;column:apply_at;table:asset_purchase_apply" comment:"申购日期"`
-	Status         string `form:"status"  search:"type:exact;column:status;table:asset_purchase_apply" comment:"申购状态(待审批、已审批、已拒绝)"`
 	Approver       string `form:"approver"  search:"type:exact;column:approver;table:asset_purchase_apply" comment:"审批人编码"`
 	ApproveAt      string `form:"approveAt"  search:"type:exact;column:approve_at;table:asset_purchase_apply" comment:"审批时间"`
 	AssetPurchaseApplyOrder
@@ -38,7 +38,6 @@ type AssetPurchaseApplyOrder struct {
 	Status        string `form:"statusOrder"  search:"type:order;column:status;table:asset_purchase_apply"`
 	Approver      string `form:"approverOrder"  search:"type:order;column:approver;table:asset_purchase_apply"`
 	ApproveAt     string `form:"approveAtOrder"  search:"type:order;column:approve_at;table:asset_purchase_apply"`
-	Attachment    string `form:"attachmentOrder"  search:"type:order;column:attachment;table:asset_purchase_apply"`
 	Remark        string `form:"remarkOrder"  search:"type:order;column:remark;table:asset_purchase_apply"`
 	CreatedAt     string `form:"createdAtOrder"  search:"type:order;column:created_at;table:asset_purchase_apply"`
 	UpdatedAt     string `form:"updatedAtOrder"  search:"type:order;column:updated_at;table:asset_purchase_apply"`
@@ -52,24 +51,23 @@ func (m *AssetPurchaseApplyGetPageReq) GetNeedSearch() interface{} {
 }
 
 type AssetPurchaseApplyInsertReq struct {
-	Id            int    `json:"-" comment:"主键"` // 主键
-	ApplyCode     string `json:"applyCode" comment:"申请单编号"`
-	CategoryId    string `json:"categoryId" comment:"资产类型编码"`
-	SupplierId    string `json:"supplierId" comment:"供应商编码"`
-	ApplyUser     string `json:"applyUser" comment:"申购人编码"`
-	Quantity      string `json:"quantity" comment:"申购数量"`
-	Specification string `json:"specification" comment:"规格型号"`
-	Brand         string `json:"brand" comment:"品牌"`
-	Unit          string `json:"unit" comment:"计量单位"`
-	UnitPrice     string `json:"unitPrice" comment:"预估单价"`
-	TotalAmount   string `json:"totalAmount" comment:"预估金额"`
-	ApplyReason   string `json:"applyReason" comment:"申购理由"`
-	ApplyAt       string `json:"applyAt" comment:"申购日期"`
-	Status        string `json:"status" comment:"申购状态(待审批、已审批、已拒绝)"`
-	Approver      string `json:"approver" comment:"审批人编码"`
-	ApproveAt     string `json:"approveAt" comment:"审批时间"`
-	Attachment    string `json:"attachment" comment:"附件"`
-	Remark        string `json:"remark" comment:"备注"`
+	Id            int       `json:"-" comment:"主键"` // 主键
+	ApplyCode     string    `json:"applyCode" comment:"申请单编号"`
+	CategoryId    int       `json:"categoryId" comment:"资产类型编码"`
+	SupplierId    int       `json:"supplierId" comment:"供应商编码"`
+	ApplyUser     int       `json:"applyUser" comment:"申购人编码"`
+	Quantity      int64     `json:"quantity" comment:"申购数量"`
+	Specification string    `json:"specification" comment:"规格型号"`
+	Brand         string    `json:"brand" comment:"品牌"`
+	Unit          string    `json:"unit" comment:"计量单位"`
+	UnitPrice     float64   `json:"unitPrice" comment:"预估单价"`
+	TotalAmount   float64   `json:"totalAmount" comment:"预估金额"`
+	ApplyReason   string    `json:"applyReason" comment:"申购理由"`
+	ApplyAt       time.Time `json:"applyAt" comment:"申购日期"`
+	Status        int8      `json:"status" comment:"申购状态(0=待审批, 1=已审批, 2=已驳回, 3=已取消)"`
+	Approver      int       `json:"approver" comment:"审批人编码"`
+	ApproveAt     time.Time `json:"approveAt" comment:"审批时间"`
+	Remark        string    `json:"remark" comment:"备注"`
 	common.ControlBy
 }
 
@@ -92,7 +90,6 @@ func (s *AssetPurchaseApplyInsertReq) Generate(model *models.AssetPurchaseApply)
 	model.Status = s.Status
 	model.Approver = s.Approver
 	model.ApproveAt = s.ApproveAt
-	model.Attachment = s.Attachment
 	model.Remark = s.Remark
 	model.CreateBy = s.CreateBy // 添加这而，需要记录是被谁创建的
 }
@@ -102,24 +99,23 @@ func (s *AssetPurchaseApplyInsertReq) GetId() interface{} {
 }
 
 type AssetPurchaseApplyUpdateReq struct {
-	Id            int    `uri:"id" comment:"主键"` // 主键
-	ApplyCode     string `json:"applyCode" comment:"申请单编号"`
-	CategoryId    string `json:"categoryId" comment:"资产类型编码"`
-	SupplierId    string `json:"supplierId" comment:"供应商编码"`
-	ApplyUser     string `json:"applyUser" comment:"申购人编码"`
-	Quantity      string `json:"quantity" comment:"申购数量"`
-	Specification string `json:"specification" comment:"规格型号"`
-	Brand         string `json:"brand" comment:"品牌"`
-	Unit          string `json:"unit" comment:"计量单位"`
-	UnitPrice     string `json:"unitPrice" comment:"预估单价"`
-	TotalAmount   string `json:"totalAmount" comment:"预估金额"`
-	ApplyReason   string `json:"applyReason" comment:"申购理由"`
-	ApplyAt       string `json:"applyAt" comment:"申购日期"`
-	Status        string `json:"status" comment:"申购状态(待审批、已审批、已拒绝)"`
-	Approver      string `json:"approver" comment:"审批人编码"`
-	ApproveAt     string `json:"approveAt" comment:"审批时间"`
-	Attachment    string `json:"attachment" comment:"附件"`
-	Remark        string `json:"remark" comment:"备注"`
+	Id            int       `uri:"id" comment:"主键"` // 主键
+	ApplyCode     string    `json:"applyCode" comment:"申请单编号"`
+	CategoryId    int       `json:"categoryId" comment:"资产类型编码"`
+	SupplierId    int       `json:"supplierId" comment:"供应商编码"`
+	ApplyUser     int       `json:"applyUser" comment:"申购人编码"`
+	Quantity      int64     `json:"quantity" comment:"申购数量"`
+	Specification string    `json:"specification" comment:"规格型号"`
+	Brand         string    `json:"brand" comment:"品牌"`
+	Unit          string    `json:"unit" comment:"计量单位"`
+	UnitPrice     float64   `json:"unitPrice" comment:"预估单价"`
+	TotalAmount   float64   `json:"totalAmount" comment:"预估金额"`
+	ApplyReason   string    `json:"applyReason" comment:"申购理由"`
+	ApplyAt       time.Time `json:"applyAt" comment:"申购日期"`
+	Status        int8      `json:"status" comment:"申购状态(0=待审批, 1=已审批, 2=已驳回, 3=已取消)"`
+	Approver      int       `json:"approver" comment:"审批人编码"`
+	ApproveAt     time.Time `json:"approveAt" comment:"审批时间"`
+	Remark        string    `json:"remark" comment:"备注"`
 	common.ControlBy
 }
 
@@ -142,7 +138,6 @@ func (s *AssetPurchaseApplyUpdateReq) Generate(model *models.AssetPurchaseApply)
 	model.Status = s.Status
 	model.Approver = s.Approver
 	model.ApproveAt = s.ApproveAt
-	model.Attachment = s.Attachment
 	model.Remark = s.Remark
 	model.UpdateBy = s.UpdateBy // 添加这而，需要记录是被谁更新的
 }

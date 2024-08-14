@@ -22,8 +22,9 @@ type AssetReturn struct {
 // @Summary 获取资产退还记录列表
 // @Description 获取资产退还记录列表
 // @Tags 资产退还记录
-// @Param assetId query string false "资产编码"
-// @Param returnPerson query string false "退还人编码"
+// @Param assetId query int64 false "资产编码"
+// @Param returnPerson query int64 false "退还人编码"
+// @Param reason query string false "退还原因"
 // @Param returnAt query time.Time false "退还时间"
 // @Param pageSize query int false "页条数"
 // @Param pageIndex query int false "页码"

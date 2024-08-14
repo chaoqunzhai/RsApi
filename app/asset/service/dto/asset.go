@@ -15,7 +15,7 @@ type AssetGetPageReq struct {
 	Brand          string `form:"brand"  search:"type:exact;column:brand;table:asset" comment:"品牌"`
 	Unit           string `form:"unit"  search:"type:exact;column:unit;table:asset" comment:"计量单位"`
 	UnitPrice      string `form:"unitPrice"  search:"type:exact;column:unit_price;table:asset" comment:"单价"`
-	Status         string `form:"status"  search:"type:exact;column:status;table:asset" comment:"状态(在库、出库)"`
+	Status         string `form:"status"  search:"type:exact;column:status;table:asset" comment:"状态(0=在库, 1=出库, 2=在用, 3=处置)"`
 	AssetOrder
 }
 
@@ -28,7 +28,6 @@ type AssetOrder struct {
 	Brand         string `form:"brandOrder"  search:"type:order;column:brand;table:asset"`
 	Unit          string `form:"unitOrder"  search:"type:order;column:unit;table:asset"`
 	UnitPrice     string `form:"unitPriceOrder"  search:"type:order;column:unit_price;table:asset"`
-	Attachment    string `form:"attachmentOrder"  search:"type:order;column:attachment;table:asset"`
 	Status        string `form:"statusOrder"  search:"type:order;column:status;table:asset"`
 	Remark        string `form:"remarkOrder"  search:"type:order;column:remark;table:asset"`
 	CreatedAt     string `form:"createdAtOrder"  search:"type:order;column:created_at;table:asset"`
@@ -43,17 +42,16 @@ func (m *AssetGetPageReq) GetNeedSearch() interface{} {
 }
 
 type AssetInsertReq struct {
-	Id            int    `json:"-" comment:"主键"` // 主键
-	AssetCode     string `json:"assetCode" comment:"资产编号"`
-	SnCode        string `json:"snCode" comment:"SN编码"`
-	CategoryId    string `json:"categoryId" comment:"资产类别"`
-	Specification string `json:"specification" comment:"规格型号"`
-	Brand         string `json:"brand" comment:"品牌"`
-	Unit          string `json:"unit" comment:"计量单位"`
-	UnitPrice     string `json:"unitPrice" comment:"单价"`
-	Attachment    string `json:"attachment" comment:"附件"`
-	Status        string `json:"status" comment:"状态(在库、出库)"`
-	Remark        string `json:"remark" comment:"备注"`
+	Id            int     `json:"-" comment:"主键"` // 主键
+	AssetCode     string  `json:"assetCode" comment:"资产编号"`
+	SnCode        string  `json:"snCode" comment:"SN编码"`
+	CategoryId    int     `json:"categoryId" comment:"资产类别"`
+	Specification string  `json:"specification" comment:"规格型号"`
+	Brand         string  `json:"brand" comment:"品牌"`
+	Unit          string  `json:"unit" comment:"计量单位"`
+	UnitPrice     float64 `json:"unitPrice" comment:"单价"`
+	Status        int8    `json:"status" comment:"状态(0=在库, 1=出库, 2=在用, 3=处置)"`
+	Remark        string  `json:"remark" comment:"备注"`
 	common.ControlBy
 }
 
@@ -68,7 +66,6 @@ func (s *AssetInsertReq) Generate(model *models.Asset) {
 	model.Brand = s.Brand
 	model.Unit = s.Unit
 	model.UnitPrice = s.UnitPrice
-	model.Attachment = s.Attachment
 	model.Status = s.Status
 	model.Remark = s.Remark
 	model.CreateBy = s.CreateBy // 添加这而，需要记录是被谁创建的
@@ -79,17 +76,16 @@ func (s *AssetInsertReq) GetId() interface{} {
 }
 
 type AssetUpdateReq struct {
-	Id            int    `uri:"id" comment:"主键"` // 主键
-	AssetCode     string `json:"assetCode" comment:"资产编号"`
-	SnCode        string `json:"snCode" comment:"SN编码"`
-	CategoryId    string `json:"categoryId" comment:"资产类别"`
-	Specification string `json:"specification" comment:"规格型号"`
-	Brand         string `json:"brand" comment:"品牌"`
-	Unit          string `json:"unit" comment:"计量单位"`
-	UnitPrice     string `json:"unitPrice" comment:"单价"`
-	Attachment    string `json:"attachment" comment:"附件"`
-	Status        string `json:"status" comment:"状态(在库、出库)"`
-	Remark        string `json:"remark" comment:"备注"`
+	Id            int     `uri:"id" comment:"主键"` // 主键
+	AssetCode     string  `json:"assetCode" comment:"资产编号"`
+	SnCode        string  `json:"snCode" comment:"SN编码"`
+	CategoryId    int     `json:"categoryId" comment:"资产类别"`
+	Specification string  `json:"specification" comment:"规格型号"`
+	Brand         string  `json:"brand" comment:"品牌"`
+	Unit          string  `json:"unit" comment:"计量单位"`
+	UnitPrice     float64 `json:"unitPrice" comment:"单价"`
+	Status        int8    `json:"status" comment:"状态(0=在库, 1=出库, 2=在用, 3=处置)"`
+	Remark        string  `json:"remark" comment:"备注"`
 	common.ControlBy
 }
 
@@ -104,7 +100,6 @@ func (s *AssetUpdateReq) Generate(model *models.Asset) {
 	model.Brand = s.Brand
 	model.Unit = s.Unit
 	model.UnitPrice = s.UnitPrice
-	model.Attachment = s.Attachment
 	model.Status = s.Status
 	model.Remark = s.Remark
 	model.UpdateBy = s.UpdateBy // 添加这而，需要记录是被谁更新的

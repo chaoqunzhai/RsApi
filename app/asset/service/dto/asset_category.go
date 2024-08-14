@@ -17,7 +17,6 @@ type AssetCategoryOrder struct {
 	CategoryName string `form:"categoryNameOrder"  search:"type:order;column:category_name;table:asset_category"`
 	Remark       string `form:"remarkOrder"  search:"type:order;column:remark;table:asset_category"`
 	CreatedAt    string `form:"createdAtOrder"  search:"type:order;column:created_at;table:asset_category"`
-	UpdatedAt    string `form:"updatedAtOrder"  search:"type:order;column:updated_at;table:asset_category"`
 	DeletedAt    string `form:"deletedAtOrder"  search:"type:order;column:deleted_at;table:asset_category"`
 	CreateBy     string `form:"createByOrder"  search:"type:order;column:create_by;table:asset_category"`
 	UpdateBy     string `form:"updateByOrder"  search:"type:order;column:update_by;table:asset_category"`

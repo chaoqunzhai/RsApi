@@ -22,8 +22,8 @@ type AssetStock struct {
 // @Summary 获取资产库存列表
 // @Description 获取资产库存列表
 // @Tags 资产库存
-// @Param warehouseId query string false "库房编码"
-// @Param categoryId query string false "资产类别编码"
+// @Param warehouseId query int64 false "库房编码"
+// @Param categoryId query int64 false "资产类别编码"
 // @Param pageSize query int false "页条数"
 // @Param pageIndex query int false "页码"
 // @Success 200 {object} response.Response{data=response.Page{list=[]models.AssetStock}} "{"code": 200, "data": [...]}"

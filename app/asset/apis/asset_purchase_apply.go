@@ -29,7 +29,6 @@ type AssetPurchaseApply struct {
 // @Param specification query string false "规格型号"
 // @Param brand query string false "品牌"
 // @Param applyAt query string false "申购日期"
-// @Param status query string false "申购状态(待审批、已审批、已拒绝)"
 // @Param approver query string false "审批人编码"
 // @Param approveAt query string false "审批时间"
 // @Param pageSize query int false "页条数"

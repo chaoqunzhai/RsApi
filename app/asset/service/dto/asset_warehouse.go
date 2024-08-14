@@ -32,7 +32,7 @@ func (m *AssetWarehouseGetPageReq) GetNeedSearch() interface{} {
 type AssetWarehouseInsertReq struct {
 	Id              int    `json:"-" comment:"主键"` // 主键
 	WarehouseName   string `json:"warehouseName" comment:"库房名称"`
-	AdministratorId string `json:"administratorId" comment:"管理员编码"`
+	AdministratorId int    `json:"administratorId" comment:"管理员编码"`
 	Remark          string `json:"remark" comment:"备注"`
 	common.ControlBy
 }
@@ -54,7 +54,7 @@ func (s *AssetWarehouseInsertReq) GetId() interface{} {
 type AssetWarehouseUpdateReq struct {
 	Id              int    `uri:"id" comment:"主键"` // 主键
 	WarehouseName   string `json:"warehouseName" comment:"库房名称"`
-	AdministratorId string `json:"administratorId" comment:"管理员编码"`
+	AdministratorId int    `json:"administratorId" comment:"管理员编码"`
 	Remark          string `json:"remark" comment:"备注"`
 	common.ControlBy
 }

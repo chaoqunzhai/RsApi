@@ -10,8 +10,9 @@ import (
 
 type AssetReturnGetPageReq struct {
 	dto.Pagination `search:"-"`
-	AssetId        string    `form:"assetId"  search:"type:exact;column:asset_id;table:asset_return" comment:"资产编码"`
-	ReturnPerson   string    `form:"returnPerson"  search:"type:exact;column:return_person;table:asset_return" comment:"退还人编码"`
+	AssetId        int64     `form:"assetId"  search:"type:exact;column:asset_id;table:asset_return" comment:"资产编码"`
+	ReturnPerson   int64     `form:"returnPerson"  search:"type:exact;column:return_person;table:asset_return" comment:"退还人编码"`
+	Reason         string    `form:"reason"  search:"type:exact;column:reason;table:asset_return" comment:"退还原因"`
 	ReturnAt       time.Time `form:"returnAt"  search:"type:exact;column:return_at;table:asset_return" comment:"退还时间"`
 	AssetReturnOrder
 }
@@ -22,7 +23,6 @@ type AssetReturnOrder struct {
 	ReturnPerson string `form:"returnPersonOrder"  search:"type:order;column:return_person;table:asset_return"`
 	Reason       string `form:"reasonOrder"  search:"type:order;column:reason;table:asset_return"`
 	ReturnAt     string `form:"returnAtOrder"  search:"type:order;column:return_at;table:asset_return"`
-	Attachment   string `form:"attachmentOrder"  search:"type:order;column:attachment;table:asset_return"`
 	Remark       string `form:"remarkOrder"  search:"type:order;column:remark;table:asset_return"`
 	CreatedAt    string `form:"createdAtOrder"  search:"type:order;column:created_at;table:asset_return"`
 	UpdatedAt    string `form:"updatedAtOrder"  search:"type:order;column:updated_at;table:asset_return"`
@@ -37,11 +37,10 @@ func (m *AssetReturnGetPageReq) GetNeedSearch() interface{} {
 
 type AssetReturnInsertReq struct {
 	Id           int       `json:"-" comment:"主键"` // 主键
-	AssetId      string    `json:"assetId" comment:"资产编码"`
-	ReturnPerson string    `json:"returnPerson" comment:"退还人编码"`
+	AssetId      int       `json:"assetId" comment:"资产编码"`
+	ReturnPerson int       `json:"returnPerson" comment:"退还人编码"`
 	Reason       string    `json:"reason" comment:"退还原因"`
 	ReturnAt     time.Time `json:"returnAt" comment:"退还时间"`
-	Attachment   string    `json:"attachment" comment:"附件"`
 	Remark       string    `json:"remark" comment:"备注"`
 	common.ControlBy
 }
@@ -54,7 +53,6 @@ func (s *AssetReturnInsertReq) Generate(model *models.AssetReturn) {
 	model.ReturnPerson = s.ReturnPerson
 	model.Reason = s.Reason
 	model.ReturnAt = s.ReturnAt
-	model.Attachment = s.Attachment
 	model.Remark = s.Remark
 	model.CreateBy = s.CreateBy // 添加这而，需要记录是被谁创建的
 }
@@ -65,11 +63,10 @@ func (s *AssetReturnInsertReq) GetId() interface{} {
 
 type AssetReturnUpdateReq struct {
 	Id           int       `uri:"id" comment:"主键"` // 主键
-	AssetId      string    `json:"assetId" comment:"资产编码"`
-	ReturnPerson string    `json:"returnPerson" comment:"退还人编码"`
+	AssetId      int       `json:"assetId" comment:"资产编码"`
+	ReturnPerson int       `json:"returnPerson" comment:"退还人编码"`
 	Reason       string    `json:"reason" comment:"退还原因"`
 	ReturnAt     time.Time `json:"returnAt" comment:"退还时间"`
-	Attachment   string    `json:"attachment" comment:"附件"`
 	Remark       string    `json:"remark" comment:"备注"`
 	common.ControlBy
 }
@@ -82,7 +79,6 @@ func (s *AssetReturnUpdateReq) Generate(model *models.AssetReturn) {
 	model.ReturnPerson = s.ReturnPerson
 	model.Reason = s.Reason
 	model.ReturnAt = s.ReturnAt
-	model.Attachment = s.Attachment
 	model.Remark = s.Remark
 	model.UpdateBy = s.UpdateBy // 添加这而，需要记录是被谁更新的
 }

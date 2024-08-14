@@ -8,8 +8,8 @@ import (
 
 type AssetStockGetPageReq struct {
 	dto.Pagination `search:"-"`
-	WarehouseId    string `form:"warehouseId"  search:"type:exact;column:warehouse_id;table:asset_stock" comment:"库房编码"`
-	CategoryId     string `form:"categoryId"  search:"type:exact;column:category_id;table:asset_stock" comment:"资产类别编码"`
+	WarehouseId    int `form:"warehouseId"  search:"type:exact;column:warehouse_id;table:asset_stock" comment:"库房编码"`
+	CategoryId     int `form:"categoryId"  search:"type:exact;column:category_id;table:asset_stock" comment:"资产类别编码"`
 	AssetStockOrder
 }
 
@@ -32,9 +32,9 @@ func (m *AssetStockGetPageReq) GetNeedSearch() interface{} {
 
 type AssetStockInsertReq struct {
 	Id          int    `json:"-" comment:"主键"` // 主键
-	WarehouseId string `json:"warehouseId" comment:"库房编码"`
-	CategoryId  string `json:"categoryId" comment:"资产类别编码"`
-	Quantity    string `json:"quantity" comment:"资产库存数量"`
+	WarehouseId int    `json:"warehouseId" comment:"库房编码"`
+	CategoryId  int    `json:"categoryId" comment:"资产类别编码"`
+	Quantity    int64  `json:"quantity" comment:"资产库存数量"`
 	Remark      string `json:"remark" comment:"备注"`
 	common.ControlBy
 }
@@ -56,9 +56,9 @@ func (s *AssetStockInsertReq) GetId() interface{} {
 
 type AssetStockUpdateReq struct {
 	Id          int    `uri:"id" comment:"主键"` // 主键
-	WarehouseId string `json:"warehouseId" comment:"库房编码"`
-	CategoryId  string `json:"categoryId" comment:"资产类别编码"`
-	Quantity    string `json:"quantity" comment:"资产库存数量"`
+	WarehouseId int    `json:"warehouseId" comment:"库房编码"`
+	CategoryId  int    `json:"categoryId" comment:"资产类别编码"`
+	Quantity    int64  `json:"quantity" comment:"资产库存数量"`
 	Remark      string `json:"remark" comment:"备注"`
 	common.ControlBy
 }

@@ -7,9 +7,9 @@ import (
 type AssetGroupMember struct {
 	models.Model
 
-	AssetGroupId string `json:"assetGroupId" gorm:"type:int;comment:资产组合编码"`
-	AssetId      string `json:"assetId" gorm:"type:int;comment:资产编码"`
-	IsMain       string `json:"isMain" gorm:"type:tinyint(1);comment:是否为主资产"`
+	AssetGroupId int  `json:"assetGroupId" gorm:"type:int;comment:资产组合编码"`
+	AssetId      int  `json:"assetId" gorm:"type:int;comment:资产编码"`
+	IsMain       int8 `json:"isMain" gorm:"type:tinyint(1);comment:是否为主资产(1=是,0=否)"`
 	models.ModelTime
 	models.ControlBy
 }

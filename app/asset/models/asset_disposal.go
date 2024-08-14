@@ -9,13 +9,14 @@ import (
 type AssetDisposal struct {
 	models.Model
 
-	AssetId        string    `json:"assetId" gorm:"type:int;comment:资产编码"`
-	DisposalPerson string    `json:"disposalPerson" gorm:"type:int;comment:处置人编码"`
+	AssetId        int       `json:"assetId" gorm:"type:int;comment:资产编码"`
+	DisposalPerson int       `json:"disposalPerson" gorm:"type:int;comment:处置人编码"`
 	Reason         string    `json:"reason" gorm:"type:varchar(50);comment:处置原因"`
-	DisposalType   string    `json:"disposalType" gorm:"type:enum('Scrap','Sell','Rent','ReturnRent','Donate','Other');comment:处置方式(报废、出售、出租、退租、捐赠、其它)"`
-	Amount         string    `json:"amount" gorm:"type:decimal(10,2);comment:处置金额"`
+	DisposalWay    int8      `json:"disposalWay" gorm:"type:tinyint(1);comment:处置方式(0=报废, 1=出售, 2=出租, 3=退租, 4=捐赠, 5=其它)"`
+	DisposalType   int8      `json:"disposalType" gorm:"type:tinyint(1);comment:处置地点类型(0=机房, 1=库房)"`
+	LocationId     int       `json:"locationId" gorm:"type:int;comment:处置地点编码(机房编码/库房编码)"`
+	Amount         float64   `json:"amount" gorm:"type:decimal(10,2);comment:处置金额"`
 	DisposalAt     time.Time `json:"disposalAt" gorm:"type:timestamp;comment:处置时间"`
-	Attachment     string    `json:"attachment" gorm:"type:varchar(255);comment:附件"`
 	Remark         string    `json:"remark" gorm:"type:text;comment:备注"`
 	models.ModelTime
 	models.ControlBy

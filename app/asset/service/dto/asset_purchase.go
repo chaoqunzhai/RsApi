@@ -4,6 +4,7 @@ import (
 	"go-admin/app/asset/models"
 	"go-admin/common/dto"
 	common "go-admin/common/models"
+	"time"
 )
 
 type AssetPurchaseGetPageReq struct {
@@ -15,7 +16,6 @@ type AssetPurchaseGetPageReq struct {
 	Specification  string `form:"specification"  search:"type:exact;column:specification;table:asset_purchase" comment:"规格型号"`
 	Brand          string `form:"brand"  search:"type:exact;column:brand;table:asset_purchase" comment:"品牌"`
 	PurchaseAt     string `form:"purchaseAt"  search:"type:exact;column:purchase_at;table:asset_purchase" comment:"采购日期"`
-	Remark         string `form:"remark"  search:"type:exact;column:remark;table:asset_purchase" comment:"备注"`
 	AssetPurchaseOrder
 }
 
@@ -33,7 +33,6 @@ type AssetPurchaseOrder struct {
 	TotalAmount   string `form:"totalAmountOrder"  search:"type:order;column:total_amount;table:asset_purchase"`
 	PurchaseAt    string `form:"purchaseAtOrder"  search:"type:order;column:purchase_at;table:asset_purchase"`
 	Remark        string `form:"remarkOrder"  search:"type:order;column:remark;table:asset_purchase"`
-	Attachment    string `form:"attachmentOrder"  search:"type:order;column:attachment;table:asset_purchase"`
 	CreatedAt     string `form:"createdAtOrder"  search:"type:order;column:created_at;table:asset_purchase"`
 	UpdatedAt     string `form:"updatedAtOrder"  search:"type:order;column:updated_at;table:asset_purchase"`
 	DeletedAt     string `form:"deletedAtOrder"  search:"type:order;column:deleted_at;table:asset_purchase"`
@@ -46,20 +45,19 @@ func (m *AssetPurchaseGetPageReq) GetNeedSearch() interface{} {
 }
 
 type AssetPurchaseInsertReq struct {
-	Id            int    `json:"-" comment:"主键"` // 主键
-	PurchaseCode  string `json:"purchaseCode" comment:"采购单编号"`
-	CategoryId    string `json:"categoryId" comment:"资产类型编码"`
-	SupplierId    string `json:"supplierId" comment:"供应商编码"`
-	PurchaseUser  string `json:"purchaseUser" comment:"采购人编码"`
-	Specification string `json:"specification" comment:"规格型号"`
-	Brand         string `json:"brand" comment:"品牌"`
-	Quantity      string `json:"quantity" comment:"采购数量"`
-	Unit          string `json:"unit" comment:"计量单位"`
-	UnitPrice     string `json:"unitPrice" comment:"采购单价"`
-	TotalAmount   string `json:"totalAmount" comment:"采购金额"`
-	PurchaseAt    string `json:"purchaseAt" comment:"采购日期"`
-	Remark        string `json:"remark" comment:"备注"`
-	Attachment    string `json:"attachment" comment:"附件"`
+	Id            int       `json:"-" comment:"主键"` // 主键
+	PurchaseCode  string    `json:"purchaseCode" comment:"采购单编号"`
+	CategoryId    int       `json:"categoryId" comment:"资产类型编码"`
+	SupplierId    int       `json:"supplierId" comment:"供应商编码"`
+	PurchaseUser  int       `json:"purchaseUser" comment:"采购人编码"`
+	Specification string    `json:"specification" comment:"规格型号"`
+	Brand         string    `json:"brand" comment:"品牌"`
+	Quantity      int64     `json:"quantity" comment:"采购数量"`
+	Unit          string    `json:"unit" comment:"计量单位"`
+	UnitPrice     float64   `json:"unitPrice" comment:"采购单价"`
+	TotalAmount   float64   `json:"totalAmount" comment:"采购金额"`
+	PurchaseAt    time.Time `json:"purchaseAt" comment:"采购日期"`
+	Remark        string    `json:"remark" comment:"备注"`
 	common.ControlBy
 }
 
@@ -79,7 +77,6 @@ func (s *AssetPurchaseInsertReq) Generate(model *models.AssetPurchase) {
 	model.TotalAmount = s.TotalAmount
 	model.PurchaseAt = s.PurchaseAt
 	model.Remark = s.Remark
-	model.Attachment = s.Attachment
 	model.CreateBy = s.CreateBy // 添加这而，需要记录是被谁创建的
 }
 
@@ -88,20 +85,19 @@ func (s *AssetPurchaseInsertReq) GetId() interface{} {
 }
 
 type AssetPurchaseUpdateReq struct {
-	Id            int    `uri:"id" comment:"主键"` // 主键
-	PurchaseCode  string `json:"purchaseCode" comment:"采购单编号"`
-	CategoryId    string `json:"categoryId" comment:"资产类型编码"`
-	SupplierId    string `json:"supplierId" comment:"供应商编码"`
-	PurchaseUser  string `json:"purchaseUser" comment:"采购人编码"`
-	Specification string `json:"specification" comment:"规格型号"`
-	Brand         string `json:"brand" comment:"品牌"`
-	Quantity      string `json:"quantity" comment:"采购数量"`
-	Unit          string `json:"unit" comment:"计量单位"`
-	UnitPrice     string `json:"unitPrice" comment:"采购单价"`
-	TotalAmount   string `json:"totalAmount" comment:"采购金额"`
-	PurchaseAt    string `json:"purchaseAt" comment:"采购日期"`
-	Remark        string `json:"remark" comment:"备注"`
-	Attachment    string `json:"attachment" comment:"附件"`
+	Id            int       `uri:"id" comment:"主键"` // 主键
+	PurchaseCode  string    `json:"purchaseCode" comment:"采购单编号"`
+	CategoryId    int       `json:"categoryId" comment:"资产类型编码"`
+	SupplierId    int       `json:"supplierId" comment:"供应商编码"`
+	PurchaseUser  int       `json:"purchaseUser" comment:"采购人编码"`
+	Specification string    `json:"specification" comment:"规格型号"`
+	Brand         string    `json:"brand" comment:"品牌"`
+	Quantity      int64     `json:"quantity" comment:"采购数量"`
+	Unit          string    `json:"unit" comment:"计量单位"`
+	UnitPrice     float64   `json:"unitPrice" comment:"采购单价"`
+	TotalAmount   float64   `json:"totalAmount" comment:"采购金额"`
+	PurchaseAt    time.Time `json:"purchaseAt" comment:"采购日期"`
+	Remark        string    `json:"remark" comment:"备注"`
 	common.ControlBy
 }
 
@@ -121,7 +117,6 @@ func (s *AssetPurchaseUpdateReq) Generate(model *models.AssetPurchase) {
 	model.TotalAmount = s.TotalAmount
 	model.PurchaseAt = s.PurchaseAt
 	model.Remark = s.Remark
-	model.Attachment = s.Attachment
 	model.UpdateBy = s.UpdateBy // 添加这而，需要记录是被谁更新的
 }
 
