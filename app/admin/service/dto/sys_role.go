@@ -21,6 +21,9 @@ type SysRoleGetPageReq struct {
 	DataScope string `form:"dataScope" search:"type:exact;column:data_scope;table:sys_role" comment:"是否管理员"`
 }
 
+type SysRoleBindUserGetPageReq struct {
+	Name string `json:"name" form:"name"`
+}
 type SysRoleOrder struct {
 	RoleIdOrder    string `search:"type:order;column:role_id;table:sys_role" form:"roleIdOrder"`
 	RoleNameOrder  string `search:"type:order;column:role_name;table:sys_role" form:"roleNameOrder"`
