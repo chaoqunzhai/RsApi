@@ -1,4 +1,656 @@
 definitions:
+  dto.AssetCategoryDeleteReq:
+    properties:
+      ids:
+        items:
+          type: integer
+        type: array
+    type: object
+  dto.AssetCategoryInsertReq:
+    properties:
+      categoryName:
+        type: string
+      createBy:
+        type: integer
+      remark:
+        type: string
+      updateBy:
+        type: integer
+    type: object
+  dto.AssetCategoryUpdateReq:
+    properties:
+      categoryName:
+        type: string
+      createBy:
+        type: integer
+      id:
+        description: 主键
+        type: integer
+      remark:
+        type: string
+      updateBy:
+        type: integer
+    type: object
+  dto.AssetDeleteReq:
+    properties:
+      ids:
+        items:
+          type: integer
+        type: array
+    type: object
+  dto.AssetDisposalDeleteReq:
+    properties:
+      ids:
+        items:
+          type: integer
+        type: array
+    type: object
+  dto.AssetDisposalInsertReq:
+    properties:
+      amount:
+        type: number
+      assetId:
+        type: integer
+      createBy:
+        type: integer
+      disposalAt:
+        type: string
+      disposalPerson:
+        type: integer
+      disposalType:
+        type: integer
+      disposalWay:
+        type: integer
+      locationId:
+        type: integer
+      reason:
+        type: string
+      remark:
+        type: string
+      updateBy:
+        type: integer
+    type: object
+  dto.AssetDisposalUpdateReq:
+    properties:
+      amount:
+        type: number
+      assetId:
+        type: integer
+      createBy:
+        type: integer
+      disposalAt:
+        type: string
+      disposalPerson:
+        type: integer
+      disposalType:
+        type: integer
+      disposalWay:
+        type: integer
+      id:
+        description: 主键
+        type: integer
+      locationId:
+        type: integer
+      reason:
+        type: string
+      remark:
+        type: string
+      updateBy:
+        type: integer
+    type: object
+  dto.AssetGroupDeleteReq:
+    properties:
+      ids:
+        items:
+          type: integer
+        type: array
+    type: object
+  dto.AssetGroupInsertReq:
+    properties:
+      createBy:
+        type: integer
+      groupName:
+        type: string
+      mainAssetId:
+        type: integer
+      remark:
+        type: string
+      updateBy:
+        type: integer
+    type: object
+  dto.AssetGroupMemberDeleteReq:
+    properties:
+      ids:
+        items:
+          type: integer
+        type: array
+    type: object
+  dto.AssetGroupMemberInsertReq:
+    properties:
+      assetGroupId:
+        type: integer
+      assetId:
+        type: integer
+      createBy:
+        type: integer
+      isMain:
+        type: integer
+      updateBy:
+        type: integer
+    type: object
+  dto.AssetGroupMemberUpdateReq:
+    properties:
+      assetGroupId:
+        type: integer
+      assetId:
+        type: integer
+      createBy:
+        type: integer
+      id:
+        description: 主键
+        type: integer
+      isMain:
+        type: integer
+      updateBy:
+        type: integer
+    type: object
+  dto.AssetGroupUpdateReq:
+    properties:
+      createBy:
+        type: integer
+      groupName:
+        type: string
+      id:
+        description: 主键
+        type: integer
+      mainAssetId:
+        type: integer
+      remark:
+        type: string
+      updateBy:
+        type: integer
+    type: object
+  dto.AssetInboundDeleteReq:
+    properties:
+      ids:
+        items:
+          type: integer
+        type: array
+    type: object
+  dto.AssetInboundInsertReq:
+    properties:
+      assetId:
+        type: integer
+      createBy:
+        type: integer
+      fromCode:
+        type: string
+      inboundAt:
+        type: string
+      inboundBy:
+        type: integer
+      inboundFrom:
+        type: integer
+      remark:
+        type: string
+      updateBy:
+        type: integer
+      warehouseId:
+        type: integer
+    type: object
+  dto.AssetInboundUpdateReq:
+    properties:
+      assetId:
+        type: integer
+      createBy:
+        type: integer
+      fromCode:
+        type: string
+      id:
+        description: 主键
+        type: integer
+      inboundAt:
+        type: string
+      inboundBy:
+        type: integer
+      inboundFrom:
+        type: integer
+      remark:
+        type: string
+      updateBy:
+        type: integer
+      warehouseId:
+        type: integer
+    type: object
+  dto.AssetInsertReq:
+    properties:
+      assetCode:
+        type: string
+      brand:
+        type: string
+      categoryId:
+        type: integer
+      createBy:
+        type: integer
+      remark:
+        type: string
+      snCode:
+        type: string
+      specification:
+        type: string
+      status:
+        type: integer
+      unit:
+        type: string
+      unitPrice:
+        type: number
+      updateBy:
+        type: integer
+    type: object
+  dto.AssetOutboundDeleteReq:
+    properties:
+      ids:
+        items:
+          type: integer
+        type: array
+    type: object
+  dto.AssetOutboundInsertReq:
+    properties:
+      assetId:
+        type: integer
+      createBy:
+        type: integer
+      outboundAt:
+        type: string
+      outboundBy:
+        type: integer
+      outboundTo:
+        type: integer
+      remark:
+        type: string
+      updateBy:
+        type: integer
+      warehouseId:
+        type: integer
+    type: object
+  dto.AssetOutboundUpdateReq:
+    properties:
+      assetId:
+        type: integer
+      createBy:
+        type: integer
+      id:
+        description: 主键
+        type: integer
+      outboundAt:
+        type: string
+      outboundBy:
+        type: integer
+      outboundTo:
+        type: integer
+      remark:
+        type: string
+      updateBy:
+        type: integer
+      warehouseId:
+        type: integer
+    type: object
+  dto.AssetPurchaseApplyDeleteReq:
+    properties:
+      ids:
+        items:
+          type: integer
+        type: array
+    type: object
+  dto.AssetPurchaseApplyInsertReq:
+    properties:
+      applyAt:
+        type: string
+      applyCode:
+        type: string
+      applyReason:
+        type: string
+      applyUser:
+        type: integer
+      approveAt:
+        type: string
+      approver:
+        type: integer
+      brand:
+        type: string
+      categoryId:
+        type: integer
+      createBy:
+        type: integer
+      quantity:
+        type: integer
+      remark:
+        type: string
+      specification:
+        type: string
+      status:
+        type: integer
+      supplierId:
+        type: integer
+      totalAmount:
+        type: number
+      unit:
+        type: string
+      unitPrice:
+        type: number
+      updateBy:
+        type: integer
+    type: object
+  dto.AssetPurchaseApplyUpdateReq:
+    properties:
+      applyAt:
+        type: string
+      applyCode:
+        type: string
+      applyReason:
+        type: string
+      applyUser:
+        type: integer
+      approveAt:
+        type: string
+      approver:
+        type: integer
+      brand:
+        type: string
+      categoryId:
+        type: integer
+      createBy:
+        type: integer
+      id:
+        description: 主键
+        type: integer
+      quantity:
+        type: integer
+      remark:
+        type: string
+      specification:
+        type: string
+      status:
+        type: integer
+      supplierId:
+        type: integer
+      totalAmount:
+        type: number
+      unit:
+        type: string
+      unitPrice:
+        type: number
+      updateBy:
+        type: integer
+    type: object
+  dto.AssetPurchaseDeleteReq:
+    properties:
+      ids:
+        items:
+          type: integer
+        type: array
+    type: object
+  dto.AssetPurchaseInsertReq:
+    properties:
+      brand:
+        type: string
+      categoryId:
+        type: integer
+      createBy:
+        type: integer
+      purchaseAt:
+        type: string
+      purchaseCode:
+        type: string
+      purchaseUser:
+        type: integer
+      quantity:
+        type: integer
+      remark:
+        type: string
+      specification:
+        type: string
+      supplierId:
+        type: integer
+      totalAmount:
+        type: number
+      unit:
+        type: string
+      unitPrice:
+        type: number
+      updateBy:
+        type: integer
+    type: object
+  dto.AssetPurchaseUpdateReq:
+    properties:
+      brand:
+        type: string
+      categoryId:
+        type: integer
+      createBy:
+        type: integer
+      id:
+        description: 主键
+        type: integer
+      purchaseAt:
+        type: string
+      purchaseCode:
+        type: string
+      purchaseUser:
+        type: integer
+      quantity:
+        type: integer
+      remark:
+        type: string
+      specification:
+        type: string
+      supplierId:
+        type: integer
+      totalAmount:
+        type: number
+      unit:
+        type: string
+      unitPrice:
+        type: number
+      updateBy:
+        type: integer
+    type: object
+  dto.AssetReturnDeleteReq:
+    properties:
+      ids:
+        items:
+          type: integer
+        type: array
+    type: object
+  dto.AssetReturnInsertReq:
+    properties:
+      assetId:
+        type: integer
+      createBy:
+        type: integer
+      reason:
+        type: string
+      remark:
+        type: string
+      returnAt:
+        type: string
+      returnPerson:
+        type: integer
+      updateBy:
+        type: integer
+    type: object
+  dto.AssetReturnUpdateReq:
+    properties:
+      assetId:
+        type: integer
+      createBy:
+        type: integer
+      id:
+        description: 主键
+        type: integer
+      reason:
+        type: string
+      remark:
+        type: string
+      returnAt:
+        type: string
+      returnPerson:
+        type: integer
+      updateBy:
+        type: integer
+    type: object
+  dto.AssetStockDeleteReq:
+    properties:
+      ids:
+        items:
+          type: integer
+        type: array
+    type: object
+  dto.AssetStockInsertReq:
+    properties:
+      categoryId:
+        type: integer
+      createBy:
+        type: integer
+      quantity:
+        type: integer
+      remark:
+        type: string
+      updateBy:
+        type: integer
+      warehouseId:
+        type: integer
+    type: object
+  dto.AssetStockUpdateReq:
+    properties:
+      categoryId:
+        type: integer
+      createBy:
+        type: integer
+      id:
+        description: 主键
+        type: integer
+      quantity:
+        type: integer
+      remark:
+        type: string
+      updateBy:
+        type: integer
+      warehouseId:
+        type: integer
+    type: object
+  dto.AssetSupplierDeleteReq:
+    properties:
+      ids:
+        items:
+          type: integer
+        type: array
+    type: object
+  dto.AssetSupplierInsertReq:
+    properties:
+      address:
+        type: string
+      contactPerson:
+        type: string
+      createBy:
+        type: integer
+      email:
+        type: string
+      phoneNumber:
+        type: string
+      remark:
+        type: string
+      supplierName:
+        type: string
+      updateBy:
+        type: integer
+    type: object
+  dto.AssetSupplierUpdateReq:
+    properties:
+      address:
+        type: string
+      contactPerson:
+        type: string
+      createBy:
+        type: integer
+      email:
+        type: string
+      id:
+        description: 主键
+        type: integer
+      phoneNumber:
+        type: string
+      remark:
+        type: string
+      supplierName:
+        type: string
+      updateBy:
+        type: integer
+    type: object
+  dto.AssetUpdateReq:
+    properties:
+      assetCode:
+        type: string
+      brand:
+        type: string
+      categoryId:
+        type: integer
+      createBy:
+        type: integer
+      id:
+        description: 主键
+        type: integer
+      remark:
+        type: string
+      snCode:
+        type: string
+      specification:
+        type: string
+      status:
+        type: integer
+      unit:
+        type: string
+      unitPrice:
+        type: number
+      updateBy:
+        type: integer
+    type: object
+  dto.AssetWarehouseDeleteReq:
+    properties:
+      ids:
+        items:
+          type: integer
+        type: array
+    type: object
+  dto.AssetWarehouseInsertReq:
+    properties:
+      administratorId:
+        type: integer
+      createBy:
+        type: integer
+      remark:
+        type: string
+      updateBy:
+        type: integer
+      warehouseName:
+        type: string
+    type: object
+  dto.AssetWarehouseUpdateReq:
+    properties:
+      administratorId:
+        type: integer
+      createBy:
+        type: integer
+      id:
+        description: 主键
+        type: integer
+      remark:
+        type: string
+      updateBy:
+        type: integer
+      warehouseName:
+        type: string
+    type: object
   dto.GetSetSysConfigReq:
     properties:
       configKey:
@@ -11,6 +663,94 @@ definitions:
       newPassword:
         type: string
       oldPassword:
+        type: string
+    type: object
+  dto.RcIdcDeleteReq:
+    properties:
+      ids:
+        items:
+          type: integer
+        type: array
+    type: object
+  dto.RcIdcInsertReq:
+    properties:
+      address:
+        type: string
+      belong:
+        type: string
+      businessUser:
+        type: string
+      charging:
+        type: string
+      createBy:
+        type: integer
+      customUser:
+        type: string
+      desc:
+        type: string
+      enable:
+        type: string
+      ipV6:
+        type: string
+      layer:
+        type: string
+      name:
+        type: string
+      price:
+        type: string
+      region:
+        type: string
+      status:
+        type: string
+      transProvince:
+        type: string
+      typeId:
+        type: string
+      updateBy:
+        type: integer
+      weChatName:
+        type: string
+    type: object
+  dto.RcIdcUpdateReq:
+    properties:
+      address:
+        type: string
+      belong:
+        type: string
+      businessUser:
+        type: string
+      charging:
+        type: string
+      createBy:
+        type: integer
+      customUser:
+        type: string
+      desc:
+        type: string
+      enable:
+        type: string
+      id:
+        description: 主键编码
+        type: integer
+      ipV6:
+        type: string
+      layer:
+        type: string
+      name:
+        type: string
+      price:
+        type: string
+      region:
+        type: string
+      status:
+        type: string
+      transProvince:
+        type: string
+      typeId:
+        type: string
+      updateBy:
+        type: integer
+      weChatName:
         type: string
     type: object
   dto.ResetSysUserPwdReq:
@@ -955,6 +1695,390 @@ definitions:
     - username
     - uuid
     type: object
+  models.Asset:
+    properties:
+      assetCode:
+        type: string
+      brand:
+        type: string
+      categoryId:
+        type: integer
+      createBy:
+        type: integer
+      createdAt:
+        type: string
+      id:
+        type: integer
+      remark:
+        type: string
+      snCode:
+        type: string
+      specification:
+        type: string
+      status:
+        type: integer
+      unit:
+        type: string
+      unitPrice:
+        type: number
+      updateBy:
+        type: integer
+      updatedAt:
+        type: string
+    type: object
+  models.AssetCategory:
+    properties:
+      categoryName:
+        type: string
+      createBy:
+        type: integer
+      createdAt:
+        type: string
+      id:
+        type: integer
+      remark:
+        type: string
+      updateBy:
+        type: integer
+      updatedAt:
+        type: string
+    type: object
+  models.AssetDisposal:
+    properties:
+      amount:
+        type: number
+      assetId:
+        type: integer
+      createBy:
+        type: integer
+      createdAt:
+        type: string
+      disposalAt:
+        type: string
+      disposalPerson:
+        type: integer
+      disposalType:
+        type: integer
+      disposalWay:
+        type: integer
+      id:
+        type: integer
+      locationId:
+        type: integer
+      reason:
+        type: string
+      remark:
+        type: string
+      updateBy:
+        type: integer
+      updatedAt:
+        type: string
+    type: object
+  models.AssetGroup:
+    properties:
+      createBy:
+        type: integer
+      createdAt:
+        type: string
+      groupName:
+        type: string
+      id:
+        type: integer
+      mainAssetId:
+        type: integer
+      remark:
+        type: string
+      updateBy:
+        type: integer
+      updatedAt:
+        type: string
+    type: object
+  models.AssetGroupMember:
+    properties:
+      assetGroupId:
+        type: integer
+      assetId:
+        type: integer
+      createBy:
+        type: integer
+      createdAt:
+        type: string
+      id:
+        type: integer
+      isMain:
+        type: integer
+      updateBy:
+        type: integer
+      updatedAt:
+        type: string
+    type: object
+  models.AssetInbound:
+    properties:
+      assetId:
+        type: integer
+      createBy:
+        type: integer
+      createdAt:
+        type: string
+      fromCode:
+        type: string
+      id:
+        type: integer
+      inboundAt:
+        type: string
+      inboundBy:
+        type: integer
+      inboundFrom:
+        type: integer
+      remark:
+        type: string
+      updateBy:
+        type: integer
+      updatedAt:
+        type: string
+      warehouseId:
+        type: integer
+    type: object
+  models.AssetOutbound:
+    properties:
+      assetId:
+        type: integer
+      createBy:
+        type: integer
+      createdAt:
+        type: string
+      id:
+        type: integer
+      outboundAt:
+        type: string
+      outboundBy:
+        type: integer
+      outboundTo:
+        type: integer
+      remark:
+        type: string
+      updateBy:
+        type: integer
+      updatedAt:
+        type: string
+      warehouseId:
+        type: integer
+    type: object
+  models.AssetPurchase:
+    properties:
+      brand:
+        type: string
+      categoryId:
+        type: integer
+      createBy:
+        type: integer
+      createdAt:
+        type: string
+      id:
+        type: integer
+      purchaseAt:
+        type: string
+      purchaseCode:
+        type: string
+      purchaseUser:
+        type: integer
+      quantity:
+        type: integer
+      remark:
+        type: string
+      specification:
+        type: string
+      supplierId:
+        type: integer
+      totalAmount:
+        type: number
+      unit:
+        type: string
+      unitPrice:
+        type: number
+      updateBy:
+        type: integer
+      updatedAt:
+        type: string
+    type: object
+  models.AssetPurchaseApply:
+    properties:
+      applyAt:
+        type: string
+      applyCode:
+        type: string
+      applyReason:
+        type: string
+      applyUser:
+        type: integer
+      approveAt:
+        type: string
+      approver:
+        type: integer
+      brand:
+        type: string
+      categoryId:
+        type: integer
+      createBy:
+        type: integer
+      createdAt:
+        type: string
+      id:
+        type: integer
+      quantity:
+        type: integer
+      remark:
+        type: string
+      specification:
+        type: string
+      status:
+        type: integer
+      supplierId:
+        type: integer
+      totalAmount:
+        type: number
+      unit:
+        type: string
+      unitPrice:
+        type: number
+      updateBy:
+        type: integer
+      updatedAt:
+        type: string
+    type: object
+  models.AssetReturn:
+    properties:
+      assetId:
+        type: integer
+      createBy:
+        type: integer
+      createdAt:
+        type: string
+      id:
+        type: integer
+      reason:
+        type: string
+      remark:
+        type: string
+      returnAt:
+        type: string
+      returnPerson:
+        type: integer
+      updateBy:
+        type: integer
+      updatedAt:
+        type: string
+    type: object
+  models.AssetStock:
+    properties:
+      categoryId:
+        type: integer
+      createBy:
+        type: integer
+      createdAt:
+        type: string
+      id:
+        type: integer
+      quantity:
+        type: integer
+      remark:
+        type: string
+      updateBy:
+        type: integer
+      updatedAt:
+        type: string
+      warehouseId:
+        type: integer
+    type: object
+  models.AssetSupplier:
+    properties:
+      address:
+        type: string
+      contactPerson:
+        type: string
+      createBy:
+        type: integer
+      createdAt:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      phoneNumber:
+        type: string
+      remark:
+        type: string
+      supplierName:
+        type: string
+      updateBy:
+        type: integer
+      updatedAt:
+        type: string
+    type: object
+  models.AssetWarehouse:
+    properties:
+      administratorId:
+        type: integer
+      createBy:
+        type: integer
+      createdAt:
+        type: string
+      id:
+        type: integer
+      remark:
+        type: string
+      updateBy:
+        type: integer
+      updatedAt:
+        type: string
+      warehouseName:
+        type: string
+    type: object
+  models.RcIdc:
+    properties:
+      address:
+        type: string
+      belong:
+        type: string
+      businessUser:
+        type: string
+      charging:
+        type: string
+      createBy:
+        type: integer
+      createdAt:
+        type: string
+      customUser:
+        type: string
+      desc:
+        type: string
+      enable:
+        type: string
+      id:
+        type: integer
+      ipV6:
+        type: string
+      layer:
+        type: string
+      name:
+        type: string
+      price:
+        type: string
+      region:
+        type: string
+      status:
+        type: string
+      transProvince:
+        type: string
+      typeId:
+        type: string
+      updateBy:
+        type: integer
+      updatedAt:
+        type: string
+      weChatName:
+        type: string
+    type: object
   models.RsHost:
     properties:
       balance:
@@ -1233,6 +2357,1801 @@ paths:
       summary: 获取系统前台配置信息，主要注意这里不在验证权限
       tags:
       - 配置管理
+  /api/v1/asset:
+    delete:
+      description: 删除资产详情
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetDeleteReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "删除成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 删除资产详情
+      tags:
+      - 资产详情
+    get:
+      description: 获取资产详情列表
+      parameters:
+      - description: 资产编号
+        in: query
+        name: assetCode
+        type: string
+      - description: SN编码
+        in: query
+        name: snCode
+        type: string
+      - description: 资产类别
+        in: query
+        name: categoryId
+        type: string
+      - description: 规格型号
+        in: query
+        name: specification
+        type: string
+      - description: 品牌
+        in: query
+        name: brand
+        type: string
+      - description: 计量单位
+        in: query
+        name: unit
+        type: string
+      - description: 单价
+        in: query
+        name: unitPrice
+        type: string
+      - description: 状态(0=在库, 1=出库, 2=在用, 3=处置)
+        in: query
+        name: status
+        type: string
+      - description: 页条数
+        in: query
+        name: pageSize
+        type: integer
+      - description: 页码
+        in: query
+        name: pageIndex
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/response.Page'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/models.Asset'
+                        type: array
+                    type: object
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取资产详情列表
+      tags:
+      - 资产详情
+    post:
+      consumes:
+      - application/json
+      description: 创建资产详情
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetInsertReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "添加成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 创建资产详情
+      tags:
+      - 资产详情
+  /api/v1/asset-category:
+    delete:
+      description: 删除资产类别
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetCategoryDeleteReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "删除成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 删除资产类别
+      tags:
+      - 资产类别
+    get:
+      description: 获取资产类别列表
+      parameters:
+      - description: 类别名称
+        in: query
+        name: categoryName
+        type: string
+      - description: 页条数
+        in: query
+        name: pageSize
+        type: integer
+      - description: 页码
+        in: query
+        name: pageIndex
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/response.Page'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/models.AssetCategory'
+                        type: array
+                    type: object
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取资产类别列表
+      tags:
+      - 资产类别
+    post:
+      consumes:
+      - application/json
+      description: 创建资产类别
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetCategoryInsertReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "添加成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 创建资产类别
+      tags:
+      - 资产类别
+  /api/v1/asset-category/{id}:
+    get:
+      description: 获取资产类别
+      parameters:
+      - description: id
+        in: path
+        name: id
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.AssetCategory'
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取资产类别
+      tags:
+      - 资产类别
+    put:
+      consumes:
+      - application/json
+      description: 修改资产类别
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetCategoryUpdateReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "修改成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 修改资产类别
+      tags:
+      - 资产类别
+  /api/v1/asset-disposal:
+    delete:
+      description: 删除资产处置记录
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetDisposalDeleteReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "删除成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 删除资产处置记录
+      tags:
+      - 资产处置记录
+    get:
+      description: 获取资产处置记录列表
+      parameters:
+      - description: 页条数
+        in: query
+        name: pageSize
+        type: integer
+      - description: 页码
+        in: query
+        name: pageIndex
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/response.Page'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/models.AssetDisposal'
+                        type: array
+                    type: object
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取资产处置记录列表
+      tags:
+      - 资产处置记录
+    post:
+      consumes:
+      - application/json
+      description: 创建资产处置记录
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetDisposalInsertReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "添加成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 创建资产处置记录
+      tags:
+      - 资产处置记录
+  /api/v1/asset-disposal/{id}:
+    get:
+      description: 获取资产处置记录
+      parameters:
+      - description: id
+        in: path
+        name: id
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.AssetDisposal'
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取资产处置记录
+      tags:
+      - 资产处置记录
+    put:
+      consumes:
+      - application/json
+      description: 修改资产处置记录
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetDisposalUpdateReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "修改成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 修改资产处置记录
+      tags:
+      - 资产处置记录
+  /api/v1/asset-group:
+    delete:
+      description: 删除资产组合
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetGroupDeleteReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "删除成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 删除资产组合
+      tags:
+      - 资产组合
+    get:
+      description: 获取资产组合列表
+      parameters:
+      - description: 资产组合名称
+        in: query
+        name: groupName
+        type: string
+      - description: 主资产编码
+        in: query
+        name: mainAssetId
+        type: string
+      - description: 页条数
+        in: query
+        name: pageSize
+        type: integer
+      - description: 页码
+        in: query
+        name: pageIndex
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/response.Page'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/models.AssetGroup'
+                        type: array
+                    type: object
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取资产组合列表
+      tags:
+      - 资产组合
+    post:
+      consumes:
+      - application/json
+      description: 创建资产组合
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetGroupInsertReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "添加成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 创建资产组合
+      tags:
+      - 资产组合
+  /api/v1/asset-group-member:
+    delete:
+      description: 删除资产组合成员
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetGroupMemberDeleteReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "删除成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 删除资产组合成员
+      tags:
+      - 资产组合成员
+    get:
+      description: 获取资产组合成员列表
+      parameters:
+      - description: 资产组合编码
+        in: query
+        name: assetGroupId
+        type: string
+      - description: 资产编码
+        in: query
+        name: assetId
+        type: string
+      - description: 是否为主资产(1=是,0=否)
+        in: query
+        name: isMain
+        type: string
+      - description: 页条数
+        in: query
+        name: pageSize
+        type: integer
+      - description: 页码
+        in: query
+        name: pageIndex
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/response.Page'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/models.AssetGroupMember'
+                        type: array
+                    type: object
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取资产组合成员列表
+      tags:
+      - 资产组合成员
+    post:
+      consumes:
+      - application/json
+      description: 创建资产组合成员
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetGroupMemberInsertReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "添加成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 创建资产组合成员
+      tags:
+      - 资产组合成员
+  /api/v1/asset-group-member/{id}:
+    get:
+      description: 获取资产组合成员
+      parameters:
+      - description: id
+        in: path
+        name: id
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.AssetGroupMember'
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取资产组合成员
+      tags:
+      - 资产组合成员
+    put:
+      consumes:
+      - application/json
+      description: 修改资产组合成员
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetGroupMemberUpdateReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "修改成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 修改资产组合成员
+      tags:
+      - 资产组合成员
+  /api/v1/asset-group/{id}:
+    get:
+      description: 获取资产组合
+      parameters:
+      - description: id
+        in: path
+        name: id
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.AssetGroup'
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取资产组合
+      tags:
+      - 资产组合
+    put:
+      consumes:
+      - application/json
+      description: 修改资产组合
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetGroupUpdateReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "修改成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 修改资产组合
+      tags:
+      - 资产组合
+  /api/v1/asset-inbound:
+    delete:
+      description: 删除资产入库记录
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetInboundDeleteReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "删除成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 删除资产入库记录
+      tags:
+      - 资产入库记录
+    get:
+      description: 获取资产入库记录列表
+      parameters:
+      - description: 资产编码
+        in: query
+        name: assetId
+        type: string
+      - description: 库房编码
+        in: query
+        name: warehouseId
+        type: string
+      - description: 来源(1=采购、0=直接入库)
+        in: query
+        name: inboundFrom
+        type: string
+      - description: 来源凭证编码(采购编码)
+        in: query
+        name: fromCode
+        type: string
+      - description: 入库人编码
+        in: query
+        name: inboundBy
+        type: string
+      - description: 页条数
+        in: query
+        name: pageSize
+        type: integer
+      - description: 页码
+        in: query
+        name: pageIndex
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/response.Page'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/models.AssetInbound'
+                        type: array
+                    type: object
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取资产入库记录列表
+      tags:
+      - 资产入库记录
+    post:
+      consumes:
+      - application/json
+      description: 创建资产入库记录
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetInboundInsertReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "添加成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 创建资产入库记录
+      tags:
+      - 资产入库记录
+  /api/v1/asset-inbound/{id}:
+    get:
+      description: 获取资产入库记录
+      parameters:
+      - description: id
+        in: path
+        name: id
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.AssetInbound'
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取资产入库记录
+      tags:
+      - 资产入库记录
+    put:
+      consumes:
+      - application/json
+      description: 修改资产入库记录
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetInboundUpdateReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "修改成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 修改资产入库记录
+      tags:
+      - 资产入库记录
+  /api/v1/asset-outbound:
+    delete:
+      description: 删除资产出库记录
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetOutboundDeleteReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "删除成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 删除资产出库记录
+      tags:
+      - 资产出库记录
+    get:
+      description: 获取资产出库记录列表
+      parameters:
+      - description: 资产编码
+        in: query
+        name: assetId
+        type: string
+      - description: 库房编码
+        in: query
+        name: warehouseId
+        type: string
+      - description: 出库去向(客户编码)
+        in: query
+        name: outboundTo
+        type: string
+      - description: 出库人编码
+        in: query
+        name: outboundBy
+        type: string
+      - description: 页条数
+        in: query
+        name: pageSize
+        type: integer
+      - description: 页码
+        in: query
+        name: pageIndex
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/response.Page'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/models.AssetOutbound'
+                        type: array
+                    type: object
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取资产出库记录列表
+      tags:
+      - 资产出库记录
+    post:
+      consumes:
+      - application/json
+      description: 创建资产出库记录
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetOutboundInsertReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "添加成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 创建资产出库记录
+      tags:
+      - 资产出库记录
+  /api/v1/asset-outbound/{id}:
+    get:
+      description: 获取资产出库记录
+      parameters:
+      - description: id
+        in: path
+        name: id
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.AssetOutbound'
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取资产出库记录
+      tags:
+      - 资产出库记录
+    put:
+      consumes:
+      - application/json
+      description: 修改资产出库记录
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetOutboundUpdateReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "修改成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 修改资产出库记录
+      tags:
+      - 资产出库记录
+  /api/v1/asset-purchase:
+    delete:
+      description: 删除资产采购记录
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetPurchaseDeleteReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "删除成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 删除资产采购记录
+      tags:
+      - 资产采购记录
+    get:
+      description: 获取资产采购记录列表
+      parameters:
+      - description: 采购单编号
+        in: query
+        name: purchaseCode
+        type: string
+      - description: 资产类型编码
+        in: query
+        name: categoryId
+        type: string
+      - description: 供应商编码
+        in: query
+        name: supplierId
+        type: string
+      - description: 采购人编码
+        in: query
+        name: purchaseUser
+        type: string
+      - description: 规格型号
+        in: query
+        name: specification
+        type: string
+      - description: 品牌
+        in: query
+        name: brand
+        type: string
+      - description: 采购日期
+        in: query
+        name: purchaseAt
+        type: string
+      - description: 页条数
+        in: query
+        name: pageSize
+        type: integer
+      - description: 页码
+        in: query
+        name: pageIndex
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/response.Page'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/models.AssetPurchase'
+                        type: array
+                    type: object
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取资产采购记录列表
+      tags:
+      - 资产采购记录
+    post:
+      consumes:
+      - application/json
+      description: 创建资产采购记录
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetPurchaseInsertReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "添加成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 创建资产采购记录
+      tags:
+      - 资产采购记录
+  /api/v1/asset-purchase-apply:
+    delete:
+      description: 删除资产采购申请
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetPurchaseApplyDeleteReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "删除成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 删除资产采购申请
+      tags:
+      - 资产采购申请
+    get:
+      description: 获取资产采购申请列表
+      parameters:
+      - description: 申请单编号
+        in: query
+        name: applyCode
+        type: string
+      - description: 资产类型编码
+        in: query
+        name: categoryId
+        type: string
+      - description: 供应商编码
+        in: query
+        name: supplierId
+        type: string
+      - description: 申购人编码
+        in: query
+        name: applyUser
+        type: string
+      - description: 规格型号
+        in: query
+        name: specification
+        type: string
+      - description: 品牌
+        in: query
+        name: brand
+        type: string
+      - description: 申购日期
+        in: query
+        name: applyAt
+        type: string
+      - description: 审批人编码
+        in: query
+        name: approver
+        type: string
+      - description: 审批时间
+        in: query
+        name: approveAt
+        type: string
+      - description: 页条数
+        in: query
+        name: pageSize
+        type: integer
+      - description: 页码
+        in: query
+        name: pageIndex
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/response.Page'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/models.AssetPurchaseApply'
+                        type: array
+                    type: object
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取资产采购申请列表
+      tags:
+      - 资产采购申请
+    post:
+      consumes:
+      - application/json
+      description: 创建资产采购申请
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetPurchaseApplyInsertReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "添加成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 创建资产采购申请
+      tags:
+      - 资产采购申请
+  /api/v1/asset-purchase-apply/{id}:
+    get:
+      description: 获取资产采购申请
+      parameters:
+      - description: id
+        in: path
+        name: id
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.AssetPurchaseApply'
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取资产采购申请
+      tags:
+      - 资产采购申请
+    put:
+      consumes:
+      - application/json
+      description: 修改资产采购申请
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetPurchaseApplyUpdateReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "修改成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 修改资产采购申请
+      tags:
+      - 资产采购申请
+  /api/v1/asset-purchase/{id}:
+    get:
+      description: 获取资产采购记录
+      parameters:
+      - description: id
+        in: path
+        name: id
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.AssetPurchase'
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取资产采购记录
+      tags:
+      - 资产采购记录
+    put:
+      consumes:
+      - application/json
+      description: 修改资产采购记录
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetPurchaseUpdateReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "修改成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 修改资产采购记录
+      tags:
+      - 资产采购记录
+  /api/v1/asset-return:
+    delete:
+      description: 删除资产退还记录
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetReturnDeleteReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "删除成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 删除资产退还记录
+      tags:
+      - 资产退还记录
+    get:
+      description: 获取资产退还记录列表
+      parameters:
+      - description: 资产编码
+        in: query
+        name: assetId
+        type: integer
+      - description: 退还人编码
+        in: query
+        name: returnPerson
+        type: integer
+      - description: 退还原因
+        in: query
+        name: reason
+        type: string
+      - description: 页条数
+        in: query
+        name: pageSize
+        type: integer
+      - description: 页码
+        in: query
+        name: pageIndex
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/response.Page'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/models.AssetReturn'
+                        type: array
+                    type: object
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取资产退还记录列表
+      tags:
+      - 资产退还记录
+    post:
+      consumes:
+      - application/json
+      description: 创建资产退还记录
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetReturnInsertReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "添加成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 创建资产退还记录
+      tags:
+      - 资产退还记录
+  /api/v1/asset-return/{id}:
+    get:
+      description: 获取资产退还记录
+      parameters:
+      - description: id
+        in: path
+        name: id
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.AssetReturn'
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取资产退还记录
+      tags:
+      - 资产退还记录
+    put:
+      consumes:
+      - application/json
+      description: 修改资产退还记录
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetReturnUpdateReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "修改成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 修改资产退还记录
+      tags:
+      - 资产退还记录
+  /api/v1/asset-stock:
+    delete:
+      description: 删除资产库存
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetStockDeleteReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "删除成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 删除资产库存
+      tags:
+      - 资产库存
+    get:
+      description: 获取资产库存列表
+      parameters:
+      - description: 库房编码
+        in: query
+        name: warehouseId
+        type: integer
+      - description: 资产类别编码
+        in: query
+        name: categoryId
+        type: integer
+      - description: 页条数
+        in: query
+        name: pageSize
+        type: integer
+      - description: 页码
+        in: query
+        name: pageIndex
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/response.Page'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/models.AssetStock'
+                        type: array
+                    type: object
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取资产库存列表
+      tags:
+      - 资产库存
+    post:
+      consumes:
+      - application/json
+      description: 创建资产库存
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetStockInsertReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "添加成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 创建资产库存
+      tags:
+      - 资产库存
+  /api/v1/asset-stock/{id}:
+    get:
+      description: 获取资产库存
+      parameters:
+      - description: id
+        in: path
+        name: id
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.AssetStock'
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取资产库存
+      tags:
+      - 资产库存
+    put:
+      consumes:
+      - application/json
+      description: 修改资产库存
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetStockUpdateReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "修改成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 修改资产库存
+      tags:
+      - 资产库存
+  /api/v1/asset-supplier:
+    delete:
+      description: 删除资产供应商
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetSupplierDeleteReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "删除成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 删除资产供应商
+      tags:
+      - 资产供应商
+    get:
+      description: 获取资产供应商列表
+      parameters:
+      - description: 供应商名称
+        in: query
+        name: supplierName
+        type: string
+      - description: 联系人
+        in: query
+        name: contactPerson
+        type: string
+      - description: 联系电话
+        in: query
+        name: phoneNumber
+        type: string
+      - description: 页条数
+        in: query
+        name: pageSize
+        type: integer
+      - description: 页码
+        in: query
+        name: pageIndex
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/response.Page'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/models.AssetSupplier'
+                        type: array
+                    type: object
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取资产供应商列表
+      tags:
+      - 资产供应商
+    post:
+      consumes:
+      - application/json
+      description: 创建资产供应商
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetSupplierInsertReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "添加成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 创建资产供应商
+      tags:
+      - 资产供应商
+  /api/v1/asset-supplier/{id}:
+    get:
+      description: 获取资产供应商
+      parameters:
+      - description: id
+        in: path
+        name: id
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.AssetSupplier'
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取资产供应商
+      tags:
+      - 资产供应商
+    put:
+      consumes:
+      - application/json
+      description: 修改资产供应商
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetSupplierUpdateReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "修改成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 修改资产供应商
+      tags:
+      - 资产供应商
+  /api/v1/asset-warehouse:
+    delete:
+      description: 删除资产库房
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetWarehouseDeleteReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "删除成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 删除资产库房
+      tags:
+      - 资产库房
+    get:
+      description: 获取资产库房列表
+      parameters:
+      - description: 库房名称
+        in: query
+        name: warehouseName
+        type: string
+      - description: 管理员编码
+        in: query
+        name: administratorId
+        type: string
+      - description: 页条数
+        in: query
+        name: pageSize
+        type: integer
+      - description: 页码
+        in: query
+        name: pageIndex
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/response.Page'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/models.AssetWarehouse'
+                        type: array
+                    type: object
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取资产库房列表
+      tags:
+      - 资产库房
+    post:
+      consumes:
+      - application/json
+      description: 创建资产库房
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetWarehouseInsertReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "添加成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 创建资产库房
+      tags:
+      - 资产库房
+  /api/v1/asset-warehouse/{id}:
+    get:
+      description: 获取资产库房
+      parameters:
+      - description: id
+        in: path
+        name: id
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.AssetWarehouse'
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取资产库房
+      tags:
+      - 资产库房
+    put:
+      consumes:
+      - application/json
+      description: 修改资产库房
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetWarehouseUpdateReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "修改成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 修改资产库房
+      tags:
+      - 资产库房
+  /api/v1/asset/{id}:
+    get:
+      description: 获取资产详情
+      parameters:
+      - description: id
+        in: path
+        name: id
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.Asset'
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取资产详情
+      tags:
+      - 资产详情
+    put:
+      consumes:
+      - application/json
+      description: 修改资产详情
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetUpdateReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "修改成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 修改资产详情
+      tags:
+      - 资产详情
   /api/v1/captcha:
     get:
       description: 获取验证码
@@ -2005,6 +4924,161 @@ paths:
       summary: 上传图片
       tags:
       - 公共接口
+  /api/v1/rc-idc:
+    delete:
+      description: 删除RcIdc
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RcIdcDeleteReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "删除成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 删除RcIdc
+      tags:
+      - RcIdc
+    get:
+      description: 获取RcIdc列表
+      parameters:
+      - description: 开关
+        in: query
+        name: enable
+        type: string
+      - description: 机房名称
+        in: query
+        name: name
+        type: string
+      - description: 机房状态
+        in: query
+        name: status
+        type: string
+      - description: 机房归属
+        in: query
+        name: belong
+        type: string
+      - description: 机房类型
+        in: query
+        name: typeId
+        type: string
+      - description: 商务人员
+        in: query
+        name: businessUser
+        type: string
+      - description: 所在区域
+        in: query
+        name: region
+        type: string
+      - description: 是否跨省
+        in: query
+        name: transProvince
+        type: string
+      - description: 页条数
+        in: query
+        name: pageSize
+        type: integer
+      - description: 页码
+        in: query
+        name: pageIndex
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/response.Page'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/models.RcIdc'
+                        type: array
+                    type: object
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取RcIdc列表
+      tags:
+      - RcIdc
+    post:
+      consumes:
+      - application/json
+      description: 创建RcIdc
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RcIdcInsertReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "添加成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 创建RcIdc
+      tags:
+      - RcIdc
+  /api/v1/rc-idc/{id}:
+    get:
+      description: 获取RcIdc
+      parameters:
+      - description: id
+        in: path
+        name: id
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.RcIdc'
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取RcIdc
+      tags:
+      - RcIdc
+    put:
+      consumes:
+      - application/json
+      description: 修改RcIdc
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RcIdcUpdateReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "修改成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 修改RcIdc
+      tags:
+      - RcIdc
   /api/v1/register/healthy:
     post:
       description: 主动上报
