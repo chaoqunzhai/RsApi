@@ -84,7 +84,7 @@ func (e SysRole) BindUser(c *gin.Context) {
 	}
 
 	e.Orm.Model(&models.SysUser{}).Where("role_id = ?", roleModel.RoleId).Find(&result)
-	e.OK(result, "")
+	e.PageOK(result, len(result), 1, -1, "查询成功")
 	return
 }
 

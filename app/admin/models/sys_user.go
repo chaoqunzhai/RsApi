@@ -73,5 +73,6 @@ func (e *SysUser) AfterFind(_ *gorm.DB) error {
 	e.DeptIds = []int{e.DeptId}
 	e.PostIds = []int{e.PostId}
 	e.RoleIds = []int{e.RoleId}
+
 	return nil
 }
