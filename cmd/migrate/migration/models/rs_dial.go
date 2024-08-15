@@ -16,8 +16,8 @@ type Dial struct {
 	Mac              string       `json:"mac" gorm:"type:varchar(30);comment:MAC地址"`
 	DeviceName       string       `json:"deviceName" gorm:"type:varchar(20);comment:自动获取的物理网卡名称"`
 	DialName         string       `json:"dialName" gorm:"type:varchar(20);comment:线路名称"`
-	NetworkingStatus int          `json:"networkingStatus" gorm:"type:int(1);default:0;comment:拨号状态,1:已联网 0:未联网 -1:联网异常"`
-	Status           int          `json:"status" gorm:"type:int(1);default:0;comment:拨号状态,1:已拨通 0:待使用 -1:拨号异常"`
+	NetworkingStatus int          `json:"networkingStatus" gorm:"default:0;type:int;comment:拨号状态,1:已联网 0:待使用 -1:联网异常"`
+	Status           int          `json:"status" gorm:"default:0;type:int;comment:拨号状态,1:已拨通 0:待使用 -1:拨号异常"`
 	Source           int          `json:"source" gorm:"type:int(1);default:0;comment:拨号状态,0:录入 1:自动上报"`
 	IspId            int          `json:"ispId"  gorm:"type:int(1);default:0;comment:关联合同下的账号的运营商ID"`
 	IdcId            int          `json:"idcId" gorm:"index;comment:关联的IDC"`

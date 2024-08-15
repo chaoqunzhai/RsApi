@@ -75,7 +75,7 @@ type RsDialInsertReq struct {
 	IdcId            int    `json:"idcId" comment:"关联的IDC"`
 	HostId           int    `json:"hostId" comment:"关联主机ID"`
 	DeviceId         int    `json:"deviceId" comment:"关联网卡ID"`
-	RunTime          string `json:"runTime" comment:""`
+	RunTimeAt        string `json:"runTimeAt" comment:""`
 	IspId            int    `json:"ispId"`
 	common.ControlBy
 }
@@ -101,8 +101,8 @@ func (s *RsDialInsertReq) Generate(model *models.RsDial) {
 	model.IdcId = s.IdcId
 	model.HostId = s.HostId
 	model.DeviceId = s.DeviceId
-	if s.RunTime != "" {
-		if star, err := time.ParseInLocation(time.DateTime, s.RunTime, global.LOC); err == nil {
+	if s.RunTimeAt != "" {
+		if star, err := time.ParseInLocation(time.DateTime, s.RunTimeAt, global.LOC); err == nil {
 			model.RunTime = sql.NullTime{
 				Time: star,
 			}
@@ -133,7 +133,7 @@ type RsDialUpdateReq struct {
 	IdcId            int    `json:"idcId" comment:"关联的IDC"`
 	HostId           int    `json:"hostId" comment:"关联主机ID"`
 	DeviceId         int    `json:"deviceId" comment:"关联网卡ID"`
-	RunTime          string `json:"runTime" comment:""`
+	RunTimeAt        string `json:"RunTimeAt" comment:""`
 	IspId            int    `json:"ispId"`
 	common.ControlBy
 }
@@ -160,8 +160,8 @@ func (s *RsDialUpdateReq) Generate(model *models.RsDial) {
 	model.HostId = s.HostId
 	model.DeviceId = s.DeviceId
 
-	if s.RunTime != "" {
-		if star, err := time.ParseInLocation(time.DateTime, s.RunTime, global.LOC); err == nil {
+	if s.RunTimeAt != "" {
+		if star, err := time.ParseInLocation(time.DateTime, s.RunTimeAt, global.LOC); err == nil {
 			model.RunTime = sql.NullTime{
 				Time:  star,
 				Valid: true,
