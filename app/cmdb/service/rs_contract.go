@@ -3,6 +3,7 @@ package service
 import (
 	"errors"
 	"github.com/go-admin-team/go-admin-core/sdk/service"
+	"go-admin/common/utils"
 	"gorm.io/gorm"
 
 	"go-admin/app/cmdb/models"
@@ -94,12 +95,22 @@ func (e *RsContract) Update(c *dto.RsContractUpdateReq, p *actions.DataPermissio
 		return errors.New("无权更新该数据")
 	}
 
+	hasIds := make([]int, 0)
+	var RsBandwidthFeesList []models.RsBandwidthFees
+	e.Orm.Model(&models.RsBandwidthFees{}).Select("id").Where("contract_id = ?", c.Id).Find(&RsBandwidthFeesList)
+
+	for _, row := range RsBandwidthFeesList {
+		hasIds = append(hasIds, row.Id)
+	}
+
+	updateId := make([]int, 0)
 	for _, row := range c.BandwidthFees {
 		var bandRow models.RsBandwidthFees
 		if row.Id > 0 { //更新
 			e.Orm.Model(&bandRow).First(&bandRow, row.GetId())
 			row.Generate(&bandRow)
 			bandRow.ContractId = data.Id
+			updateId = append(updateId, row.Id)
 			e.Orm.Save(&bandRow)
 		} else { //创建
 			row.Generate(&bandRow)
@@ -107,6 +118,9 @@ func (e *RsContract) Update(c *dto.RsContractUpdateReq, p *actions.DataPermissio
 			err = e.Orm.Create(&bandRow).Error
 		}
 	}
+	diffIds := utils.DifferenceInt(hasIds, updateId)
+
+	e.Orm.Model(&models.RsBandwidthFees{}).Where("id in ?", diffIds).Delete(&models.RsBandwidthFees{})
 	return nil
 }
 

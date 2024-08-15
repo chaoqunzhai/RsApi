@@ -12,17 +12,17 @@ import (
 
 type RsContractGetPageReq struct {
 	dto.Pagination `search:"-"`
-	Name           string    `form:"name"  search:"type:contains;column:name;table:rs_contract" comment:"合同名称"`
-	Number         string    `form:"number"  search:"type:exact;column:number;table:rs_contract" comment:"合同编号"`
-	BuId           int       `form:"buId"  search:"type:exact;column:bu_id;table:rs_contract" comment:"商务人员"`
-	CustomId       int       `form:"customId"  search:"type:exact;column:custom_id;table:rs_contract" comment:"所属客户ID"`
-	SignatoryId    int       `form:"signatoryId"  search:"type:exact;column:signatory_id;table:rs_contract" comment:"签订人"`
-	Type           int       `form:"type"  search:"type:exact;column:type;table:rs_contract" comment:"合同类型,contract_type"`
-	SettlementType int       `form:"settlementType"  search:"type:exact;column:settlement_type;table:rs_contract" comment:"结算方式,settlement_type"`
-	StartTimeAt    time.Time `form:"startTimeAt"  search:"type:exact;column:start_time;table:rs_contract" comment:"合同开始时间"`
-	EndTimeAt      time.Time `form:"endTimeAt"  search:"type:exact;column:end_time;table:rs_contract" comment:"合同结束时间"`
-	Address        string    `form:"address"  search:"type:exact;column:address;table:rs_contract" comment:"地址"`
-	Phone          string    `form:"phone"  search:"type:contains;column:phone;table:rs_contract" comment:"电话"`
+	Name           string `form:"name"  search:"type:contains;column:name;table:rs_contract" comment:"合同名称"`
+	Number         string `form:"number"  search:"type:exact;column:number;table:rs_contract" comment:"合同编号"`
+	BuId           int    `form:"buId"  search:"type:exact;column:bu_id;table:rs_contract" comment:"商务人员"`
+	CustomId       int    `form:"customId"  search:"type:exact;column:custom_id;table:rs_contract" comment:"所属客户ID"`
+	SignatoryId    int    `form:"signatoryId"  search:"type:exact;column:signatory_id;table:rs_contract" comment:"签订人"`
+	Type           int    `form:"type"  search:"type:exact;column:type;table:rs_contract" comment:"合同类型,contract_type"`
+	SettlementType int    `form:"settlementType"  search:"type:exact;column:settlement_type;table:rs_contract" comment:"结算方式,settlement_type"`
+	StartTimeAt    string `form:"startTimeAt"  search:"type:gte;column:start_time;table:rs_contract" comment:"合同开始时间"`
+	EndTimeAt      string `form:"endTimeAt"  search:"type:lte;column:end_time;table:rs_contract" comment:"合同结束时间"`
+	Address        string `form:"address"  search:"type:exact;column:address;table:rs_contract" comment:"地址"`
+	Phone          string `form:"phone"  search:"type:contains;column:phone;table:rs_contract" comment:"电话"`
 	RsContractOrder
 }
 
