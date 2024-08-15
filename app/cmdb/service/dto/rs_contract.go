@@ -19,8 +19,8 @@ type RsContractGetPageReq struct {
 	SignatoryId    int       `form:"signatoryId"  search:"type:exact;column:signatory_id;table:rs_contract" comment:"签订人"`
 	Type           int       `form:"type"  search:"type:exact;column:type;table:rs_contract" comment:"合同类型,contract_type"`
 	SettlementType int       `form:"settlementType"  search:"type:exact;column:settlement_type;table:rs_contract" comment:"结算方式,settlement_type"`
-	StartTime      time.Time `form:"startTime"  search:"type:exact;column:start_time;table:rs_contract" comment:"合同开始时间"`
-	EndTime        time.Time `form:"endTime"  search:"type:exact;column:end_time;table:rs_contract" comment:"合同结束时间"`
+	StartTimeAt    time.Time `form:"startTimeAt"  search:"type:exact;column:start_time;table:rs_contract" comment:"合同开始时间"`
+	EndTimeAt      time.Time `form:"endTimeAt"  search:"type:exact;column:end_time;table:rs_contract" comment:"合同结束时间"`
 	Address        string    `form:"address"  search:"type:exact;column:address;table:rs_contract" comment:"地址"`
 	Phone          string    `form:"phone"  search:"type:contains;column:phone;table:rs_contract" comment:"电话"`
 	RsContractOrder
@@ -123,7 +123,7 @@ type RsContractInsertReq struct {
 	BuId           int                        `json:"buId" comment:"商务人员"`
 	CustomId       int                        `json:"customId" comment:"所属客户ID"`
 	SignatoryId    int                        `json:"signatoryId" comment:"签订人"`
-	User           string                     `json:"user" comment:"联系人名称"`
+	UserId         int                        `json:"userId" comment:"联系人名称"`
 	Type           int                        `json:"type" comment:"合同类型,contract_type"`
 	SettlementType int                        `json:"settlementType" comment:"结算方式,settlement_type"`
 	StartTimeAt    string                     `json:"startTimeAt" comment:"合同开始时间"`
@@ -149,7 +149,7 @@ func (s *RsContractInsertReq) Generate(model *models.RsContract) {
 	model.BuId = s.BuId
 	model.CustomId = s.CustomId
 	model.SignatoryId = s.SignatoryId
-	model.User = s.User
+	model.UserId = s.UserId
 	model.Type = s.Type
 	model.SettlementType = s.SettlementType
 
@@ -196,7 +196,7 @@ type RsContractUpdateReq struct {
 	BuId           int                        `json:"buId" comment:"商务人员"`
 	CustomId       int                        `json:"customId" comment:"所属客户ID"`
 	SignatoryId    int                        `json:"signatoryId" comment:"签订人"`
-	User           string                     `json:"user" comment:"联系人名称"`
+	UserId         int                        `json:"userId" comment:"联系人名称"`
 	Type           int                        `json:"type" comment:"合同类型,contract_type"`
 	SettlementType int                        `json:"settlementType" comment:"结算方式,settlement_type"`
 	StartTimeAt    string                     `json:"startTimeAt" comment:"合同开始时间"`
@@ -222,7 +222,7 @@ func (s *RsContractUpdateReq) Generate(model *models.RsContract) {
 	model.BuId = s.BuId
 	model.CustomId = s.CustomId
 	model.SignatoryId = s.SignatoryId
-	model.User = s.User
+	model.UserId = s.UserId
 	model.Type = s.Type
 	model.SettlementType = s.SettlementType
 

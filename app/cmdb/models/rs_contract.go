@@ -15,7 +15,7 @@ type RsContract struct {
 	BuId           int                    `json:"buId" gorm:"type:bigint;comment:商务人员"`
 	CustomId       int                    `json:"customId" gorm:"type:bigint;comment:所属客户ID"`
 	SignatoryId    int                    `json:"signatoryId" gorm:"type:bigint;comment:签订人"`
-	User           string                 `json:"user" gorm:"type:varchar(20);comment:联系人名称"`
+	UserId         int                    `json:"userId" gorm:"comment:联系人名称"`
 	Type           int                    `json:"type" gorm:"type:bigint;comment:合同类型,contract_type"`
 	SettlementType int                    `json:"settlementType" gorm:"type:bigint;comment:结算方式,settlement_type"`
 	StartTime      sql.NullTime           `json:"-" gorm:"type:datetime(3);comment:合同开始时间"`

@@ -8,8 +8,8 @@ type Contract struct {
 	Number         string       `json:"number" gorm:"type:varchar(20);comment:合同编号"`
 	BuId           int          `json:"buId" gorm:"comment:商务人员"`
 	CustomId       int          `json:"customId" gorm:"comment:所属客户ID"`
-	SignatoryId    int          `json:"signatoryId" gorm:"comment:签订人"`
-	User           string       `json:"user" gorm:"type:varchar(20);comment:联系人名称"`
+	SignatoryId    int          `json:"signatoryId" gorm:"comment:签订人ID"`
+	UserId         int          `json:"userId" gorm:"comment:联系人ID"`
 	Type           int          `json:"type" gorm:"comment:合同类型,contract_type"`
 	SettlementType int          `json:"settlementType" gorm:"comment:结算方式,settlement_type"`
 	StartTime      sql.NullTime `json:"startTime" gorm:"comment:合同开始时间"`
