@@ -21,7 +21,7 @@ type RsIdc struct {
 	WebHookUrl    string `json:"webHookUrl" gorm:"type:varchar(100);comment:企业微信webhookUrl"`
 	Status        int    `json:"status" gorm:"type:int;comment:机房状态"`
 	Belong        int    `json:"belong" gorm:"type:int;comment:机房归属"`
-	TransProvince int    `json:"transProd" gorm:"default:1;comment:是否跨省"`
+	TransProvince int    `json:"transProvince" gorm:"default:1;comment:是否跨省"`
 	MoreDialing   int    `json:"moreDialing" gorm:"default:1;comment:是否支持多拨"`
 	models.ModelTime
 	models.ControlBy
