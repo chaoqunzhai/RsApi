@@ -21,11 +21,16 @@ type RegisterMetrics struct {
 	Isp            string            `json:"isp"`
 	NetDevice      string            `json:"netDevice"`
 	Balance        float64           `json:"balance"`
+	BandwidthCnf   BandWithCnf       `json:"bandwidthCnf"`
 	TransmitNumber float64           `json:"transmitNumber"`
 	ReceiveNumber  float64           `json:"receiveNumber"`
 	MemoryMap      map[string]uint64 `json:"memoryMap"`
 	Dial           []*RegisterDial   `json:"dial"` //拨号列表
 	ExtendMap      []SoftwareRow     `json:"extendMap"`
+}
+type BandWithCnf struct {
+	Line  float64 `json:"line"`
+	Width float64 `json:"width"`
 }
 
 type SoftwareRow struct {

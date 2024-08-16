@@ -178,6 +178,10 @@ func (e *RsHost) Remove(d *dto.RsHostDeleteReq, p *actions.DataPermission) error
 	if db.RowsAffected == 0 {
 		return errors.New("无权删除该数据")
 	}
+	e.Orm.Model(models2.HostSystem{}).Where("host_id in ?", d.GetId()).Unscoped().Delete(&models2.HostSystem{})
+	e.Orm.Model(models2.HostSwitchLog{}).Where("host_id in ?", d.GetId()).Unscoped().Delete(&models2.HostSwitchLog{})
+	e.Orm.Model(models2.HostSoftware{}).Where("host_id in ?", d.GetId()).Unscoped().Delete(&models2.HostSoftware{})
+	e.Orm.Model(models2.HostNetDevice{}).Where("host_id in ?", d.GetId()).Unscoped().Delete(&models2.HostNetDevice{})
 	return nil
 }
 func (e *RsHost) GetIdcList(ids []int) map[int][]interface{} {
