@@ -27,6 +27,12 @@ type Model struct {
 	Id int `json:"id" gorm:"primaryKey;autoIncrement;comment:主键编码"`
 }
 
+type ModelBaseTime struct {
+	CreatedAt time.Time      `json:"-" gorm:"comment:创建时间"`
+	UpdatedAt time.Time      `json:"updatedAt" gorm:"comment:最后更新时间"`
+	DeletedAt gorm.DeletedAt `json:"-" gorm:"index;comment:删除时间"`
+}
+
 type ModelTime struct {
 	CreatedAt XTime          `json:"-" gorm:"comment:创建时间"`
 	UpdatedAt XTime          `json:"updatedAt" gorm:"comment:最后更新时间"`

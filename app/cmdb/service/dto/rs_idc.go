@@ -45,16 +45,17 @@ func (m *RsIdcGetPageReq) GetNeedSearch() interface{} {
 }
 
 type RsIdcInsertReq struct {
-	Id            int    `json:"-" comment:"主键编码"` // 主键编码
-	Desc          string `json:"desc" comment:"描述信息"`
-	Number        int    `json:"number" comment:"机房编号"`
-	Name          string `json:"name" comment:"机房名称"`
-	CustomUser    int    `json:"customUser" comment:"所属客户"`
+	Id     int    `json:"-" comment:"主键编码"` // 主键编码
+	Desc   string `json:"desc" comment:"描述信息"`
+	Number int    `json:"number" comment:"机房编号"`
+	Name   string `json:"name" comment:"机房名称"`
+
 	Region        string `json:"region" comment:"所在地区"`
 	Address       string `json:"address" comment:"详细地址"`
 	IpV6          int    `json:"ipV6" comment:"是否IPV6"`
 	TypeId        int    `json:"typeId" comment:"机房类型"`
-	BusinessUser  int    `json:"businessUser" comment:"商务人员"`
+	BuId          int    `json:"buId" comment:"商务人员"`
+	CustomId      int    `json:"customId" comment:"所属客户ID"`
 	WechatName    string `json:"wechatName" comment:"企业微信群名称"`
 	WebHookUrl    string `json:"webHookUrl" comment:"企业微信webhookUrl"`
 	Status        int    `json:"status" comment:"机房状态"`
@@ -72,12 +73,12 @@ func (s *RsIdcInsertReq) Generate(model *models.RsIdc) {
 	model.Desc = s.Desc
 	model.Number = s.Number
 	model.Name = s.Name
-	model.CustomUser = s.CustomUser
+	model.CustomId = s.CustomId
 	model.Region = s.Region
 	model.Address = s.Address
 	model.IpV6 = s.IpV6
 	model.TypeId = s.TypeId
-	model.BusinessUser = s.BusinessUser
+	model.BuId = s.BuId
 	model.WechatName = s.WechatName
 	model.WebHookUrl = s.WebHookUrl
 	model.Status = s.Status
@@ -94,12 +95,12 @@ type RsIdcUpdateReq struct {
 	Desc          string `json:"desc" comment:"描述信息"`
 	Number        int    `json:"number" comment:"机房编号"`
 	Name          string `json:"name" comment:"机房名称"`
-	CustomUser    int    `json:"customUser" comment:"所属客户"`
 	Region        string `json:"region" comment:"所在地区"`
 	Address       string `json:"address" comment:"详细地址"`
 	IpV6          int    `json:"ipV6" comment:"是否IPV6"`
 	TypeId        int    `json:"typeId" comment:"机房类型"`
-	BusinessUser  int    `json:"businessUser" comment:"商务人员"`
+	BuId          int    `json:"buId" comment:"商务人员"`
+	CustomId      int    `json:"customId" comment:"所属客户ID"`
 	WechatName    string `json:"wechatName" comment:"企业微信群名称"`
 	WebHookUrl    string `json:"webHookUrl" comment:"企业微信webhookUrl"`
 	Status        int    `json:"status" comment:"机房状态"`
@@ -117,12 +118,12 @@ func (s *RsIdcUpdateReq) Generate(model *models.RsIdc) {
 	model.Desc = s.Desc
 	model.Number = s.Number
 	model.Name = s.Name
-	model.CustomUser = s.CustomUser
+	model.BuId = s.BuId
 	model.Region = s.Region
 	model.Address = s.Address
 	model.IpV6 = s.IpV6
 	model.TypeId = s.TypeId
-	model.BusinessUser = s.BusinessUser
+	model.CustomId = s.CustomId
 	model.WechatName = s.WechatName
 	model.WebHookUrl = s.WebHookUrl
 	model.Status = s.Status
