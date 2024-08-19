@@ -125,7 +125,6 @@ func (e RsHost) Switch(c *gin.Context) {
 		sureList := make([]models.RsBusiness, 0)
 
 		for _, business := range host.Business {
-			fmt.Println("b！！！！u", business.Name)
 			sureList = append(sureList, business)
 		}
 
@@ -143,8 +142,7 @@ func (e RsHost) Switch(c *gin.Context) {
 
 		e.Orm.Save(&host)
 
-		for _, sure := range sureList {
-
+		addSwitchLog := func(name, enName string) {
 			for _, bu := range BusinessList {
 				//记录下 主机之前的sn列表,需要通过sn去查询监控数据
 				event := models.RsHostSwitchLog{
@@ -153,10 +151,17 @@ func (e RsHost) Switch(c *gin.Context) {
 					JobId:      uuid.New().String(),
 					CreateBy:   user.GetUserId(c),
 					Desc:       req.Desc,
-					BuSource:   sure.Name,
-					BuEnSource: sure.EnName,
+					BuSource:   name,
+					BuEnSource: enName,
 				}
 				e.Orm.Create(&event)
+			}
+		}
+		if len(sureList) == 0 { //暂无业务的情况下
+			addSwitchLog("", "")
+		} else {
+			for _, sure := range sureList {
+				addSwitchLog(sure.Name, sure.EnName)
 			}
 		}
 		switchList = append(switchList, map[string]string{

@@ -3,6 +3,7 @@ package service
 import (
 	"errors"
 	"github.com/go-admin-team/go-admin-core/sdk/service"
+	"go-admin/common/utils"
 	"gorm.io/gorm"
 
 	"go-admin/app/cmdb/models"
@@ -83,6 +84,12 @@ func (e *RsBusiness) Insert(c *dto.RsBusinessInsertReq) error {
 		e.Log.Errorf("RsBusinessService Insert error:%s \r\n", err)
 		return err
 	}
+	for _, row := range c.CostCnf {
+		var costCnf models.RsBusinessCostCnf
+		row.Generate(&costCnf)
+		costCnf.BuId = data.Id
+		_ = e.Orm.Create(&costCnf)
+	}
 	return nil
 }
 
@@ -103,6 +110,39 @@ func (e *RsBusiness) Update(c *dto.RsBusinessUpdateReq, p *actions.DataPermissio
 	if db.RowsAffected == 0 {
 		return errors.New("无权更新该数据")
 	}
+
+	hasIds := make([]int, 0)
+	var bindCostCnf []models.RsBusinessCostCnf
+	e.Orm.Model(&models.RsBusinessCostCnf{}).Select("id").Where("bu_id = ?", c.Id).Find(&bindCostCnf)
+
+	for _, row := range bindCostCnf {
+		hasIds = append(hasIds, row.Id)
+	}
+
+	updateId := make([]int, 0)
+	var diffIds []int
+	if len(c.CostCnf) == 0 {
+		diffIds = hasIds
+	} else {
+		for _, row := range c.CostCnf {
+			var bandRow models.RsBusinessCostCnf
+			if row.Id > 0 { //更新
+				e.Orm.Model(&bandRow).First(&bandRow, row.GetId())
+				row.Generate(&bandRow)
+				bandRow.BuId = data.Id
+				updateId = append(updateId, row.Id)
+				e.Orm.Save(&bandRow)
+			} else { //创建
+				row.Generate(&bandRow)
+				bandRow.BuId = data.Id
+				err = e.Orm.Create(&bandRow).Error
+			}
+		}
+		diffIds = utils.DifferenceInt(hasIds, updateId)
+	}
+
+	e.Orm.Model(&models.RsBusinessCostCnf{}).Where("id in ?", diffIds).Delete(&models.RsBusinessCostCnf{})
+
 	return nil
 }
 
@@ -121,5 +161,9 @@ func (e *RsBusiness) Remove(d *dto.RsBusinessDeleteReq, p *actions.DataPermissio
 	if db.RowsAffected == 0 {
 		return errors.New("无权删除该数据")
 	}
+
+	//删除对应的带宽配置信息
+	var bindCost models.RsBusinessCostCnf
+	e.Orm.Model(&bindCost).Delete(&bindCost, d.GetId())
 	return nil
 }

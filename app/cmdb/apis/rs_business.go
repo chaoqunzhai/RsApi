@@ -117,13 +117,13 @@ func (e RsBusiness) Insert(c *gin.Context) {
 	var count int64
 	e.Orm.Model(&models.RsBusiness{}).Where("name = ?", req.Name).Count(&count)
 	if count > 0 {
-		e.Error(500, nil, "已经存在")
+		e.Error(500, nil, "业务名称已经存在")
 		return
 	}
 	var EnCount int64
 	e.Orm.Model(&models.RsBusiness{}).Where("en_name = ?", req.Name).Count(&EnCount)
 	if EnCount > 0 {
-		e.Error(500, nil, "英文名称已经存在")
+		e.Error(500, nil, "英文业务名称已经存在")
 		return
 	}
 	err = s.Insert(&req)

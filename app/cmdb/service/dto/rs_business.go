@@ -31,13 +31,45 @@ func (m *RsBusinessGetPageReq) GetNeedSearch() interface{} {
 }
 
 type RsBusinessInsertReq struct {
-	Id        int    `json:"-" comment:"主键编码"` // 主键编码
-	Status    int    `json:"status" comment:"状态"`
-	Desc      string `json:"desc" comment:"描述信息"`
-	Name      string `json:"name" comment:"业务云名称"`
-	EnName    string `json:"enName" gorm:"index;type:varchar(30);comment:业务别名"`
-	Algorithm string `json:"algorithm" comment:"算法备注"`
+	Id            int                  `json:"-" comment:"主键编码"` // 主键编码
+	Status        int                  `json:"status" comment:"状态"`
+	Desc          string               `json:"desc" comment:"描述信息"`
+	Name          string               `json:"name" comment:"业务云名称"`
+	EnName        string               `json:"enName" gorm:"index;type:varchar(30);comment:业务别名"`
+	BillingMethod int                  `json:"billingMethod" comment:"计费方式"`
+	ParentId      int                  `json:"parentId" gorm:"comment:父业务"`
+	CostCnf       []RsCostCnfInsertReq `json:"cost_cnf"`
 	common.ControlBy
+}
+
+type RsCostCnfInsertReq struct {
+	BuId           int     `json:"buId"`
+	Id             int     `json:"id" comment:"主键编码"` // 主键编码
+	Isp            int     `json:"isp"`
+	Minimum        float64 `json:"minimum"`
+	IpType         int     `json:"ipType"`
+	DialType       int     `json:"dialType"`
+	BandwidthLower float64 `json:"bandwidthLower"`
+	BandwidthLimit float64 `json:"bandwidthLimit"`
+	Price          float64 `json:"price"`
+}
+
+func (s *RsCostCnfInsertReq) Generate(model *models.RsBusinessCostCnf) {
+	if s.Id == 0 {
+		model.Model = common.Model{Id: s.Id}
+	}
+
+	model.Isp = s.Isp
+	model.BuId = s.BuId
+	model.Minimum = s.Minimum
+	model.DialType = s.DialType
+	model.IpType = s.IpType
+	model.BandwidthLower = s.BandwidthLower
+	model.BandwidthLimit = s.BandwidthLimit
+	model.Price = s.Price
+}
+func (s *RsCostCnfInsertReq) GetId() interface{} {
+	return s.Id
 }
 
 func (s *RsBusinessInsertReq) Generate(model *models.RsBusiness) {
@@ -49,7 +81,8 @@ func (s *RsBusinessInsertReq) Generate(model *models.RsBusiness) {
 	model.Desc = s.Desc
 	model.Name = s.Name
 	model.Status = s.Status
-	model.Algorithm = s.Algorithm
+	model.BillingMethod = s.BillingMethod
+	model.ParentId = s.ParentId
 }
 
 func (s *RsBusinessInsertReq) GetId() interface{} {
@@ -57,12 +90,14 @@ func (s *RsBusinessInsertReq) GetId() interface{} {
 }
 
 type RsBusinessUpdateReq struct {
-	Id        int    `uri:"id" comment:"主键编码"` // 主键编码
-	Status    int    `json:"status" comment:"状态"`
-	Desc      string `json:"desc" comment:"描述信息"`
-	Name      string `json:"name" comment:"业务云名称"`
-	EnName    string `json:"enName" gorm:"index;type:varchar(30);comment:业务别名"`
-	Algorithm string `json:"algorithm" comment:"算法备注"`
+	Id            int                  `uri:"id" comment:"主键编码"` // 主键编码
+	Status        int                  `json:"status" comment:"状态"`
+	Desc          string               `json:"desc" comment:"描述信息"`
+	Name          string               `json:"name" comment:"业务云名称"`
+	EnName        string               `json:"enName" gorm:"index;type:varchar(30);comment:业务别名"`
+	BillingMethod int                  `json:"billingMethod" comment:"计费方式"`
+	ParentId      int                  `json:"parentId" gorm:"comment:父业务"`
+	CostCnf       []RsCostCnfInsertReq `json:"cost_cnf"`
 	common.ControlBy
 }
 
@@ -75,7 +110,8 @@ func (s *RsBusinessUpdateReq) Generate(model *models.RsBusiness) {
 	model.EnName = s.EnName
 	model.Name = s.Name
 	model.Status = s.Status
-	model.Algorithm = s.Algorithm
+	model.BillingMethod = s.BillingMethod
+	model.ParentId = s.ParentId
 }
 
 func (s *RsBusinessUpdateReq) GetId() interface{} {

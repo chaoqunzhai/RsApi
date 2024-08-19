@@ -72,7 +72,7 @@ func (e *RsContract) Insert(c *dto.RsContractInsertReq) error {
 		var bandRow models.RsBandwidthFees
 		row.Generate(&bandRow)
 		bandRow.ContractId = data.Id
-		err = e.Orm.Create(&bandRow).Error
+		_ = e.Orm.Create(&bandRow)
 	}
 	return nil
 }
@@ -104,21 +104,26 @@ func (e *RsContract) Update(c *dto.RsContractUpdateReq, p *actions.DataPermissio
 	}
 
 	updateId := make([]int, 0)
-	for _, row := range c.BandwidthFees {
-		var bandRow models.RsBandwidthFees
-		if row.Id > 0 { //更新
-			e.Orm.Model(&bandRow).First(&bandRow, row.GetId())
-			row.Generate(&bandRow)
-			bandRow.ContractId = data.Id
-			updateId = append(updateId, row.Id)
-			e.Orm.Save(&bandRow)
-		} else { //创建
-			row.Generate(&bandRow)
-			bandRow.ContractId = data.Id
-			err = e.Orm.Create(&bandRow).Error
+	var diffIds []int
+	if len(c.BandwidthFees) == 0 {
+		diffIds = hasIds
+	} else {
+		for _, row := range c.BandwidthFees {
+			var bandRow models.RsBandwidthFees
+			if row.Id > 0 { //更新
+				e.Orm.Model(&bandRow).First(&bandRow, row.GetId())
+				row.Generate(&bandRow)
+				bandRow.ContractId = data.Id
+				updateId = append(updateId, row.Id)
+				e.Orm.Save(&bandRow)
+			} else { //创建
+				row.Generate(&bandRow)
+				bandRow.ContractId = data.Id
+				err = e.Orm.Create(&bandRow).Error
+			}
 		}
+		diffIds = utils.DifferenceInt(hasIds, updateId)
 	}
-	diffIds := utils.DifferenceInt(hasIds, updateId)
 
 	e.Orm.Model(&models.RsBandwidthFees{}).Where("id in ?", diffIds).Delete(&models.RsBandwidthFees{})
 	return nil

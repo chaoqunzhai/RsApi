@@ -43,6 +43,7 @@ func _1599190683659Tables(db *gorm.DB, version string) error {
 			new(models.ChinaData),
 			new(models.Business),
 			new(models.Tag),
+			new(models.BusinessCostCnf),
 			new(models.Idc),
 			new(models.Host),
 			new(models.HostSystem),
