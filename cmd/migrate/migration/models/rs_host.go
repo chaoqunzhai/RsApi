@@ -35,7 +35,7 @@ type Host struct {
 	Region        string       `json:"region" gorm:"type:varchar(80);comment:省份城市多ID"`
 	TransProvince bool         `json:"transProvince" gorm:"default:false;comment:是否跨省"`
 	LineType      int          `json:"lineType" gorm:"type:int(1);default:0;comment:线路类型"`
-	AllLine       int          `json:"allLine" gorm:"type:int(1);default:0;comment:机房总线路"`
+	AllLine       int          `json:"allLine" gorm:"type:int(1);default:0;comment:机器总线路"`
 	LineBandwidth float64      `json:"lineBandwidth"  gorm:"default:0;comment:单条线路带宽"`
 	Idc           int          `json:"idc" gorm:"index;type:int(11);comment:关联的IDC"`
 	Auth          int          `json:"auth" gorm:"type:int(1);default:1;comment:是否有主机权限"`

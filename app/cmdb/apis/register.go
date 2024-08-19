@@ -12,12 +12,12 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-admin-team/go-admin-core/sdk/api"
+	"go-admin/app/cmdb/models"
 	"go-admin/app/cmdb/service"
 	"go-admin/app/cmdb/service/dto"
-
-	"go-admin/app/cmdb/models"
-	models2 "go-admin/cmd/migrate/migration/models"
 	"go-admin/common/dial"
+
+	models2 "go-admin/cmd/migrate/migration/models"
 	_ "go-admin/common/dial"
 	models3 "go-admin/common/models"
 	"go-admin/global"
@@ -71,50 +71,6 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 	hostInstance.Remark = req.Remark
 
 	var IdcId int
-	//拨号列表,
-	for _, DialRow := range req.Dial {
-
-		if setEvents, ok := dial.MapCnf.Get(DialRow.A); ok {
-			if setEvents.Idc > 0 {
-				IdcId = setEvents.Idc
-			}
-		}
-		//如果列表存在 全局的缓存中 那就自动归到idc下
-		var (
-			DialRowModel models.RsDial
-			DialCount    int64
-		)
-		//对于自动上报数据的数据,做一个特定创建,防止 已经创建了这个账号，被自动创建也冲掉
-		e.Orm.Model(&models.RsDial{}).Where("account = ? and source = 1", DialRow.A).Count(&DialCount)
-		if DialCount > 0 {
-			e.Orm.Model(&models.RsDial{}).Where("account = ? and source = 1", DialRow.A).Updates(map[string]interface{}{
-				"host_id":     hostInstance.Id,
-				"idc_id":      hostInstance.Idc,
-				"account":     DialRow.A,
-				"pass":        DialRow.P,
-				"status":      DialRow.S,
-				"ip":          DialRow.Ip,
-				"mac":         DialRow.Mac,
-				"source":      1,
-				"device_name": DialRow.I,
-				"dial_name":   DialRow.D,
-				"bu":          DialRow.BU,
-			})
-		} else {
-			DialRowModel.Bu = DialRow.BU
-			DialRowModel.HostId = hostInstance.Id
-			DialRowModel.IdcId = IdcId
-			DialRowModel.Account = DialRow.A
-			DialRowModel.Pass = DialRow.P
-			DialRowModel.Ip = DialRow.Ip
-			DialRowModel.Mac = DialRow.Mac
-			DialRowModel.DialName = DialRow.D
-			DialRowModel.Source = 1
-			DialRowModel.DeviceName = DialRow.I
-			DialRowModel.Status = DialRow.S
-			e.Orm.Save(&DialRowModel)
-		}
-	}
 	var ispNumber int
 	switch strings.TrimSpace(req.Isp) {
 	case "移动":
@@ -129,6 +85,10 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 	if req.Balance > 0 {
 		hostInstance.Balance = req.Balance
 	}
+	if req.BandwidthCnf.Line > 0 {
+		hostInstance.AllLine = int(req.BandwidthCnf.Line)
+		hostInstance.LineBandwidth = req.BandwidthCnf.Width
+	}
 	hostInstance.Isp = ispNumber
 
 	if hostInstance.Idc == 0 { //防止已经关联了IDC,被其他原因冲掉
@@ -140,6 +100,7 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 	}
 	e.Orm.Save(&hostInstance)
 
+	NetDeviceMap := make(map[string]int, 0)
 	if req.NetDevice != "" {
 
 		NetDeviceList := strings.Split(req.NetDevice, ",")
@@ -157,8 +118,61 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 			}
 			DeviceRow.Status = 1
 			e.Orm.Save(&DeviceRow)
+			NetDeviceMap[NetDeviceName] = DeviceRow.Id
 		}
 
+	}
+
+	//拨号列表,
+	for _, DialRow := range req.Dial {
+
+		if setEvents, ok := dial.MapCnf.Get(DialRow.A); ok {
+			if setEvents.Idc > 0 {
+				IdcId = setEvents.Idc
+			}
+		}
+		//如果列表存在 全局的缓存中 那就自动归到idc下
+		var (
+			DialRowModel models.RsDial
+			DialCount    int64
+		)
+		var bindNetDeviceId int
+		NetDeviceId, NetDeviceOk := NetDeviceMap[DialRow.I]
+		if NetDeviceOk {
+			bindNetDeviceId = NetDeviceId
+		}
+		//对于自动上报数据的数据,做一个特定创建,防止 已经创建了这个账号，被自动创建也冲掉
+		e.Orm.Model(&models.RsDial{}).Where("account = ? and source = 1", DialRow.A).Count(&DialCount)
+		if DialCount > 0 {
+			e.Orm.Model(&models.RsDial{}).Where("account = ? and source = 1", DialRow.A).Updates(map[string]interface{}{
+				"host_id":     hostInstance.Id,
+				"idc_id":      hostInstance.Idc,
+				"account":     DialRow.A,
+				"pass":        DialRow.P,
+				"status":      DialRow.S,
+				"ip":          DialRow.Ip,
+				"mac":         DialRow.Mac,
+				"source":      1,
+				"device_name": DialRow.I,
+				"dial_name":   DialRow.D,
+				"bu":          DialRow.BU,
+				"device_id":   bindNetDeviceId,
+			})
+		} else {
+			DialRowModel.Bu = DialRow.BU
+			DialRowModel.HostId = hostInstance.Id
+			DialRowModel.IdcId = IdcId
+			DialRowModel.Account = DialRow.A
+			DialRowModel.Pass = DialRow.P
+			DialRowModel.Ip = DialRow.Ip
+			DialRowModel.Mac = DialRow.Mac
+			DialRowModel.DialName = DialRow.D
+			DialRowModel.Source = 1
+			DialRowModel.DeviceId = bindNetDeviceId
+			DialRowModel.DeviceName = DialRow.I
+			DialRowModel.Status = DialRow.S
+			e.Orm.Save(&DialRowModel)
+		}
 	}
 	var hostSystem models2.HostSystem
 
