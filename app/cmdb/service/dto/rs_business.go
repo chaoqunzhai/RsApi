@@ -8,6 +8,7 @@ import (
 
 type RsBusinessGetPageReq struct {
 	dto.Pagination `search:"-"`
+	TreeTag        int    `form:"treeTag" search:"-"`
 	Enable         string `form:"enable"  search:"type:exact;column:enable;table:rs_business" comment:"开关"`
 	Name           string `form:"name"  search:"type:contains;column:name;table:rs_business" comment:"业务云名称"`
 	RsBusinessOrder

@@ -52,8 +52,18 @@ func (e RsBusiness) GetPage(c *gin.Context) {
 		e.Error(500, err, fmt.Sprintf("获取RsBusiness失败，\r\n失败信息 %s", err.Error()))
 		return
 	}
+	var result []interface{}
 
-	e.PageOK(list, int(count), req.GetPageIndex(), req.GetPageSize(), "查询成功")
+	for _, row := range list {
+		if req.TreeTag > 0 {
+			row.Children = s.GetChildren(row.Id)
+		}
+
+		result = append(result, row)
+
+	}
+
+	e.PageOK(result, int(count), req.GetPageIndex(), req.GetPageSize(), "查询成功")
 }
 
 // Get 获取RsBusiness

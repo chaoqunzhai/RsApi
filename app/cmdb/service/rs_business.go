@@ -31,19 +31,30 @@ func GetBusinessMap(orm *gorm.DB, ids []int) map[int]*models.RsBusiness {
 	return BusinessMap
 }
 
+func (e *RsBusiness) GetChildren(parentId int) interface{} {
+
+	var list []models.RsBusiness
+	e.Orm.Model(&models.RsBusiness{}).Where("parent_id = ?", parentId).Find(&list)
+
+	return list
+
+}
+
 // GetPage 获取RsBusiness列表
 func (e *RsBusiness) GetPage(c *dto.RsBusinessGetPageReq, p *actions.DataPermission, list *[]models.RsBusiness, count *int64) error {
 	var err error
 	var data models.RsBusiness
-
-	err = e.Orm.Model(&data).
-		Scopes(
-			cDto.MakeCondition(c.GetNeedSearch()),
-			cDto.Paginate(c.GetPageSize(), c.GetPageIndex()),
-			actions.Permission(data.TableName(), p),
-		).
-		Find(list).Limit(-1).Offset(-1).
+	orm := e.Orm.Model(&data)
+	if c.TreeTag > 0 {
+		orm = orm.Where("parent_id = 0 OR parent_id is NULL")
+	}
+	err = orm.Scopes(
+		cDto.MakeCondition(c.GetNeedSearch()),
+		cDto.Paginate(c.GetPageSize(), c.GetPageIndex()),
+		actions.Permission(data.TableName(), p),
+	).Find(list).Limit(-1).Offset(-1).
 		Count(count).Error
+
 	if err != nil {
 		e.Log.Errorf("RsBusinessService GetPage error:%s \r\n", err)
 		return err

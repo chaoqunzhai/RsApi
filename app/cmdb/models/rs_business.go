@@ -8,13 +8,14 @@ import (
 
 type RsBusiness struct {
 	models.Model
-	Status        int    `json:"status" gorm:"type:tinyint;comment:状态" comment:"状态"`
-	Layer         int    `json:"layer" gorm:"type:tinyint;comment:排序"`
-	Desc          string `json:"desc" gorm:"type:varchar(35);comment:描述信息"`
-	Name          string `json:"name" gorm:"type:varchar(50);comment:业务云名称"`
-	ParentId      int    `json:"parentId" gorm:"comment:父业务"`
-	BillingMethod int    `json:"billingMethod" gorm:"type:int(1);comment:业务计费方式"`
-	EnName        string `json:"enName" gorm:"index;type:varchar(30);comment:业务英文名字"`
+	Status        int         `json:"status" gorm:"type:tinyint;comment:状态" comment:"状态"`
+	Layer         int         `json:"layer" gorm:"type:tinyint;comment:排序"`
+	Desc          string      `json:"desc" gorm:"type:varchar(35);comment:描述信息"`
+	Name          string      `json:"name" gorm:"type:varchar(50);comment:业务云名称"`
+	ParentId      int         `json:"parentId" gorm:"comment:父业务"`
+	BillingMethod int         `json:"billingMethod" gorm:"type:int(1);comment:业务计费方式"`
+	EnName        string      `json:"enName" gorm:"index;type:varchar(30);comment:业务英文名字"`
+	Children      interface{} `json:"children" gorm:"-"`
 	models.ExtendUserBy
 	models.ModelTime
 	models.ControlBy
