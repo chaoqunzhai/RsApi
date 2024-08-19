@@ -7,7 +7,7 @@
                     {{range .Columns}}
                         {{- $x := .IsQuery -}}
                         {{- if (eq $x "1") -}}
-                            <el-form-item label="{{.ColumnComment}}" prop="{{.JsonField}}">
+                            <el-form-item v-show="searchField.includes('{{.JsonField}}')" label="{{.ColumnComment}}" prop="{{.JsonField}}">
                                 {{- if ne .FkTableName "" -}}
                                 <el-select v-model="queryParams.{{.JsonField}}" placeholder="请选择" clearable size="small" {{if eq .IsEdit "false" -}} :disabled="isEdit" {{- end }}>
                                     <el-option
@@ -21,7 +21,7 @@
                                 {{if eq .DictType "" -}}
                                     <el-input v-model="queryParams.{{.JsonField}}" placeholder="请输入{{.ColumnComment}}" clearable size="small" @keyup.enter.native="handleQuery"/>
                                 {{- else -}}
-                                    <el-select v-model="queryParams.{{.JsonField}}" placeholder="{{$tableComment}}{{.ColumnComment}}" clearable size="small">
+                                    <el-select v-model="queryParams.{{.JsonField}}" placeholder="{{.ColumnComment}}" clearable size="small">
                                         <el-option
                                                 v-for="dict in {{.JsonField}}Options"
                                                 :key="dict.value"
@@ -37,6 +37,14 @@
                     <el-form-item style="margin-left: 20px">
                         <a-button type="primary" icon="search" @click="handleQuery">搜索</a-button>
                         <a-button style="margin-left: 10px" @click="resetQuery"><a-icon type="sync" />重置</a-button>
+                        <a-button type="link" @click="toggleAdvanced">
+                            <template v-if="searchField.length > 3">
+                                收起<a-icon type="up" />
+                            </template>
+                            <template v-else>
+                                展开<a-icon type="down" />
+                            </template>
+                        </a-button>
                     </el-form-item>
                 </el-form>
 
@@ -107,7 +115,7 @@
                             {{- end -}}
                         {{- end }}
                     {{- end }}
-                    <el-table-column width="200" label="操作" align="center" class-name="small-padding fixed-width">
+                    <el-table-column width="200" fixed="right" label="操作" align="center" class-name="small-padding fixed-width">
                         <template slot-scope="scope">
                         <el-button
                            size="mini"
@@ -170,8 +178,8 @@
                 </a-drawer>
 
                 <!-- 添加或修改对话框 -->
-                <a-modal :title="title" :visible="open" @ok="submitForm" @cancel="cancel" okText="确定" cancelText="取消" width="800px">
-                    <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+                <a-modal :title="title" :visible="open" :centered="true" @ok="submitForm" @cancel="cancel" okText="确定" cancelText="取消" width="800px">
+                    <el-form ref="form" :model="form" :rules="rules" label-width="120px">
                         <el-row>
                             {{ range .Columns }}
                                 {{- $x := .IsInsert -}}
@@ -282,6 +290,7 @@
                 title: '',
                 // 是否显示弹出层
                 open: false,
+                detailVisible: false,
                 isEdit: false,
                 // 类型数据字典
                 typeOptions: [],
@@ -291,6 +300,7 @@
                 {{.JsonField}}Options: [],
                 {{- end -}}
                 {{- end }}
+                searchField: [],
                 // 关系表类型
                 {{range .Columns}}
                 {{- if ne .FkTableName "" -}}
@@ -323,6 +333,7 @@
         }
         },
         created() {
+            this.searchField = Object.keys(this.queryParams).slice(2).slice(0, 3)
             this.getList()
             {{range .Columns}}
             {{- if ne .DictType "" -}}
@@ -371,12 +382,7 @@
                 this.resetForm('form')
             },
             convertFields(data, mode = 'toString') {
-              const fieldsToConvert = []
-              {{range .Columns}}
-                  {{- if ne .DictType "" -}}
-                  fieldsToConvert.push('{{.JsonField}}')
-              {{ end -}}
-              {{- end -}}
+              const fieldsToConvert = [{{range .Columns}} {{- if ne .DictType "" -}} '{{.JsonField}}', {{ end -}} {{- end -}}]
               // 遍历字段并进行转换
               fieldsToConvert.forEach(field => {
                 if (mode === 'toString' && typeof data[field] === 'number') {
@@ -422,6 +428,14 @@
             handleQuery() {
                 this.queryParams.pageIndex = 1
                 this.getList()
+            },
+            /** 展开收起 */
+            toggleAdvanced(){
+                if(this.searchField.length > 3) {
+                    this.searchField = this.searchField.splice(0, 3)
+                } else {
+                    this.searchField = Object.keys(this.queryParams).slice(2)
+                }
             },
             /** 重置按钮操作 */
             resetQuery() {
@@ -477,7 +491,7 @@
                                 }
                             })
                         } else {
-                            add{{.ClassName}}(this.form).then(response => {
+                            add{{.ClassName}}(this.convertFields(this.form, 'toNumber')).then(response => {
                                 if (response.code === 200) {
                                     this.msgSuccess(response.msg)
                                     this.open = false
