@@ -120,6 +120,12 @@ func (e RsBusiness) Insert(c *gin.Context) {
 		e.Error(500, nil, "已经存在")
 		return
 	}
+	var EnCount int64
+	e.Orm.Model(&models.RsBusiness{}).Where("en_name = ?", req.Name).Count(&EnCount)
+	if EnCount > 0 {
+		e.Error(500, nil, "英文名称已经存在")
+		return
+	}
 	err = s.Insert(&req)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("创建RsBusiness失败，\r\n失败信息 %s", err.Error()))

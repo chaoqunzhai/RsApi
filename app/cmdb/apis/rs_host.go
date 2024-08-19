@@ -1,10 +1,8 @@
 package apis
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/google/uuid"
-	models2 "go-admin/cmd/migrate/migration/models"
 	"go-admin/common/prometheus"
 	"go-admin/global"
 	"strings"
@@ -103,13 +101,13 @@ func (e RsHost) Switch(c *gin.Context) {
 		e.Error(500, nil, "请选择业务")
 		return
 	}
-	busIds := make([]int, 0)
+	busIds := make([]string, 0)
 	for _, i := range req.Business {
-		busIds = append(busIds, i.Id)
+		busIds = append(busIds, fmt.Sprintf("%v", i.Id))
 	}
-	e.Orm.Model(&models.RsBusiness{}).Select("id,name").Where("id in ?", busIds).Find(&BusinessList)
+	e.Orm.Model(&models.RsBusiness{}).Where("id in ?", busIds).Find(&BusinessList)
 	var hostList []models.RsHost
-	e.Orm.Model(&models.RsHost{}).Where("id in ?", req.HostIds).Find(&hostList)
+	e.Orm.Model(&models.RsHost{}).Where("id in ?", req.HostIds).Preload("Business").Find(&hostList)
 
 	switchList := make([]map[string]string, 0)
 	if len(hostList) == 0 {
@@ -122,6 +120,14 @@ func (e RsHost) Switch(c *gin.Context) {
 	}
 
 	for _, host := range hostList {
+
+		//先获取原来的业务
+		sureList := make([]models.RsBusiness, 0)
+
+		for _, business := range host.Business {
+			fmt.Println("b！！！！u", business.Name)
+			sureList = append(sureList, business)
+		}
 
 		//插入新的业务记录
 		clearErr := e.Orm.Model(&host).Association("Business").Clear()
@@ -137,32 +143,21 @@ func (e RsHost) Switch(c *gin.Context) {
 
 		e.Orm.Save(&host)
 
-		//查询主机现在关联的SN, 因为切换了业务，SN可能会随之发生改变
-		var HostSoftwareList []models2.HostSoftware
-		e.Orm.Model(&models2.HostSoftware{}).Where("host_id = ?", host.Id).Find(&HostSoftwareList)
+		for _, sure := range sureList {
 
-		oldBusinessList := make([]map[string]string, 0)
-		for _, row := range HostSoftwareList {
-			if strings.HasPrefix(row.Key, "sn_") {
-				oldBusinessList = append(oldBusinessList, map[string]string{
-					"key": row.Key,
-					"val": row.Value,
-				})
+			for _, bu := range BusinessList {
+				//记录下 主机之前的sn列表,需要通过sn去查询监控数据
+				event := models.RsHostSwitchLog{
+					BuTargetId: bu.Id,
+					HostId:     host.Id,
+					JobId:      uuid.New().String(),
+					CreateBy:   user.GetUserId(c),
+					Desc:       req.Desc,
+					BuSource:   sure.Name,
+					BuEnSource: sure.EnName,
+				}
+				e.Orm.Create(&event)
 			}
-		}
-		dat, _ := json.Marshal(oldBusinessList)
-
-		for _, bu := range BusinessList {
-			//记录下 主机之前的sn列表,需要通过sn去查询监控数据
-			event := models2.HostSwitchLog{
-				BusinessId: bu.Id,
-				HostId:     host.Id,
-				JobId:      uuid.New().String(),
-				CreateBy:   user.GetUserId(c),
-				Desc:       req.Desc,
-				BusinessSn: string(dat),
-			}
-			e.Orm.Create(&event)
 		}
 		switchList = append(switchList, map[string]string{
 			"host": host.HostName,

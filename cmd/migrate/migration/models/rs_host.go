@@ -96,9 +96,10 @@ type HostSwitchLog struct {
 	CreateBy   int       `json:"createBy" gorm:"index;comment:创建者"`
 	JobId      string    `json:"job_id" gorm:"type:varchar(50);comment:任务ID" `
 	HostId     int       `json:"host_id" gorm:"index;comment:切换的主机ID"`
-	BusinessId int       `json:"business_id" gorm:"index;comment:切换的新业务ID"`
-	BusinessSn string    `json:"business_sn" gorm:"type:varchar(255);index;comment:原来的业务SN"`
-	Desc       string    `json:"desc" gorm:"type:varchar(100);comment:切换业务备注" `
+	BuTargetId int       `json:"bu_target_id" gorm:"index;comment:切换的新业务ID"`
+	BuSource   string    `json:"bu_source"  gorm:"type:varchar(30);index;comment:原来的业务中文名称"`
+	BuEnSource string    `json:"bu_en_source"  gorm:"type:varchar(30);index;comment:原来的业务英文名称"`
+	Desc       string    `json:"desc" gorm:"type:varchar(50);comment:切换业务备注" `
 }
 
 func (HostSwitchLog) TableName() string {

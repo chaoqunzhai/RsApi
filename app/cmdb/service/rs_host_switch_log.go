@@ -3,7 +3,7 @@ package service
 import (
 	"errors"
 
-    "github.com/go-admin-team/go-admin-core/sdk/service"
+	"github.com/go-admin-team/go-admin-core/sdk/service"
 	"gorm.io/gorm"
 
 	"go-admin/app/cmdb/models"
@@ -26,7 +26,7 @@ func (e *RsHostSwitchLog) GetPage(c *dto.RsHostSwitchLogGetPageReq, p *actions.D
 			cDto.MakeCondition(c.GetNeedSearch()),
 			cDto.Paginate(c.GetPageSize(), c.GetPageIndex()),
 			actions.Permission(data.TableName(), p),
-		).
+		).Order("id desc").
 		Find(list).Limit(-1).Offset(-1).
 		Count(count).Error
 	if err != nil {
@@ -57,39 +57,6 @@ func (e *RsHostSwitchLog) Get(d *dto.RsHostSwitchLogGetReq, p *actions.DataPermi
 	return nil
 }
 
-// Insert 创建RsHostSwitchLog对象
-func (e *RsHostSwitchLog) Insert(c *dto.RsHostSwitchLogInsertReq) error {
-    var err error
-    var data models.RsHostSwitchLog
-    c.Generate(&data)
-	err = e.Orm.Create(&data).Error
-	if err != nil {
-		e.Log.Errorf("RsHostSwitchLogService Insert error:%s \r\n", err)
-		return err
-	}
-	return nil
-}
-
-// Update 修改RsHostSwitchLog对象
-func (e *RsHostSwitchLog) Update(c *dto.RsHostSwitchLogUpdateReq, p *actions.DataPermission) error {
-    var err error
-    var data = models.RsHostSwitchLog{}
-    e.Orm.Scopes(
-            actions.Permission(data.TableName(), p),
-        ).First(&data, c.GetId())
-    c.Generate(&data)
-
-    db := e.Orm.Save(&data)
-    if err = db.Error; err != nil {
-        e.Log.Errorf("RsHostSwitchLogService Save error:%s \r\n", err)
-        return err
-    }
-    if db.RowsAffected == 0 {
-        return errors.New("无权更新该数据")
-    }
-    return nil
-}
-
 // Remove 删除RsHostSwitchLog
 func (e *RsHostSwitchLog) Remove(d *dto.RsHostSwitchLogDeleteReq, p *actions.DataPermission) error {
 	var data models.RsHostSwitchLog
@@ -99,11 +66,11 @@ func (e *RsHostSwitchLog) Remove(d *dto.RsHostSwitchLogDeleteReq, p *actions.Dat
 			actions.Permission(data.TableName(), p),
 		).Delete(&data, d.GetId())
 	if err := db.Error; err != nil {
-        e.Log.Errorf("Service RemoveRsHostSwitchLog error:%s \r\n", err)
-        return err
-    }
-    if db.RowsAffected == 0 {
-        return errors.New("无权删除该数据")
-    }
+		e.Log.Errorf("Service RemoveRsHostSwitchLog error:%s \r\n", err)
+		return err
+	}
+	if db.RowsAffected == 0 {
+		return errors.New("无权删除该数据")
+	}
 	return nil
 }
