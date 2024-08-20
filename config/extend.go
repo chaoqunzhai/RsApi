@@ -12,8 +12,13 @@ var ExtConfig Extend
 type Extend struct {
 	AMap       AMap       // 这里配置对应配置文件的结构即可
 	Prometheus prometheus `json:"prometheus"`
+	Frps       Frps       `json:"frps"`
 }
 
+type Frps struct {
+	Address string `json:"address"`
+	IdRsa   string `json:"id_rsa"`
+}
 type prometheus struct {
 	Endpoint string `json:"endpoint"`
 	Username string `json:"username"`

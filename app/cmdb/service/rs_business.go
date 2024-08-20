@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	"github.com/go-admin-team/go-admin-core/sdk/service"
 	"go-admin/common/utils"
 	"gorm.io/gorm"
@@ -81,6 +82,16 @@ func (e *RsBusiness) Get(d *dto.RsBusinessGetReq, p *actions.DataPermission, mod
 		e.Log.Errorf("db error:%s", err)
 		return err
 	}
+	var costList []*models.RsBusinessCostCnf
+
+	e.Orm.Model(&models.RsBusinessCostCnf{}).Where("bu_id = ?", d.GetId()).Find(&costList)
+
+	var Children []*models.RsBusiness
+	e.Orm.Model(&models.RsBusiness{}).Where("parent_id = ?", d.GetId()).Find(&Children)
+	fmt.Println("Children", Children)
+	fmt.Println("CostList", costList)
+	model.Children = Children
+	model.CostCnf = costList
 	return nil
 }
 

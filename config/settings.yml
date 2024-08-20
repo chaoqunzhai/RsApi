@@ -41,6 +41,9 @@ settings:
       endpoint:  "http://8.140.194.41:8090"
       username: "admin"
       password: "iFAu1InvVpLj"
+    frps:
+      address: "root@frp.xarscloud.com"
+      id_rsa: "/root/.ssh/id_rsa"
   queue:
     memory:
       poolSize: 100
