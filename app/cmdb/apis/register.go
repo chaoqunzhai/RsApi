@@ -66,6 +66,7 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 	hostInstance.Ip = req.Ip
 	hostInstance.CPU = req.CPU
 	hostInstance.Kernel = req.Kernel
+	hostInstance.RemotePort = req.RemotePort
 	hostInstance.Status = global.HostSuccess
 	hostInstance.Memory = req.Memory
 	hostInstance.Remark = req.Remark

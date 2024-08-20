@@ -3,6 +3,7 @@ package models
 import (
 	"database/sql"
 	"go-admin/common/models"
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -29,6 +30,7 @@ type Host struct {
 	Kernel        string       `json:"kernel" gorm:"type:varchar(100);comment:内核版本"`
 	Balance       float64      `json:"balance" gorm:"type:varchar(50);comment:总带宽"`
 	Belong        int          `json:"belong" gorm:"type:int(1);default:1;comment:机器归属"`
+	RemotePort    string       `json:"remotePort" gorm:"type:varchar(12);comment映射端口号"`
 	Remark        string       `json:"remark" gorm:"type:varchar(60);comment:备注;default:'';"`
 	Isp           int          `json:"isp" gorm:"type:int(1);default:1;comment:运营商"`
 	Status        int          `json:"status" gorm:"type:int(1);default:0;comment:主机状态"`
@@ -122,4 +124,37 @@ type HostChargingDay struct {
 
 func (HostChargingDay) TableName() string {
 	return "rs_host_charging_day"
+}
+
+//主机命令操作记录
+
+type HostExecLog struct {
+	Model
+	JobId       string       `json:"job_id" gorm:"type:varchar(50);comment:任务ID" `
+	CreatedAt   models.XTime `json:"createdAt" gorm:"comment:创建时间"`
+	CreateBy    int          `json:"createBy" gorm:"index;comment:创建者"`
+	HostId      int          `json:"host_id" gorm:"index;comment:关联的主机ID"`
+	Status      int          `json:"status" gorm:"index;comment:执行状态,0:执行中  1:执行成功 -1:执行失败"`
+	Module      string       `json:"module"  gorm:"type:varchar(30);comment:执行的模块"`
+	Exec        string       `json:"exec" gorm:"type:varchar(120);comment:执行的命令"`
+	OutPut      string       `json:"outPut" gorm:"comment:返回的结果"`
+	UpdatedUser string       `json:"updatedUser" gorm:"-"`
+}
+
+func (e *HostExecLog) AfterFind(tx *gorm.DB) (err error) {
+	var user SysUser
+	userId := e.CreateBy
+
+	if userId == 0 {
+		return
+	}
+	tx.Model(&user).Select("user_id,username").Where("user_id = ?", userId).Limit(1).Find(&user)
+
+	if user.UserId > 0 {
+		e.UpdatedUser = user.Username
+	}
+	return
+}
+func (HostExecLog) TableName() string {
+	return "rs_host_exec_log"
 }

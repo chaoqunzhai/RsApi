@@ -29,4 +29,20 @@ func registerRsHostRouter(v1 *gin.RouterGroup, authMiddleware *jwt.GinJWTMiddlew
 		r.PUT("/:id", actions.PermissionAction(), api.Update)
 		r.DELETE("", api.Delete)
 	}
+
+	//远程命令执行
+	{
+
+		//主机名更改-仅支持单机
+		r.POST("/exec/upHostName", actions.PermissionAction(), api.ExecUpHostName)
+		//命令执行 可批量操作
+		r.POST("/exec/command", actions.PermissionAction(), api.ExecCommand)
+		//重启主机 可批量操作
+		r.POST("/exec/reboot", actions.PermissionAction(), api.ExecReboot)
+
+		//获取单个任务信息
+		r.GET("/exec/log/:jobId", api.GetLog)
+		//获取主机的所有执行日志
+		r.GET("/exec/hostLog/:id", api.GetHostLog)
+	}
 }

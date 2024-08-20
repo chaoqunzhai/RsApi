@@ -3,8 +3,10 @@ package remoteCommand
 import (
 	"errors"
 	"fmt"
+	models2 "go-admin/cmd/migrate/migration/models"
 	"go-admin/common/internal"
 	"go-admin/config"
+	"gorm.io/gorm"
 	"os/exec"
 	"regexp"
 	"time"
@@ -13,10 +15,13 @@ import (
 // 借用ssh -t -o  -i 命令行执行shell
 
 type Command struct {
+	JobId      string        `json:"jobId"`
 	Timeout    time.Duration `json:"timeout"`
-	IdRsa      string        `json:"id_rsa"`      //私钥路径
-	RemotePort int           `json:"remote_port"` //frpc 建联端口号
-	Domain     string        `json:"domain"`      // frps 配置的域名
+	IdRsa      string        `json:"idRsa"`      //私钥路径
+	RemotePort string        `json:"remotePort"` //frpc 建联端口号
+	Orm        *gorm.DB      `json:"-"`
+	HostId     int           `json:"hostId"`
+	CreateBy   int           `json:"createBy"`
 }
 
 func (c Command) buildShell(sell string) (shell string, err error) {
@@ -43,62 +48,81 @@ func (c Command) buildShell(sell string) (shell string, err error) {
 
 //执行命令
 
-func (c Command) runShell(shell string) (output string, err error) {
+func (c Command) runShell(shell string) (output string, status int) {
+	if c.RemotePort == "" {
 
+		return fmt.Sprintf("failed host RemotePort is null"), -1
+	}
+	var err error
 	var isShell string
 	isShell, err = c.buildShell(shell)
 	if err != nil {
-		return "", err
+		return fmt.Sprintf("buildShell %v", err), -1
 	}
 
 	cmd := exec.Command(isShell)
 	out, err := internal.CombinedOutputTimeout(cmd, c.Timeout)
 	if err != nil {
-		return fmt.Sprintf("failed to run command %v: %w - %s", isShell, err, string(out)), nil
+		return fmt.Sprintf("failed to run command %v: %w - %s", isShell, err, string(out)), -1
 	}
 
-	return string(out), nil
+	return string(out), 1
 }
 
 //业务切换
 
-func (c Command) SwitchBuShell(bu string) (output string, err error) {
+func (c Command) BusinessSwitching(bu string) (JobId int) {
 
 	defaultBuPath := "/etc/business"
 
 	shell := fmt.Sprintf("echo \"%v\" > %v", bu, defaultBuPath)
 
-	return c.runShell(shell)
+	output, status := c.runShell(shell)
+
+	return c.SaveLog(status, output, "BusinessSwitching", shell)
 }
 
 //主机名修改
 
-func (c Command) UpdateHostName(hostname string) (output string, err error) {
+func (c Command) UpdateHostName(hostname string) (JobId int) {
 
-	if hostname == "" {
-
-		return "", errors.New("主机名不能为空")
-	}
-
-	if len(hostname) < 10 {
-
-		return "", errors.New("主机名不得少于10个字符")
-	}
 	shell := fmt.Sprintf("hostnamectl set-hostname %v --static", hostname)
 
-	return c.runShell(shell)
+	output, status := c.runShell(shell)
+
+	return c.SaveLog(status, output, "UpdateHostName", shell)
 }
 
-//重启服务
+//执行命令
 
-func (c Command) RestartServer(shell string) (output string, err error) {
+func (c Command) ExecuteCommand(shell string) (JobId int) {
 
-	return c.runShell(shell)
+	output, status := c.runShell(shell)
+
+	return c.SaveLog(status, output, "ExecuteCommand", shell)
 }
 
 //重启机器
 
-func (c Command) RebootHost() (output string, err error) {
+func (c Command) RebootHost() (JobId int) {
 
-	return c.runShell("reboot")
+	runShell := "reboot"
+	output, status := c.runShell(runShell)
+
+	return c.SaveLog(status, output, "RebootHost", runShell)
+}
+
+func (c Command) SaveLog(status int, output, module, shell string) (JobId int) {
+	var data models2.HostExecLog
+	data.CreateBy = c.CreateBy
+	data.HostId = c.HostId
+	data.Exec = shell
+	data.Module = module
+	data.OutPut = output
+	data.Status = status
+	data.JobId = c.JobId
+	c.Orm.Create(&data)
+
+	return data.Id
+
 }

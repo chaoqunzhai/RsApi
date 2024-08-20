@@ -19,6 +19,7 @@ type RsHost struct {
 	Memory        uint64       `json:"memory" gorm:"comment:总内存"`
 	Kernel        string       `json:"kernel" gorm:"type:varchar(100);comment:内核版本"`
 	Belong        int          `json:"belong" gorm:"type:int;default:1;comment:机器归属"`
+	RemotePort    string       `json:"remotePort" gorm:"type:varchar(12);comment映射端口号"`
 	Remark        string       `json:"remark" gorm:"type:varchar(60);comment:备注"` //166陕西延安宜川集义郭东机房电信1-2-11(30*100M) 拆分解析到线路和带宽
 	Status        int          `json:"status" gorm:"type:int;comment:主机状态"`
 	Balance       float64      `json:"balance" gorm:"type:varchar(50);comment:总带宽"`

@@ -55,6 +55,7 @@ func _1599190683659Tables(db *gorm.DB, version string) error {
 			new(models.HostChargingDay),
 			new(models.Custom),
 			new(models.BandwidthFees),
+			new(models.HostExecLog),
 		)
 		if err != nil {
 			return err

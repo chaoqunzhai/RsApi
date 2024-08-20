@@ -14,6 +14,7 @@ type RegisterMetrics struct {
 	Ip             string            `json:"ip"`
 	Business       string            `json:"business"`
 	Kernel         string            `json:"kernel"`
+	RemotePort     string            `json:"remotePort"`
 	BusinessSn     map[string]string `json:"business_sn"`
 	Remark         string            `json:"remark"`
 	Province       string            `json:"province"`

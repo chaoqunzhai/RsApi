@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	"go-admin/common/prometheus"
+	"go-admin/common/remoteCommand"
 	"go-admin/global"
 	"strings"
 	"time"
@@ -118,9 +119,10 @@ func (e RsHost) Switch(c *gin.Context) {
 		e.Error(500, nil, "业务不存在")
 		return
 	}
-
+	JobId := uuid.New().String()
 	for _, host := range hostList {
-
+		//业务的英文列表
+		buEnList := make([]string, 0)
 		//先获取原来的业务
 		sureList := make([]models.RsBusiness, 0)
 
@@ -154,6 +156,11 @@ func (e RsHost) Switch(c *gin.Context) {
 					BuSource:   name,
 					BuEnSource: enName,
 				}
+
+				if bu.EnName == "" {
+					continue
+				}
+				buEnList = append(buEnList, bu.EnName)
 				e.Orm.Create(&event)
 			}
 		}
@@ -169,9 +176,20 @@ func (e RsHost) Switch(c *gin.Context) {
 			"info": "切换成功",
 		})
 
+		//同时执行远程shell命令
+
+		command := remoteCommand.Command{
+			Orm:        e.Orm,
+			CreateBy:   user.GetUserId(c),
+			HostId:     host.Id,
+			RemotePort: host.RemotePort,
+			JobId:      JobId,
+		}
+		command.BusinessSwitching(strings.Join(buEnList, "-"))
+
 	}
 
-	e.OK(switchList, "successful")
+	e.OK(JobId, "successful")
 	return
 
 }
