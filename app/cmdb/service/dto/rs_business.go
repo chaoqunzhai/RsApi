@@ -39,7 +39,7 @@ type RsBusinessInsertReq struct {
 	EnName        string               `json:"enName" gorm:"index;type:varchar(30);comment:业务别名"`
 	BillingMethod int                  `json:"billingMethod" comment:"计费方式"`
 	ParentId      int                  `json:"parentId" gorm:"comment:父业务"`
-	CostCnf       []RsCostCnfInsertReq `json:"cost_cnf"`
+	CostCnf       []RsCostCnfInsertReq `json:"costCnf"`
 	common.ControlBy
 }
 
@@ -98,7 +98,7 @@ type RsBusinessUpdateReq struct {
 	EnName        string               `json:"enName" gorm:"index;type:varchar(30);comment:业务别名"`
 	BillingMethod int                  `json:"billingMethod" comment:"计费方式"`
 	ParentId      int                  `json:"parentId" gorm:"comment:父业务"`
-	CostCnf       []RsCostCnfInsertReq `json:"cost_cnf"`
+	CostCnf       []RsCostCnfInsertReq `json:"costCnf"`
 	common.ControlBy
 }
 
