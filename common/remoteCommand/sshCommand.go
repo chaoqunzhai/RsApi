@@ -37,7 +37,7 @@ func (c Command) buildShell(sell string) (shell string, err error) {
 
 	//ssh -o Port=10302 -i  /root/.ssh/id_rsa  root@frp.xarscloud.com "hostname"
 
-	runShell := fmt.Sprintf("ssh -o Port=%v -i %v  %v \"%v\"",
+	runShell := fmt.Sprintf("ssh -o StrictHostKeyChecking=no -o Port=%v -i %v  %v \"%v\"",
 		c.RemotePort, config.ExtConfig.Frps.IdRsa, config.ExtConfig.Frps.Address, sell)
 
 	if c.Timeout == 0 {
@@ -63,7 +63,7 @@ func (c Command) runShell(shell string) (output string, status int) {
 	cmd := exec.Command(isShell)
 	out, err := internal.CombinedOutputTimeout(cmd, c.Timeout)
 	if err != nil {
-		return fmt.Sprintf("failed to run command %v: %w - %s", isShell, err, string(out)), -1
+		return fmt.Sprintf("failed to run command %v: %v - %s", isShell, err, string(out)), -1
 	}
 
 	return string(out), 1

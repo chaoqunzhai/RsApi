@@ -9,28 +9,6 @@ node版本: v14.16.0
 
 npm版本: 6.14.11
 
-### 开发目录创建
-
-```bash
-
-# 创建开发目录
-mkdir goadmin
-cd goadmin
-```
-
-### 获取代码
-
-> 重点注意：两个项目必须放在同一文件夹下；
-
-```bash
-# 获取后端代码
-git clone https://github.com/go-admin-team/go-admin.git
-
-# 获取前端代码
-git clone https://github.com/go-admin-team/go-admin-ui.git
-
-```
-
 ### 启动说明
 
 #### 服务端启动说明
