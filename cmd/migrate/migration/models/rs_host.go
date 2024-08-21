@@ -83,7 +83,7 @@ type HostSystem struct {
 	TransmitNumber float64   `json:"transmit_number" gorm:"type:varchar(30);comment:TransmitNumber"`
 	ReceiveNumber  float64   `json:"receive_number" gorm:"type:varchar(30);comment:ReceiveNumber"`
 	MemoryData     string    `json:"memory" gorm:"type:varchar(255);comment:当前内容使用率"`
-	Disk           string    `json:"disk" gorm:"type:varchar(255);comment:所有磁盘信息"`
+	Disk           string    `json:"disk" gorm:"comment:所有磁盘信息"`
 }
 
 func (HostSystem) TableName() string {

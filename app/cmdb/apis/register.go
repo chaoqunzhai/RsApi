@@ -15,20 +15,96 @@ import (
 	"go-admin/app/cmdb/models"
 	"go-admin/app/cmdb/service"
 	"go-admin/app/cmdb/service/dto"
-	"go-admin/common/dial"
-	"regexp"
-
 	models2 "go-admin/cmd/migrate/migration/models"
+	"go-admin/common/dial"
 	_ "go-admin/common/dial"
 	models3 "go-admin/common/models"
 	"go-admin/global"
 	"net/http"
+	"regexp"
+	"strconv"
 	"strings"
 	"time"
 )
 
 type RegisterApi struct {
 	api.Api
+}
+
+var ispList = []string{
+	"电信",
+	"联通",
+	"移动",
+}
+
+func (e *RegisterApi) InitIdc(req dto.RegisterMetrics) int {
+
+	re := regexp.MustCompile(`\d+`)
+
+	matches := re.FindStringSubmatch(req.Remark[0:8])
+	var err error
+	var idcStrNumberIndex int
+	var idcNumber int
+	if len(matches) == 0 {
+		return 0
+	}
+	idcStrNumber := matches[0]
+
+	idcNumber, err = strconv.Atoi(idcStrNumber)
+	if err != nil {
+		return 0
+	}
+	idcStrNumberIndex = len(idcStrNumber)
+
+	removeNumberStr := req.Remark[idcStrNumberIndex:]
+
+	idcName := ""
+	for _, k := range ispList {
+		ispIndex := strings.Index(removeNumberStr, k)
+		if ispIndex < 0 {
+			continue
+		}
+		idcName = removeNumberStr[:ispIndex]
+	}
+	if idcName == "" {
+		fmt.Printf(" %v:%v idcName is empty\n", req.Hostname, req.Remark)
+		return 0
+	}
+
+	var IdcRow models.RsIdc
+
+	e.Orm.Model(&models.RsIdc{}).Select("id").Where("number = ?", idcNumber).Limit(1).Find(&IdcRow)
+
+	if IdcRow.Id == 0 { //进行创建IDC
+
+		var regionId []string
+		if req.Province != "" {
+			var Province models2.ChinaData
+			e.Orm.Model(&models2.ChinaData{}).Select("id").Where("name like ?", "%"+req.Province+"%").Limit(1).Find(&Province)
+			if Province.Id > 0 {
+				regionId = append(regionId, fmt.Sprintf("%v", Province.Id))
+			}
+
+		}
+		if req.City != "" {
+			var City models2.ChinaData
+			e.Orm.Model(&models2.ChinaData{}).Select("id").Where("name like ?", "%"+req.City+"%").Limit(1).Find(&City)
+			if City.Id > 0 {
+				regionId = append(regionId, fmt.Sprintf("%v", City.Id))
+			}
+		}
+
+		IdcRow = models.RsIdc{
+			Number: idcNumber,
+			Name:   idcName,
+			Desc:   req.Remark,
+			Status: 1,
+			Belong: 1,
+			Region: strings.Join(regionId, ","),
+		}
+		e.Orm.Create(&IdcRow)
+	}
+	return IdcRow.Id
 }
 
 // RegisterData
@@ -116,20 +192,16 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 		}
 	}
 	// 关联机房 例如解析remark=166陕西延安宜川集义郭东机房电信1-1-10(40*100M)  大概截取前10个字符，考虑到后期可能机房数达上万个
-	if req.Remark != "" {
+	// 备注不为空 并且 没有关联IDC,那就主动关联
 
-		re := regexp.MustCompile(`\d+`)
+	if req.Remark != "" && len(req.Remark) >= 8 {
+		if idcId := e.InitIdc(req); idcId > 0 {
 
-		matches := re.FindStringSubmatch(req.Remark)
-
-		if len(matches) > 0 { //获取第一个数字即可
-			var IdcRow models.RsIdc
-
-			e.Orm.Model(&models.RsIdc{}).Select("id").Where("number = ?", matches[0]).Limit(1).Find(&IdcRow)
-			if IdcRow.Id > 0 {
-				hostInstance.Idc = IdcRow.Id
+			if hostInstance.Idc == 0 { //没有被关联,那就主动关联
+				hostInstance.Idc = idcId
 			}
 		}
+
 	}
 
 	e.Orm.Save(&hostInstance)
