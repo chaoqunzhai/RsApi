@@ -16,6 +16,7 @@ import (
 	"go-admin/app/cmdb/service"
 	"go-admin/app/cmdb/service/dto"
 	"go-admin/common/dial"
+	"regexp"
 
 	models2 "go-admin/cmd/migrate/migration/models"
 	_ "go-admin/common/dial"
@@ -58,13 +59,13 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 		return
 	}
 
-	var hostInstance models2.Host
+	var hostInstance models.RsHost
 	e.Orm.Model(&hostInstance).Where("sn = ?", req.Sn).First(&hostInstance)
 
 	hostInstance.Sn = req.Sn
 	hostInstance.HostName = req.Hostname
 	hostInstance.Ip = req.Ip
-	hostInstance.CPU = req.CPU
+	hostInstance.Cpu = req.CPU
 	hostInstance.Kernel = req.Kernel
 	hostInstance.RemotePort = req.RemotePort
 	hostInstance.Status = global.HostSuccess
@@ -99,6 +100,38 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 		Time:  time.Now(),
 		Valid: true,
 	}
+	//Business 如果不为空,进行关联
+	if req.Business != "" {
+		bindBuList := make([]models.RsBusiness, 0)
+		for _, row := range strings.Split(req.Business, "-") {
+
+			var buInstance models.RsBusiness
+			e.Orm.Model(&models.RsBusiness{}).Where("en_name = ?", strings.TrimSpace(row)).Limit(1).Find(&buInstance)
+			if buInstance.Id > 0 {
+				bindBuList = append(bindBuList, buInstance)
+			}
+		}
+		if len(bindBuList) > 0 {
+			hostInstance.Business = bindBuList
+		}
+	}
+	// 关联机房 例如解析remark=166陕西延安宜川集义郭东机房电信1-1-10(40*100M)  大概截取前10个字符，考虑到后期可能机房数达上万个
+	if req.Remark != "" {
+
+		re := regexp.MustCompile(`\d+`)
+
+		matches := re.FindStringSubmatch(req.Remark)
+
+		if len(matches) > 0 { //获取第一个数字即可
+			var IdcRow models.RsIdc
+
+			e.Orm.Model(&models.RsIdc{}).Select("id").Where("number = ?", matches[0]).Limit(1).Find(&IdcRow)
+			if IdcRow.Id > 0 {
+				hostInstance.Idc = IdcRow.Id
+			}
+		}
+	}
+
 	e.Orm.Save(&hostInstance)
 
 	NetDeviceMap := make(map[string]int, 0)

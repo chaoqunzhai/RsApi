@@ -127,7 +127,7 @@ type RsHostInsertReq struct {
 	Desc      string  `json:"desc" comment:"描述信息"`
 	HostName  string  `json:"hostName" comment:"主机名"`
 	Sn        string  `json:"sn" comment:"sn"`
-	Cpu       string  `json:"cpu" comment:"总核数"`
+	Cpu       int     `json:"cpu" comment:"总核数"`
 	Ip        string  `json:"ip" comment:"ip"`
 	Memory    uint64  `json:"memory" comment:"总内存"`
 	Disk      string  `json:"disk" comment:"总磁盘"`
@@ -178,7 +178,7 @@ type RsHostUpdateReq struct {
 	Desc      string  `json:"desc" comment:"描述信息"`
 	HostName  string  `json:"hostName" comment:"主机名"`
 	Sn        string  `json:"sn" comment:"sn"`
-	Cpu       string  `json:"cpu" comment:"总核数"`
+	Cpu       int     `json:"cpu" comment:"总核数"`
 	Ip        string  `json:"ip" comment:"ip"`
 	Memory    uint64  `json:"memory" comment:"总内存"`
 	Disk      string  `json:"disk" comment:"总磁盘"`

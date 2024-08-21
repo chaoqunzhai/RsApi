@@ -8,7 +8,7 @@ type RsIdc struct {
 	models.Model
 
 	Desc     string `json:"desc" gorm:"type:varchar(35);comment:描述信息"`
-	Number   int    `json:"number" gorm:"type:bigint;comment:机房编号"`
+	Number   int    `json:"number" gorm:"type:bigint;index;comment:机房编号"`
 	Name     string `json:"name" gorm:"type:varchar(100);comment:机房名称"`
 	BuId     int    `json:"buId" gorm:"type:bigint;comment:商务人员"`
 	CustomId int    `json:"customId" gorm:"type:bigint;comment:所属客户ID"`

@@ -14,7 +14,7 @@ type RsHost struct {
 	NetworkType   int          `json:"networkType" gorm:"default:2;comment:网络类型"`
 	HostName      string       `json:"hostname" gorm:"type:varchar(100);comment:主机名"`
 	Sn            string       `json:"sn" gorm:"type:varchar(100);index;comment:sn"`
-	Cpu           string       `json:"cpu" gorm:"type:bigint;comment:总核数"`
+	Cpu           int          `json:"cpu" gorm:"type:bigint;comment:总核数"`
 	Ip            string       `json:"ip" gorm:"type:varchar(20);comment:ip"`
 	Memory        uint64       `json:"memory" gorm:"comment:总内存"`
 	Kernel        string       `json:"kernel" gorm:"type:varchar(100);comment:内核版本"`
@@ -27,6 +27,8 @@ type RsHost struct {
 	Isp           int          `json:"isp" gorm:"type:varchar(16);comment:运营商"`
 	TransProvince int          `json:"transProvince" gorm:"default:0;comment:是否跨省"`
 	LineType      int          `json:"lineType" gorm:"type:int(1);default:0;comment:线路类型"`
+	AllLine       int          `json:"allLine" gorm:"type:int(1);default:0;comment:机器总线路"`
+	LineBandwidth float64      `json:"lineBandwidth"  gorm:"default:0;comment:单条线路带宽"`
 	Auth          int          `json:"auth" gorm:"type:int(1);default:1;comment:是否有主机权限"`
 	ProbeShell    string       `json:"probeShell" gorm:"type:varchar(100);comment:主动探测主机命令"`
 	Idc           int          `json:"idc" gorm:"type:int(11);comment:idc"`
