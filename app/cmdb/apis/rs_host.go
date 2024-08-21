@@ -185,7 +185,9 @@ func (e RsHost) Switch(c *gin.Context) {
 			RemotePort: host.RemotePort,
 			JobId:      JobId,
 		}
-		command.BusinessSwitching(strings.Join(buEnList, "-"))
+		go func() {
+			command.BusinessSwitching(strings.Join(buEnList, "-"))
+		}()
 
 	}
 

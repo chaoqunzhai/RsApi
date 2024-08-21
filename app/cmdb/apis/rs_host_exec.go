@@ -84,7 +84,9 @@ func (e RsHost) ExecUpHostName(c *gin.Context) {
 		RemotePort: hostModel.RemotePort,
 		JobId:      JobId,
 	}
-	command.UpdateHostName(req.HostName)
+	go func() {
+		command.UpdateHostName(req.HostName)
+	}()
 
 	e.OK(JobId, "")
 	return
@@ -120,7 +122,9 @@ func (e RsHost) ExecCommand(c *gin.Context) {
 			RemotePort: host.RemotePort,
 			JobId:      JobId,
 		}
-		command.ExecuteCommand(req.Shell)
+		go func() {
+			command.ExecuteCommand(req.Shell)
+		}()
 
 	}
 	e.OK(JobId, "")
@@ -155,7 +159,9 @@ func (e RsHost) ExecReboot(c *gin.Context) {
 			RemotePort: host.RemotePort,
 			JobId:      JobId,
 		}
-		command.RebootHost()
+		go func() {
+			command.RebootHost()
+		}()
 
 	}
 	e.OK(JobId, "")
