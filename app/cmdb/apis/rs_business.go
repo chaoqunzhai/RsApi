@@ -57,7 +57,6 @@ func (e RsBusiness) GetPage(c *gin.Context) {
 	for _, row := range list {
 		if req.TreeTag > 0 {
 			row.Children = s.GetChildren(row.Id)
-			row.HasChildren = true
 		}
 
 		result = append(result, row)
