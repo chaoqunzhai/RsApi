@@ -16,8 +16,8 @@ type RsBusiness struct {
 	BillingMethod int         `json:"billingMethod" gorm:"type:int(1);comment:业务计费方式"`
 	EnName        string      `json:"enName" gorm:"index;type:varchar(30);comment:业务英文名字"`
 	Children      interface{} `json:"children" gorm:"-"`
-	HasChildren   bool        `json:"hasChildren" gorm:"-"`
-	CostCnf       interface{} `json:"costCnf" gorm:"-"`
+
+	CostCnf interface{} `json:"costCnf" gorm:"-"`
 	models.ExtendUserBy
 	models.ModelTime
 	models.ControlBy

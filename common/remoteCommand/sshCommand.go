@@ -24,8 +24,8 @@ type Command struct {
 	CreateBy   int           `json:"createBy"`
 }
 
-func (c Command) buildShell(sell string) (shell string, err error) {
-	matched, err := regexp.MatchString("rm", sell)
+func (c Command) buildShell(shell string) (runShell string, err error) {
+	matched, err := regexp.MatchString("rm", shell)
 
 	if err != nil {
 		return "", err
@@ -36,37 +36,45 @@ func (c Command) buildShell(sell string) (shell string, err error) {
 	}
 
 	//ssh -o Port=10302 -i  /root/.ssh/id_rsa  root@frp.xarscloud.com "hostname"
+	remoteShell := fmt.Sprintf("%v %v \"%v\"", config.ExtConfig.Frps.IdRsa, config.ExtConfig.Frps.Address, shell)
 
-	runShell := fmt.Sprintf("ssh -o StrictHostKeyChecking=no -o Port=%v -i %v  %v \"%v\"",
-		c.RemotePort, config.ExtConfig.Frps.IdRsa, config.ExtConfig.Frps.Address, sell)
+	runShell = fmt.Sprintf("ssh -o StrictHostKeyChecking=no -o Port=%v -i %v",
+		c.RemotePort, remoteShell)
 
-	if c.Timeout == 0 {
-		c.Timeout = 60 * time.Second
-	}
 	return runShell, nil
+}
+
+func (c Command) hostInfo() models2.Host {
+	var data models2.Host
+	c.Orm.Model(&data).Where("id = ?", c.HostId).First(&data)
+
+	return data
 }
 
 //执行命令
 
 func (c Command) runShell(shell string) (output string, status int) {
+
+	HostRow := c.hostInfo()
+	outPutHeader := fmt.Sprintf("%v | %v | rc=0 >>\n", HostRow.HostName, time.Now().Format(time.DateTime))
 	if c.RemotePort == "" {
 
-		return fmt.Sprintf("failed host RemotePort is null"), -1
+		return fmt.Sprintf("%vfailed host RemotePort is null", outPutHeader), -1
 	}
 	var err error
 	var isShell string
 	isShell, err = c.buildShell(shell)
 	if err != nil {
-		return fmt.Sprintf("buildShell %v", err), -1
+		return fmt.Sprintf("%vbuildShell %v", outPutHeader, err), -1
 	}
 
-	cmd := exec.Command(isShell)
-	out, err := internal.CombinedOutputTimeout(cmd, c.Timeout)
+	cmd := exec.Command("bash", "-c", isShell)
+	out, err := internal.CombinedOutputTimeout(cmd, 80*time.Second)
 	if err != nil {
-		return fmt.Sprintf("failed to run command %v: %v - %s", isShell, err, string(out)), -1
+		return fmt.Sprintf("%vfailed to run command %v: %v - %s", outPutHeader, isShell, err, string(out)), -1
 	}
-
-	return string(out), 1
+	outPutData := fmt.Sprintf("%v%v", outPutHeader, string(out))
+	return outPutData, 1
 }
 
 //业务切换
@@ -113,6 +121,8 @@ func (c Command) RebootHost() (JobId int) {
 }
 
 func (c Command) SaveLog(status int, output, module, shell string) (JobId int) {
+
+	//创建一个主机日志
 	var data models2.HostExecLog
 	data.CreateBy = c.CreateBy
 	data.HostId = c.HostId

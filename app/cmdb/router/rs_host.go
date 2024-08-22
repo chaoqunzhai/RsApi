@@ -41,7 +41,7 @@ func registerRsHostRouter(v1 *gin.RouterGroup, authMiddleware *jwt.GinJWTMiddlew
 		r.POST("/exec/reboot", actions.PermissionAction(), api.ExecReboot)
 
 		//获取单个任务信息
-		r.GET("/exec/log/:jobId", api.GetLog)
+		r.GET("/exec/log/:jobId", api.GetJobLog)
 		//获取主机的所有执行日志
 		r.GET("/exec/hostLog/:id", api.GetHostLog)
 	}

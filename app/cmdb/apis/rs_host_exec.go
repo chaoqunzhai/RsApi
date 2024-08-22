@@ -84,7 +84,9 @@ func (e RsHost) ExecUpHostName(c *gin.Context) {
 		RemotePort: hostModel.RemotePort,
 		JobId:      JobId,
 	}
-	command.UpdateHostName(req.HostName)
+	go func() {
+		command.UpdateHostName(req.HostName)
+	}()
 
 	e.OK(JobId, "")
 	return
@@ -120,7 +122,9 @@ func (e RsHost) ExecCommand(c *gin.Context) {
 			RemotePort: host.RemotePort,
 			JobId:      JobId,
 		}
-		command.ExecuteCommand(req.Shell)
+		go func() {
+			command.ExecuteCommand(req.Shell)
+		}()
 
 	}
 	e.OK(JobId, "")
@@ -155,14 +159,16 @@ func (e RsHost) ExecReboot(c *gin.Context) {
 			RemotePort: host.RemotePort,
 			JobId:      JobId,
 		}
-		command.RebootHost()
+		go func() {
+			command.RebootHost()
+		}()
 
 	}
 	e.OK(JobId, "")
 	return
 }
 
-func (e RsHost) GetLog(c *gin.Context) {
+func (e RsHost) GetJobLog(c *gin.Context) {
 	req := JobGetReq{}
 	err := e.MakeContext(c).
 		MakeOrm().
@@ -174,10 +180,20 @@ func (e RsHost) GetLog(c *gin.Context) {
 		return
 	}
 
-	var data models2.HostExecLog
-	e.Orm.Model(&data).Where("job_id = ?", req.JobId).Limit(1).Find(&data)
+	var data []models2.HostExecLog
+	e.Orm.Model(&data).Where("job_id = ?", req.JobId).Find(&data)
 
-	e.OK(data, "")
+	if len(data) == 0 {
+		e.Error(500, nil, "数据不存在")
+		return
+	}
+	var outputAll string
+	for _, row := range data {
+		outputAll += row.OutPut + "\n"
+	}
+	firstRow := data[0]
+	firstRow.OutPut = outputAll
+	e.OK(firstRow, "")
 	return
 }
 
