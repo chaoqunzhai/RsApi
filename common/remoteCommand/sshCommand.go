@@ -46,7 +46,7 @@ func (c Command) buildShell(shell string) (runShell string, err error) {
 
 func (c Command) hostInfo() models2.Host {
 	var data models2.Host
-	c.Orm.Model(&data).Where("id = ?", c.HostId).First(&models2.Host{})
+	c.Orm.Model(&data).Where("id = ?", c.HostId).First(&data)
 
 	return data
 }
