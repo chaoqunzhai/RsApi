@@ -122,27 +122,17 @@ func (c Command) RebootHost() (JobId int) {
 
 func (c Command) SaveLog(status int, output, module, shell string) (JobId int) {
 
+	//创建一个主机日志
 	var data models2.HostExecLog
+	data.CreateBy = c.CreateBy
+	data.HostId = c.HostId
+	data.Exec = shell
+	data.Module = module
+	data.OutPut = output
+	data.Status = status
+	data.JobId = c.JobId
+	c.Orm.Create(&data)
 
-	c.Orm.Model(&data).Where("job_id = ?", c.JobId).Limit(1).Find(&data)
-
-	if data.Id == 0 {
-		data.CreateBy = c.CreateBy
-		data.HostId = c.HostId
-		data.Exec = shell
-		data.Module = module
-		data.OutPut = output
-		data.Status = status
-		data.JobId = c.JobId
-		c.Orm.Create(&data)
-	}
-
-	extendData := data.OutPut
-	extendData += "\n\n" + output
-
-	c.Orm.Model(&data).Where("job_id = ?", c.JobId).Updates(map[string]interface{}{
-		"out_put": extendData,
-	})
 	return data.Id
 
 }

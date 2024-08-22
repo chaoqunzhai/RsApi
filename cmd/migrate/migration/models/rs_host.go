@@ -131,7 +131,7 @@ func (HostChargingDay) TableName() string {
 type HostExecLog struct {
 	Model
 	JobId       string       `json:"job_id" gorm:"type:varchar(50);comment:任务ID" `
-	CreatedAt   models.XTime `json:"createdAt" gorm:"comment:创建时间"`
+	CreatedAt   models.XTime `json:"createdAt" gorm:"comment:执行时间"`
 	CreateBy    int          `json:"createBy" gorm:"index;comment:创建者"`
 	HostId      int          `json:"host_id" gorm:"index;comment:关联的主机ID"`
 	Status      int          `json:"status" gorm:"index;comment:执行状态,0:执行中  1:执行成功 -1:执行失败"`
