@@ -218,14 +218,15 @@ func (e RsHost) Count(c *gin.Context) {
 
 	var offlineCount int64
 
-	e.Orm.Model(&models.RsHost{}).Where("healthy_at < DATE_SUB(NOW(), INTERVAL 5 MINUTE)").Count(&offlineCount)
+	e.Orm.Model(&models.RsHost{}).Where("healthy_at <= DATE_SUB(NOW(), INTERVAL 30 MINUTE) OR healthy_at IS NULL").Count(&offlineCount)
 
-	//离线-自建机房数量
+	//自建机房数量
 	var ZjCount int64
-	e.Orm.Model(&models.RsHost{}).Where("belong = 1 and healthy_at < DATE_SUB(NOW(), INTERVAL 5 MINUTE)").Count(&ZjCount)
+
+	e.Orm.Model(&models.RsHost{}).Where("belong IN (0,1) and (healthy_at <= DATE_SUB(NOW(), INTERVAL 30 MINUTE) OR healthy_at IS NULL )").Count(&ZjCount)
 
 	var ZMCount int64
-	e.Orm.Model(&models.RsHost{}).Where("belong = 2 and healthy_at < DATE_SUB(NOW(), INTERVAL 5 MINUTE)").Count(&ZMCount)
+	e.Orm.Model(&models.RsHost{}).Where("belong = 2 and (healthy_at <= DATE_SUB(NOW(), INTERVAL 30 MINUTE) OR healthy_at IS NULL )").Count(&ZMCount)
 
 	offlineMap := map[string]int64{
 		"zj":  ZjCount,
@@ -236,13 +237,13 @@ func (e RsHost) Count(c *gin.Context) {
 	//在线
 
 	var onlineCount int64
-	e.Orm.Model(&models.RsHost{}).Where(" healthy_at >= DATE_SUB(NOW(), INTERVAL 5 MINUTE)").Count(&onlineCount)
+	e.Orm.Model(&models.RsHost{}).Where(" healthy_at >= DATE_SUB(NOW(), INTERVAL 30 MINUTE)").Count(&onlineCount)
 
 	var ZjLineCount int64
-	e.Orm.Model(&models.RsHost{}).Where("belong = 1 and healthy_at >= DATE_SUB(NOW(), INTERVAL 5 MINUTE)").Count(&ZjLineCount)
+	e.Orm.Model(&models.RsHost{}).Where("belong IN (0,1) and healthy_at >= DATE_SUB(NOW(), INTERVAL 30 MINUTE)").Count(&ZjLineCount)
 
 	var ZMLineCount int64
-	e.Orm.Model(&models.RsHost{}).Where("belong = 2 and healthy_at >= DATE_SUB(NOW(), INTERVAL 5 MINUTE)").Count(&ZMLineCount)
+	e.Orm.Model(&models.RsHost{}).Where("belong = 2 and healthy_at >= DATE_SUB(NOW(), INTERVAL 30 MINUTE)").Count(&ZMLineCount)
 	onlineMap := map[string]int64{
 		"zj":  ZjLineCount,
 		"zm":  ZMLineCount,
@@ -433,6 +434,7 @@ func (e RsHost) GetPage(c *gin.Context) {
 		if row.HealthyAt.Valid {
 			customRow["healthyAt"] = row.HealthyAt.Time.Format("2006-01-02 15:04:05")
 		}
+		customRow["remotePort"] = row.RemotePort
 		customRow["ip"] = row.Ip
 		customRow["id"] = row.Id
 		customRow["transProd"] = row.TransProvince

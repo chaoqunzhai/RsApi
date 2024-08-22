@@ -16,7 +16,6 @@ import (
 	"go-admin/app/cmdb/service"
 	"go-admin/app/cmdb/service/dto"
 	models2 "go-admin/cmd/migrate/migration/models"
-	"go-admin/common/dial"
 	_ "go-admin/common/dial"
 	models3 "go-admin/common/models"
 	"go-admin/global"
@@ -137,7 +136,10 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 
 	var hostInstance models.RsHost
 	e.Orm.Model(&hostInstance).Where("sn = ?", req.Sn).First(&hostInstance)
-
+	if req.Belong == 0 { //如果为空,那也算是一个自建的机器
+		req.Belong = 1
+	}
+	hostInstance.Belong = req.Belong
 	hostInstance.Sn = req.Sn
 	hostInstance.HostName = req.Hostname
 	hostInstance.Ip = req.Ip
@@ -148,7 +150,6 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 	hostInstance.Memory = req.Memory
 	hostInstance.Remark = req.Remark
 
-	var IdcId int
 	var ispNumber int
 	switch strings.TrimSpace(req.Isp) {
 	case "移动":
@@ -169,9 +170,6 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 	}
 	hostInstance.Isp = ispNumber
 
-	if hostInstance.Idc == 0 { //防止已经关联了IDC,被其他原因冲掉
-		hostInstance.Idc = IdcId
-	}
 	hostInstance.HealthyAt = sql.NullTime{
 		Time:  time.Now(),
 		Valid: true,
@@ -196,10 +194,7 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 
 	if req.Remark != "" && len(req.Remark) >= 8 {
 		if idcId := e.InitIdc(req); idcId > 0 {
-
-			if hostInstance.Idc == 0 { //没有被关联,那就主动关联
-				hostInstance.Idc = idcId
-			}
+			hostInstance.Idc = idcId
 		}
 
 	}
@@ -232,11 +227,6 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 	//拨号列表,
 	for _, DialRow := range req.Dial {
 
-		if setEvents, ok := dial.MapCnf.Get(DialRow.A); ok {
-			if setEvents.Idc > 0 {
-				IdcId = setEvents.Idc
-			}
-		}
 		//如果列表存在 全局的缓存中 那就自动归到idc下
 		var (
 			DialRowModel models.RsDial
@@ -267,7 +257,7 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 		} else {
 			DialRowModel.Bu = DialRow.BU
 			DialRowModel.HostId = hostInstance.Id
-			DialRowModel.IdcId = IdcId
+			DialRowModel.IdcId = hostInstance.Idc
 			DialRowModel.Account = DialRow.A
 			DialRowModel.Pass = DialRow.P
 			DialRowModel.Ip = DialRow.Ip
@@ -276,6 +266,9 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 			DialRowModel.Source = 1
 			DialRowModel.DeviceId = bindNetDeviceId
 			DialRowModel.DeviceName = DialRow.I
+			if DialRow.S == 1 { //已经拨通了，那就一定联网了
+				DialRowModel.NetworkingStatus = 1
+			}
 			DialRowModel.Status = DialRow.S
 			e.Orm.Save(&DialRowModel)
 		}

@@ -6,6 +6,7 @@
 package dto
 
 type RegisterMetrics struct {
+	Belong         int               `json:"belong"`
 	CPU            int               `json:"CPU"`
 	Memory         uint64            `json:"memory"`
 	Disk           string            `json:"disk"`
