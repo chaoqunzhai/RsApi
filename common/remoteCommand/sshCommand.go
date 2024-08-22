@@ -44,27 +44,37 @@ func (c Command) buildShell(shell string) (runShell string, err error) {
 	return runShell, nil
 }
 
+func (c Command) hostInfo() models2.Host {
+	var data models2.Host
+	c.Orm.Model(&data).Where("id = ?", c.HostId).First(&models2.Host{})
+
+	return data
+}
+
 //执行命令
 
 func (c Command) runShell(shell string) (output string, status int) {
+
+	HostRow := c.hostInfo()
+	outPutHeader := fmt.Sprintf("%v | %v | rc=0 >>\n", HostRow.HostName, time.Now().Format(time.DateTime))
 	if c.RemotePort == "" {
 
-		return fmt.Sprintf("failed host RemotePort is null"), -1
+		return fmt.Sprintf("%vfailed host RemotePort is null", outPutHeader), -1
 	}
 	var err error
 	var isShell string
 	isShell, err = c.buildShell(shell)
 	if err != nil {
-		return fmt.Sprintf("buildShell %v", err), -1
+		return fmt.Sprintf("%vbuildShell %v", outPutHeader, err), -1
 	}
 
 	cmd := exec.Command("bash", "-c", isShell)
 	out, err := internal.CombinedOutputTimeout(cmd, 80*time.Second)
 	if err != nil {
-		return fmt.Sprintf("failed to run command %v: %v - %s", isShell, err, string(out)), -1
+		return fmt.Sprintf("%vfailed to run command %v: %v - %s", outPutHeader, isShell, err, string(out)), -1
 	}
-
-	return string(out), 1
+	outPutData := fmt.Sprintf("%v%v", outPutHeader, string(out))
+	return outPutData, 1
 }
 
 //业务切换
@@ -111,16 +121,28 @@ func (c Command) RebootHost() (JobId int) {
 }
 
 func (c Command) SaveLog(status int, output, module, shell string) (JobId int) {
-	var data models2.HostExecLog
-	data.CreateBy = c.CreateBy
-	data.HostId = c.HostId
-	data.Exec = shell
-	data.Module = module
-	data.OutPut = output
-	data.Status = status
-	data.JobId = c.JobId
-	c.Orm.Create(&data)
 
+	var data models2.HostExecLog
+
+	c.Orm.Model(&data).Where("job_id = ?", c.JobId).Limit(1).Find(&data)
+
+	if data.Id == 0 {
+		data.CreateBy = c.CreateBy
+		data.HostId = c.HostId
+		data.Exec = shell
+		data.Module = module
+		data.OutPut = output
+		data.Status = status
+		data.JobId = c.JobId
+		c.Orm.Create(&data)
+	}
+
+	extendData := data.OutPut
+	extendData += "\n\n" + output
+
+	c.Orm.Model(&data).Where("job_id = ?", c.JobId).Updates(map[string]interface{}{
+		"out_put": extendData,
+	})
 	return data.Id
 
 }
