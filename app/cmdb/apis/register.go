@@ -239,20 +239,25 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 		}
 		//对于自动上报数据的数据,做一个特定创建,防止 已经创建了这个账号，被自动创建也冲掉
 		e.Orm.Model(&models.RsDial{}).Where("account = ? and source = 1", DialRow.A).Count(&DialCount)
+		var NetworkingStatus int
+		if DialRow.S == 1 { //已经拨通了，那就一定联网了
+			NetworkingStatus = 1
+		}
 		if DialCount > 0 {
 			e.Orm.Model(&models.RsDial{}).Where("account = ? and source = 1", DialRow.A).Updates(map[string]interface{}{
-				"host_id":     hostInstance.Id,
-				"idc_id":      hostInstance.Idc,
-				"account":     DialRow.A,
-				"pass":        DialRow.P,
-				"status":      DialRow.S,
-				"ip":          DialRow.Ip,
-				"mac":         DialRow.Mac,
-				"source":      1,
-				"device_name": DialRow.I,
-				"dial_name":   DialRow.D,
-				"bu":          DialRow.BU,
-				"device_id":   bindNetDeviceId,
+				"host_id":           hostInstance.Id,
+				"idc_id":            hostInstance.Idc,
+				"account":           DialRow.A,
+				"pass":              DialRow.P,
+				"status":            DialRow.S,
+				"ip":                DialRow.Ip,
+				"mac":               DialRow.Mac,
+				"networking_status": NetworkingStatus,
+				"source":            1,
+				"device_name":       DialRow.I,
+				"dial_name":         DialRow.D,
+				"bu":                DialRow.BU,
+				"device_id":         bindNetDeviceId,
 			})
 		} else {
 			DialRowModel.Bu = DialRow.BU
@@ -266,10 +271,8 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 			DialRowModel.Source = 1
 			DialRowModel.DeviceId = bindNetDeviceId
 			DialRowModel.DeviceName = DialRow.I
-			if DialRow.S == 1 { //已经拨通了，那就一定联网了
-				DialRowModel.NetworkingStatus = 1
-			}
 			DialRowModel.Status = DialRow.S
+			DialRowModel.NetworkingStatus = NetworkingStatus
 			e.Orm.Save(&DialRowModel)
 		}
 	}
