@@ -184,7 +184,9 @@ func (e RsHost) GetJobLog(c *gin.Context) {
 	e.Orm.Model(&data).Where("job_id = ?", req.JobId).Find(&data)
 
 	if len(data) == 0 {
-		e.Error(500, nil, "数据不存在")
+		e.OK(map[string]string{
+			"outPut": "执行中......\n\n",
+		}, "")
 		return
 	}
 	var outputAll string
@@ -193,6 +195,9 @@ func (e RsHost) GetJobLog(c *gin.Context) {
 	}
 	firstRow := data[0]
 	firstRow.OutPut = outputAll
+	if firstRow.OutPut == "" {
+		firstRow.OutPut = "执行中......\n\n"
+	}
 	e.OK(firstRow, "")
 	return
 }
