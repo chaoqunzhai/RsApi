@@ -2,6 +2,7 @@ package models
 
 import (
 	"database/sql"
+	models2 "go-admin/cmd/migrate/migration/models"
 	"go-admin/common/models"
 	"gorm.io/gorm"
 )
@@ -24,7 +25,7 @@ type RsDial struct {
 	Source           int                    `json:"source" gorm:"type:int;comment:拨号状态,0:录入 1:自动上报"`
 	IdcId            int                    `json:"idcId" gorm:"type:bigint;comment:关联的IDC"`
 	HostId           int                    `json:"hostId" gorm:"type:bigint;comment:关联主机ID"`
-	DeviceName       string                 `json:"deviceName" gorm:"type:varchar(20);comment:自动获取的物理网卡名称"`
+	DeviceName       string                 `json:"deviceName" gorm:"-"`
 	DeviceId         int                    `json:"deviceId" gorm:"type:bigint;comment:关联网卡ID"`
 	RunTime          sql.NullTime           `json:"-" gorm:"type:datetime(3);comment:RunTime"`
 	RunTimeAt        string                 `json:"runTimeAt" gorm:"-"`
@@ -43,7 +44,7 @@ func (e *RsDial) AfterFind(tx *gorm.DB) (err error) {
 
 	if e.RunTime.Valid {
 		e.RunTimeAt = e.RunTime.Time.Format("2006-01-02 15:04:05")
-		return
+
 	}
 	e.HostInfo = map[string]interface{}{
 		"hostname": "",
@@ -71,6 +72,11 @@ func (e *RsDial) AfterFind(tx *gorm.DB) (err error) {
 				"sn":       host.Sn,
 			}
 		}
+	}
+	if e.DeviceId > 0 {
+		var DeviceName models2.HostNetDevice
+		tx.Model(&DeviceName).Select("name").Where("id = ?", e.DeviceId).Find(&DeviceName)
+		e.DeviceName = DeviceName.Name
 	}
 	return nil
 }

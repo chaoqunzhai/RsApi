@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/go-admin-team/go-admin-core/sdk/service"
 	"gorm.io/gorm"
@@ -21,12 +22,26 @@ func (e *RsDial) GetPage(c *dto.RsDialGetPageReq, p *actions.DataPermission, lis
 	var err error
 	var data models.RsDial
 
-	err = e.Orm.Model(&data).
-		Scopes(
-			cDto.MakeCondition(c.GetNeedSearch()),
-			cDto.Paginate(c.GetPageSize(), c.GetPageIndex()),
-			actions.Permission(data.TableName(), p),
-		).
+	var hostIds []int
+	orm := e.Orm.Model(&data)
+	if c.Search != "" {
+		//过滤拨号
+		var hostList []models.RsHost
+
+		likeQ := fmt.Sprintf(" sn like '%%%s%%' or host_name like '%%%s%%' ", c.Search, c.Search)
+		e.Orm.Model(&models.RsHost{}).Where(likeQ).Find(&hostList)
+		for _, host := range hostList {
+			hostIds = append(hostIds, host.Id)
+		}
+		if len(hostIds) > 0 {
+			orm = orm.Where("host_id in ?", hostIds)
+		}
+	}
+	err = orm.Scopes(
+		cDto.MakeCondition(c.GetNeedSearch()),
+		cDto.Paginate(c.GetPageSize(), c.GetPageIndex()),
+		actions.Permission(data.TableName(), p),
+	).
 		Find(list).Limit(-1).Offset(-1).
 		Count(count).Error
 	if err != nil {

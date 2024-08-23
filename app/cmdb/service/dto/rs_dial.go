@@ -12,6 +12,7 @@ import (
 
 type RsDialGetPageReq struct {
 	dto.Pagination   `search:"-"`
+	Search           string `form:"search" search:"-"`
 	CustomId         int    `form:"customId"  search:"type:exact;column:custom_id;table:rs_dial" comment:"所属客户"`
 	ContractId       int    `form:"contractId"  search:"type:exact;column:contract_id;table:rs_dial" comment:"关联合同"`
 	BroadbandType    int    `form:"broadbandType"  search:"type:exact;column:broadband_type;table:rs_dial" comment:"带宽类型,broadband_type"`

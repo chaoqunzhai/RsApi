@@ -236,6 +236,15 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 		NetDeviceId, NetDeviceOk := NetDeviceMap[DialRow.I]
 		if NetDeviceOk {
 			bindNetDeviceId = NetDeviceId
+		} else {
+			//没有那就创建一个
+			HostNetDevice := models2.HostNetDevice{
+				HostId: hostInstance.Id,
+				Name:   DialRow.I,
+				Status: 1,
+			}
+			e.Orm.Create(&HostNetDevice)
+			bindNetDeviceId = HostNetDevice.Id
 		}
 		//对于自动上报数据的数据,做一个特定创建,防止 已经创建了这个账号，被自动创建也冲掉
 		e.Orm.Model(&models.RsDial{}).Where("account = ? and source = 1", DialRow.A).Count(&DialCount)
@@ -254,7 +263,6 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 				"mac":               DialRow.Mac,
 				"networking_status": NetworkingStatus,
 				"source":            1,
-				"device_name":       DialRow.I,
 				"dial_name":         DialRow.D,
 				"bu":                DialRow.BU,
 				"device_id":         bindNetDeviceId,
@@ -270,7 +278,6 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 			DialRowModel.DialName = DialRow.D
 			DialRowModel.Source = 1
 			DialRowModel.DeviceId = bindNetDeviceId
-			DialRowModel.DeviceName = DialRow.I
 			DialRowModel.Status = DialRow.S
 			DialRowModel.NetworkingStatus = NetworkingStatus
 			e.Orm.Save(&DialRowModel)
