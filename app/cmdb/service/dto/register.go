@@ -13,6 +13,7 @@ type RegisterMetrics struct {
 	Sn             string            `json:"sn"`
 	Hostname       string            `json:"hostname"`
 	Ip             string            `json:"ip"`
+	PublicIp       string            `json:"publicIp"`
 	Business       string            `json:"business"`
 	Kernel         string            `json:"kernel"`
 	RemotePort     string            `json:"remotePort"`

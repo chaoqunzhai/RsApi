@@ -143,6 +143,7 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 	hostInstance.Sn = req.Sn
 	hostInstance.HostName = req.Hostname
 	hostInstance.Ip = req.Ip
+	hostInstance.PublicIp = req.PublicIp
 	hostInstance.Cpu = req.CPU
 	hostInstance.Kernel = req.Kernel
 	hostInstance.RemotePort = req.RemotePort

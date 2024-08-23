@@ -436,6 +436,7 @@ func (e RsHost) GetPage(c *gin.Context) {
 		}
 		customRow["remotePort"] = row.RemotePort
 		customRow["ip"] = row.Ip
+		customRow["publicIp"] = row.PublicIp
 		customRow["id"] = row.Id
 		customRow["transProd"] = row.TransProvince
 		customRow["isp"] = row.Isp
