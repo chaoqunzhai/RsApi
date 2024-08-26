@@ -37,6 +37,12 @@ func (e *RsDial) GetPage(c *dto.RsDialGetPageReq, p *actions.DataPermission, lis
 			orm = orm.Where("host_id in ?", hostIds)
 		}
 	}
+	if c.EmptyHost > 0 {
+
+		orm = orm.Where("host_id is NULL or host_id = 0 ")
+
+	}
+
 	err = orm.Scopes(
 		cDto.MakeCondition(c.GetNeedSearch()),
 		cDto.Paginate(c.GetPageSize(), c.GetPageIndex()),

@@ -49,6 +49,12 @@ type BusinessSwitch struct {
 	Desc     string         `json:"desc"  form:"desc"`
 }
 
+type HostBindDial struct {
+	HostId   int `json:"host_id" form:"host_id" `
+	DriverId int `json:"driver_id" form:"driver_id" `
+	DialId   int `json:"dial_id" form:"dial_id" `
+}
+
 type HostBindIdc struct {
 	IdcId   int   `json:"idc_id" form:"idc_id" `
 	HostIds []int `json:"host_ids" form:"host_ids" `

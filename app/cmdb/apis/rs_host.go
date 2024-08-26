@@ -3,6 +3,7 @@ package apis
 import (
 	"fmt"
 	"github.com/google/uuid"
+	models2 "go-admin/cmd/migrate/migration/models"
 	"go-admin/common/prometheus"
 	"go-admin/common/remoteCommand"
 	"go-admin/global"
@@ -66,6 +67,38 @@ func (e RsHost) BindIdc(c *gin.Context) {
 		})
 	}
 	e.OK("", "绑定IDC成功")
+	return
+}
+
+func (e RsHost) BindDial(c *gin.Context) {
+	req := dto.HostBindDial{}
+	s := service.RsHost{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
+	var dialModel models.RsDial
+	e.Orm.Model(&dialModel).Where("id = ?", req.DialId).Limit(1).Find(&dialModel)
+	if dialModel.Id == 0 {
+		e.Error(500, nil, "拨号配置不存在")
+		return
+	}
+	if dialModel.HostId != 0 {
+		e.Error(500, nil, "拨号已经被关联,无法绑到")
+		return
+	}
+
+	dialModel.DeviceId = req.DriverId
+	dialModel.HostId = req.HostId
+
+	e.Orm.Save(&dialModel)
+	e.OK("", "successful")
 	return
 }
 
@@ -194,6 +227,23 @@ func (e RsHost) Switch(c *gin.Context) {
 	e.OK(JobId, "successful")
 	return
 
+}
+
+func (e RsHost) Driver(c *gin.Context) {
+	err := e.MakeContext(c).
+		MakeOrm().
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
+	hosId := c.Param("id")
+	var hostList []models2.HostNetDevice
+	e.Orm.Model(&models2.HostNetDevice{}).Where("host_id = ?", hosId).Find(&hostList)
+
+	e.PageOK(hostList, len(hostList), 1, -1, "")
+	return
 }
 
 // CountData

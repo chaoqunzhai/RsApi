@@ -2,6 +2,7 @@ package apis
 
 import (
 	"fmt"
+	"go-admin/global"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-admin-team/go-admin-core/sdk/api"
@@ -57,8 +58,54 @@ func (e RsIdc) GetPage(c *gin.Context) {
 		e.Error(500, err, fmt.Sprintf("获取RsIdc失败，\r\n失败信息 %s", err.Error()))
 		return
 	}
+	idcMap := make(map[int]models.RsIdcCount, 0)
 
-	e.PageOK(list, int(count), req.GetPageIndex(), req.GetPageSize(), "查询成功")
+	var idcList []int
+	for _, idc := range list {
+		idcList = append(idcList, idc.Id)
+		idcMap[idc.Id] = models.RsIdcCount{}
+	}
+	//var dialList []models.RsDial
+	//e.Orm.Model(&models.RsDial{}).Where("idc_id in ?", idcList).Find(&dialList)
+	//for _, dial := range dialList {
+	//	RsIdcCount, ok := idcMap[dial.IdcId]
+	//	if !ok {
+	//		continue
+	//	}
+	//
+	//}
+
+	var hostList []models.RsHost
+	e.Orm.Model(&models.RsHost{}).Where("idc in ?", idcList).Find(&hostList)
+
+	for _, host := range hostList {
+		RsIdcCount, ok := idcMap[host.Idc]
+		if !ok {
+			continue
+		}
+
+		if host.Status == global.HostSuccess {
+			RsIdcCount.Line += 1
+		}
+		if host.Status == global.HostOffline {
+			RsIdcCount.Offline += 1
+		}
+		RsIdcCount.AllHost += 1
+
+		idcMap[host.Idc] = RsIdcCount
+	}
+	var result []interface{}
+
+	for _, idc := range list {
+		RsIdcCount, ok := idcMap[idc.Id]
+		if !ok {
+			continue
+		}
+		idc.RsIdcCount = RsIdcCount
+		result = append(result, idc)
+	}
+
+	e.PageOK(result, len(result), req.GetPageIndex(), req.GetPageSize(), "查询成功")
 }
 
 // Get 获取RsIdc

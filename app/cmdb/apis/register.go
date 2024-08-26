@@ -141,19 +141,21 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 
 	var hostInstance models.RsHost
 
+	SN := strings.TrimSpace(req.Sn)
+	HOSTNAME := strings.TrimSpace(req.Hostname)
 	//SN是否为一个 黑名单.如果是 用主机名做唯一性校验
-	isDirty := blackMap[req.Sn]
+	isDirty := blackMap[SN]
 	if isDirty {
-		e.Orm.Model(&hostInstance).Where("hostname = ?", req.Hostname).First(&hostInstance)
+		e.Orm.Model(&hostInstance).Where("host_name = ?", HOSTNAME).First(&hostInstance)
 	} else {
-		e.Orm.Model(&hostInstance).Where("sn = ?", req.Sn).First(&hostInstance)
+		e.Orm.Model(&hostInstance).Where("sn = ?", SN).First(&hostInstance)
 	}
 	if req.Belong == 0 { //如果为空,那也算是一个自建的机器
 		req.Belong = 1
 	}
 	hostInstance.Belong = req.Belong
-	hostInstance.Sn = req.Sn
-	hostInstance.HostName = req.Hostname
+	hostInstance.Sn = SN
+	hostInstance.HostName = HOSTNAME
 	hostInstance.Ip = req.Ip
 	hostInstance.PublicIp = req.PublicIp
 	hostInstance.Cpu = req.CPU

@@ -24,6 +24,7 @@ type RsDialGetPageReq struct {
 	Source           int    `form:"source"  search:"type:exact;column:source;table:rs_dial" comment:"拨号状态,0:录入 1:自动上报"`
 	IdcId            int    `form:"idcId"  search:"type:exact;column:idc_id;table:rs_dial" comment:"关联的IDC"`
 	HostId           int    `form:"hostId"  search:"type:exact;column:host_id;table:rs_dial" comment:"关联主机ID"`
+	EmptyHost        int    `form:"emptyHost" search:"-"`
 	DeviceId         int    `form:"deviceId"  search:"type:exact;column:device_id;table:rs_dial" comment:"关联网卡ID"`
 	Account          string `form:"account"  search:"type:contains;column:account;table:rs_dial" comment:"账号"`
 	RsDialOrder

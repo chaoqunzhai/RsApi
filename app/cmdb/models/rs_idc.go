@@ -23,8 +23,17 @@ type RsIdc struct {
 	Belong        int    `json:"belong" gorm:"type:int;comment:机房归属"`
 	TransProvince int    `json:"transProvince" gorm:"default:1;comment:是否跨省"`
 	MoreDialing   int    `json:"moreDialing" gorm:"default:1;comment:是否支持多拨"`
+	RsIdcCount    `json:"rsIdcCount" gorm:"-"`
 	models.ModelTime
 	models.ControlBy
+}
+
+type RsIdcCount struct {
+	Line        int `json:"line"`
+	Offline     int `json:"offline"`
+	AllHost     int `json:"allHost"`
+	BuLine      int `json:"buLine"`
+	ManagerLine int `json:"managerLine"`
 }
 
 func (RsIdc) TableName() string {

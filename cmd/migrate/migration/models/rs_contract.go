@@ -4,8 +4,8 @@ import "database/sql"
 
 type Contract struct {
 	RichGlobal
-	Name           string       `json:"name" gorm:"type:varchar(20);comment:合同名称"`
-	Number         string       `json:"number" gorm:"type:varchar(20);comment:合同编号"`
+	Name           string       `json:"name" gorm:"type:varchar(100);comment:合同名称"`
+	Number         string       `json:"number" gorm:"type:varchar(100);comment:合同编号"`
 	BuId           int          `json:"buId" gorm:"comment:商务人员"`
 	CustomId       int          `json:"customId" gorm:"comment:所属客户ID"`
 	SignatoryId    int          `json:"signatoryId" gorm:"comment:签订人ID"`
@@ -14,11 +14,11 @@ type Contract struct {
 	SettlementType int          `json:"settlementType" gorm:"comment:结算方式,settlement_type"`
 	StartTime      sql.NullTime `json:"startTime" gorm:"comment:合同开始时间"`
 	EndTime        sql.NullTime `json:"endTime" gorm:"comment:合同结束时间"`
-	AccountName    string       `json:"accountName"  gorm:"type:varchar(30);comment:开户名称"`
-	BankAccount    string       `json:"bankAccount"  gorm:"type:varchar(50);comment:银行账号"`
-	BankName       string       `json:"bankName"  gorm:"type:varchar(30);comment:开户银行"`
-	IdentifyNumber string       `json:"identifyNumber" gorm:"type:varchar(30);comment:纳税人识别号"`
-	Address        string       `json:"address"  gorm:"type:varchar(120);comment:地址"`
+	AccountName    string       `json:"accountName"  gorm:"type:varchar(100);comment:开户名称"`
+	BankAccount    string       `json:"bankAccount"  gorm:"type:varchar(100);comment:银行账号"`
+	BankName       string       `json:"bankName"  gorm:"type:varchar(100);comment:开户银行"`
+	IdentifyNumber string       `json:"identifyNumber" gorm:"type:varchar(100);comment:纳税人识别号"`
+	Address        string       `json:"address"  gorm:"type:varchar(200);comment:地址"`
 	Phone          string       `json:"phone"  gorm:"type:varchar(30);comment:电话"`
 }
 

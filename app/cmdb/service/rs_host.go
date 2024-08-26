@@ -62,7 +62,8 @@ func (e *RsHost) GetPage(c *dto.RsHostGetPageReq, p *actions.DataPermission, lis
 		//一个元素 是模糊搜索
 		newHostList := strings.Split(newHostName, ",")
 		if len(newHostList) == 1 {
-			orm = orm.Where("host_name like ?", fmt.Sprintf("%%%v%%", newHostName))
+			likeKey := fmt.Sprintf("%%%v%%", newHostName)
+			orm = orm.Where("host_name like ? OR sn like ?", likeKey, likeKey)
 		} else {
 			//多个元素 就是精确搜索了
 			orm = orm.Where("host_name in ? OR sn in ?", newHostList, newHostList)
