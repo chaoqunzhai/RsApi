@@ -75,7 +75,7 @@ type RsHostGetPageReq struct {
 	BusinessId     string `form:"businessId" search:"-"`
 	Region         string `form:"region"  search:"type:exact;column:region;table:rs_host" comment:"所在区域"`
 	LineType       int    `form:"lineType" search:"type:exact;column:line_type;table:rs_host" comment:"线路类型"`
-	HostName       string `form:"hostname"  search:"type:contains;column:host_name;table:rs_host" comment:"主机名"`
+	HostName       string `form:"hostname"  search:"-" comment:"主机名"`
 	Sn             string `form:"sn"  search:"type:contains;column:sn;table:rs_host" comment:"sn"`
 	Ip             string `form:"ip"  search:"type:contains;column:ip;table:rs_host" comment:"ip"`
 	NetworkType    int    `form:"networkType" search:"type:exact;column:network_type;table:rs_host" comment:"网络类型"`

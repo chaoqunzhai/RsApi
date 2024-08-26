@@ -52,6 +52,23 @@ func (e *RsHost) GetPage(c *dto.RsHostGetPageReq, p *actions.DataPermission, lis
 
 		orm = orm.Where("id in (?)", bindHostId)
 	}
+
+	if c.HostName != "" {
+		//批量把\n换成逗号
+		newHostName := strings.Replace(c.HostName, "\n", ",", -1)
+		// 批量把空格换成逗号
+		newHostName = strings.Replace(newHostName, " ", ",", -1)
+
+		//一个元素 是模糊搜索
+		newHostList := strings.Split(newHostName, ",")
+		if len(newHostList) == 1 {
+			orm = orm.Where("host_name like ?", fmt.Sprintf("%%%v%%", newHostName))
+		} else {
+			//多个元素 就是精确搜索了
+			orm = orm.Where("host_name in ? OR sn in ?", newHostList, newHostList)
+		}
+
+	}
 	err = orm.Scopes(
 		cDto.MakeCondition(c.GetNeedSearch()),
 		cDto.Paginate(c.GetPageSize(), c.GetPageIndex()),
