@@ -10,6 +10,7 @@ type RsIdcGetPageReq struct {
 	dto.Pagination `search:"-"`
 	Number         int    `form:"number"  search:"type:exact;column:number;table:rs_idc" comment:"机房编号"`
 	Name           string `form:"name"  search:"type:contains;column:name;table:rs_idc" comment:"机房名称"`
+	IdcId          string `form:"idcId" search:"-"`
 	CustomUser     int    `form:"customUser"  search:"type:exact;column:custom_user;table:rs_idc" comment:"所属客户"`
 	TypeId         int    `form:"typeId"  search:"type:exact;column:type_id;table:rs_idc" comment:"机房类型"`
 	BusinessUser   int    `form:"businessUser"  search:"type:exact;column:business_user;table:rs_idc" comment:"商务人员"`
