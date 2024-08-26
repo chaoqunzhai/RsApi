@@ -1,9 +1,11 @@
 package dto
 
 import (
+	"fmt"
 	"go-admin/app/cmdb/models"
 	"go-admin/common/dto"
 	common "go-admin/common/models"
+	"strings"
 )
 
 type RsBusinessGetPageReq struct {
@@ -135,4 +137,14 @@ type RsBusinessDeleteReq struct {
 
 func (s *RsBusinessDeleteReq) GetId() interface{} {
 	return s.Ids
+}
+
+func (s *RsBusinessDeleteReq) GetIdStr() string {
+	var cache []string
+	for _, i := range s.Ids {
+		if i > 0 {
+			cache = append(cache, fmt.Sprintf("%d", i))
+		}
+	}
+	return strings.Join(cache, ",")
 }

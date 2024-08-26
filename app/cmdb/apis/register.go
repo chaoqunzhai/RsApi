@@ -36,6 +36,11 @@ var ispList = []string{
 	"移动",
 }
 
+// 黑名单的SN， 因为有些SN都是一样的，只能通过主机名来确定唯一性
+var blackMap = map[string]bool{
+	"01234567890123456789AB": true,
+}
+
 func (e *RegisterApi) InitIdc(req dto.RegisterMetrics) int {
 
 	re := regexp.MustCompile(`\d+`)
@@ -135,7 +140,14 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 	}
 
 	var hostInstance models.RsHost
-	e.Orm.Model(&hostInstance).Where("sn = ?", req.Sn).First(&hostInstance)
+
+	//SN是否为一个 黑名单.如果是 用主机名做唯一性校验
+	isDirty := blackMap[req.Sn]
+	if isDirty {
+		e.Orm.Model(&hostInstance).Where("hostname = ?", req.Hostname).First(&hostInstance)
+	} else {
+		e.Orm.Model(&hostInstance).Where("sn = ?", req.Sn).First(&hostInstance)
+	}
 	if req.Belong == 0 { //如果为空,那也算是一个自建的机器
 		req.Belong = 1
 	}

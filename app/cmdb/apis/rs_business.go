@@ -210,6 +210,16 @@ func (e RsBusiness) Delete(c *gin.Context) {
 	// req.SetUpdateBy(user.GetUserId(c))
 	p := actions.GetPermissionFromContext(c)
 
+	//需要校验是否已经被主机关联了业务
+
+	var count int64
+
+	e.Orm.Raw(fmt.Sprintf("select count(*) from host_bind_business where `business_id` in (%v)", req.GetIdStr())).Scan(&count)
+
+	if count > 0 {
+		e.Error(500, nil, fmt.Sprintf("业务已经关联了主机,无法删除"))
+		return
+	}
 	err = s.Remove(&req, p)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("删除RsBusiness失败，\r\n失败信息 %s", err.Error()))

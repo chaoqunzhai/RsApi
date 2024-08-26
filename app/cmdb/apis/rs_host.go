@@ -406,9 +406,9 @@ func (e RsHost) GetPage(c *gin.Context) {
 					Label := ""
 					switch item.Key {
 					case "sn_baishan":
-						Label = "白山"
+						Label = "白山SN:"
 					case "sn_jinshan":
-						Label = "金山"
+						Label = "金山SN:"
 
 					}
 					snList = append(snList, dto.LabelRow{
