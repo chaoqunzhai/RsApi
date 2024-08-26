@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/go-admin-team/go-admin-core/sdk/service"
 	"gorm.io/gorm"
@@ -22,8 +23,9 @@ func (e *RsIdc) GetPage(c *dto.RsIdcGetPageReq, p *actions.DataPermission, list 
 	var data models.RsIdc
 
 	orm := e.Orm.Model(&data)
-	if c.IdcId != "" {
-		orm = orm.Where("id = ?", c.IdcId)
+	if c.Search != "" {
+		likeQ := fmt.Sprintf("number like '%%%s%%' or name like '%%%s%%' ", c.Search, c.Search)
+		orm = orm.Where(likeQ)
 	}
 	err = orm.Scopes(
 		cDto.MakeCondition(c.GetNeedSearch()),
