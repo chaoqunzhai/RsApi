@@ -14,4 +14,11 @@ const (
 
 var (
 	LOC, _ = time.LoadLocation("Asia/Shanghai")
+
+	IspMap = map[int]string{
+		1: "移动",
+		2: "电信",
+		3: "联通",
+		4: "其他",
+	}
 )

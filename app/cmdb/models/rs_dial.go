@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	models2 "go-admin/cmd/migrate/migration/models"
 	"go-admin/common/models"
+	"go-admin/global"
 	"gorm.io/gorm"
 )
 
@@ -30,6 +31,7 @@ type RsDial struct {
 	RunTime          sql.NullTime           `json:"-" gorm:"type:datetime(3);comment:RunTime"`
 	RunTimeAt        string                 `json:"runTimeAt" gorm:"-"`
 	IspId            int                    `json:"ispId"  gorm:"type:int(1);default:0;comment:关联合同下的账号的运营商ID"`
+	IspName          string                 `json:"ispName" gorm:"-"`
 	IdcInfo          interface{}            `json:"idcInfo" gorm:"-"`
 	HostInfo         map[string]interface{} `json:"hostInfo" gorm:"-"`
 	models.ModelTime
@@ -63,6 +65,7 @@ func (e *RsDial) AfterFind(tx *gorm.DB) (err error) {
 			}
 		}
 	}
+	e.IspName = global.IspMap[e.IspId]
 	if e.HostId > 0 {
 		var host RsHost
 		tx.Model(&host).Select("id,host_name,sn").Where("id = ?", e.HostId).Find(&host)
