@@ -522,7 +522,7 @@ func (e SysUser) GetInfo(c *gin.Context) {
 		mp["buttons"] = buttons
 	} else {
 		list, _ := r.GetById(user.GetRoleId(c))
-		mp["permissions"] = list
+		mp["permissions"] = permissions
 		mp["buttons"] = list
 	}
 	sysUser := models.SysUser{}

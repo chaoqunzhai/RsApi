@@ -42,13 +42,13 @@ func (e *RsDial) GetPage(c *dto.RsDialGetPageReq, p *actions.DataPermission, lis
 		orm = orm.Where("host_id is NULL or host_id = 0 ")
 
 	}
+	fmt.Println("status!!", c.Status)
 
 	err = orm.Scopes(
 		cDto.MakeCondition(c.GetNeedSearch()),
 		cDto.Paginate(c.GetPageSize(), c.GetPageIndex()),
 		actions.Permission(data.TableName(), p),
-	).
-		Find(list).Limit(-1).Offset(-1).
+	).Find(list).Limit(-1).Offset(-1).
 		Count(count).Error
 	if err != nil {
 		e.Log.Errorf("RsDialService GetPage error:%s \r\n", err)

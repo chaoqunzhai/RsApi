@@ -19,8 +19,8 @@ type RsDialGetPageReq struct {
 	IsManager        int    `form:"isManager"  search:"type:exact;column:is_manager;table:rs_dial" comment:"是否管理线"`
 	Ip               string `form:"ip"  search:"type:contains;column:ip;table:rs_dial" comment:"IP地址"`
 	DialName         string `form:"dialName"  search:"type:contains;column:dial_name;table:rs_dial" comment:"线路名称"`
-	NetworkingStatus int    `form:"networkingStatus"  search:"type:exact;column:networking_status;table:rs_dial" comment:"拨号状态,1:已联网 0:未联网 -1:联网异常"`
-	Status           int    `form:"status"  search:"type:exact;column:status;table:rs_dial" comment:"拨号状态,1:已拨通 0:待使用 -1:拨号异常"`
+	NetworkingStatus string `form:"networkingStatus"  search:"type:exact;column:networking_status;table:rs_dial" comment:"拨号状态,1:已联网 0:未联网 -1:联网异常"`
+	Status           string `form:"status"  search:"type:exact;column:status;table:rs_dial" comment:"拨号状态,1:已拨通 0:待使用 -1:拨号异常"`
 	Source           int    `form:"source"  search:"type:exact;column:source;table:rs_dial" comment:"拨号状态,0:录入 1:自动上报"`
 	IdcId            int    `form:"idcId"  search:"type:exact;column:idc_id;table:rs_dial" comment:"关联的IDC"`
 	HostId           int    `form:"hostId"  search:"type:exact;column:host_id;table:rs_dial" comment:"关联主机ID"`
