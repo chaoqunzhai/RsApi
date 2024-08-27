@@ -85,7 +85,7 @@ func (e RsIdc) GetPage(c *gin.Context) {
 		}
 
 		if host.Status == global.HostSuccess {
-			RsIdcCount.Line += 1
+			RsIdcCount.onLine += 1
 		}
 		if host.Status == global.HostOffline {
 			RsIdcCount.Offline += 1

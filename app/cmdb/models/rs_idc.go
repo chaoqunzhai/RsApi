@@ -29,7 +29,7 @@ type RsIdc struct {
 }
 
 type RsIdcCount struct {
-	Line        int `json:"line"`
+	OnLine      int `json:"onLine"`
 	Offline     int `json:"offline"`
 	AllHost     int `json:"allHost"`
 	BuLine      int `json:"buLine"`

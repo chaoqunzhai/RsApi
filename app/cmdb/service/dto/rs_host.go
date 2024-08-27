@@ -45,7 +45,7 @@ type HostBusiness struct {
 }
 type BusinessSwitch struct {
 	HostIds  []int          `json:"hostIds" form:"hostIds" comment:"需要切换的主机"`
-	Business []HostBusiness `json:"businessIds" form:"businessIds" comment:"切换的新业务ID"`
+	Business []HostBusiness `json:"business" form:"business" comment:"切换的新业务ID"`
 	Desc     string         `json:"desc"  form:"desc"`
 }
 
