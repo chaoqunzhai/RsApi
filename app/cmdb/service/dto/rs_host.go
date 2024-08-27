@@ -44,20 +44,20 @@ type HostBusiness struct {
 	Id interface{} `json:"id" form:"id"`
 }
 type BusinessSwitch struct {
-	HostIds  []int          `json:"host_ids" form:"host_ids" comment:"需要切换的主机"`
-	Business []HostBusiness `json:"business" form:"business_ids" comment:"切换的新业务ID"`
+	HostIds  []int          `json:"hostIds" form:"hostIds" comment:"需要切换的主机"`
+	Business []HostBusiness `json:"businessIds" form:"businessIds" comment:"切换的新业务ID"`
 	Desc     string         `json:"desc"  form:"desc"`
 }
 
 type HostBindDial struct {
-	HostId   int `json:"host_id" form:"host_id" `
-	DriverId int `json:"driver_id" form:"driver_id" `
-	DialId   int `json:"dial_id" form:"dial_id" `
+	HostId   int `json:"hostId" form:"hostId" `
+	DriverId int `json:"driverId" form:"driverId" `
+	DialId   int `json:"dialId" form:"dialId" `
 }
 
 type HostBindIdc struct {
-	IdcId   int   `json:"idc_id" form:"idc_id" `
-	HostIds []int `json:"host_ids" form:"host_ids" `
+	IdcId   int   `json:"idcId" form:"idcId" `
+	HostIds []int `json:"hostIds" form:"hostIds" `
 }
 
 type LabelRow struct {
