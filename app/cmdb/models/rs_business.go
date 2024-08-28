@@ -14,6 +14,8 @@ type RsBusiness struct {
 	Name          string      `json:"name" gorm:"type:varchar(50);comment:业务云名称"`
 	ParentId      int         `json:"parentId" gorm:"comment:父业务"`
 	BillingMethod int         `json:"billingMethod" gorm:"type:int(1);comment:业务计费方式"`
+	StartUsage    string      `json:"startUsage" gorm:"index;type:varchar(30);comment:利用率开始时间"`
+	EndUsage      string      `json:"endUsage" gorm:"index;type:varchar(30);comment:利用率结束时间"`
 	EnName        string      `json:"enName" gorm:"index;type:varchar(30);comment:业务英文名字"`
 	Children      interface{} `json:"children" gorm:"-"`
 

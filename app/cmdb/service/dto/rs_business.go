@@ -42,6 +42,8 @@ type RsBusinessInsertReq struct {
 	EnName        string               `json:"enName" gorm:"index;type:varchar(30);comment:业务别名"`
 	BillingMethod int                  `json:"billingMethod" comment:"计费方式"`
 	ParentId      int                  `json:"parentId" gorm:"comment:父业务"`
+	StartUsage    string               `json:"startUsage" gorm:"index;type:varchar(30);comment:利用率开始时间"`
+	EndUsage      string               `json:"endUsage" gorm:"index;type:varchar(30);comment:利用率结束时间"`
 	CostCnf       []RsCostCnfInsertReq `json:"costCnf"`
 	common.ControlBy
 }
@@ -87,6 +89,8 @@ func (s *RsBusinessInsertReq) Generate(model *models.RsBusiness) {
 	model.Status = s.Status
 	model.BillingMethod = s.BillingMethod
 	model.ParentId = s.ParentId
+	model.StartUsage = s.StartUsage
+	model.EndUsage = s.EndUsage
 }
 
 func (s *RsBusinessInsertReq) GetId() interface{} {
@@ -101,6 +105,8 @@ type RsBusinessUpdateReq struct {
 	EnName        string               `json:"enName" gorm:"index;type:varchar(30);comment:业务别名"`
 	BillingMethod int                  `json:"billingMethod" comment:"计费方式"`
 	ParentId      int                  `json:"parentId" gorm:"comment:父业务"`
+	StartUsage    string               `json:"startUsage" gorm:"index;type:varchar(30);comment:利用率开始时间"`
+	EndUsage      string               `json:"endUsage" gorm:"index;type:varchar(30);comment:利用率结束时间"`
 	CostCnf       []RsCostCnfInsertReq `json:"costCnf"`
 	common.ControlBy
 }
@@ -116,6 +122,8 @@ func (s *RsBusinessUpdateReq) Generate(model *models.RsBusiness) {
 	model.Status = s.Status
 	model.BillingMethod = s.BillingMethod
 	model.ParentId = s.ParentId
+	model.StartUsage = s.StartUsage
+	model.EndUsage = s.EndUsage
 }
 
 func (s *RsBusinessUpdateReq) GetId() interface{} {

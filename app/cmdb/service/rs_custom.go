@@ -58,16 +58,16 @@ func (e *RsCustom) Get(d *dto.RsCustomGetReq, p *actions.DataPermission, model *
 }
 
 // Insert 创建RsCustom对象
-func (e *RsCustom) Insert(c *dto.RsCustomInsertReq) error {
-	var err error
+func (e *RsCustom) Insert(c *dto.RsCustomInsertReq) (id int, err error) {
+
 	var data models.RsCustom
 	c.Generate(&data)
 	err = e.Orm.Create(&data).Error
 	if err != nil {
 		e.Log.Errorf("RsCustomService Insert error:%s \r\n", err)
-		return err
+		return 0, err
 	}
-	return nil
+	return data.Id, nil
 }
 
 // Update 修改RsCustom对象
