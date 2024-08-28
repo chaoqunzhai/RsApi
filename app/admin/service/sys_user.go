@@ -18,6 +18,34 @@ type SysUser struct {
 	service.Service
 }
 
+func (e *SysUser) GetBindRoleId(userId int) []int {
+	var roleIds []int
+	e.Orm.Raw("select role_id from sys_user_bind_role where user_id = ?", userId).Scan(&roleIds)
+
+	return roleIds
+}
+
+func (e *SysUser) GetBindRoleModel(userId int) *[]models.SysRole {
+	var roleIds []int
+	e.Orm.Raw("select role_id from sys_user_bind_role where user_id = ?", userId).Scan(&roleIds)
+
+	cache := make([]models.SysRole, 0)
+
+	e.Orm.Model(&models.SysRole{}).Where("role_id in ?", roleIds).Find(&cache)
+	return &cache
+}
+func (e *SysUser) GetRoleList(roleIds []int) []models.SysRole {
+	var list []models.SysRole
+	if len(roleIds) == 0 {
+
+		return list
+	}
+
+	e.Orm.Model(&models.SysRole{}).Where("role_id in ?", roleIds).Find(&list)
+
+	return list
+}
+
 // GetPage 获取SysUser列表
 func (e *SysUser) GetPage(c *dto.SysUserGetPageReq, p *actions.DataPermission, list *[]models.SysUser, count *int64) error {
 	var err error
@@ -56,6 +84,7 @@ func (e *SysUser) Get(d *dto.SysUserById, p *actions.DataPermission, model *mode
 		e.Log.Errorf("db error: %s", err)
 		return err
 	}
+	model.RoleIds = e.GetBindRoleId(d.Id)
 	return nil
 }
 
@@ -75,6 +104,7 @@ func (e *SysUser) Insert(c *dto.SysUserInsertReq) error {
 		return err
 	}
 	c.Generate(&data)
+	data.SysRole = e.GetRoleList(c.RoleIds)
 	err = e.Orm.Create(&data).Error
 	if err != nil {
 		e.Log.Errorf("db error: %s", err)
@@ -96,8 +126,10 @@ func (e *SysUser) Update(c *dto.SysUserUpdateReq, p *actions.DataPermission) err
 	}
 	if db.RowsAffected == 0 {
 		return errors.New("无权更新该数据")
-
 	}
+	_ = e.Orm.Model(&model).Association("SysRole").Clear()
+
+	model.SysRole = e.GetRoleList(c.RoleIds)
 	c.Generate(&model)
 	update := e.Orm.Model(&model).Where("user_id = ?", &model.UserId).Omit("password", "salt").Updates(&model)
 	if err = update.Error; err != nil {
@@ -253,10 +285,8 @@ func (e *SysUser) GetProfile(c *dto.SysUserById, user *models.SysUser, roles *[]
 	if err != nil {
 		return err
 	}
-	err = e.Orm.Find(roles, user.RoleId).Error
-	if err != nil {
-		return err
-	}
+
+	roles = e.GetBindRoleModel(user.UserId)
 	err = e.Orm.Find(posts, user.PostIds).Error
 	if err != nil {
 		return err

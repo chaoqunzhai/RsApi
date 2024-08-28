@@ -94,7 +94,7 @@ type SysUserInsertReq struct {
 	Password string `json:"password" comment:"密码"`
 	NickName string `json:"nickName" comment:"昵称"`
 	Phone    string `json:"phone" comment:"手机号"`
-	RoleId   int    `json:"roleId" comment:"角色ID"`
+	RoleIds  []int  `json:"roleIds" comment:"角色ID"`
 	Avatar   string `json:"avatar" comment:"头像"`
 	Sex      string `json:"sex" comment:"性别"`
 	Email    string `json:"email" comment:"邮箱" `
@@ -114,7 +114,6 @@ func (s *SysUserInsertReq) Generate(model *models.SysUser) {
 	model.Password = s.Password
 	model.NickName = s.NickName
 	model.Phone = s.Phone
-	model.RoleId = s.RoleId
 	model.Avatar = s.Avatar
 	model.Sex = s.Sex
 	model.Email = s.Email
@@ -135,7 +134,7 @@ type SysUserUpdateReq struct {
 	Password string `json:"password" comment:"密码"`
 	NickName string `json:"nickName" comment:"昵称"`
 	Phone    string `json:"phone" comment:"手机号"`
-	RoleId   int    `json:"roleId" comment:"角色ID"`
+	RoleIds  []int  `json:"roleIds" comment:"角色ID"`
 	Avatar   string `json:"avatar" comment:"头像"`
 	Sex      string `json:"sex" comment:"性别"`
 	Email    string `json:"email" comment:"邮箱" `
@@ -154,7 +153,7 @@ func (s *SysUserUpdateReq) Generate(model *models.SysUser) {
 	model.Username = s.Username
 	model.NickName = s.NickName
 	model.Phone = s.Phone
-	model.RoleId = s.RoleId
+
 	model.Avatar = s.Avatar
 	model.Sex = s.Sex
 	model.Email = s.Email
