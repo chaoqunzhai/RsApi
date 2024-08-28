@@ -83,16 +83,16 @@ func (e *RsDial) Get(d *dto.RsDialGetReq, p *actions.DataPermission, model *mode
 }
 
 // Insert 创建RsDial对象
-func (e *RsDial) Insert(c *dto.RsDialInsertReq) error {
-	var err error
+func (e *RsDial) Insert(c *dto.RsDialInsertReq) (id int, err error) {
+
 	var data models.RsDial
 	c.Generate(&data)
 	err = e.Orm.Create(&data).Error
 	if err != nil {
 		e.Log.Errorf("RsDialService Insert error:%s \r\n", err)
-		return err
+		return 0, err
 	}
-	return nil
+	return data.Id, nil
 }
 
 // Update 修改RsDial对象

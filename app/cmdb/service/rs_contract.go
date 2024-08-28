@@ -59,14 +59,14 @@ func (e *RsContract) Get(d *dto.RsContractGetReq, p *actions.DataPermission, mod
 }
 
 // Insert 创建RsContract对象
-func (e *RsContract) Insert(c *dto.RsContractInsertReq) error {
-	var err error
+func (e *RsContract) Insert(c *dto.RsContractInsertReq) (id int, err error) {
+
 	var data models.RsContract
 	c.Generate(&data)
 	err = e.Orm.Create(&data).Error
 	if err != nil {
 		e.Log.Errorf("RsContractService Insert error:%s \r\n", err)
-		return err
+		return 0, err
 	}
 	for _, row := range c.BandwidthFees {
 		var bandRow models.RsBandwidthFees
@@ -74,7 +74,7 @@ func (e *RsContract) Insert(c *dto.RsContractInsertReq) error {
 		bandRow.ContractId = data.Id
 		_ = e.Orm.Create(&bandRow)
 	}
-	return nil
+	return data.Id, nil
 }
 
 // Update 修改RsContract对象

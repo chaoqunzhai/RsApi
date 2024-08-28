@@ -2,6 +2,7 @@ package apis
 
 import (
 	"fmt"
+	models2 "go-admin/cmd/migrate/migration/models"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-admin-team/go-admin-core/sdk/api"
@@ -134,11 +135,19 @@ func (e RsDial) Insert(c *gin.Context) {
 		e.Error(500, nil, "拨号已存在")
 		return
 	}
-	err = s.Insert(&req)
+	modelId, err := s.Insert(&req)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("创建RsDial失败，\r\n失败信息 %s", err.Error()))
 		return
 	}
+	e.Orm.Create(&models2.OperationLog{
+		CreateUser: user.GetUserName(c),
+		Action:     "POST",
+		Module:     "rs_dial",
+		ObjectId:   modelId,
+		TargetId:   modelId,
+		Info:       "创建拨号信息",
+	})
 
 	e.OK(req.GetId(), "创建成功")
 }
@@ -175,6 +184,14 @@ func (e RsDial) Update(c *gin.Context) {
 		e.Error(500, err, fmt.Sprintf("修改RsDial失败，\r\n失败信息 %s", err.Error()))
 		return
 	}
+	e.Orm.Create(&models2.OperationLog{
+		CreateUser: user.GetUserName(c),
+		Action:     "PUT",
+		Module:     "rs_dial",
+		ObjectId:   req.Id,
+		TargetId:   req.Id,
+		Info:       "更新拨号",
+	})
 	e.OK(req.GetId(), "修改成功")
 }
 
@@ -208,5 +225,13 @@ func (e RsDial) Delete(c *gin.Context) {
 		e.Error(500, err, fmt.Sprintf("删除RsDial失败，\r\n失败信息 %s", err.Error()))
 		return
 	}
+	e.Orm.Create(&models2.OperationLog{
+		CreateUser: user.GetUserName(c),
+		Action:     "DELETE",
+		Module:     "rs_dial",
+		ObjectId:   req.Ids[0],
+		TargetId:   req.Ids[0],
+		Info:       "删除拨号",
+	})
 	e.OK(req.GetId(), "删除成功")
 }

@@ -63,16 +63,16 @@ func (e *RsIdc) Get(d *dto.RsIdcGetReq, p *actions.DataPermission, model *models
 }
 
 // Insert 创建RsIdc对象
-func (e *RsIdc) Insert(c *dto.RsIdcInsertReq) error {
-	var err error
+func (e *RsIdc) Insert(c *dto.RsIdcInsertReq) (id int, err error) {
+
 	var data models.RsIdc
 	c.Generate(&data)
 	err = e.Orm.Create(&data).Error
 	if err != nil {
 		e.Log.Errorf("RsIdcService Insert error:%s \r\n", err)
-		return err
+		return 0, err
 	}
-	return nil
+	return data.Id, nil
 }
 
 // Update 修改RsIdc对象

@@ -2,6 +2,7 @@ package apis
 
 import (
 	"fmt"
+	models2 "go-admin/cmd/migrate/migration/models"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-admin-team/go-admin-core/sdk/api"
@@ -133,12 +134,19 @@ func (e RsContract) Insert(c *gin.Context) {
 		e.Error(500, nil, "合同名称已经存在")
 		return
 	}
-	err = s.Insert(&req)
+	modelId, err := s.Insert(&req)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("创建RsContract失败，\r\n失败信息 %s", err.Error()))
 		return
 	}
-
+	e.Orm.Create(&models2.OperationLog{
+		CreateUser: user.GetUserName(c),
+		Action:     "POST",
+		Module:     "rs_contract",
+		ObjectId:   modelId,
+		TargetId:   modelId,
+		Info:       "创建合同信息",
+	})
 	e.OK(req.GetId(), "创建成功")
 }
 
@@ -174,6 +182,14 @@ func (e RsContract) Update(c *gin.Context) {
 		e.Error(500, err, fmt.Sprintf("修改RsContract失败，\r\n失败信息 %s", err.Error()))
 		return
 	}
+	e.Orm.Create(&models2.OperationLog{
+		CreateUser: user.GetUserName(c),
+		Action:     "PUT",
+		Module:     "rs_contract",
+		ObjectId:   req.Id,
+		TargetId:   req.Id,
+		Info:       "更新合同信息",
+	})
 	e.OK(req.GetId(), "修改成功")
 }
 
@@ -207,5 +223,13 @@ func (e RsContract) Delete(c *gin.Context) {
 		e.Error(500, err, fmt.Sprintf("删除RsContract失败，\r\n失败信息 %s", err.Error()))
 		return
 	}
+	e.Orm.Create(&models2.OperationLog{
+		CreateUser: user.GetUserName(c),
+		Action:     "POST",
+		Module:     "rs_contract",
+		ObjectId:   req.Ids[0],
+		TargetId:   req.Ids[0],
+		Info:       "删除合同信息",
+	})
 	e.OK(req.GetId(), "删除成功")
 }

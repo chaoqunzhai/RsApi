@@ -1,7 +1,8 @@
 package apis
 
 import (
-    "fmt"
+	"fmt"
+	models2 "go-admin/cmd/migrate/migration/models"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-admin-team/go-admin-core/sdk/api"
@@ -32,18 +33,18 @@ type RsCustomer struct {
 // @Router /api/v1/rs-customer [get]
 // @Security Bearer
 func (e RsCustomer) GetPage(c *gin.Context) {
-    req := dto.RsCustomerGetPageReq{}
-    s := service.RsCustomer{}
-    err := e.MakeContext(c).
-        MakeOrm().
-        Bind(&req).
-        MakeService(&s.Service).
-        Errors
-   	if err != nil {
-   		e.Logger.Error(err)
-   		e.Error(500, err, err.Error())
-   		return
-   	}
+	req := dto.RsCustomerGetPageReq{}
+	s := service.RsCustomer{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
 
 	p := actions.GetPermissionFromContext(c)
 	list := make([]models.RsCustomer, 0)
@@ -52,7 +53,7 @@ func (e RsCustomer) GetPage(c *gin.Context) {
 	err = s.GetPage(&req, p, &list, &count)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("获取RsCustomer失败，\r\n失败信息 %s", err.Error()))
-        return
+		return
 	}
 
 	e.PageOK(list, int(count), req.GetPageIndex(), req.GetPageSize(), "查询成功")
@@ -69,7 +70,7 @@ func (e RsCustomer) GetPage(c *gin.Context) {
 func (e RsCustomer) Get(c *gin.Context) {
 	req := dto.RsCustomerGetReq{}
 	s := service.RsCustomer{}
-    err := e.MakeContext(c).
+	err := e.MakeContext(c).
 		MakeOrm().
 		Bind(&req).
 		MakeService(&s.Service).
@@ -85,10 +86,10 @@ func (e RsCustomer) Get(c *gin.Context) {
 	err = s.Get(&req, p, &object)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("获取RsCustomer失败，\r\n失败信息 %s", err.Error()))
-        return
+		return
 	}
 
-	e.OK( object, "查询成功")
+	e.OK(object, "查询成功")
 }
 
 // Insert 创建RsCustomer
@@ -102,27 +103,35 @@ func (e RsCustomer) Get(c *gin.Context) {
 // @Router /api/v1/rs-customer [post]
 // @Security Bearer
 func (e RsCustomer) Insert(c *gin.Context) {
-    req := dto.RsCustomerInsertReq{}
-    s := service.RsCustomer{}
-    err := e.MakeContext(c).
-        MakeOrm().
-        Bind(&req).
-        MakeService(&s.Service).
-        Errors
-    if err != nil {
-        e.Logger.Error(err)
-        e.Error(500, err, err.Error())
-        return
-    }
+	req := dto.RsCustomerInsertReq{}
+	s := service.RsCustomer{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
 	// 设置创建人
 	req.SetCreateBy(user.GetUserId(c))
 
-	err = s.Insert(&req)
+	modelId, err := s.Insert(&req)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("创建RsCustomer失败，\r\n失败信息 %s", err.Error()))
-        return
+		return
 	}
 
+	e.Orm.Create(&models2.OperationLog{
+		CreateUser: user.GetUserName(c),
+		Action:     "POST",
+		Module:     "rs_customer",
+		ObjectId:   modelId,
+		TargetId:   modelId,
+		Info:       "创建客户信息",
+	})
 	e.OK(req.GetId(), "创建成功")
 }
 
@@ -138,27 +147,35 @@ func (e RsCustomer) Insert(c *gin.Context) {
 // @Router /api/v1/rs-customer/{id} [put]
 // @Security Bearer
 func (e RsCustomer) Update(c *gin.Context) {
-    req := dto.RsCustomerUpdateReq{}
-    s := service.RsCustomer{}
-    err := e.MakeContext(c).
-        MakeOrm().
-        Bind(&req).
-        MakeService(&s.Service).
-        Errors
-    if err != nil {
-        e.Logger.Error(err)
-        e.Error(500, err, err.Error())
-        return
-    }
+	req := dto.RsCustomerUpdateReq{}
+	s := service.RsCustomer{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
 	req.SetUpdateBy(user.GetUserId(c))
 	p := actions.GetPermissionFromContext(c)
 
 	err = s.Update(&req, p)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("修改RsCustomer失败，\r\n失败信息 %s", err.Error()))
-        return
+		return
 	}
-	e.OK( req.GetId(), "修改成功")
+	e.Orm.Create(&models2.OperationLog{
+		CreateUser: user.GetUserName(c),
+		Action:     "PUT",
+		Module:     "rs_customer",
+		ObjectId:   req.Id,
+		TargetId:   req.Id,
+		Info:       "更新客户信息",
+	})
+	e.OK(req.GetId(), "修改成功")
 }
 
 // Delete 删除RsCustomer
@@ -170,18 +187,18 @@ func (e RsCustomer) Update(c *gin.Context) {
 // @Router /api/v1/rs-customer [delete]
 // @Security Bearer
 func (e RsCustomer) Delete(c *gin.Context) {
-    s := service.RsCustomer{}
-    req := dto.RsCustomerDeleteReq{}
-    err := e.MakeContext(c).
-        MakeOrm().
-        Bind(&req).
-        MakeService(&s.Service).
-        Errors
-    if err != nil {
-        e.Logger.Error(err)
-        e.Error(500, err, err.Error())
-        return
-    }
+	s := service.RsCustomer{}
+	req := dto.RsCustomerDeleteReq{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
 
 	// req.SetUpdateBy(user.GetUserId(c))
 	p := actions.GetPermissionFromContext(c)
@@ -189,7 +206,15 @@ func (e RsCustomer) Delete(c *gin.Context) {
 	err = s.Remove(&req, p)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("删除RsCustomer失败，\r\n失败信息 %s", err.Error()))
-        return
+		return
 	}
-	e.OK( req.GetId(), "删除成功")
+	e.Orm.Create(&models2.OperationLog{
+		CreateUser: user.GetUserName(c),
+		Action:     "DELETE",
+		Module:     "rs_customer",
+		ObjectId:   req.Ids[0],
+		TargetId:   req.Ids[0],
+		Info:       "删除客户信息",
+	})
+	e.OK(req.GetId(), "删除成功")
 }
