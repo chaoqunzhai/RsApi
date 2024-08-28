@@ -69,6 +69,7 @@ func (e *RsContract) AfterFind(tx *gorm.DB) (err error) {
 
 type RsBandwidthFees struct {
 	models.Model
+	Region          string  `json:"region" gorm:"type:varchar(120);comment:所在地区"`
 	ContractId      int     `json:"-" gorm:"index;type:int(11);comment:关联的合同"`
 	Isp             int     `json:"isp" gorm:"type:int(1);default:1;comment:运营商"`
 	Up              float64 `json:"up" gorm:"default:0;comment:上行带宽"`

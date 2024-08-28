@@ -2,6 +2,7 @@ package dto
 
 import (
 	"database/sql"
+	"fmt"
 	"go-admin/global"
 	"time"
 
@@ -57,16 +58,16 @@ func (m *RsContractGetPageReq) GetNeedSearch() interface{} {
 }
 
 type RsBandwidthFeesInsertReq struct {
-	Id int `json:"id" comment:"主键编码"` // 主键编码
-
-	Isp             int     `json:"isp" gorm:"type:int(1);default:1;comment:运营商"`
-	Up              float64 `json:"up" gorm:"default:0;comment:上行带宽"`
-	Down            float64 `json:"down" gorm:"default:0;comment:下行带宽"`
-	LinePrice       float64 `json:"LinePrice" gorm:"comment:业务线单价"`
-	ManagerLineCost float64 `json:"managerLineCost" gorm:"comment:管理线价格"`
-	Charging        int     `json:"charging" gorm:"type:int(1);default:0;comment:计费方式"`
-	TransProvince   int     `json:"transProd" gorm:"default:false;comment:是否跨省"`
-	MoreDialing     int     `json:"moreDialing" gorm:"default:false;comment:是否支持多拨"`
+	Id              int         `json:"id" comment:"主键编码"` // 主键编码
+	Region          interface{} `json:"region" gorm:"type:varchar(120);comment:所在地区"`
+	Isp             int         `json:"isp" gorm:"type:int(1);default:1;comment:运营商"`
+	Up              float64     `json:"up" gorm:"default:0;comment:上行带宽"`
+	Down            float64     `json:"down" gorm:"default:0;comment:下行带宽"`
+	LinePrice       float64     `json:"LinePrice" gorm:"comment:业务线单价"`
+	ManagerLineCost float64     `json:"managerLineCost" gorm:"comment:管理线价格"`
+	Charging        int         `json:"charging" gorm:"type:int(1);default:0;comment:计费方式"`
+	TransProvince   int         `json:"transProd" gorm:"default:false;comment:是否跨省"`
+	MoreDialing     int         `json:"moreDialing" gorm:"default:false;comment:是否支持多拨"`
 }
 
 func (s *RsBandwidthFeesInsertReq) Generate(model *models.RsBandwidthFees) {
@@ -75,6 +76,7 @@ func (s *RsBandwidthFeesInsertReq) Generate(model *models.RsBandwidthFees) {
 	}
 
 	model.Isp = s.Isp
+	model.Region = fmt.Sprintf("%v", s.Region)
 	model.Up = s.Up
 	model.Down = s.Down
 	model.LinePrice = s.LinePrice
@@ -89,6 +91,7 @@ func (s *RsBandwidthFeesInsertReq) GetId() interface{} {
 
 type RsBandwidthFeesUpdateReq struct {
 	Id              int     `uri:"id" comment:"主键编码"` // 主键编码
+	Region          string  `json:"region" gorm:"type:varchar(120);comment:所在地区"`
 	Isp             int     `json:"isp" gorm:"type:int(1);default:1;comment:运营商"`
 	Up              float64 `json:"up" gorm:"default:0;comment:上行带宽"`
 	Down            float64 `json:"down" gorm:"default:0;comment:下行带宽"`
@@ -104,7 +107,7 @@ func (s *RsBandwidthFeesUpdateReq) Generate(model *models.RsBandwidthFees) {
 	if s.Id == 0 {
 		model.Model = common.Model{Id: s.Id}
 	}
-
+	model.Region = s.Region
 	model.Isp = s.Isp
 	model.Up = s.Up
 	model.Down = s.Down
