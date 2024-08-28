@@ -105,7 +105,7 @@ func (e RsIdc) GetPage(c *gin.Context) {
 		result = append(result, idc)
 	}
 
-	e.PageOK(result, len(result), req.GetPageIndex(), req.GetPageSize(), "查询成功")
+	e.PageOK(result, int(count), req.GetPageIndex(), req.GetPageSize(), "查询成功")
 }
 
 // Get 获取RsIdc

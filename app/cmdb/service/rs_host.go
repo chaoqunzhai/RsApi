@@ -149,16 +149,16 @@ func (e *RsHost) Get(d *dto.RsHostGetReq, p *actions.DataPermission, model *mode
 }
 
 // Insert 创建RsHost对象
-func (e *RsHost) Insert(c *dto.RsHostInsertReq) error {
-	var err error
+func (e *RsHost) Insert(c *dto.RsHostInsertReq) (id int, err error) {
+
 	var data models.RsHost
 	c.Generate(&data)
 	err = e.Orm.Create(&data).Error
 	if err != nil {
 		e.Log.Errorf("RsHostService Insert error:%s \r\n", err)
-		return err
+		return 0, err
 	}
-	return nil
+	return data.Id, nil
 }
 
 // Update 修改RsHost对象

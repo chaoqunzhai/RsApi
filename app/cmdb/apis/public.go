@@ -10,6 +10,7 @@ import (
 	"github.com/go-admin-team/go-admin-core/sdk/pkg/utils"
 	"github.com/google/uuid"
 	"go-admin/app/cmdb/service"
+	"go-admin/app/cmdb/service/dto"
 	models2 "go-admin/cmd/migrate/migration/models"
 	"go-admin/common/file_store"
 	"io/ioutil"
@@ -230,4 +231,25 @@ func ossUpload(name string, path string) error {
 func qiniuUpload(name string, path string) error {
 	oss := file_store.ALiYunOSS{}
 	return oss.UpLoad(name, path)
+}
+
+func (e *Public) OperationLog(c *gin.Context) {
+	req := dto.OperationLogReq{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
+
+	var lists []models2.OperationLog
+	e.Orm.Model(&models2.OperationLog{}).Where("object_id = ? and module = ?",
+		req.Id, req.Module).Order("created_at desc").Find(&lists)
+
+	e.PageOK(lists, len(lists), 1, -1, "successful")
+	return
+
 }

@@ -12,6 +12,7 @@ type RsBusinessGetPageReq struct {
 	dto.Pagination `search:"-"`
 	TreeTag        int    `form:"treeTag" search:"-"`
 	Enable         string `form:"enable"  search:"type:exact;column:enable;table:rs_business" comment:"开关"`
+	Status         string `form:"status"  search:"type:exact;column:status;table:rs_business" comment:""`
 	Name           string `form:"name"  search:"type:contains;column:name;table:rs_business" comment:"业务云名称"`
 	RsBusinessOrder
 }

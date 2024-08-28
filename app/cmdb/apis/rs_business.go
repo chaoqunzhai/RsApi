@@ -2,6 +2,7 @@ package apis
 
 import (
 	"fmt"
+	models2 "go-admin/cmd/migrate/migration/models"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-admin-team/go-admin-core/sdk/api"
@@ -52,7 +53,7 @@ func (e RsBusiness) GetPage(c *gin.Context) {
 		e.Error(500, err, fmt.Sprintf("获取RsBusiness失败，\r\n失败信息 %s", err.Error()))
 		return
 	}
-	var result []interface{}
+	result := make([]interface{}, 0)
 
 	for _, row := range list {
 		if req.TreeTag > 0 {
@@ -136,12 +137,19 @@ func (e RsBusiness) Insert(c *gin.Context) {
 		e.Error(500, nil, "英文业务名称已经存在")
 		return
 	}
-	err = s.Insert(&req)
+	modelId, err := s.Insert(&req)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("创建RsBusiness失败，\r\n失败信息 %s", err.Error()))
 		return
 	}
-
+	e.Orm.Create(&models2.OperationLog{
+		CreateUser: user.GetUserName(c),
+		Action:     "POST",
+		Module:     "rs_business",
+		ObjectId:   modelId,
+		TargetId:   modelId,
+		Info:       "创建业务",
+	})
 	e.OK(req.GetId(), "创建成功")
 }
 
@@ -171,6 +179,11 @@ func (e RsBusiness) Update(c *gin.Context) {
 	}
 	req.SetUpdateBy(user.GetUserId(c))
 	p := actions.GetPermissionFromContext(c)
+
+	if req.ParentId == req.Id {
+		e.Error(500, nil, "父级业务不可为同一个")
+		return
+	}
 	var count int64
 	e.Orm.Model(&models.RsBusiness{}).Where("name = ? ", req.Name).Count(&count)
 	if count > 1 {
@@ -182,6 +195,14 @@ func (e RsBusiness) Update(c *gin.Context) {
 		e.Error(500, err, fmt.Sprintf("修改RsBusiness失败，\r\n失败信息 %s", err.Error()))
 		return
 	}
+	e.Orm.Create(&models2.OperationLog{
+		CreateUser: user.GetUserName(c),
+		Module:     "rs_business",
+		Action:     "PUT",
+		ObjectId:   req.Id,
+		TargetId:   req.Id,
+		Info:       "更新业务信息",
+	})
 	e.OK(req.GetId(), "修改成功")
 }
 
@@ -225,5 +246,13 @@ func (e RsBusiness) Delete(c *gin.Context) {
 		e.Error(500, err, fmt.Sprintf("删除RsBusiness失败，\r\n失败信息 %s", err.Error()))
 		return
 	}
+	e.Orm.Create(&models2.OperationLog{
+		CreateUser: user.GetUserName(c),
+		Module:     "rs_business",
+		Action:     "DELETE",
+		ObjectId:   req.Ids[0],
+		TargetId:   req.Ids[0],
+		Info:       "更新业务信息",
+	})
 	e.OK(req.GetId(), "删除成功")
 }

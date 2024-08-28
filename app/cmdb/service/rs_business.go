@@ -93,15 +93,15 @@ func (e *RsBusiness) Get(d *dto.RsBusinessGetReq, p *actions.DataPermission, mod
 }
 
 // Insert 创建RsBusiness对象
-func (e *RsBusiness) Insert(c *dto.RsBusinessInsertReq) error {
-	var err error
+func (e *RsBusiness) Insert(c *dto.RsBusinessInsertReq) (id int, err error) {
+
 	var data models.RsBusiness
 	c.Generate(&data)
 	data.Layer = 1
 	err = e.Orm.Create(&data).Error
 	if err != nil {
 		e.Log.Errorf("RsBusinessService Insert error:%s \r\n", err)
-		return err
+		return 0, err
 	}
 	for _, row := range c.CostCnf {
 		var costCnf models.RsBusinessCostCnf
@@ -109,7 +109,7 @@ func (e *RsBusiness) Insert(c *dto.RsBusinessInsertReq) error {
 		costCnf.BuId = data.Id
 		_ = e.Orm.Create(&costCnf)
 	}
-	return nil
+	return data.Id, nil
 }
 
 // Update 修改RsBusiness对象
@@ -160,7 +160,9 @@ func (e *RsBusiness) Update(c *dto.RsBusinessUpdateReq, p *actions.DataPermissio
 		diffIds = utils.DifferenceInt(hasIds, updateId)
 	}
 
-	e.Orm.Model(&models.RsBusinessCostCnf{}).Where("id in ?", diffIds).Delete(&models.RsBusinessCostCnf{})
+	if len(diffIds) > 0 {
+		e.Orm.Model(&models.RsBusinessCostCnf{}).Where("id in ?", diffIds).Delete(&models.RsBusinessCostCnf{})
+	}
 
 	return nil
 }

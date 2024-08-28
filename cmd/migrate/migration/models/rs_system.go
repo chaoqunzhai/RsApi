@@ -1,11 +1,15 @@
 package models
 
+import (
+	"go-admin/common/models"
+)
+
 type Business struct {
 	RichGlobal
 	Status        int    `json:"status" gorm:"type:int(1);default:0;comment:拨号状态,1:正常 非1:异常"`
 	Name          string `json:"name" gorm:"index;type:varchar(50);comment:业务中文名称"`
 	EnName        string `json:"enName" gorm:"index;type:varchar(30);comment:业务英文名字"`
-	BillingMethod int    `json:"billingMethod" gorm:"type:int(1);comment:计费方式"`
+	BillingMethod int    `json:"billingMethod" gorm:"type:int(1);default:6,comment:计费方式"`
 	ParentId      int    `json:"parentId" gorm:"comment:父业务"`
 	OpeMonitor    bool   `json:"ope_monitor" gorm:"default:true;comment:是否支持业务监控"`
 }
@@ -37,4 +41,20 @@ type BusinessCostCnf struct {
 
 func (BusinessCostCnf) TableName() string {
 	return "rs_business_cost_cnf"
+}
+
+type OperationLog struct {
+	Model
+
+	CreatedAt  models.XTime `json:"createdAt" gorm:"comment:操作时间"`
+	CreateUser string       `json:"createBy" gorm:"index;comment:操作人"`
+	Module     string       `json:"module" gorm:"index;type:varchar(30);comment:模块信息"`
+	ObjectId   int          `json:"objectId" gorm:"index;comment:操作的对象ID"`
+	TargetId   int          `json:"targetId" gorm:"index;comment:操作的目标ID"`
+	Action     string       `json:"action" gorm:"type:varchar(20);comment:操作名称"`
+	Info       string       `json:"info" gorm:"comment:操作内容"`
+}
+
+func (OperationLog) TableName() string {
+	return "rs_operation_log"
 }

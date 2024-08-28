@@ -19,5 +19,6 @@ func registerPublicApiRouter(v1 *gin.RouterGroup, authMiddleware *jwt.GinJWTMidd
 	{
 		r.GET("/city_tree", api.CityTree)
 		r.POST("/uploadFile", api.UploadFile)
+		r.GET("/operation", api.OperationLog)
 	}
 }

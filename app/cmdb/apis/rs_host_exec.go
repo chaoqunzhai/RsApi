@@ -2,6 +2,7 @@ package apis
 
 import (
 	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-admin-team/go-admin-core/sdk/pkg/jwtauth/user"
 	"github.com/google/uuid"
@@ -88,6 +89,14 @@ func (e RsHost) ExecUpHostName(c *gin.Context) {
 		command.UpdateHostName(req.HostName)
 	}()
 
+	e.Orm.Create(&models2.OperationLog{
+		CreateUser: user.GetUserName(c),
+		Action:     "POST",
+		Module:     "rs_host",
+		ObjectId:   hostModel.Id,
+		TargetId:   hostModel.Id,
+		Info:       fmt.Sprintf("远程更新主机名:%v", req.HostName),
+	})
 	e.OK(JobId, "")
 	return
 }
@@ -126,7 +135,17 @@ func (e RsHost) ExecCommand(c *gin.Context) {
 			command.ExecuteCommand(req.Shell)
 		}()
 
+		e.Orm.Create(&models2.OperationLog{
+			CreateUser: user.GetUserName(c),
+			Action:     "POST",
+			Module:     "rs_host",
+			ObjectId:   host.Id,
+			TargetId:   host.Id,
+			Info:       fmt.Sprintf("远程执行命令:%v", req.Shell),
+		})
+
 	}
+
 	e.OK(JobId, "")
 	return
 }
@@ -162,6 +181,14 @@ func (e RsHost) ExecReboot(c *gin.Context) {
 		go func() {
 			command.RebootHost()
 		}()
+		e.Orm.Create(&models2.OperationLog{
+			CreateUser: user.GetUserName(c),
+			Action:     "POST",
+			Module:     "rs_host",
+			ObjectId:   host.Id,
+			TargetId:   host.Id,
+			Info:       "远程重启机器",
+		})
 
 	}
 	e.OK(JobId, "")

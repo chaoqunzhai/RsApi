@@ -52,18 +52,26 @@ func (e RsHost) BindIdc(c *gin.Context) {
 		e.Error(500, nil, "请输入IDC或者主机ID列表")
 		return
 	}
-	var idcCount int64
-	e.Orm.Model(&models.RsIdc{}).Where("id = ?", req.IdcId).Count(&idcCount)
+	var idcModel models.RsIdc
+	e.Orm.Model(&models.RsIdc{}).Where("id = ?", req.IdcId).Limit(1).Find(&idcModel)
 
-	if idcCount == 0 {
+	if idcModel.Id == 0 {
 		e.Error(500, nil, "IDC不存在")
 		return
 	}
 
-	for _, host := range req.HostIds {
+	for _, hostId := range req.HostIds {
 
-		e.Orm.Model(&models.RsHost{}).Where("id = ?", host).Updates(map[string]interface{}{
+		e.Orm.Model(&models.RsHost{}).Where("id = ?", hostId).Updates(map[string]interface{}{
 			"idc": req.IdcId,
+		})
+		e.Orm.Create(&models2.OperationLog{
+			CreateUser: user.GetUserName(c),
+			Action:     "POST",
+			Module:     "rs_host",
+			ObjectId:   hostId,
+			TargetId:   req.IdcId,
+			Info:       fmt.Sprintf("绑定 IDC: %s", idcModel.Name),
 		})
 	}
 	e.OK("", "绑定IDC成功")
@@ -98,6 +106,14 @@ func (e RsHost) BindDial(c *gin.Context) {
 	dialModel.HostId = req.HostId
 
 	e.Orm.Save(&dialModel)
+	e.Orm.Create(&models2.OperationLog{
+		CreateUser: user.GetUserName(c),
+		Action:     "POST",
+		Module:     "rs_host",
+		ObjectId:   dialModel.HostId,
+		TargetId:   dialModel.Id,
+		Info:       fmt.Sprintf("绑定拨号:%v", dialModel.Account),
+	})
 	e.OK("", "successful")
 	return
 }
@@ -221,6 +237,14 @@ func (e RsHost) Switch(c *gin.Context) {
 		go func() {
 			command.BusinessSwitching(strings.Join(buEnList, "-"))
 		}()
+
+		e.Orm.Create(&models2.OperationLog{
+			CreateUser: user.GetUserName(c),
+			Action:     "POST",
+			Module:     "rs_host",
+			ObjectId:   host.Id,
+			Info:       fmt.Sprintf("切换至业务:%v", strings.Join(buEnList, "-")),
+		})
 
 	}
 
@@ -579,12 +603,19 @@ func (e RsHost) Insert(c *gin.Context) {
 		e.Error(500, nil, "主机名已存在")
 		return
 	}
-	err = s.Insert(&req)
+	modelId, err := s.Insert(&req)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("创建RsHost失败，\r\n失败信息 %s", err.Error()))
 		return
 	}
-
+	e.Orm.Create(&models2.OperationLog{
+		CreateUser: user.GetUserName(c),
+		Action:     "POST",
+		Module:     "rs_host",
+		ObjectId:   modelId,
+		TargetId:   modelId,
+		Info:       "创建主机信息",
+	})
 	e.OK(req.GetId(), "创建成功")
 }
 
@@ -620,6 +651,14 @@ func (e RsHost) Update(c *gin.Context) {
 		e.Error(500, err, fmt.Sprintf("修改RsHost失败，\r\n失败信息 %s", err.Error()))
 		return
 	}
+	e.Orm.Create(&models2.OperationLog{
+		CreateUser: user.GetUserName(c),
+		Action:     "PUT",
+		Module:     "rs_host",
+		ObjectId:   req.Id,
+		TargetId:   req.Id,
+		Info:       "更新主机信息",
+	})
 	e.OK(req.GetId(), "修改成功")
 }
 
@@ -653,5 +692,13 @@ func (e RsHost) Delete(c *gin.Context) {
 		e.Error(500, err, fmt.Sprintf("删除RsHost失败，\r\n失败信息 %s", err.Error()))
 		return
 	}
+	e.Orm.Create(&models2.OperationLog{
+		CreateUser: user.GetUserName(c),
+		Action:     "DELETE",
+		Module:     "rs_host",
+		ObjectId:   req.Ids[0],
+		TargetId:   req.Ids[0],
+		Info:       "删除主机信息",
+	})
 	e.OK(req.GetId(), "删除成功")
 }
