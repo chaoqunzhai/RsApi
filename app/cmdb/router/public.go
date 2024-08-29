@@ -10,6 +10,7 @@ import (
 
 func init() {
 	routerCheckCMDB = append(routerCheckCMDB, registerPublicApiRouter)
+	routerNoCheckCMDB = append(routerNoCheckCMDB, registerNoPublicApiRouter)
 }
 
 // registerSysApiRouter
@@ -17,8 +18,15 @@ func registerPublicApiRouter(v1 *gin.RouterGroup, authMiddleware *jwt.GinJWTMidd
 	api := apis.Public{}
 	r := v1.Group("/public").Use(authMiddleware.MiddlewareFunc()).Use(middleware.AuthCheckRole())
 	{
-		r.GET("/city_tree", api.CityTree)
 		r.POST("/uploadFile", api.UploadFile)
 		r.GET("/operation", api.OperationLog)
+	}
+}
+
+func registerNoPublicApiRouter(v1 *gin.RouterGroup) {
+	api := apis.Public{}
+	r := v1.Group("/public")
+	{
+		r.GET("/city_tree", api.CityTree)
 	}
 }

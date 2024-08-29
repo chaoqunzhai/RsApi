@@ -13,12 +13,12 @@ import (
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-admin-team/go-admin-core/sdk/api"
 	"go-admin/app/cmdb/models"
-	"go-admin/app/cmdb/service"
 	"go-admin/app/cmdb/service/dto"
 	models2 "go-admin/cmd/migrate/migration/models"
 	_ "go-admin/common/dial"
 	models3 "go-admin/common/models"
 	"go-admin/global"
+	"io/ioutil"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -41,6 +41,20 @@ var blackMap = map[string]bool{
 	"01234567890123456789AB": true,
 }
 
+func RemoveBracketContent(s string) string {
+	var builder strings.Builder
+	skip := false
+	for _, r := range s {
+		if r == '(' {
+			skip = true
+		} else if r == ')' {
+			skip = false
+		} else if !skip {
+			builder.WriteRune(r)
+		}
+	}
+	return builder.String()
+}
 func (e *RegisterApi) InitIdc(req dto.RegisterMetrics) int {
 
 	re := regexp.MustCompile(`\d+`)
@@ -71,8 +85,7 @@ func (e *RegisterApi) InitIdc(req dto.RegisterMetrics) int {
 		idcName = removeNumberStr[:ispIndex]
 	}
 	if idcName == "" {
-		fmt.Printf(" %v:%v idcName is empty\n", req.Hostname, req.Remark)
-		return 0
+		idcName = RemoveBracketContent(removeNumberStr)
 	}
 
 	var IdcRow models.RsIdc
@@ -119,15 +132,23 @@ func (e *RegisterApi) InitIdc(req dto.RegisterMetrics) int {
 // @Router /api/v1/register/healthy [post]
 
 func (e *RegisterApi) Healthy(c *gin.Context) {
-	s := service.RegisterApi{}
+
 	req := dto.RegisterMetrics{}
 	err := e.MakeContext(c).
 		MakeOrm().
-		MakeService(&s.Service).
 		Bind(&req, binding.JSON).
 		Errors
 	if err != nil {
 		e.Logger.Error(err)
+		body, readErr := ioutil.ReadAll(c.Request.Body)
+		if readErr != nil {
+			e.Error(500, err, err.Error())
+			return
+		}
+		defer func() {
+			_ = c.Request.Body.Close()
+		}()
+		e.Logger.Error(fmt.Sprintf("post Body: %v", string(body)))
 		e.Error(500, err, err.Error())
 		return
 	}
@@ -238,7 +259,6 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 		}
 
 	}
-
 	//拨号列表,
 	for _, DialRow := range req.Dial {
 
@@ -264,8 +284,10 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 		//对于自动上报数据的数据,做一个特定创建,防止 已经创建了这个账号，被自动创建也冲掉
 		e.Orm.Model(&models.RsDial{}).Where("account = ? and source = 1", DialRow.A).Count(&DialCount)
 		var NetworkingStatus int
-		if DialRow.S == 1 { //已经拨通了，那就一定联网了
-			NetworkingStatus = 1
+		// DialRow.S === 1 已经拨通了,但是是否可以上网 还需要进行检测
+		// DialRow.S === 1 拨号失败了,那联网也是失败的
+		if DialRow.S == -1 {
+			NetworkingStatus = -1
 		}
 		if DialCount > 0 {
 			e.Orm.Model(&models.RsDial{}).Where("account = ? and source = 1", DialRow.A).Updates(map[string]interface{}{
@@ -280,6 +302,7 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 				"source":            1,
 				"dial_name":         DialRow.D,
 				"bu":                DialRow.BU,
+				"ip_v6":             DialRow.IpV6,
 				"device_id":         bindNetDeviceId,
 			})
 		} else {
@@ -289,12 +312,15 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 			DialRowModel.Account = DialRow.A
 			DialRowModel.Pass = DialRow.P
 			DialRowModel.Ip = DialRow.Ip
+			DialRowModel.IpV6 = DialRow.IpV6
 			DialRowModel.Mac = DialRow.Mac
 			DialRowModel.DialName = DialRow.D
 			DialRowModel.Source = 1
 			DialRowModel.DeviceId = bindNetDeviceId
 			DialRowModel.Status = DialRow.S
-			DialRowModel.NetworkingStatus = NetworkingStatus
+			if DialRow.S == -1 {
+				DialRowModel.NetworkingStatus = -1
+			}
 			e.Orm.Save(&DialRowModel)
 		}
 	}
