@@ -44,6 +44,8 @@ settings:
     frps:
       address: "root@frp.xarscloud.com"
       id_rsa: "/root/.ssh/id_rsa"
+    automation:
+      hostname: "http://8.140.194.41:8001/data/storage/init-shell/update_hostname.sh"
   queue:
     memory:
       poolSize: 100

@@ -13,6 +13,10 @@ type Extend struct {
 	AMap       AMap       // 这里配置对应配置文件的结构即可
 	Prometheus prometheus `json:"prometheus"`
 	Frps       Frps       `json:"frps"`
+	Automation Automation `json:"automation"`
+}
+type Automation struct {
+	Hostname string `json:"hostname"`
 }
 
 type Frps struct {

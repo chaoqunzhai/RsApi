@@ -92,9 +92,14 @@ func (c Command) BusinessSwitching(bu string) (JobId int) {
 
 //主机名修改
 
-func (c Command) UpdateHostName(hostname string) (JobId int) {
+func (c Command) UpdateHostName(Automation int, hostname string) (JobId int) {
 
-	shell := fmt.Sprintf("hostnamectl set-hostname %v --static", hostname)
+	var shell string
+	if Automation == 1 {
+		shell = fmt.Sprintf("curl %v  | sh -x", config.ExtConfig.Automation.Hostname)
+	} else {
+		shell = fmt.Sprintf("hostnamectl set-hostname %v --static", hostname)
+	}
 
 	output, status := c.runShell(shell)
 

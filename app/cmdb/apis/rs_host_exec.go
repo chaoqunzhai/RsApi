@@ -19,8 +19,9 @@ type ExecBuSwitch struct {
 }
 
 type ExecUpHostNameReq struct {
-	HostId   int    `json:"hostId"`   //多个主机
-	HostName string `json:"hostName"` //主机名
+	HostId     int    `json:"hostId"`     //多个主机
+	HostName   string `json:"hostName"`   //主机名
+	Automation int    `json:"automation"` //1:自动化 2:自定义
 }
 type ExecCommandReq struct {
 	HostIds []int  `json:"hostIds"` //多个主机
@@ -55,19 +56,25 @@ func (e RsHost) ExecUpHostName(c *gin.Context) {
 		e.Error(500, err, err.Error())
 		return
 	}
+	var Info string
 
-	if req.HostName == "" {
+	//自定义内容
+	if req.Automation == 2 {
+		if req.HostName == "" {
+			err = errors.New("主机名不能为空")
+			e.Error(500, err, err.Error())
+			return
+		}
 
-		err = errors.New("主机名不能为空")
-		e.Error(500, err, err.Error())
-		return
-	}
+		if len(req.HostName) < 10 {
 
-	if len(req.HostName) < 10 {
-
-		err = errors.New("主机名不得少于10个字符")
-		e.Error(500, err, err.Error())
-		return
+			err = errors.New("主机名不得少于10个字符")
+			e.Error(500, err, err.Error())
+			return
+		}
+		Info = fmt.Sprintf("远程更新主机名:%v", req.HostName)
+	} else {
+		Info = "自动化生成主机名"
 	}
 
 	var hostModel models.RsHost
@@ -86,7 +93,7 @@ func (e RsHost) ExecUpHostName(c *gin.Context) {
 		JobId:      JobId,
 	}
 	go func() {
-		command.UpdateHostName(req.HostName)
+		command.UpdateHostName(req.Automation, req.HostName)
 	}()
 
 	e.Orm.Create(&models2.OperationLog{
@@ -95,7 +102,7 @@ func (e RsHost) ExecUpHostName(c *gin.Context) {
 		Module:     "rs_host",
 		ObjectId:   hostModel.Id,
 		TargetId:   hostModel.Id,
-		Info:       fmt.Sprintf("远程更新主机名:%v", req.HostName),
+		Info:       Info,
 	})
 	e.OK(JobId, "")
 	return
