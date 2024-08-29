@@ -429,6 +429,8 @@ func (e RsHost) GetPage(c *gin.Context) {
 
 	IdcMapData := s.GetIdcList(idcIds)
 
+	DialMapData := s.GetDialData(hostIds)
+
 	BusinessMapData := service.GetHostBindBusinessMap(e.Orm, hostIds)
 	for _, row := range list {
 		customRow := make(map[string]interface{}, 1)
@@ -507,6 +509,14 @@ func (e RsHost) GetPage(c *gin.Context) {
 		}
 		if row.HealthyAt.Valid {
 			customRow["healthyAt"] = row.HealthyAt.Time.Format("2006-01-02 15:04:05")
+		}
+		if hostDial, ok := DialMapData[row.Id]; ok {
+			customRow["dialStatus"] = hostDial
+		} else {
+			customRow["dialStatus"] = map[string]interface{}{
+				"allLine": 0,
+				"info":    "暂无拨号配置",
+			}
 		}
 		customRow["remotePort"] = row.RemotePort
 		customRow["ip"] = row.Ip

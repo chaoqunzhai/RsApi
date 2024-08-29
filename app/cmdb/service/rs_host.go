@@ -251,6 +251,49 @@ func (e *RsHost) GetHostSoftware(ids []int) map[int][]models2.HostSoftware {
 	return HostSoftwareMap
 
 }
+
+type DialCnfRow struct {
+	AllLine  int    `json:"allLine"`
+	DialUp   int    `json:"dialUp"`
+	DialDown int    `json:"dialDown"`
+	NetUp    int    `json:"netUp"`
+	NetDown  int    `json:"netDown"`
+	Info     string `json:"info"`
+}
+
+func (e *RsHost) GetDialData(ids []int) map[int]DialCnfRow {
+	var dialList []models.RsDial
+	e.Orm.Model(&models.RsDial{}).Where("host_id in ? ", ids).Find(&dialList)
+
+	result := make(map[int]DialCnfRow, 0)
+
+	for _, row := range dialList {
+		data, ok := result[row.HostId]
+		if !ok {
+			data = DialCnfRow{}
+		}
+		data.AllLine += 1
+
+		if row.Status == 1 { //拨通了
+
+			data.DialUp += 1
+		} else {
+
+			data.DialDown += 1
+		}
+		if row.NetworkingStatus == 1 {
+
+			data.NetUp += 1
+		} else {
+			data.NetDown += 1
+		}
+
+		result[row.HostId] = data
+	}
+
+	return result
+}
+
 func (e *RsHost) GetMonitorData(ids []int) map[int]map[string]interface{} {
 	var monitorList []models2.HostSystem
 

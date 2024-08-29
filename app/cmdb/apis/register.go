@@ -178,6 +178,12 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 	hostInstance.Sn = SN
 	hostInstance.HostName = HOSTNAME
 	hostInstance.Ip = req.Ip
+
+	if req.NetType > 0 { //只有非0是才会进行保存
+		hostInstance.NetworkType = req.NetType
+	}
+	hostInstance.Mac = req.Mac
+	hostInstance.Gateway = req.Gateway
 	hostInstance.PublicIp = req.PublicIp
 	hostInstance.Cpu = req.CPU
 	hostInstance.Kernel = req.Kernel
@@ -286,11 +292,9 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 		var NetworkingStatus int
 		// DialRow.S === 1 已经拨通了,但是是否可以上网 还需要进行检测
 		// DialRow.S === 1 拨号失败了,那联网也是失败的
-		if DialRow.S == -1 {
-			NetworkingStatus = -1
-		}
+
 		if DialCount > 0 {
-			e.Orm.Model(&models.RsDial{}).Where("account = ? and source = 1", DialRow.A).Updates(map[string]interface{}{
+			updateMap := map[string]interface{}{
 				"host_id":           hostInstance.Id,
 				"idc_id":            hostInstance.Idc,
 				"account":           DialRow.A,
@@ -304,7 +308,11 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 				"bu":                DialRow.BU,
 				"ip_v6":             DialRow.IpV6,
 				"device_id":         bindNetDeviceId,
-			})
+			}
+			if DialRow.S == -1 {
+				updateMap["networking_status"] = -1
+			}
+			e.Orm.Model(&models.RsDial{}).Where("account = ? and source = 1", DialRow.A).Updates(updateMap)
 		} else {
 			DialRowModel.Bu = DialRow.BU
 			DialRowModel.HostId = hostInstance.Id

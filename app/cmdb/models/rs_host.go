@@ -16,6 +16,8 @@ type RsHost struct {
 	Sn            string       `json:"sn" gorm:"type:varchar(100);index;comment:sn"`
 	Cpu           int          `json:"cpu" gorm:"type:bigint;comment:总核数"`
 	Ip            string       `json:"ip" gorm:"type:varchar(20);comment:ip"`
+	Mac           string       `json:"mac" gorm:"type:varchar(30);comment:mac"`
+	Gateway       string       `json:"gateway" gorm:"type:varchar(30);comment:gateway"`
 	PublicIp      string       `json:"publicIp" gorm:"type:varchar(20);comment:公网IP"`
 	Memory        uint64       `json:"memory" gorm:"comment:总内存"`
 	Kernel        string       `json:"kernel" gorm:"type:varchar(100);comment:内核版本"`

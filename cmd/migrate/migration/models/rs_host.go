@@ -16,6 +16,8 @@ type Host struct {
 	CPU           int          `json:"cpu" gorm:"comment:总核数"`
 	PublicIp      string       `json:"publicIp" gorm:"type:varchar(20);comment:公网IP"`
 	Ip            string       `json:"ip" gorm:"type:varchar(20);comment:ip"`
+	Mac           string       `json:"mac" gorm:"type:varchar(30);comment:mac"`
+	Gateway       string       `json:"gateway" gorm:"type:varchar(30);comment:gateway"`
 	Memory        uint64       `json:"memory" gorm:"comment:总内存"`
 	NetworkType   int          `json:"networkType" gorm:"default:2;comment:网络类型"`
 	Kernel        string       `json:"kernel" gorm:"type:varchar(100);comment:内核版本"`
