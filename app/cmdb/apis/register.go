@@ -183,6 +183,7 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 		hostInstance.NetworkType = req.NetType
 	}
 	hostInstance.Mac = req.Mac
+	hostInstance.Mask = req.Mask
 	hostInstance.Gateway = req.Gateway
 	hostInstance.PublicIp = req.PublicIp
 	hostInstance.Cpu = req.CPU

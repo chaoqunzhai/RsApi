@@ -14,6 +14,7 @@ type RegisterMetrics struct {
 	Hostname       string            `json:"hostname"`
 	Ip             string            `json:"ip"`
 	Mac            string            `json:"mac"`
+	Mask           string            `json:"mask"`
 	Gateway        string            `json:"gateway"`
 	NetType        int               `json:"netType"`
 	PublicIp       string            `json:"publicIp"`
