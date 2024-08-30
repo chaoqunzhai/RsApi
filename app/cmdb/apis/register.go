@@ -296,19 +296,18 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 
 		if DialCount > 0 {
 			updateMap := map[string]interface{}{
-				"host_id":           hostInstance.Id,
-				"idc_id":            hostInstance.Idc,
-				"account":           DialRow.A,
-				"pass":              DialRow.P,
-				"status":            DialRow.S,
-				"ip":                DialRow.Ip,
-				"mac":               DialRow.Mac,
-				"networking_status": NetworkingStatus,
-				"source":            1,
-				"dial_name":         DialRow.D,
-				"bu":                DialRow.BU,
-				"ip_v6":             DialRow.IpV6,
-				"device_id":         bindNetDeviceId,
+				"host_id":   hostInstance.Id,
+				"idc_id":    hostInstance.Idc,
+				"account":   DialRow.A,
+				"pass":      DialRow.P,
+				"status":    DialRow.S,
+				"ip":        DialRow.Ip,
+				"mac":       DialRow.Mac,
+				"source":    1,
+				"dial_name": DialRow.D,
+				"bu":        DialRow.BU,
+				"ip_v6":     DialRow.IpV6,
+				"device_id": bindNetDeviceId,
 			}
 			if DialRow.S == -1 {
 				updateMap["networking_status"] = -1

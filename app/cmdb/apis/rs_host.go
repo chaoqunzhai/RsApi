@@ -524,6 +524,9 @@ func (e RsHost) GetPage(c *gin.Context) {
 		customRow["id"] = row.Id
 		customRow["transProd"] = row.TransProvince
 		customRow["isp"] = row.Isp
+		customRow["mac"] = row.Mac
+		customRow["gateway"] = row.Gateway
+		customRow["mask"] = row.Mask
 		customRow["balance"] = fmt.Sprintf("%vGbps", row.Balance)
 		customRow["remark"] = row.Remark
 
