@@ -47,7 +47,7 @@
             </el-form>
             <a-tabs default-active-key="1">
                 <a-tab-pane key="1" tab="操作日志" force-render>
-                    Content of Tab Pane 1
+                    <Logs :id="id" :mode="'{{.ClassName}}'"/>
                 </a-tab-pane>
             </a-tabs>
         </div>
@@ -56,6 +56,7 @@
 </template>
 
 <script>
+    import Logs from '@/components/Logs/index.vue'
     import { get{{.ClassName}} } from '@/api/{{ .PackageName}}/{{ .MLTBName}}'
     {{ $package:=.PackageName }}
     {{range .Columns}}
@@ -80,6 +81,7 @@
             }
         },
         components: {
+            Logs
         },
         data() {
             return {
