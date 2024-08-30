@@ -8,6 +8,7 @@ import (
 
 type RsCustomUserGetPageReq struct {
 	dto.Pagination `search:"-"`
+	Search         string `form:"search" search:"-"`
 	UserName       string `form:"userName"  search:"type:contains;column:user_name;table:rs_custom_user" comment:"姓名"`
 	CustomId       string `form:"customId"  search:"type:exact;column:custom_id;table:rs_custom_user" comment:"所属客户"`
 	BuId           string `form:"buId"  search:"type:exact;column:bu_id;table:rs_custom_user" comment:"所属商务人员"`

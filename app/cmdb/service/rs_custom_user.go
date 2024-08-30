@@ -2,8 +2,9 @@ package service
 
 import (
 	"errors"
+	"fmt"
 
-    "github.com/go-admin-team/go-admin-core/sdk/service"
+	"github.com/go-admin-team/go-admin-core/sdk/service"
 	"gorm.io/gorm"
 
 	"go-admin/app/cmdb/models"
@@ -21,6 +22,11 @@ func (e *RsCustomUser) GetPage(c *dto.RsCustomUserGetPageReq, p *actions.DataPer
 	var err error
 	var data models.RsCustomUser
 
+	orm := e.Orm.Model(&data)
+	if c.Search != "" {
+		orm = orm.Where("user_name LIKE ? OR phone LIKE ? OR email LIKE ? ",
+			fmt.Sprintf("%%%s%%", c.Search), fmt.Sprintf("%%%s%%", c.Search), fmt.Sprintf("%%%s%%", c.Search))
+	}
 	err = e.Orm.Model(&data).
 		Scopes(
 			cDto.MakeCondition(c.GetNeedSearch()),
@@ -59,9 +65,9 @@ func (e *RsCustomUser) Get(d *dto.RsCustomUserGetReq, p *actions.DataPermission,
 
 // Insert 创建RsCustomUser对象
 func (e *RsCustomUser) Insert(c *dto.RsCustomUserInsertReq) error {
-    var err error
-    var data models.RsCustomUser
-    c.Generate(&data)
+	var err error
+	var data models.RsCustomUser
+	c.Generate(&data)
 	err = e.Orm.Create(&data).Error
 	if err != nil {
 		e.Log.Errorf("RsCustomUserService Insert error:%s \r\n", err)
@@ -72,22 +78,22 @@ func (e *RsCustomUser) Insert(c *dto.RsCustomUserInsertReq) error {
 
 // Update 修改RsCustomUser对象
 func (e *RsCustomUser) Update(c *dto.RsCustomUserUpdateReq, p *actions.DataPermission) error {
-    var err error
-    var data = models.RsCustomUser{}
-    e.Orm.Scopes(
-            actions.Permission(data.TableName(), p),
-        ).First(&data, c.GetId())
-    c.Generate(&data)
+	var err error
+	var data = models.RsCustomUser{}
+	e.Orm.Scopes(
+		actions.Permission(data.TableName(), p),
+	).First(&data, c.GetId())
+	c.Generate(&data)
 
-    db := e.Orm.Save(&data)
-    if err = db.Error; err != nil {
-        e.Log.Errorf("RsCustomUserService Save error:%s \r\n", err)
-        return err
-    }
-    if db.RowsAffected == 0 {
-        return errors.New("无权更新该数据")
-    }
-    return nil
+	db := e.Orm.Save(&data)
+	if err = db.Error; err != nil {
+		e.Log.Errorf("RsCustomUserService Save error:%s \r\n", err)
+		return err
+	}
+	if db.RowsAffected == 0 {
+		return errors.New("无权更新该数据")
+	}
+	return nil
 }
 
 // Remove 删除RsCustomUser
@@ -99,11 +105,11 @@ func (e *RsCustomUser) Remove(d *dto.RsCustomUserDeleteReq, p *actions.DataPermi
 			actions.Permission(data.TableName(), p),
 		).Delete(&data, d.GetId())
 	if err := db.Error; err != nil {
-        e.Log.Errorf("Service RemoveRsCustomUser error:%s \r\n", err)
-        return err
-    }
-    if db.RowsAffected == 0 {
-        return errors.New("无权删除该数据")
-    }
+		e.Log.Errorf("Service RemoveRsCustomUser error:%s \r\n", err)
+		return err
+	}
+	if db.RowsAffected == 0 {
+		return errors.New("无权删除该数据")
+	}
 	return nil
 }
