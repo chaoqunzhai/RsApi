@@ -403,7 +403,7 @@ func (e *SysMenu) getByRoleName(userId int) ([]models.SysMenu, error) {
 		return nil, errors.New("未绑定角色")
 	}
 
-	err = e.Orm.Model(&models.SysRole{}).Where("role_id in ? ", roleIds).Preload("SysMenu").First(&roleList).Error
+	err = e.Orm.Model(&models.SysRole{}).Where("role_id in ? ", roleIds).Preload("SysMenu").Find(&roleList).Error
 
 	for _, role := range roleList {
 

@@ -13,11 +13,13 @@ type RegisterDial struct {
 	A    string `json:"a"` //账号
 	P    string `json:"p"` //密码
 	I    string `json:"i"` //绑定物理网卡
-	D    string `json:"d"` //ppo线路名称
+	D    string `json:"d"` //ppo线路名称 虚拟网卡名称
 	S    int    `json:"s"` //状态
 	Ip   string `json:"ip"`
-	Mac  string `json:"mac"`
 	IpV6 string `json:"ipv_6"`
+	Mac  string `json:"mac"`
+	NT   string `json:"nt"` //网络类型
+	NS   int    `json:"ns"` //联网状态
 }
 
 // 内存使用率的格式化

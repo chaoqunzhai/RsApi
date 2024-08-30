@@ -1,7 +1,6 @@
 package apis
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-admin-team/go-admin-core/sdk/api"
@@ -195,7 +194,6 @@ func (e SysMenu) GetMenuRole(c *gin.Context) {
 
 	result, err := s.SetMenuRole(user.GetUserId(c))
 
-	fmt.Println("err!!!", err)
 	if err != nil {
 		e.Error(401, err, "暂无菜单配置,无权登录")
 		return

@@ -306,10 +306,11 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 				"dial_name": DialRow.D,
 				"bu":        DialRow.BU,
 				"ip_v6":     DialRow.IpV6,
+				"nat_type":  DialRow.NT,
 				"device_id": bindNetDeviceId,
 			}
-			if DialRow.S == -1 {
-				updateMap["networking_status"] = -1
+			if DialRow.NS != 0 {
+				updateMap["networking_status"] = DialRow.NS
 			}
 			e.Orm.Model(&models.RsDial{}).Where("account = ? and source = 1", DialRow.A).Updates(updateMap)
 		} else {
@@ -322,11 +323,13 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 			DialRowModel.IpV6 = DialRow.IpV6
 			DialRowModel.Mac = DialRow.Mac
 			DialRowModel.DialName = DialRow.D
+			DialRowModel.NatType = DialRow.NT
 			DialRowModel.Source = 1
 			DialRowModel.DeviceId = bindNetDeviceId
 			DialRowModel.Status = DialRow.S
-			if DialRow.S == -1 {
-				DialRowModel.NetworkingStatus = -1
+
+			if DialRow.NS != 0 {
+				DialRowModel.NetworkingStatus = DialRow.NS
 			}
 			e.Orm.Save(&DialRowModel)
 		}

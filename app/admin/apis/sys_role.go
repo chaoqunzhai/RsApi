@@ -82,8 +82,10 @@ func (e SysRole) BindUser(c *gin.Context) {
 		e.OK(result, "")
 		return
 	}
+	var userIds []int
+	e.Orm.Raw("select user_id from sys_user_bind_role  where role_id = ?", roleModel.RoleId).Scan(&userIds)
 
-	e.Orm.Model(&models.SysUser{}).Where("role_id = ?", roleModel.RoleId).Find(&result)
+	e.Orm.Model(&models.SysUser{}).Where("user_id in ?", userIds).Find(&result)
 	e.PageOK(result, len(result), 1, -1, "查询成功")
 	return
 }
