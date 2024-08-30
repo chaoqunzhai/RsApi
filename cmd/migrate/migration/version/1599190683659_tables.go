@@ -54,6 +54,7 @@ func _1599190683659Tables(db *gorm.DB, version string) error {
 			new(models.Contract),
 			new(models.HostChargingDay),
 			new(models.Custom),
+			new(models.CustomUser),
 			new(models.BandwidthFees),
 			new(models.HostExecLog),
 			new(models.OperationLog),
