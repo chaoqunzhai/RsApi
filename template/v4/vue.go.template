@@ -3,7 +3,7 @@
     <BasicLayout>
         <template #wrapper>
             <el-card class="box-card">
-                <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
+                <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="72px">
                     {{range .Columns}}
                         {{- $x := .IsQuery -}}
                         {{- if (eq $x "1") -}}
@@ -97,9 +97,9 @@
 
                             {{- else -}}
                             {{- if ne .DictType "" -}}
-                                <el-table-column label="{{.ColumnComment}}" align="center" prop="{{.JsonField}}" :formatter="{{.JsonField}}Format" width="100">
+                                <el-table-column label="{{.ColumnComment}}" align="center" prop="{{.JsonField}}" width="100">
                                     <template slot-scope="scope">
-                                        {{ "{{" }} {{.JsonField}}Format(scope.row) {{"}}"}}
+                                        {{ "{{" }} selectDictLabel({{.JsonField}}Options, scope.row.{{.JsonField}}) {{"}}"}}
                                     </template>
                                 </el-table-column>
                             {{- end -}}
@@ -158,6 +158,7 @@
 
                 <a-drawer
                           placement="right"
+                          v-if="detailVisible"
                           :headerStyle="{position: 'sticky', top: 0, zIndex: 999}"
                           :closable="true"
                           :width="'65%'"
@@ -296,7 +297,7 @@
                 {{.JsonField}}Options: [],
                 {{- end -}}
                 {{- end }}
-                searchField: [],
+                searchField: [{{range .Columns}} {{- if (.IsQuery) -}} '{{.JsonField}}', {{- end -}} {{- end }}],
                 // 关系表类型
                 {{range .Columns}}
                 {{- if ne .FkTableName "" -}}
@@ -329,7 +330,7 @@
         }
         },
         created() {
-            this.searchField = Object.keys(this.queryParams).slice(2).slice(0, 3)
+            this.searchField = this.searchField.slice(0, 3)
             this.getList()
             {{range .Columns}}
             {{- if ne .DictType "" -}}
@@ -389,18 +390,6 @@
               })
               return data
             },
-            {{range .Columns}}
-            {{- if ne .DictType "" -}}
-            {{.JsonField}}Format(row) {
-                return this.selectDictLabel(this.{{.JsonField}}Options, row.{{.JsonField}})
-            },
-            {{ end -}}
-            {{- if ne .FkTableName "" -}}
-            {{.JsonField}}Format(row) {
-                return this.selectItemsLabel(this.{{.JsonField}}Options, row.{{.JsonField}})
-            },
-            {{ end -}}
-            {{- end -}}
             // 关系
             {{range .Columns}}
             {{- if ne .FkTableName "" -}}
@@ -427,10 +416,15 @@
             },
             /** 展开收起 */
             toggleAdvanced(){
+                const fields = [{{range .Columns}}
+                              {{- if (.IsQuery) -}}
+                              '{{.JsonField}}',
+                              {{- end -}}
+                              {{- end }}];
                 if(this.searchField.length > 3) {
-                    this.searchField = this.searchField.splice(0, 3)
+                    this.searchField = fields.splice(0, 3)
                 } else {
-                    this.searchField = Object.keys(this.queryParams).slice(2)
+                    this.searchField = fields
                 }
             },
             /** 重置按钮操作 */
