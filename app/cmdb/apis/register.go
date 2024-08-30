@@ -290,7 +290,6 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 		}
 		//对于自动上报数据的数据,做一个特定创建,防止 已经创建了这个账号，被自动创建也冲掉
 		e.Orm.Model(&models.RsDial{}).Where("account = ? and source = 1", DialRow.A).Count(&DialCount)
-		var NetworkingStatus int
 		// DialRow.S === 1 已经拨通了,但是是否可以上网 还需要进行检测
 		// DialRow.S === 1 拨号失败了,那联网也是失败的
 
