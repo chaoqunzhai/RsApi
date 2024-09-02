@@ -1,9 +1,11 @@
 package dto
 
 import (
+	"fmt"
 	"go-admin/app/cmdb/models"
 	"go-admin/common/dto"
 	common "go-admin/common/models"
+	"strings"
 )
 
 // 主机拨号的信息
@@ -248,4 +250,12 @@ type RsHostDeleteReq struct {
 
 func (s *RsHostDeleteReq) GetId() interface{} {
 	return s.Ids
+}
+
+func (s *RsHostDeleteReq) GetIdStr() string {
+	ca := make([]string, 0)
+	for _, row := range s.Ids {
+		ca = append(ca, fmt.Sprintf("%v", row))
+	}
+	return strings.Join(ca, ",")
 }
