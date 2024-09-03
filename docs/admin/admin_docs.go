@@ -50,6 +50,3043 @@ const docTemplateadmin = `{
                 }
             }
         },
+        "/api/v1/asset": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取资产详情列表",
+                "tags": [
+                    "资产详情"
+                ],
+                "summary": "获取资产详情列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "资产编号",
+                        "name": "assetCode",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "SN编码",
+                        "name": "snCode",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "资产类别",
+                        "name": "categoryId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "规格型号",
+                        "name": "specification",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "品牌",
+                        "name": "brand",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "计量单位",
+                        "name": "unit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "单价",
+                        "name": "unitPrice",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "状态(0=在库, 1=出库, 2=在用, 3=处置)",
+                        "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页条数",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageIndex",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.Page"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/models.Asset"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "创建资产详情",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "资产详情"
+                ],
+                "summary": "创建资产详情",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetInsertReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"添加成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "删除资产详情",
+                "tags": [
+                    "资产详情"
+                ],
+                "summary": "删除资产详情",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetDeleteReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"删除成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/asset-category": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取资产类别列表",
+                "tags": [
+                    "资产类别"
+                ],
+                "summary": "获取资产类别列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "类别名称",
+                        "name": "categoryName",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页条数",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageIndex",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.Page"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/models.AssetCategory"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "创建资产类别",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "资产类别"
+                ],
+                "summary": "创建资产类别",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetCategoryInsertReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"添加成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "删除资产类别",
+                "tags": [
+                    "资产类别"
+                ],
+                "summary": "删除资产类别",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetCategoryDeleteReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"删除成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/asset-category/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取资产类别",
+                "tags": [
+                    "资产类别"
+                ],
+                "summary": "获取资产类别",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.AssetCategory"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "修改资产类别",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "资产类别"
+                ],
+                "summary": "修改资产类别",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetCategoryUpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"修改成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/asset-disposal": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取资产处置记录列表",
+                "tags": [
+                    "资产处置记录"
+                ],
+                "summary": "获取资产处置记录列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "页条数",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageIndex",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.Page"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/models.AssetDisposal"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "创建资产处置记录",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "资产处置记录"
+                ],
+                "summary": "创建资产处置记录",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetDisposalInsertReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"添加成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "删除资产处置记录",
+                "tags": [
+                    "资产处置记录"
+                ],
+                "summary": "删除资产处置记录",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetDisposalDeleteReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"删除成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/asset-disposal/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取资产处置记录",
+                "tags": [
+                    "资产处置记录"
+                ],
+                "summary": "获取资产处置记录",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.AssetDisposal"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "修改资产处置记录",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "资产处置记录"
+                ],
+                "summary": "修改资产处置记录",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetDisposalUpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"修改成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/asset-group": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取资产组合列表",
+                "tags": [
+                    "资产组合"
+                ],
+                "summary": "获取资产组合列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "资产组合名称",
+                        "name": "groupName",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "主资产编码",
+                        "name": "mainAssetId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页条数",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageIndex",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.Page"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/models.AssetGroup"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "创建资产组合",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "资产组合"
+                ],
+                "summary": "创建资产组合",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetGroupInsertReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"添加成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "删除资产组合",
+                "tags": [
+                    "资产组合"
+                ],
+                "summary": "删除资产组合",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetGroupDeleteReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"删除成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/asset-group-member": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取资产组合成员列表",
+                "tags": [
+                    "资产组合成员"
+                ],
+                "summary": "获取资产组合成员列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "资产组合编码",
+                        "name": "assetGroupId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "资产编码",
+                        "name": "assetId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "是否为主资产(1=是,0=否)",
+                        "name": "isMain",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页条数",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageIndex",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.Page"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/models.AssetGroupMember"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "创建资产组合成员",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "资产组合成员"
+                ],
+                "summary": "创建资产组合成员",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetGroupMemberInsertReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"添加成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "删除资产组合成员",
+                "tags": [
+                    "资产组合成员"
+                ],
+                "summary": "删除资产组合成员",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetGroupMemberDeleteReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"删除成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/asset-group-member/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取资产组合成员",
+                "tags": [
+                    "资产组合成员"
+                ],
+                "summary": "获取资产组合成员",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.AssetGroupMember"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "修改资产组合成员",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "资产组合成员"
+                ],
+                "summary": "修改资产组合成员",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetGroupMemberUpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"修改成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/asset-group/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取资产组合",
+                "tags": [
+                    "资产组合"
+                ],
+                "summary": "获取资产组合",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.AssetGroup"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "修改资产组合",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "资产组合"
+                ],
+                "summary": "修改资产组合",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetGroupUpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"修改成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/asset-inbound": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取资产入库记录列表",
+                "tags": [
+                    "资产入库记录"
+                ],
+                "summary": "获取资产入库记录列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "资产编码",
+                        "name": "assetId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "库房编码",
+                        "name": "warehouseId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "来源(1=采购、0=直接入库)",
+                        "name": "inboundFrom",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "来源凭证编码(采购编码)",
+                        "name": "fromCode",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "入库人编码",
+                        "name": "inboundBy",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页条数",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageIndex",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.Page"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/models.AssetInbound"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "创建资产入库记录",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "资产入库记录"
+                ],
+                "summary": "创建资产入库记录",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetInboundInsertReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"添加成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "删除资产入库记录",
+                "tags": [
+                    "资产入库记录"
+                ],
+                "summary": "删除资产入库记录",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetInboundDeleteReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"删除成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/asset-inbound/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取资产入库记录",
+                "tags": [
+                    "资产入库记录"
+                ],
+                "summary": "获取资产入库记录",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.AssetInbound"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "修改资产入库记录",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "资产入库记录"
+                ],
+                "summary": "修改资产入库记录",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetInboundUpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"修改成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/asset-outbound": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取资产出库记录列表",
+                "tags": [
+                    "资产出库记录"
+                ],
+                "summary": "获取资产出库记录列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "资产编码",
+                        "name": "assetId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "库房编码",
+                        "name": "warehouseId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "出库去向(客户编码)",
+                        "name": "outboundTo",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "出库人编码",
+                        "name": "outboundBy",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页条数",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageIndex",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.Page"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/models.AssetOutbound"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "创建资产出库记录",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "资产出库记录"
+                ],
+                "summary": "创建资产出库记录",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetOutboundInsertReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"添加成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "删除资产出库记录",
+                "tags": [
+                    "资产出库记录"
+                ],
+                "summary": "删除资产出库记录",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetOutboundDeleteReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"删除成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/asset-outbound/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取资产出库记录",
+                "tags": [
+                    "资产出库记录"
+                ],
+                "summary": "获取资产出库记录",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.AssetOutbound"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "修改资产出库记录",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "资产出库记录"
+                ],
+                "summary": "修改资产出库记录",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetOutboundUpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"修改成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/asset-purchase": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取资产采购记录列表",
+                "tags": [
+                    "资产采购记录"
+                ],
+                "summary": "获取资产采购记录列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "采购单编号",
+                        "name": "purchaseCode",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "资产类型编码",
+                        "name": "categoryId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "供应商编码",
+                        "name": "supplierId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "采购人编码",
+                        "name": "purchaseUser",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "规格型号",
+                        "name": "specification",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "品牌",
+                        "name": "brand",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "采购日期",
+                        "name": "purchaseAt",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页条数",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageIndex",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.Page"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/models.AssetPurchase"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "创建资产采购记录",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "资产采购记录"
+                ],
+                "summary": "创建资产采购记录",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetPurchaseInsertReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"添加成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "删除资产采购记录",
+                "tags": [
+                    "资产采购记录"
+                ],
+                "summary": "删除资产采购记录",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetPurchaseDeleteReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"删除成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/asset-purchase-apply": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取资产采购申请列表",
+                "tags": [
+                    "资产采购申请"
+                ],
+                "summary": "获取资产采购申请列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "申请单编号",
+                        "name": "applyCode",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "资产类型编码",
+                        "name": "categoryId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "供应商编码",
+                        "name": "supplierId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "申购人编码",
+                        "name": "applyUser",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "规格型号",
+                        "name": "specification",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "品牌",
+                        "name": "brand",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "申购日期",
+                        "name": "applyAt",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "审批人编码",
+                        "name": "approver",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "审批时间",
+                        "name": "approveAt",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页条数",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageIndex",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.Page"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/models.AssetPurchaseApply"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "创建资产采购申请",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "资产采购申请"
+                ],
+                "summary": "创建资产采购申请",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetPurchaseApplyInsertReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"添加成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "删除资产采购申请",
+                "tags": [
+                    "资产采购申请"
+                ],
+                "summary": "删除资产采购申请",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetPurchaseApplyDeleteReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"删除成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/asset-purchase-apply/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取资产采购申请",
+                "tags": [
+                    "资产采购申请"
+                ],
+                "summary": "获取资产采购申请",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.AssetPurchaseApply"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "修改资产采购申请",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "资产采购申请"
+                ],
+                "summary": "修改资产采购申请",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetPurchaseApplyUpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"修改成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/asset-purchase/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取资产采购记录",
+                "tags": [
+                    "资产采购记录"
+                ],
+                "summary": "获取资产采购记录",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.AssetPurchase"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "修改资产采购记录",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "资产采购记录"
+                ],
+                "summary": "修改资产采购记录",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetPurchaseUpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"修改成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/asset-return": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取资产退还记录列表",
+                "tags": [
+                    "资产退还记录"
+                ],
+                "summary": "获取资产退还记录列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "资产编码",
+                        "name": "assetId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "退还人编码",
+                        "name": "returnPerson",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "退还原因",
+                        "name": "reason",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页条数",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageIndex",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.Page"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/models.AssetReturn"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "创建资产退还记录",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "资产退还记录"
+                ],
+                "summary": "创建资产退还记录",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetReturnInsertReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"添加成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "删除资产退还记录",
+                "tags": [
+                    "资产退还记录"
+                ],
+                "summary": "删除资产退还记录",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetReturnDeleteReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"删除成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/asset-return/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取资产退还记录",
+                "tags": [
+                    "资产退还记录"
+                ],
+                "summary": "获取资产退还记录",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.AssetReturn"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "修改资产退还记录",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "资产退还记录"
+                ],
+                "summary": "修改资产退还记录",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetReturnUpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"修改成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/asset-stock": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取资产库存列表",
+                "tags": [
+                    "资产库存"
+                ],
+                "summary": "获取资产库存列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "库房编码",
+                        "name": "warehouseId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "资产类别编码",
+                        "name": "categoryId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页条数",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageIndex",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.Page"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/models.AssetStock"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "创建资产库存",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "资产库存"
+                ],
+                "summary": "创建资产库存",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetStockInsertReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"添加成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "删除资产库存",
+                "tags": [
+                    "资产库存"
+                ],
+                "summary": "删除资产库存",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetStockDeleteReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"删除成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/asset-stock/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取资产库存",
+                "tags": [
+                    "资产库存"
+                ],
+                "summary": "获取资产库存",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.AssetStock"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "修改资产库存",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "资产库存"
+                ],
+                "summary": "修改资产库存",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetStockUpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"修改成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/asset-supplier": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取资产供应商列表",
+                "tags": [
+                    "资产供应商"
+                ],
+                "summary": "获取资产供应商列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "供应商名称",
+                        "name": "supplierName",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "联系人",
+                        "name": "contactPerson",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "联系电话",
+                        "name": "phoneNumber",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页条数",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageIndex",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.Page"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/models.AssetSupplier"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "创建资产供应商",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "资产供应商"
+                ],
+                "summary": "创建资产供应商",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetSupplierInsertReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"添加成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "删除资产供应商",
+                "tags": [
+                    "资产供应商"
+                ],
+                "summary": "删除资产供应商",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetSupplierDeleteReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"删除成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/asset-supplier/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取资产供应商",
+                "tags": [
+                    "资产供应商"
+                ],
+                "summary": "获取资产供应商",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.AssetSupplier"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "修改资产供应商",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "资产供应商"
+                ],
+                "summary": "修改资产供应商",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetSupplierUpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"修改成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/asset-warehouse": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取资产库房列表",
+                "tags": [
+                    "资产库房"
+                ],
+                "summary": "获取资产库房列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "库房名称",
+                        "name": "warehouseName",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "管理员编码",
+                        "name": "administratorId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页条数",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageIndex",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.Page"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/models.AssetWarehouse"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "创建资产库房",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "资产库房"
+                ],
+                "summary": "创建资产库房",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetWarehouseInsertReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"添加成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "删除资产库房",
+                "tags": [
+                    "资产库房"
+                ],
+                "summary": "删除资产库房",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetWarehouseDeleteReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"删除成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/asset-warehouse/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取资产库房",
+                "tags": [
+                    "资产库房"
+                ],
+                "summary": "获取资产库房",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.AssetWarehouse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "修改资产库房",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "资产库房"
+                ],
+                "summary": "修改资产库房",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetWarehouseUpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"修改成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/asset/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取资产详情",
+                "tags": [
+                    "资产详情"
+                ],
+                "summary": "获取资产详情",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.Asset"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "修改资产详情",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "资产详情"
+                ],
+                "summary": "修改资产详情",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetUpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"修改成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/captcha": {
             "get": {
                 "description": "获取验证码",
@@ -1731,6 +4768,1018 @@ const docTemplateadmin = `{
                 }
             }
         },
+        "/api/v1/rs-contract": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取RsContract列表",
+                "tags": [
+                    "RsContract"
+                ],
+                "summary": "获取RsContract列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "合同名称",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "合同编号",
+                        "name": "number",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "商务人员",
+                        "name": "buId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "所属客户ID",
+                        "name": "customId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "签订人",
+                        "name": "signatoryId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "合同类型,contract_type",
+                        "name": "type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "结算方式,settlement_type",
+                        "name": "settlementType",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "地址",
+                        "name": "address",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "电话",
+                        "name": "phone",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页条数",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageIndex",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.Page"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/models.RsContract"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "创建RsContract",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RsContract"
+                ],
+                "summary": "创建RsContract",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsContractInsertReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"添加成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "删除RsContract",
+                "tags": [
+                    "RsContract"
+                ],
+                "summary": "删除RsContract",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsContractDeleteReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"删除成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rs-contract/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取RsContract",
+                "tags": [
+                    "RsContract"
+                ],
+                "summary": "获取RsContract",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.RsContract"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "修改RsContract",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RsContract"
+                ],
+                "summary": "修改RsContract",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsContractUpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"修改成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rs-custom": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取RsCustom列表",
+                "tags": [
+                    "RsCustom"
+                ],
+                "summary": "获取RsCustom列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "客户名称",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "客户类型,customer_type",
+                        "name": "type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "合作状态,work_status",
+                        "name": "cooperation",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页条数",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageIndex",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.Page"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/models.RsCustom"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "创建RsCustom",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RsCustom"
+                ],
+                "summary": "创建RsCustom",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsCustomInsertReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"添加成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "删除RsCustom",
+                "tags": [
+                    "RsCustom"
+                ],
+                "summary": "删除RsCustom",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsCustomDeleteReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"删除成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rs-custom-user": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取RsCustomUser列表",
+                "tags": [
+                    "RsCustomUser"
+                ],
+                "summary": "获取RsCustomUser列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "姓名",
+                        "name": "userName",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "所属客户",
+                        "name": "customId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "所属商务人员",
+                        "name": "buId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "联系号码",
+                        "name": "phone",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页条数",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageIndex",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.Page"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/models.RsCustomUser"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "创建RsCustomUser",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RsCustomUser"
+                ],
+                "summary": "创建RsCustomUser",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsCustomUserInsertReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"添加成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "删除RsCustomUser",
+                "tags": [
+                    "RsCustomUser"
+                ],
+                "summary": "删除RsCustomUser",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsCustomUserDeleteReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"删除成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rs-custom-user/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取RsCustomUser",
+                "tags": [
+                    "RsCustomUser"
+                ],
+                "summary": "获取RsCustomUser",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.RsCustomUser"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "修改RsCustomUser",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RsCustomUser"
+                ],
+                "summary": "修改RsCustomUser",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsCustomUserUpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"修改成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rs-custom/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取RsCustom",
+                "tags": [
+                    "RsCustom"
+                ],
+                "summary": "获取RsCustom",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.RsCustom"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "修改RsCustom",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RsCustom"
+                ],
+                "summary": "修改RsCustom",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsCustomUpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"修改成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rs-dial": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取RsDial列表",
+                "tags": [
+                    "RsDial"
+                ],
+                "summary": "获取RsDial列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "所属客户",
+                        "name": "customId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "关联合同",
+                        "name": "contractId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "带宽类型,broadband_type",
+                        "name": "broadbandType",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "是否管理线",
+                        "name": "isManager",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "IP地址",
+                        "name": "ip",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "线路名称",
+                        "name": "dialName",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "拨号状态,1:已联网 0:未联网 -1:联网异常",
+                        "name": "networkingStatus",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "拨号状态,1:已拨通 0:待使用 -1:拨号异常",
+                        "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "拨号状态,0:录入 1:自动上报",
+                        "name": "source",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "关联的IDC",
+                        "name": "idcId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "关联主机ID",
+                        "name": "hostId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "关联网卡ID",
+                        "name": "deviceId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页条数",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageIndex",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.Page"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/models.RsDial"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "创建RsDial",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RsDial"
+                ],
+                "summary": "创建RsDial",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsDialInsertReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"添加成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "删除RsDial",
+                "tags": [
+                    "RsDial"
+                ],
+                "summary": "删除RsDial",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsDialDeleteReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"删除成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rs-dial/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取RsDial",
+                "tags": [
+                    "RsDial"
+                ],
+                "summary": "获取RsDial",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.RsDial"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "修改RsDial",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RsDial"
+                ],
+                "summary": "修改RsDial",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsDialUpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"修改成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/rs-host": {
             "get": {
                 "security": [
@@ -1925,6 +5974,383 @@ const docTemplateadmin = `{
                 }
             }
         },
+        "/api/v1/rs-host-charging-day": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取RsHostChargingDay列表",
+                "tags": [
+                    "RsHostChargingDay"
+                ],
+                "summary": "获取RsHostChargingDay列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "切换的业务ID",
+                        "name": "businessId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "关联的主机ID",
+                        "name": "hostId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页条数",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageIndex",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.Page"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/models.RsHostChargingDay"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "创建RsHostChargingDay",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RsHostChargingDay"
+                ],
+                "summary": "创建RsHostChargingDay",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsHostChargingDayInsertReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"添加成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "删除RsHostChargingDay",
+                "tags": [
+                    "RsHostChargingDay"
+                ],
+                "summary": "删除RsHostChargingDay",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsHostChargingDayDeleteReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"删除成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rs-host-charging-day/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取RsHostChargingDay",
+                "tags": [
+                    "RsHostChargingDay"
+                ],
+                "summary": "获取RsHostChargingDay",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.RsHostChargingDay"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "修改RsHostChargingDay",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RsHostChargingDay"
+                ],
+                "summary": "修改RsHostChargingDay",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsHostChargingDayUpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"修改成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rs-host-switch-log": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取RsHostSwitchLog列表",
+                "tags": [
+                    "RsHostSwitchLog"
+                ],
+                "summary": "获取RsHostSwitchLog列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "切换的主机ID",
+                        "name": "hostId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "切换的新业务ID",
+                        "name": "businessId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "原来的业务SN",
+                        "name": "businessSn",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页条数",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageIndex",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.Page"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/models.RsHostSwitchLog"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "删除RsHostSwitchLog",
+                "tags": [
+                    "RsHostSwitchLog"
+                ],
+                "summary": "删除RsHostSwitchLog",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsHostSwitchLogDeleteReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"删除成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rs-host-switch-log/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取RsHostSwitchLog",
+                "tags": [
+                    "RsHostSwitchLog"
+                ],
+                "summary": "获取RsHostSwitchLog",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.RsHostSwitchLog"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/rs-host/{id}": {
             "get": {
                 "security": [
@@ -2022,9 +6448,9 @@ const docTemplateadmin = `{
                 "summary": "获取RsIdc列表",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "开关",
-                        "name": "enable",
+                        "type": "integer",
+                        "description": "机房编号",
+                        "name": "number",
                         "in": "query"
                     },
                     {
@@ -2034,57 +6460,33 @@ const docTemplateadmin = `{
                         "in": "query"
                     },
                     {
-                        "type": "string",
-                        "description": "机房状态",
-                        "name": "status",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "机房归属",
-                        "name": "belong",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "机房类型",
-                        "name": "typeId",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "商务人员",
-                        "name": "businessUser",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
+                        "type": "integer",
                         "description": "所属客户",
                         "name": "customUser",
                         "in": "query"
                     },
                     {
-                        "type": "string",
-                        "description": "所在区域",
-                        "name": "region",
+                        "type": "integer",
+                        "description": "机房类型",
+                        "name": "typeId",
                         "in": "query"
                     },
                     {
-                        "type": "string",
-                        "description": "计费方式",
-                        "name": "charging",
+                        "type": "integer",
+                        "description": "商务人员",
+                        "name": "businessUser",
                         "in": "query"
                     },
                     {
-                        "type": "string",
-                        "description": "是否跨省",
-                        "name": "transProvince",
+                        "type": "integer",
+                        "description": "机房状态",
+                        "name": "status",
                         "in": "query"
                     },
                     {
-                        "type": "string",
-                        "description": "详细地址",
-                        "name": "address",
+                        "type": "integer",
+                        "description": "机房归属",
+                        "name": "belong",
                         "in": "query"
                     },
                     {
@@ -3788,6 +8190,841 @@ const docTemplateadmin = `{
         }
     },
     "definitions": {
+        "dto.AssetCategoryDeleteReq": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "dto.AssetCategoryInsertReq": {
+            "type": "object",
+            "properties": {
+                "categoryName": {
+                    "type": "string"
+                },
+                "remark": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.AssetCategoryUpdateReq": {
+            "type": "object",
+            "properties": {
+                "categoryName": {
+                    "type": "string"
+                },
+                "id": {
+                    "description": "主键",
+                    "type": "integer"
+                },
+                "remark": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.AssetDeleteReq": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "dto.AssetDisposalDeleteReq": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "dto.AssetDisposalInsertReq": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "assetId": {
+                    "type": "integer"
+                },
+                "disposalAt": {
+                    "type": "string"
+                },
+                "disposalPerson": {
+                    "type": "integer"
+                },
+                "disposalType": {
+                    "type": "integer"
+                },
+                "disposalWay": {
+                    "type": "integer"
+                },
+                "locationId": {
+                    "type": "integer"
+                },
+                "reason": {
+                    "type": "string"
+                },
+                "remark": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.AssetDisposalUpdateReq": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "assetId": {
+                    "type": "integer"
+                },
+                "disposalAt": {
+                    "type": "string"
+                },
+                "disposalPerson": {
+                    "type": "integer"
+                },
+                "disposalType": {
+                    "type": "integer"
+                },
+                "disposalWay": {
+                    "type": "integer"
+                },
+                "id": {
+                    "description": "主键",
+                    "type": "integer"
+                },
+                "locationId": {
+                    "type": "integer"
+                },
+                "reason": {
+                    "type": "string"
+                },
+                "remark": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.AssetGroupDeleteReq": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "dto.AssetGroupInsertReq": {
+            "type": "object",
+            "properties": {
+                "groupName": {
+                    "type": "string"
+                },
+                "mainAssetId": {
+                    "type": "integer"
+                },
+                "remark": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.AssetGroupMemberDeleteReq": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "dto.AssetGroupMemberInsertReq": {
+            "type": "object",
+            "properties": {
+                "assetGroupId": {
+                    "type": "integer"
+                },
+                "assetId": {
+                    "type": "integer"
+                },
+                "isMain": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.AssetGroupMemberUpdateReq": {
+            "type": "object",
+            "properties": {
+                "assetGroupId": {
+                    "type": "integer"
+                },
+                "assetId": {
+                    "type": "integer"
+                },
+                "id": {
+                    "description": "主键",
+                    "type": "integer"
+                },
+                "isMain": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.AssetGroupUpdateReq": {
+            "type": "object",
+            "properties": {
+                "groupName": {
+                    "type": "string"
+                },
+                "id": {
+                    "description": "主键",
+                    "type": "integer"
+                },
+                "mainAssetId": {
+                    "type": "integer"
+                },
+                "remark": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.AssetInboundDeleteReq": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "dto.AssetInboundInsertReq": {
+            "type": "object",
+            "properties": {
+                "assetId": {
+                    "type": "integer"
+                },
+                "fromCode": {
+                    "type": "string"
+                },
+                "inboundAt": {
+                    "type": "string"
+                },
+                "inboundBy": {
+                    "type": "integer"
+                },
+                "inboundFrom": {
+                    "type": "integer"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "warehouseId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.AssetInboundUpdateReq": {
+            "type": "object",
+            "properties": {
+                "assetId": {
+                    "type": "integer"
+                },
+                "fromCode": {
+                    "type": "string"
+                },
+                "id": {
+                    "description": "主键",
+                    "type": "integer"
+                },
+                "inboundAt": {
+                    "type": "string"
+                },
+                "inboundBy": {
+                    "type": "integer"
+                },
+                "inboundFrom": {
+                    "type": "integer"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "warehouseId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.AssetInsertReq": {
+            "type": "object",
+            "properties": {
+                "assetCode": {
+                    "type": "string"
+                },
+                "brand": {
+                    "type": "string"
+                },
+                "categoryId": {
+                    "type": "integer"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "snCode": {
+                    "type": "string"
+                },
+                "specification": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "unit": {
+                    "type": "string"
+                },
+                "unitPrice": {
+                    "type": "number"
+                }
+            }
+        },
+        "dto.AssetOutboundDeleteReq": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "dto.AssetOutboundInsertReq": {
+            "type": "object",
+            "properties": {
+                "assetId": {
+                    "type": "integer"
+                },
+                "outboundAt": {
+                    "type": "string"
+                },
+                "outboundBy": {
+                    "type": "integer"
+                },
+                "outboundTo": {
+                    "type": "integer"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "warehouseId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.AssetOutboundUpdateReq": {
+            "type": "object",
+            "properties": {
+                "assetId": {
+                    "type": "integer"
+                },
+                "id": {
+                    "description": "主键",
+                    "type": "integer"
+                },
+                "outboundAt": {
+                    "type": "string"
+                },
+                "outboundBy": {
+                    "type": "integer"
+                },
+                "outboundTo": {
+                    "type": "integer"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "warehouseId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.AssetPurchaseApplyDeleteReq": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "dto.AssetPurchaseApplyInsertReq": {
+            "type": "object",
+            "properties": {
+                "applyAt": {
+                    "type": "string"
+                },
+                "applyCode": {
+                    "type": "string"
+                },
+                "applyReason": {
+                    "type": "string"
+                },
+                "applyUser": {
+                    "type": "integer"
+                },
+                "approveAt": {
+                    "type": "string"
+                },
+                "approver": {
+                    "type": "integer"
+                },
+                "brand": {
+                    "type": "string"
+                },
+                "categoryId": {
+                    "type": "integer"
+                },
+                "quantity": {
+                    "type": "integer"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "specification": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "supplierId": {
+                    "type": "integer"
+                },
+                "totalAmount": {
+                    "type": "number"
+                },
+                "unit": {
+                    "type": "string"
+                },
+                "unitPrice": {
+                    "type": "number"
+                }
+            }
+        },
+        "dto.AssetPurchaseApplyUpdateReq": {
+            "type": "object",
+            "properties": {
+                "applyAt": {
+                    "type": "string"
+                },
+                "applyCode": {
+                    "type": "string"
+                },
+                "applyReason": {
+                    "type": "string"
+                },
+                "applyUser": {
+                    "type": "integer"
+                },
+                "approveAt": {
+                    "type": "string"
+                },
+                "approver": {
+                    "type": "integer"
+                },
+                "brand": {
+                    "type": "string"
+                },
+                "categoryId": {
+                    "type": "integer"
+                },
+                "id": {
+                    "description": "主键",
+                    "type": "integer"
+                },
+                "quantity": {
+                    "type": "integer"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "specification": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "supplierId": {
+                    "type": "integer"
+                },
+                "totalAmount": {
+                    "type": "number"
+                },
+                "unit": {
+                    "type": "string"
+                },
+                "unitPrice": {
+                    "type": "number"
+                }
+            }
+        },
+        "dto.AssetPurchaseDeleteReq": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "dto.AssetPurchaseInsertReq": {
+            "type": "object",
+            "properties": {
+                "brand": {
+                    "type": "string"
+                },
+                "categoryId": {
+                    "type": "integer"
+                },
+                "purchaseAt": {
+                    "type": "string"
+                },
+                "purchaseCode": {
+                    "type": "string"
+                },
+                "purchaseUser": {
+                    "type": "integer"
+                },
+                "quantity": {
+                    "type": "integer"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "specification": {
+                    "type": "string"
+                },
+                "supplierId": {
+                    "type": "integer"
+                },
+                "totalAmount": {
+                    "type": "number"
+                },
+                "unit": {
+                    "type": "string"
+                },
+                "unitPrice": {
+                    "type": "number"
+                }
+            }
+        },
+        "dto.AssetPurchaseUpdateReq": {
+            "type": "object",
+            "properties": {
+                "brand": {
+                    "type": "string"
+                },
+                "categoryId": {
+                    "type": "integer"
+                },
+                "id": {
+                    "description": "主键",
+                    "type": "integer"
+                },
+                "purchaseAt": {
+                    "type": "string"
+                },
+                "purchaseCode": {
+                    "type": "string"
+                },
+                "purchaseUser": {
+                    "type": "integer"
+                },
+                "quantity": {
+                    "type": "integer"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "specification": {
+                    "type": "string"
+                },
+                "supplierId": {
+                    "type": "integer"
+                },
+                "totalAmount": {
+                    "type": "number"
+                },
+                "unit": {
+                    "type": "string"
+                },
+                "unitPrice": {
+                    "type": "number"
+                }
+            }
+        },
+        "dto.AssetReturnDeleteReq": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "dto.AssetReturnInsertReq": {
+            "type": "object",
+            "properties": {
+                "assetId": {
+                    "type": "integer"
+                },
+                "reason": {
+                    "type": "string"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "returnAt": {
+                    "type": "string"
+                },
+                "returnPerson": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.AssetReturnUpdateReq": {
+            "type": "object",
+            "properties": {
+                "assetId": {
+                    "type": "integer"
+                },
+                "id": {
+                    "description": "主键",
+                    "type": "integer"
+                },
+                "reason": {
+                    "type": "string"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "returnAt": {
+                    "type": "string"
+                },
+                "returnPerson": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.AssetStockDeleteReq": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "dto.AssetStockInsertReq": {
+            "type": "object",
+            "properties": {
+                "categoryId": {
+                    "type": "integer"
+                },
+                "quantity": {
+                    "type": "integer"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "warehouseId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.AssetStockUpdateReq": {
+            "type": "object",
+            "properties": {
+                "categoryId": {
+                    "type": "integer"
+                },
+                "id": {
+                    "description": "主键",
+                    "type": "integer"
+                },
+                "quantity": {
+                    "type": "integer"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "warehouseId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.AssetSupplierDeleteReq": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "dto.AssetSupplierInsertReq": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "contactPerson": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "phoneNumber": {
+                    "type": "string"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "supplierName": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.AssetSupplierUpdateReq": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "contactPerson": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "description": "主键",
+                    "type": "integer"
+                },
+                "phoneNumber": {
+                    "type": "string"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "supplierName": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.AssetUpdateReq": {
+            "type": "object",
+            "properties": {
+                "assetCode": {
+                    "type": "string"
+                },
+                "brand": {
+                    "type": "string"
+                },
+                "categoryId": {
+                    "type": "integer"
+                },
+                "id": {
+                    "description": "主键",
+                    "type": "integer"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "snCode": {
+                    "type": "string"
+                },
+                "specification": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "unit": {
+                    "type": "string"
+                },
+                "unitPrice": {
+                    "type": "number"
+                }
+            }
+        },
+        "dto.AssetWarehouseDeleteReq": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "dto.AssetWarehouseInsertReq": {
+            "type": "object",
+            "properties": {
+                "administratorId": {
+                    "type": "integer"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "warehouseName": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.AssetWarehouseUpdateReq": {
+            "type": "object",
+            "properties": {
+                "administratorId": {
+                    "type": "integer"
+                },
+                "id": {
+                    "description": "主键",
+                    "type": "integer"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "warehouseName": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.GetSetSysConfigReq": {
             "type": "object",
             "properties": {
@@ -3813,14 +9050,8 @@ const docTemplateadmin = `{
         "dto.ResetSysUserPwdReq": {
             "type": "object",
             "properties": {
-                "createBy": {
-                    "type": "integer"
-                },
                 "password": {
                     "type": "string"
-                },
-                "updateBy": {
-                    "type": "integer"
                 },
                 "userId": {
                     "description": "用户ID",
@@ -3849,6 +9080,40 @@ const docTemplateadmin = `{
                 }
             }
         },
+        "dto.RsBandwidthFeesInsertReq": {
+            "type": "object",
+            "properties": {
+                "LinePrice": {
+                    "type": "number"
+                },
+                "charging": {
+                    "type": "integer"
+                },
+                "down": {
+                    "type": "number"
+                },
+                "id": {
+                    "description": "主键编码",
+                    "type": "integer"
+                },
+                "isp": {
+                    "type": "integer"
+                },
+                "managerLineCost": {
+                    "type": "number"
+                },
+                "moreDialing": {
+                    "type": "integer"
+                },
+                "region": {},
+                "transProd": {
+                    "type": "integer"
+                },
+                "up": {
+                    "type": "number"
+                }
+            }
+        },
         "dto.RsBusinessDeleteReq": {
             "type": "object",
             "properties": {
@@ -3863,25 +9128,34 @@ const docTemplateadmin = `{
         "dto.RsBusinessInsertReq": {
             "type": "object",
             "properties": {
-                "algorithm": {
-                    "type": "string"
-                },
-                "createBy": {
+                "billingMethod": {
                     "type": "integer"
+                },
+                "costCnf": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.RsCostCnfInsertReq"
+                    }
                 },
                 "desc": {
                     "type": "string"
                 },
-                "enable": {
+                "enName": {
                     "type": "string"
                 },
-                "layer": {
+                "endUsage": {
                     "type": "string"
                 },
                 "name": {
                     "type": "string"
                 },
-                "updateBy": {
+                "parentId": {
+                    "type": "integer"
+                },
+                "startUsage": {
+                    "type": "string"
+                },
+                "status": {
                     "type": "integer"
                 }
             }
@@ -3889,30 +9163,551 @@ const docTemplateadmin = `{
         "dto.RsBusinessUpdateReq": {
             "type": "object",
             "properties": {
-                "algorithm": {
-                    "type": "string"
-                },
-                "createBy": {
+                "billingMethod": {
                     "type": "integer"
+                },
+                "costCnf": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.RsCostCnfInsertReq"
+                    }
                 },
                 "desc": {
                     "type": "string"
                 },
-                "enable": {
+                "enName": {
+                    "type": "string"
+                },
+                "endUsage": {
                     "type": "string"
                 },
                 "id": {
                     "description": "主键编码",
                     "type": "integer"
                 },
-                "layer": {
+                "name": {
+                    "type": "string"
+                },
+                "parentId": {
+                    "type": "integer"
+                },
+                "startUsage": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.RsContractDeleteReq": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "dto.RsContractInsertReq": {
+            "type": "object",
+            "properties": {
+                "accountName": {
+                    "type": "string"
+                },
+                "address": {
+                    "type": "string"
+                },
+                "bandwidthFees": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.RsBandwidthFeesInsertReq"
+                    }
+                },
+                "bankAccount": {
+                    "type": "string"
+                },
+                "bankName": {
+                    "type": "string"
+                },
+                "buId": {
+                    "type": "integer"
+                },
+                "customId": {
+                    "type": "integer"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "endTimeAt": {
+                    "type": "string"
+                },
+                "identifyNumber": {
                     "type": "string"
                 },
                 "name": {
                     "type": "string"
                 },
-                "updateBy": {
+                "number": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "settlementType": {
                     "type": "integer"
+                },
+                "signatoryId": {
+                    "type": "integer"
+                },
+                "startTimeAt": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "integer"
+                },
+                "userId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.RsContractUpdateReq": {
+            "type": "object",
+            "properties": {
+                "accountName": {
+                    "type": "string"
+                },
+                "address": {
+                    "type": "string"
+                },
+                "bandwidthFees": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.RsBandwidthFeesInsertReq"
+                    }
+                },
+                "bankAccount": {
+                    "type": "string"
+                },
+                "bankName": {
+                    "type": "string"
+                },
+                "buId": {
+                    "type": "integer"
+                },
+                "customId": {
+                    "type": "integer"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "endTimeAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "description": "主键编码",
+                    "type": "integer"
+                },
+                "identifyNumber": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "number": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "settlementType": {
+                    "type": "integer"
+                },
+                "signatoryId": {
+                    "type": "integer"
+                },
+                "startTimeAt": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "integer"
+                },
+                "userId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.RsCostCnfInsertReq": {
+            "type": "object",
+            "properties": {
+                "bandwidthLimit": {
+                    "type": "number"
+                },
+                "bandwidthLower": {
+                    "type": "number"
+                },
+                "buId": {
+                    "type": "integer"
+                },
+                "dialType": {
+                    "type": "integer"
+                },
+                "id": {
+                    "description": "主键编码",
+                    "type": "integer"
+                },
+                "ipType": {
+                    "type": "integer"
+                },
+                "isp": {
+                    "type": "integer"
+                },
+                "minimum": {
+                    "type": "number"
+                },
+                "price": {
+                    "type": "number"
+                }
+            }
+        },
+        "dto.RsCustomDeleteReq": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "dto.RsCustomInsertReq": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "cooperation": {
+                    "type": "integer"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "region": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.RsCustomUpdateReq": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "cooperation": {
+                    "type": "integer"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "id": {
+                    "description": "主键编码",
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "region": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.RsCustomUserDeleteReq": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "dto.RsCustomUserInsertReq": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "buId": {
+                    "type": "integer"
+                },
+                "customId": {
+                    "type": "integer"
+                },
+                "dept": {
+                    "type": "string"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "duties": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "region": {
+                    "type": "string"
+                },
+                "userName": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.RsCustomUserUpdateReq": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "buId": {
+                    "type": "integer"
+                },
+                "customId": {
+                    "type": "integer"
+                },
+                "dept": {
+                    "type": "string"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "duties": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "description": "主键编码",
+                    "type": "integer"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "region": {
+                    "type": "string"
+                },
+                "userName": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.RsDialDeleteReq": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "dto.RsDialInsertReq": {
+            "type": "object",
+            "properties": {
+                "account": {
+                    "type": "string"
+                },
+                "broadbandType": {
+                    "type": "integer"
+                },
+                "contractId": {
+                    "type": "integer"
+                },
+                "customId": {
+                    "type": "integer"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "deviceId": {
+                    "type": "integer"
+                },
+                "dialName": {
+                    "type": "string"
+                },
+                "hostId": {
+                    "type": "integer"
+                },
+                "idcId": {
+                    "type": "integer"
+                },
+                "ip": {
+                    "type": "string"
+                },
+                "isManager": {
+                    "type": "integer"
+                },
+                "ispId": {
+                    "type": "integer"
+                },
+                "mac": {
+                    "type": "string"
+                },
+                "networkingStatus": {
+                    "type": "integer"
+                },
+                "pass": {
+                    "type": "string"
+                },
+                "runTimeAt": {
+                    "type": "string"
+                },
+                "source": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.RsDialUpdateReq": {
+            "type": "object",
+            "properties": {
+                "RunTimeAt": {
+                    "type": "string"
+                },
+                "account": {
+                    "type": "string"
+                },
+                "broadbandType": {
+                    "type": "integer"
+                },
+                "contractId": {
+                    "type": "integer"
+                },
+                "customId": {
+                    "type": "integer"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "deviceId": {
+                    "type": "integer"
+                },
+                "dialName": {
+                    "type": "string"
+                },
+                "hostId": {
+                    "type": "integer"
+                },
+                "id": {
+                    "description": "主键编码",
+                    "type": "integer"
+                },
+                "idcId": {
+                    "type": "integer"
+                },
+                "ip": {
+                    "type": "string"
+                },
+                "isManager": {
+                    "type": "integer"
+                },
+                "ispId": {
+                    "type": "integer"
+                },
+                "mac": {
+                    "type": "string"
+                },
+                "networkingStatus": {
+                    "type": "integer"
+                },
+                "pass": {
+                    "type": "string"
+                },
+                "source": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.RsHostChargingDayDeleteReq": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "dto.RsHostChargingDayInsertReq": {
+            "type": "object",
+            "properties": {
+                "banlance95": {
+                    "type": "string"
+                },
+                "businessId": {
+                    "type": "string"
+                },
+                "cost": {
+                    "type": "string"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "hostId": {
+                    "type": "string"
+                },
+                "sla": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.RsHostChargingDayUpdateReq": {
+            "type": "object",
+            "properties": {
+                "banlance95": {
+                    "type": "string"
+                },
+                "businessId": {
+                    "type": "string"
+                },
+                "cost": {
+                    "type": "string"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "hostId": {
+                    "type": "string"
+                },
+                "id": {
+                    "description": "主键编码",
+                    "type": "integer"
+                },
+                "sla": {
+                    "type": "string"
                 }
             }
         },
@@ -3939,22 +9734,13 @@ const docTemplateadmin = `{
                 "belong": {
                     "type": "integer"
                 },
-                "business": {
-                    "type": "string"
-                },
                 "cpu": {
-                    "type": "string"
-                },
-                "createBy": {
                     "type": "integer"
                 },
                 "desc": {
                     "type": "string"
                 },
                 "disk": {
-                    "type": "string"
-                },
-                "enable": {
                     "type": "string"
                 },
                 "hostName": {
@@ -3970,7 +9756,7 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "layer": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "memory": {
                     "type": "integer"
@@ -3992,9 +9778,17 @@ const docTemplateadmin = `{
                 },
                 "status": {
                     "type": "integer"
-                },
-                "updateBy": {
-                    "type": "integer"
+                }
+            }
+        },
+        "dto.RsHostSwitchLogDeleteReq": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 }
             }
         },
@@ -4010,22 +9804,13 @@ const docTemplateadmin = `{
                 "belong": {
                     "type": "integer"
                 },
-                "business": {
-                    "type": "string"
-                },
                 "cpu": {
-                    "type": "string"
-                },
-                "createBy": {
                     "type": "integer"
                 },
                 "desc": {
                     "type": "string"
                 },
                 "disk": {
-                    "type": "string"
-                },
-                "enable": {
                     "type": "string"
                 },
                 "hostName": {
@@ -4045,7 +9830,7 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "layer": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "memory": {
                     "type": "integer"
@@ -4063,9 +9848,6 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "status": {
-                    "type": "integer"
-                },
-                "updateBy": {
                     "type": "integer"
                 }
             }
@@ -4088,54 +9870,45 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "belong": {
-                    "type": "string"
-                },
-                "businessUser": {
-                    "type": "string"
-                },
-                "charging": {
-                    "type": "string"
-                },
-                "createBy": {
                     "type": "integer"
                 },
-                "customUser": {
-                    "type": "string"
+                "buId": {
+                    "type": "integer"
+                },
+                "customId": {
+                    "type": "integer"
                 },
                 "desc": {
                     "type": "string"
                 },
-                "enable": {
-                    "type": "string"
-                },
                 "ipV6": {
-                    "type": "string"
+                    "type": "integer"
                 },
-                "layer": {
-                    "type": "string"
+                "moreDialing": {
+                    "type": "integer"
                 },
                 "name": {
                     "type": "string"
                 },
-                "price": {
-                    "type": "string"
+                "number": {
+                    "type": "integer"
                 },
                 "region": {
                     "type": "string"
                 },
                 "status": {
-                    "type": "string"
-                },
-                "transProvince": {
-                    "type": "string"
-                },
-                "typeId": {
-                    "type": "string"
-                },
-                "updateBy": {
                     "type": "integer"
                 },
-                "weChatName": {
+                "transProvince": {
+                    "type": "integer"
+                },
+                "typeId": {
+                    "type": "integer"
+                },
+                "webHookUrl": {
+                    "type": "string"
+                },
+                "wechatName": {
                     "type": "string"
                 }
             }
@@ -4147,24 +9920,15 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "belong": {
-                    "type": "string"
-                },
-                "businessUser": {
-                    "type": "string"
-                },
-                "charging": {
-                    "type": "string"
-                },
-                "createBy": {
                     "type": "integer"
                 },
-                "customUser": {
-                    "type": "string"
+                "buId": {
+                    "type": "integer"
+                },
+                "customId": {
+                    "type": "integer"
                 },
                 "desc": {
-                    "type": "string"
-                },
-                "enable": {
                     "type": "string"
                 },
                 "id": {
@@ -4172,33 +9936,33 @@ const docTemplateadmin = `{
                     "type": "integer"
                 },
                 "ipV6": {
-                    "type": "string"
+                    "type": "integer"
                 },
-                "layer": {
-                    "type": "string"
+                "moreDialing": {
+                    "type": "integer"
                 },
                 "name": {
                     "type": "string"
                 },
-                "price": {
-                    "type": "string"
+                "number": {
+                    "type": "integer"
                 },
                 "region": {
                     "type": "string"
                 },
                 "status": {
-                    "type": "string"
-                },
-                "transProvince": {
-                    "type": "string"
-                },
-                "typeId": {
-                    "type": "string"
-                },
-                "updateBy": {
                     "type": "integer"
                 },
-                "weChatName": {
+                "transProvince": {
+                    "type": "integer"
+                },
+                "typeId": {
+                    "type": "integer"
+                },
+                "webHookUrl": {
+                    "type": "string"
+                },
+                "wechatName": {
                     "type": "string"
                 }
             }
@@ -4217,37 +9981,28 @@ const docTemplateadmin = `{
         "dto.RsTagInsertReq": {
             "type": "object",
             "properties": {
-                "createBy": {
-                    "type": "integer"
-                },
                 "desc": {
                     "type": "string"
                 },
                 "enable": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "layer": {
                     "type": "string"
                 },
                 "name": {
                     "type": "string"
-                },
-                "updateBy": {
-                    "type": "integer"
                 }
             }
         },
         "dto.RsTagUpdateReq": {
             "type": "object",
             "properties": {
-                "createBy": {
-                    "type": "integer"
-                },
                 "desc": {
                     "type": "string"
                 },
                 "enable": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "id": {
                     "description": "主键编码",
@@ -4258,9 +10013,6 @@ const docTemplateadmin = `{
                 },
                 "name": {
                     "type": "string"
-                },
-                "updateBy": {
-                    "type": "integer"
                 }
             }
         },
@@ -4281,9 +10033,6 @@ const docTemplateadmin = `{
                 "action": {
                     "type": "string"
                 },
-                "createBy": {
-                    "type": "integer"
-                },
                 "handle": {
                     "type": "string"
                 },
@@ -4299,9 +10048,6 @@ const docTemplateadmin = `{
                 },
                 "type": {
                     "type": "string"
-                },
-                "updateBy": {
-                    "type": "integer"
                 }
             }
         },
@@ -4328,9 +10074,6 @@ const docTemplateadmin = `{
                 "configValue": {
                     "type": "string"
                 },
-                "createBy": {
-                    "type": "integer"
-                },
                 "id": {
                     "description": "编码",
                     "type": "integer"
@@ -4340,9 +10083,6 @@ const docTemplateadmin = `{
                 },
                 "remark": {
                     "type": "string"
-                },
-                "updateBy": {
-                    "type": "integer"
                 }
             }
         },
@@ -4360,9 +10100,6 @@ const docTemplateadmin = `{
         "dto.SysDeptInsertReq": {
             "type": "object",
             "properties": {
-                "createBy": {
-                    "type": "integer"
-                },
                 "deptId": {
                     "description": "编码",
                     "type": "integer"
@@ -4397,9 +10134,6 @@ const docTemplateadmin = `{
                 },
                 "status": {
                     "description": "状态",
-                    "type": "integer"
-                },
-                "updateBy": {
                     "type": "integer"
                 }
             }
@@ -4407,9 +10141,6 @@ const docTemplateadmin = `{
         "dto.SysDeptUpdateReq": {
             "type": "object",
             "properties": {
-                "createBy": {
-                    "type": "integer"
-                },
                 "deptId": {
                     "description": "编码",
                     "type": "integer"
@@ -4444,9 +10175,6 @@ const docTemplateadmin = `{
                 },
                 "status": {
                     "description": "状态",
-                    "type": "integer"
-                },
-                "updateBy": {
                     "type": "integer"
                 }
             }
@@ -4476,9 +10204,6 @@ const docTemplateadmin = `{
         "dto.SysDictDataInsertReq": {
             "type": "object",
             "properties": {
-                "createBy": {
-                    "type": "integer"
-                },
                 "cssClass": {
                     "type": "string"
                 },
@@ -4507,9 +10232,6 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "status": {
-                    "type": "integer"
-                },
-                "updateBy": {
                     "type": "integer"
                 }
             }
@@ -4517,9 +10239,6 @@ const docTemplateadmin = `{
         "dto.SysDictDataUpdateReq": {
             "type": "object",
             "properties": {
-                "createBy": {
-                    "type": "integer"
-                },
                 "cssClass": {
                     "type": "string"
                 },
@@ -4552,35 +10271,23 @@ const docTemplateadmin = `{
                 },
                 "status": {
                     "type": "integer"
-                },
-                "updateBy": {
-                    "type": "integer"
                 }
             }
         },
         "dto.SysDictTypeDeleteReq": {
             "type": "object",
             "properties": {
-                "createBy": {
-                    "type": "integer"
-                },
                 "ids": {
                     "type": "array",
                     "items": {
                         "type": "integer"
                     }
-                },
-                "updateBy": {
-                    "type": "integer"
                 }
             }
         },
         "dto.SysDictTypeInsertReq": {
             "type": "object",
             "properties": {
-                "createBy": {
-                    "type": "integer"
-                },
                 "dictName": {
                     "type": "string"
                 },
@@ -4594,9 +10301,6 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "status": {
-                    "type": "integer"
-                },
-                "updateBy": {
                     "type": "integer"
                 }
             }
@@ -4604,9 +10308,6 @@ const docTemplateadmin = `{
         "dto.SysDictTypeUpdateReq": {
             "type": "object",
             "properties": {
-                "createBy": {
-                    "type": "integer"
-                },
                 "dictName": {
                     "type": "string"
                 },
@@ -4620,9 +10321,6 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "status": {
-                    "type": "integer"
-                },
-                "updateBy": {
                     "type": "integer"
                 }
             }
@@ -4641,17 +10339,11 @@ const docTemplateadmin = `{
         "dto.SysMenuDeleteReq": {
             "type": "object",
             "properties": {
-                "createBy": {
-                    "type": "integer"
-                },
                 "ids": {
                     "type": "array",
                     "items": {
                         "type": "integer"
                     }
-                },
-                "updateBy": {
-                    "type": "integer"
                 }
             }
         },
@@ -4675,9 +10367,6 @@ const docTemplateadmin = `{
                 "component": {
                     "description": "组件",
                     "type": "string"
-                },
-                "createBy": {
-                    "type": "integer"
                 },
                 "icon": {
                     "description": "图标",
@@ -4732,9 +10421,6 @@ const docTemplateadmin = `{
                 "title": {
                     "description": "显示名称",
                     "type": "string"
-                },
-                "updateBy": {
-                    "type": "integer"
                 },
                 "visible": {
                     "description": "是否显示",
@@ -4763,9 +10449,6 @@ const docTemplateadmin = `{
                     "description": "组件",
                     "type": "string"
                 },
-                "createBy": {
-                    "type": "integer"
-                },
                 "icon": {
                     "description": "图标",
                     "type": "string"
@@ -4820,9 +10503,6 @@ const docTemplateadmin = `{
                     "description": "显示名称",
                     "type": "string"
                 },
-                "updateBy": {
-                    "type": "integer"
-                },
                 "visible": {
                     "description": "是否显示",
                     "type": "string"
@@ -4843,26 +10523,17 @@ const docTemplateadmin = `{
         "dto.SysPostDeleteReq": {
             "type": "object",
             "properties": {
-                "createBy": {
-                    "type": "integer"
-                },
                 "ids": {
                     "type": "array",
                     "items": {
                         "type": "integer"
                     }
-                },
-                "updateBy": {
-                    "type": "integer"
                 }
             }
         },
         "dto.SysPostInsertReq": {
             "type": "object",
             "properties": {
-                "createBy": {
-                    "type": "integer"
-                },
                 "postCode": {
                     "type": "string"
                 },
@@ -4879,9 +10550,6 @@ const docTemplateadmin = `{
                     "type": "integer"
                 },
                 "status": {
-                    "type": "integer"
-                },
-                "updateBy": {
                     "type": "integer"
                 }
             }
@@ -4889,9 +10557,6 @@ const docTemplateadmin = `{
         "dto.SysPostUpdateReq": {
             "type": "object",
             "properties": {
-                "createBy": {
-                    "type": "integer"
-                },
                 "postCode": {
                     "type": "string"
                 },
@@ -4908,9 +10573,6 @@ const docTemplateadmin = `{
                     "type": "integer"
                 },
                 "status": {
-                    "type": "integer"
-                },
-                "updateBy": {
                     "type": "integer"
                 }
             }
@@ -4931,9 +10593,6 @@ const docTemplateadmin = `{
             "properties": {
                 "admin": {
                     "type": "boolean"
-                },
-                "createBy": {
-                    "type": "integer"
                 },
                 "dataScope": {
                     "type": "string"
@@ -4989,9 +10648,6 @@ const docTemplateadmin = `{
                     "items": {
                         "$ref": "#/definitions/go-admin_app_admin_models.SysMenu"
                     }
-                },
-                "updateBy": {
-                    "type": "integer"
                 }
             }
         },
@@ -5000,9 +10656,6 @@ const docTemplateadmin = `{
             "properties": {
                 "admin": {
                     "type": "boolean"
-                },
-                "createBy": {
-                    "type": "integer"
                 },
                 "dataScope": {
                     "type": "string"
@@ -5058,9 +10711,6 @@ const docTemplateadmin = `{
                     "items": {
                         "$ref": "#/definitions/go-admin_app_admin_models.SysMenu"
                     }
-                },
-                "updateBy": {
-                    "type": "integer"
                 }
             }
         },
@@ -5070,10 +10720,8 @@ const docTemplateadmin = `{
                 "avatar": {
                     "type": "string"
                 },
-                "createBy": {
-                    "type": "integer"
-                },
                 "deptId": {
+                    "description": "Email    string ` + "`" + `json:\"email\" comment:\"邮箱\" vd:\"len($)\u003e0,email\"` + "`" + `",
                     "type": "integer"
                 },
                 "email": {
@@ -5094,8 +10742,11 @@ const docTemplateadmin = `{
                 "remark": {
                     "type": "string"
                 },
-                "roleId": {
-                    "type": "integer"
+                "roleIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 },
                 "sex": {
                     "type": "string"
@@ -5103,9 +10754,6 @@ const docTemplateadmin = `{
                 "status": {
                     "type": "string",
                     "default": "1"
-                },
-                "updateBy": {
-                    "type": "integer"
                 },
                 "userId": {
                     "description": "用户ID",
@@ -5122,16 +10770,17 @@ const docTemplateadmin = `{
                 "avatar": {
                     "type": "string"
                 },
-                "createBy": {
-                    "type": "integer"
-                },
                 "deptId": {
+                    "description": "Email    string ` + "`" + `json:\"email\" comment:\"邮箱\" vd:\"len($)\u003e0,email\"` + "`" + `",
                     "type": "integer"
                 },
                 "email": {
                     "type": "string"
                 },
                 "nickName": {
+                    "type": "string"
+                },
+                "password": {
                     "type": "string"
                 },
                 "phone": {
@@ -5143,8 +10792,11 @@ const docTemplateadmin = `{
                 "remark": {
                     "type": "string"
                 },
-                "roleId": {
-                    "type": "integer"
+                "roleIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 },
                 "sex": {
                     "type": "string"
@@ -5152,9 +10804,6 @@ const docTemplateadmin = `{
                 "status": {
                     "type": "string",
                     "default": "1"
-                },
-                "updateBy": {
-                    "type": "integer"
                 },
                 "userId": {
                     "description": "用户ID",
@@ -5168,9 +10817,6 @@ const docTemplateadmin = `{
         "dto.UpdateStatusReq": {
             "type": "object",
             "properties": {
-                "createBy": {
-                    "type": "integer"
-                },
                 "roleId": {
                     "description": "角色编码",
                     "type": "integer"
@@ -5178,23 +10824,14 @@ const docTemplateadmin = `{
                 "status": {
                     "description": "状态",
                     "type": "string"
-                },
-                "updateBy": {
-                    "type": "integer"
                 }
             }
         },
         "dto.UpdateSysUserStatusReq": {
             "type": "object",
             "properties": {
-                "createBy": {
-                    "type": "integer"
-                },
                 "status": {
                     "type": "string"
-                },
-                "updateBy": {
-                    "type": "integer"
                 },
                 "userId": {
                     "description": "用户ID",
@@ -5206,12 +10843,6 @@ const docTemplateadmin = `{
             "type": "object",
             "properties": {
                 "action": {
-                    "type": "string"
-                },
-                "createBy": {
-                    "type": "integer"
-                },
-                "createdAt": {
                     "type": "string"
                 },
                 "handle": {
@@ -5228,9 +10859,6 @@ const docTemplateadmin = `{
                 },
                 "type": {
                     "type": "string"
-                },
-                "updateBy": {
-                    "type": "integer"
                 },
                 "updatedAt": {
                     "type": "string"
@@ -5252,12 +10880,6 @@ const docTemplateadmin = `{
                 "configValue": {
                     "type": "string"
                 },
-                "createBy": {
-                    "type": "integer"
-                },
-                "createdAt": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "integer"
                 },
@@ -5267,11 +10889,8 @@ const docTemplateadmin = `{
                 "remark": {
                     "type": "string"
                 },
-                "updateBy": {
-                    "type": "integer"
-                },
                 "updatedAt": {
-                    "type": "string"
+                    "$ref": "#/definitions/models.XTime"
                 }
             }
         },
@@ -5283,12 +10902,6 @@ const docTemplateadmin = `{
                     "items": {
                         "$ref": "#/definitions/go-admin_app_admin_models.SysDept"
                     }
-                },
-                "createBy": {
-                    "type": "integer"
-                },
-                "createdAt": {
-                    "type": "string"
                 },
                 "dataScope": {
                     "type": "string"
@@ -5331,11 +10944,8 @@ const docTemplateadmin = `{
                     "description": "状态",
                     "type": "integer"
                 },
-                "updateBy": {
-                    "type": "integer"
-                },
                 "updatedAt": {
-                    "type": "string"
+                    "$ref": "#/definitions/models.XTime"
                 }
             }
         },
@@ -5361,12 +10971,6 @@ const docTemplateadmin = `{
                     }
                 },
                 "component": {
-                    "type": "string"
-                },
-                "createBy": {
-                    "type": "integer"
-                },
-                "createdAt": {
                     "type": "string"
                 },
                 "dataScope": {
@@ -5423,11 +11027,8 @@ const docTemplateadmin = `{
                 "title": {
                     "type": "string"
                 },
-                "updateBy": {
-                    "type": "integer"
-                },
                 "updatedAt": {
-                    "type": "string"
+                    "$ref": "#/definitions/models.XTime"
                 },
                 "visible": {
                     "type": "string"
@@ -5457,46 +11058,716 @@ const docTemplateadmin = `{
                 }
             }
         },
+        "models.Asset": {
+            "type": "object",
+            "properties": {
+                "assetCode": {
+                    "type": "string"
+                },
+                "brand": {
+                    "type": "string"
+                },
+                "categoryId": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "snCode": {
+                    "type": "string"
+                },
+                "specification": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "unit": {
+                    "type": "string"
+                },
+                "unitPrice": {
+                    "type": "number"
+                },
+                "updatedAt": {
+                    "$ref": "#/definitions/models.XTime"
+                }
+            }
+        },
+        "models.AssetCategory": {
+            "type": "object",
+            "properties": {
+                "categoryName": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "$ref": "#/definitions/models.XTime"
+                }
+            }
+        },
+        "models.AssetDisposal": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "assetId": {
+                    "type": "integer"
+                },
+                "disposalAt": {
+                    "type": "string"
+                },
+                "disposalPerson": {
+                    "type": "integer"
+                },
+                "disposalType": {
+                    "type": "integer"
+                },
+                "disposalWay": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "locationId": {
+                    "type": "integer"
+                },
+                "reason": {
+                    "type": "string"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "$ref": "#/definitions/models.XTime"
+                }
+            }
+        },
+        "models.AssetGroup": {
+            "type": "object",
+            "properties": {
+                "groupName": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "mainAssetId": {
+                    "type": "integer"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "$ref": "#/definitions/models.XTime"
+                }
+            }
+        },
+        "models.AssetGroupMember": {
+            "type": "object",
+            "properties": {
+                "assetGroupId": {
+                    "type": "integer"
+                },
+                "assetId": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "isMain": {
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "$ref": "#/definitions/models.XTime"
+                }
+            }
+        },
+        "models.AssetInbound": {
+            "type": "object",
+            "properties": {
+                "assetId": {
+                    "type": "integer"
+                },
+                "fromCode": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "inboundAt": {
+                    "type": "string"
+                },
+                "inboundBy": {
+                    "type": "integer"
+                },
+                "inboundFrom": {
+                    "type": "integer"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "$ref": "#/definitions/models.XTime"
+                },
+                "warehouseId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.AssetOutbound": {
+            "type": "object",
+            "properties": {
+                "assetId": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "outboundAt": {
+                    "type": "string"
+                },
+                "outboundBy": {
+                    "type": "integer"
+                },
+                "outboundTo": {
+                    "type": "integer"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "$ref": "#/definitions/models.XTime"
+                },
+                "warehouseId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.AssetPurchase": {
+            "type": "object",
+            "properties": {
+                "brand": {
+                    "type": "string"
+                },
+                "categoryId": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "purchaseAt": {
+                    "type": "string"
+                },
+                "purchaseCode": {
+                    "type": "string"
+                },
+                "purchaseUser": {
+                    "type": "integer"
+                },
+                "quantity": {
+                    "type": "integer"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "specification": {
+                    "type": "string"
+                },
+                "supplierId": {
+                    "type": "integer"
+                },
+                "totalAmount": {
+                    "type": "number"
+                },
+                "unit": {
+                    "type": "string"
+                },
+                "unitPrice": {
+                    "type": "number"
+                },
+                "updatedAt": {
+                    "$ref": "#/definitions/models.XTime"
+                }
+            }
+        },
+        "models.AssetPurchaseApply": {
+            "type": "object",
+            "properties": {
+                "applyAt": {
+                    "type": "string"
+                },
+                "applyCode": {
+                    "type": "string"
+                },
+                "applyReason": {
+                    "type": "string"
+                },
+                "applyUser": {
+                    "type": "integer"
+                },
+                "approveAt": {
+                    "type": "string"
+                },
+                "approver": {
+                    "type": "integer"
+                },
+                "brand": {
+                    "type": "string"
+                },
+                "categoryId": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "quantity": {
+                    "type": "integer"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "specification": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "supplierId": {
+                    "type": "integer"
+                },
+                "totalAmount": {
+                    "type": "number"
+                },
+                "unit": {
+                    "type": "string"
+                },
+                "unitPrice": {
+                    "type": "number"
+                },
+                "updatedAt": {
+                    "$ref": "#/definitions/models.XTime"
+                }
+            }
+        },
+        "models.AssetReturn": {
+            "type": "object",
+            "properties": {
+                "assetId": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "reason": {
+                    "type": "string"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "returnAt": {
+                    "type": "string"
+                },
+                "returnPerson": {
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "$ref": "#/definitions/models.XTime"
+                }
+            }
+        },
+        "models.AssetStock": {
+            "type": "object",
+            "properties": {
+                "categoryId": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "quantity": {
+                    "type": "integer"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "$ref": "#/definitions/models.XTime"
+                },
+                "warehouseId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.AssetSupplier": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "contactPerson": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "phoneNumber": {
+                    "type": "string"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "supplierName": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "$ref": "#/definitions/models.XTime"
+                }
+            }
+        },
+        "models.AssetWarehouse": {
+            "type": "object",
+            "properties": {
+                "administratorId": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "remark": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "$ref": "#/definitions/models.XTime"
+                },
+                "warehouseName": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.RsBandwidthFees": {
+            "type": "object",
+            "properties": {
+                "charging": {
+                    "type": "integer"
+                },
+                "down": {
+                    "type": "number"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "isp": {
+                    "type": "integer"
+                },
+                "linePrice": {
+                    "type": "number"
+                },
+                "managerLineCost": {
+                    "type": "number"
+                },
+                "moreDialing": {
+                    "type": "integer"
+                },
+                "region": {
+                    "type": "string"
+                },
+                "transProd": {
+                    "type": "integer"
+                },
+                "up": {
+                    "type": "number"
+                },
+                "updatedAt": {
+                    "$ref": "#/definitions/models.XTime"
+                }
+            }
+        },
         "models.RsBusiness": {
             "type": "object",
             "properties": {
-                "algorithm": {
-                    "type": "string"
-                },
-                "createBy": {
+                "billingMethod": {
                     "type": "integer"
                 },
-                "createdAt": {
-                    "type": "string"
-                },
+                "children": {},
+                "costCnf": {},
                 "desc": {
                     "type": "string"
                 },
-                "enable": {
+                "enName": {
+                    "type": "string"
+                },
+                "endUsage": {
                     "type": "string"
                 },
                 "id": {
                     "type": "integer"
                 },
                 "layer": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "parentId": {
+                    "type": "integer"
+                },
+                "startUsage": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "$ref": "#/definitions/models.XTime"
+                },
+                "updatedUser": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.RsContract": {
+            "type": "object",
+            "properties": {
+                "accountName": {
+                    "type": "string"
+                },
+                "address": {
+                    "type": "string"
+                },
+                "bandwidthFees": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.RsBandwidthFees"
+                    }
+                },
+                "bankAccount": {
+                    "type": "string"
+                },
+                "bankName": {
+                    "type": "string"
+                },
+                "buId": {
+                    "type": "integer"
+                },
+                "customId": {
+                    "type": "integer"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "endTimeAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "identifyNumber": {
                     "type": "string"
                 },
                 "name": {
                     "type": "string"
                 },
-                "updateBy": {
+                "number": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "settlementType": {
+                    "type": "integer"
+                },
+                "signatoryId": {
+                    "type": "integer"
+                },
+                "startTimeAt": {
+                    "type": "string"
+                },
+                "type": {
                     "type": "integer"
                 },
                 "updatedAt": {
+                    "$ref": "#/definitions/models.XTime"
+                },
+                "userId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.RsCustom": {
+            "type": "object",
+            "properties": {
+                "address": {
                     "type": "string"
+                },
+                "cooperation": {
+                    "type": "integer"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "region": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "$ref": "#/definitions/models.XTime"
+                }
+            }
+        },
+        "models.RsCustomUser": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "buId": {
+                    "type": "integer"
+                },
+                "customId": {
+                    "type": "integer"
+                },
+                "dept": {
+                    "type": "string"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "duties": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "region": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "$ref": "#/definitions/models.XTime"
+                },
+                "userName": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.RsDial": {
+            "type": "object",
+            "properties": {
+                "account": {
+                    "type": "string"
+                },
+                "broadbandType": {
+                    "type": "integer"
+                },
+                "bu": {
+                    "type": "string"
+                },
+                "contractId": {
+                    "type": "integer"
+                },
+                "customId": {
+                    "type": "integer"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "deviceId": {
+                    "type": "integer"
+                },
+                "deviceName": {
+                    "type": "string"
+                },
+                "dialName": {
+                    "type": "string"
+                },
+                "hostId": {
+                    "type": "integer"
+                },
+                "hostInfo": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "idcId": {
+                    "type": "integer"
+                },
+                "idcInfo": {},
+                "ip": {
+                    "type": "string"
+                },
+                "ipV6": {
+                    "type": "string"
+                },
+                "isManager": {
+                    "type": "integer"
+                },
+                "ispId": {
+                    "type": "integer"
+                },
+                "ispName": {
+                    "type": "string"
+                },
+                "mac": {
+                    "type": "string"
+                },
+                "natType": {
+                    "type": "string"
+                },
+                "networkingStatus": {
+                    "type": "integer"
+                },
+                "pass": {
+                    "type": "string"
+                },
+                "runTimeAt": {
+                    "type": "string"
+                },
+                "source": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "$ref": "#/definitions/models.XTime"
                 }
             }
         },
         "models.RsHost": {
             "type": "object",
             "properties": {
-                "address": {
-                    "type": "string"
+                "allLine": {
+                    "type": "integer"
+                },
+                "auth": {
+                    "type": "integer"
                 },
                 "balance": {
                     "type": "number"
@@ -5505,35 +11776,35 @@ const docTemplateadmin = `{
                     "type": "integer"
                 },
                 "business": {
-                    "type": "string"
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.RsBusiness"
+                    }
                 },
                 "cpu": {
-                    "type": "string"
-                },
-                "createBy": {
                     "type": "integer"
-                },
-                "createdAt": {
-                    "type": "string"
                 },
                 "desc": {
                     "type": "string"
                 },
-                "disk": {
-                    "type": "string"
-                },
-                "enable": {
+                "dialList": {},
+                "disk": {},
+                "gateway": {
                     "type": "string"
                 },
                 "healthy": {
                     "$ref": "#/definitions/sql.NullTime"
                 },
-                "hostName": {
+                "hostname": {
                     "type": "string"
                 },
                 "id": {
                     "type": "integer"
                 },
+                "idc": {
+                    "type": "integer"
+                },
+                "idcInfo": {},
                 "ip": {
                     "type": "string"
                 },
@@ -5543,22 +11814,40 @@ const docTemplateadmin = `{
                 "kernel": {
                     "type": "string"
                 },
-                "layer": {
-                    "type": "string"
+                "lineBandwidth": {
+                    "type": "number"
                 },
                 "lineType": {
                     "type": "integer"
                 },
+                "mac": {
+                    "type": "string"
+                },
+                "mask": {
+                    "type": "string"
+                },
                 "memory": {
                     "type": "integer"
                 },
-                "netDevice": {
+                "memoryMonitor": {},
+                "netDevice": {},
+                "networkType": {
+                    "type": "integer"
+                },
+                "probeShell": {
+                    "type": "string"
+                },
+                "publicIp": {
                     "type": "string"
                 },
                 "region": {
                     "type": "string"
                 },
                 "remark": {
+                    "description": "166陕西延安宜川集义郭东机房电信1-2-11(30*100M) 拆分解析到线路和带宽",
+                    "type": "string"
+                },
+                "remotePort": {
                     "type": "string"
                 },
                 "sn": {
@@ -5567,13 +11856,94 @@ const docTemplateadmin = `{
                 "status": {
                     "type": "integer"
                 },
-                "transProd": {
-                    "type": "boolean"
+                "system": {
+                    "type": "object",
+                    "additionalProperties": true
                 },
-                "updateBy": {
+                "tag": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.RsTag"
+                    }
+                },
+                "transProvince": {
                     "type": "integer"
                 },
                 "updatedAt": {
+                    "$ref": "#/definitions/models.XTime"
+                },
+                "updatedUser": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.RsHostChargingDay": {
+            "type": "object",
+            "properties": {
+                "banlance95": {
+                    "type": "string"
+                },
+                "businessId": {
+                    "type": "string"
+                },
+                "cost": {
+                    "type": "string"
+                },
+                "createBy": {
+                    "type": "integer"
+                },
+                "createdAt": {
+                    "$ref": "#/definitions/models.XTime"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "hostId": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "sla": {
+                    "type": "string"
+                },
+                "updatedUser": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.RsHostSwitchLog": {
+            "type": "object",
+            "properties": {
+                "bu_en_source": {
+                    "type": "string"
+                },
+                "bu_source": {
+                    "type": "string"
+                },
+                "bu_target_id": {
+                    "type": "integer"
+                },
+                "businessInfo": {},
+                "createBy": {
+                    "type": "integer"
+                },
+                "createdAt": {
+                    "$ref": "#/definitions/models.XTime"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "hostId": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "jobId": {
+                    "type": "string"
+                },
+                "updatedUser": {
                     "type": "string"
                 }
             }
@@ -5585,95 +11955,102 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "belong": {
-                    "type": "string"
-                },
-                "businessUser": {
-                    "type": "string"
-                },
-                "charging": {
-                    "type": "string"
-                },
-                "createBy": {
                     "type": "integer"
                 },
-                "createdAt": {
-                    "type": "string"
+                "buId": {
+                    "type": "integer"
                 },
-                "customUser": {
-                    "type": "string"
+                "customId": {
+                    "type": "integer"
                 },
                 "desc": {
-                    "type": "string"
-                },
-                "enable": {
                     "type": "string"
                 },
                 "id": {
                     "type": "integer"
                 },
                 "ipV6": {
-                    "type": "string"
+                    "type": "integer"
                 },
-                "layer": {
-                    "type": "string"
+                "moreDialing": {
+                    "type": "integer"
                 },
                 "name": {
                     "type": "string"
                 },
-                "price": {
-                    "type": "string"
+                "number": {
+                    "type": "integer"
                 },
                 "region": {
                     "type": "string"
                 },
+                "rsIdcCount": {
+                    "$ref": "#/definitions/models.RsIdcCount"
+                },
                 "status": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "transProvince": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "typeId": {
-                    "type": "string"
-                },
-                "updateBy": {
                     "type": "integer"
                 },
                 "updatedAt": {
+                    "$ref": "#/definitions/models.XTime"
+                },
+                "webHookUrl": {
                     "type": "string"
                 },
-                "weChatName": {
+                "wechatName": {
                     "type": "string"
+                }
+            }
+        },
+        "models.RsIdcCount": {
+            "type": "object",
+            "properties": {
+                "allHost": {
+                    "type": "integer"
+                },
+                "buLine": {
+                    "type": "integer"
+                },
+                "managerLine": {
+                    "type": "integer"
+                },
+                "offLine": {
+                    "type": "integer"
+                },
+                "onLine": {
+                    "type": "integer"
                 }
             }
         },
         "models.RsTag": {
             "type": "object",
             "properties": {
-                "createBy": {
-                    "type": "integer"
-                },
-                "createdAt": {
-                    "type": "string"
-                },
                 "desc": {
-                    "type": "string"
-                },
-                "enable": {
                     "type": "string"
                 },
                 "id": {
                     "type": "integer"
                 },
-                "layer": {
-                    "type": "string"
-                },
                 "name": {
                     "type": "string"
                 },
-                "updateBy": {
-                    "type": "integer"
-                },
                 "updatedAt": {
+                    "$ref": "#/definitions/models.XTime"
+                },
+                "updatedUser": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.XTime": {
+            "type": "object",
+            "properties": {
+                "time.Time": {
                     "type": "string"
                 }
             }
@@ -5880,9 +12257,6 @@ const docTemplateadmin = `{
                         "$ref": "#/definitions/tools.SysColumns"
                     }
                 },
-                "createBy": {
-                    "type": "integer"
-                },
                 "createdAt": {
                     "type": "string"
                 },
@@ -5977,9 +12351,6 @@ const docTemplateadmin = `{
                 },
                 "treeParentCode": {
                     "type": "string"
-                },
-                "updateBy": {
-                    "type": "integer"
                 },
                 "updatedAt": {
                     "type": "string"

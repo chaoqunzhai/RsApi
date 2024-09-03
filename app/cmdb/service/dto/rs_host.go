@@ -160,7 +160,6 @@ func (s *RsHostInsertReq) Generate(model *models.RsHost) {
 		model.Model = common.Model{Id: s.Id}
 	}
 	model.CreateBy = s.CreateBy // 添加这而，需要记录是被谁创建的
-
 	model.Desc = s.Desc
 	model.HostName = s.HostName
 	model.Sn = s.Sn
@@ -210,7 +209,6 @@ func (s *RsHostUpdateReq) Generate(model *models.RsHost) {
 		model.Model = common.Model{Id: s.Id}
 	}
 	model.UpdateBy = s.UpdateBy // 添加这而，需要记录是被谁更新的
-
 	model.Desc = s.Desc
 	model.HostName = s.HostName
 	model.Sn = s.Sn

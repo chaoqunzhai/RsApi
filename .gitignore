@@ -22,4 +22,6 @@ rs-api
 # go sum
 go.sum
 config/settings.deva.yml
+*.dev
 access
+

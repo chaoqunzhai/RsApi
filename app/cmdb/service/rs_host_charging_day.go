@@ -3,7 +3,7 @@ package service
 import (
 	"errors"
 
-    "github.com/go-admin-team/go-admin-core/sdk/service"
+	"github.com/go-admin-team/go-admin-core/sdk/service"
 	"gorm.io/gorm"
 
 	"go-admin/app/cmdb/models"
@@ -59,9 +59,9 @@ func (e *RsHostChargingDay) Get(d *dto.RsHostChargingDayGetReq, p *actions.DataP
 
 // Insert 创建RsHostChargingDay对象
 func (e *RsHostChargingDay) Insert(c *dto.RsHostChargingDayInsertReq) error {
-    var err error
-    var data models.RsHostChargingDay
-    c.Generate(&data)
+	var err error
+	var data models.RsHostChargingDay
+	c.Generate(&data)
 	err = e.Orm.Create(&data).Error
 	if err != nil {
 		e.Log.Errorf("RsHostChargingDayService Insert error:%s \r\n", err)
@@ -72,22 +72,22 @@ func (e *RsHostChargingDay) Insert(c *dto.RsHostChargingDayInsertReq) error {
 
 // Update 修改RsHostChargingDay对象
 func (e *RsHostChargingDay) Update(c *dto.RsHostChargingDayUpdateReq, p *actions.DataPermission) error {
-    var err error
-    var data = models.RsHostChargingDay{}
-    e.Orm.Scopes(
-            actions.Permission(data.TableName(), p),
-        ).First(&data, c.GetId())
-    c.Generate(&data)
+	var err error
+	var data = models.RsHostChargingDay{}
+	e.Orm.Scopes(
+		actions.Permission(data.TableName(), p),
+	).First(&data, c.GetId())
+	c.Generate(&data)
 
-    db := e.Orm.Save(&data)
-    if err = db.Error; err != nil {
-        e.Log.Errorf("RsHostChargingDayService Save error:%s \r\n", err)
-        return err
-    }
-    if db.RowsAffected == 0 {
-        return errors.New("无权更新该数据")
-    }
-    return nil
+	db := e.Orm.Save(&data)
+	if err = db.Error; err != nil {
+		e.Log.Errorf("RsHostChargingDayService Save error:%s \r\n", err)
+		return err
+	}
+	if db.RowsAffected == 0 {
+		return errors.New("无权更新该数据")
+	}
+	return nil
 }
 
 // Remove 删除RsHostChargingDay
@@ -99,11 +99,11 @@ func (e *RsHostChargingDay) Remove(d *dto.RsHostChargingDayDeleteReq, p *actions
 			actions.Permission(data.TableName(), p),
 		).Delete(&data, d.GetId())
 	if err := db.Error; err != nil {
-        e.Log.Errorf("Service RemoveRsHostChargingDay error:%s \r\n", err)
-        return err
-    }
-    if db.RowsAffected == 0 {
-        return errors.New("无权删除该数据")
-    }
+		e.Log.Errorf("Service RemoveRsHostChargingDay error:%s \r\n", err)
+		return err
+	}
+	if db.RowsAffected == 0 {
+		return errors.New("无权删除该数据")
+	}
 	return nil
 }
