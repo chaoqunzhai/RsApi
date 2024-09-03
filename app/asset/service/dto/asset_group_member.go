@@ -10,7 +10,7 @@ type AssetGroupMemberGetPageReq struct {
 	dto.Pagination `search:"-"`
 	AssetGroupId   string `form:"assetGroupId"  search:"type:exact;column:asset_group_id;table:asset_group_member" comment:"资产组合编码"`
 	AssetId        string `form:"assetId"  search:"type:exact;column:asset_id;table:asset_group_member" comment:"资产编码"`
-	IsMain         string `form:"isMain"  search:"type:exact;column:is_main;table:asset_group_member" comment:"是否为主资产(1=是,0=否)"`
+	IsMain         string `form:"isMain"  search:"type:exact;column:is_main;table:asset_group_member" comment:"是否为主资产(1=是,2=否)"`
 	AssetGroupMemberOrder
 }
 
@@ -34,7 +34,7 @@ type AssetGroupMemberInsertReq struct {
 	Id           int  `json:"-" comment:"主键"` // 主键
 	AssetGroupId int  `json:"assetGroupId" comment:"资产组合编码"`
 	AssetId      int  `json:"assetId" comment:"资产编码"`
-	IsMain       int8 `json:"isMain" comment:"是否为主资产(1=是,0=否)"`
+	IsMain       int8 `json:"isMain" comment:"是否为主资产(1=是,2=否)"`
 	common.ControlBy
 }
 
@@ -56,7 +56,7 @@ type AssetGroupMemberUpdateReq struct {
 	Id           int  `uri:"id" comment:"主键"` // 主键
 	AssetGroupId int  `json:"assetGroupId" comment:"资产组合编码"`
 	AssetId      int  `json:"assetId" comment:"资产编码"`
-	IsMain       int8 `json:"isMain" comment:"是否为主资产(1=是,0=否)"`
+	IsMain       int8 `json:"isMain" comment:"是否为主资产(1=是,2=否)"`
 	common.ControlBy
 }
 

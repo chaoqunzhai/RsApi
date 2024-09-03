@@ -12,7 +12,7 @@ type AssetInboundGetPageReq struct {
 	dto.Pagination `search:"-"`
 	InboundCode    string `form:"inboundCode"  search:"type:exact;column:inbound_code;table:asset_inbound" comment:"入库单号"`
 	WarehouseId    int    `form:"warehouseId"  search:"type:exact;column:warehouse_id;table:asset_inbound" comment:"库房编码"`
-	InboundFrom    int8   `form:"inboundFrom"  search:"type:exact;column:inbound_from;table:asset_inbound" comment:"来源(1=采购、0=直接入库)"`
+	InboundFrom    int8   `form:"inboundFrom"  search:"type:exact;column:inbound_from;table:asset_inbound" comment:"来源(1=直接入库、2=采购入库)"`
 	FromCode       string `form:"fromCode"  search:"type:exact;column:from_code;table:asset_inbound" comment:"来源凭证编码(采购编码)"`
 	InboundBy      int    `form:"inboundBy"  search:"type:exact;column:inbound_by;table:asset_inbound" comment:"入库人编码"`
 	AssetInboundOrder
@@ -42,7 +42,7 @@ type AssetInboundInsertReq struct {
 	Id          int       `json:"-" comment:"主键"` // 主键
 	InboundCode string    `json:"inboundCode" comment:"入库单号"`
 	WarehouseId int       `json:"warehouseId" comment:"库房编码"`
-	InboundFrom int8      `json:"inboundFrom" comment:"来源(1=采购、0=直接入库)"`
+	InboundFrom int8      `json:"inboundFrom" comment:"来源(1=直接入库、2=采购入库)"`
 	FromCode    string    `json:"fromCode" comment:"来源凭证编号(采购单编号)"`
 	InboundBy   int       `json:"inboundBy" comment:"入库人编码"`
 	InboundAt   time.Time `json:"inboundAt" comment:"入库时间"`
@@ -72,7 +72,7 @@ type AssetInboundUpdateReq struct {
 	Id          int       `uri:"id" comment:"主键"` // 主键
 	InboundCode string    `json:"inboundCode" comment:"入库单号"`
 	WarehouseId int       `json:"warehouseId" comment:"库房编码"`
-	InboundFrom int8      `json:"inboundFrom" comment:"来源(1=采购、0=直接入库)"`
+	InboundFrom int8      `json:"inboundFrom" comment:"来源(1=直接入库、2=采购入库)"`
 	FromCode    string    `json:"fromCode" comment:"来源凭证编码(采购编码)"`
 	InboundBy   int       `json:"inboundBy" comment:"入库人编码"`
 	InboundAt   time.Time `json:"inboundAt" comment:"入库时间"`

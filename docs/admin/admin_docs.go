@@ -1121,30 +1121,24 @@ const docTemplateadmin = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "资产编码",
-                        "name": "assetId",
+                        "description": "入库单号",
+                        "name": "inboundCode",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "库房编码",
                         "name": "warehouseId",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "来源(1=采购、0=直接入库)",
                         "name": "inboundFrom",
                         "in": "query"
                     },
                     {
-                        "type": "string",
-                        "description": "来源凭证编码(采购编码)",
-                        "name": "fromCode",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
+                        "type": "integer",
                         "description": "入库人编码",
                         "name": "inboundBy",
                         "in": "query"
@@ -1264,6 +1258,235 @@ const docTemplateadmin = `{
                 }
             }
         },
+        "/api/v1/asset-inbound-member": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取资产入库成员表列表",
+                "tags": [
+                    "资产入库成员表"
+                ],
+                "summary": "获取资产入库成员表列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "资产入库编码",
+                        "name": "assetInboundId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "资产入库单号",
+                        "name": "assetInboundCode",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "资产编码",
+                        "name": "assetId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页条数",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageIndex",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.Page"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/models.AssetInboundMember"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "创建资产入库成员表",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "资产入库成员表"
+                ],
+                "summary": "创建资产入库成员表",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetInboundMemberInsertReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"添加成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "删除资产入库成员表",
+                "tags": [
+                    "资产入库成员表"
+                ],
+                "summary": "删除资产入库成员表",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetInboundMemberDeleteReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"删除成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/asset-inbound-member/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取资产入库成员表",
+                "tags": [
+                    "资产入库成员表"
+                ],
+                "summary": "获取资产入库成员表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.AssetInboundMember"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "修改资产入库成员表",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "资产入库成员表"
+                ],
+                "summary": "修改资产入库成员表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetInboundMemberUpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"修改成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/asset-inbound/{id}": {
             "get": {
                 "security": [
@@ -1362,24 +1585,24 @@ const docTemplateadmin = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "资产编码",
-                        "name": "assetId",
+                        "description": "出库单号",
+                        "name": "outboundCode",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "库房编码",
                         "name": "warehouseId",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "出库去向(客户编码)",
                         "name": "outboundTo",
                         "in": "query"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "出库人编码",
                         "name": "outboundBy",
                         "in": "query"
@@ -1492,6 +1715,235 @@ const docTemplateadmin = `{
                 "responses": {
                     "200": {
                         "description": "{\"code\": 200, \"message\": \"删除成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/asset-outbound-member": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取资产出库成员表列表",
+                "tags": [
+                    "资产出库成员表"
+                ],
+                "summary": "获取资产出库成员表列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "资产出库编码",
+                        "name": "assetOutboundId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "资产出库单号",
+                        "name": "assetOutboundCode",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "资产编码",
+                        "name": "assetId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页条数",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageIndex",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.Page"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/models.AssetOutboundMember"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "创建资产出库成员表",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "资产出库成员表"
+                ],
+                "summary": "创建资产出库成员表",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetOutboundMemberInsertReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"添加成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "删除资产出库成员表",
+                "tags": [
+                    "资产出库成员表"
+                ],
+                "summary": "删除资产出库成员表",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetOutboundMemberDeleteReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"删除成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/asset-outbound-member/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取资产出库成员表",
+                "tags": [
+                    "资产出库成员表"
+                ],
+                "summary": "获取资产出库成员表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.AssetOutboundMember"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "修改资产出库成员表",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "资产出库成员表"
+                ],
+                "summary": "修改资产出库成员表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssetOutboundMemberUpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"修改成功\"}",
                         "schema": {
                             "$ref": "#/definitions/response.Response"
                         }
@@ -8417,9 +8869,6 @@ const docTemplateadmin = `{
         "dto.AssetInboundInsertReq": {
             "type": "object",
             "properties": {
-                "assetId": {
-                    "type": "integer"
-                },
                 "fromCode": {
                     "type": "string"
                 },
@@ -8428,6 +8877,9 @@ const docTemplateadmin = `{
                 },
                 "inboundBy": {
                     "type": "integer"
+                },
+                "inboundCode": {
+                    "type": "string"
                 },
                 "inboundFrom": {
                     "type": "integer"
@@ -8440,12 +8892,52 @@ const docTemplateadmin = `{
                 }
             }
         },
-        "dto.AssetInboundUpdateReq": {
+        "dto.AssetInboundMemberDeleteReq": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "dto.AssetInboundMemberInsertReq": {
             "type": "object",
             "properties": {
                 "assetId": {
                     "type": "integer"
                 },
+                "assetInboundCode": {
+                    "type": "string"
+                },
+                "assetInboundId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.AssetInboundMemberUpdateReq": {
+            "type": "object",
+            "properties": {
+                "assetId": {
+                    "type": "integer"
+                },
+                "assetInboundCode": {
+                    "type": "string"
+                },
+                "assetInboundId": {
+                    "type": "integer"
+                },
+                "id": {
+                    "description": "主键",
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.AssetInboundUpdateReq": {
+            "type": "object",
+            "properties": {
                 "fromCode": {
                     "type": "string"
                 },
@@ -8458,6 +8950,9 @@ const docTemplateadmin = `{
                 },
                 "inboundBy": {
                     "type": "integer"
+                },
+                "inboundCode": {
+                    "type": "string"
                 },
                 "inboundFrom": {
                     "type": "integer"
@@ -8516,14 +9011,14 @@ const docTemplateadmin = `{
         "dto.AssetOutboundInsertReq": {
             "type": "object",
             "properties": {
-                "assetId": {
-                    "type": "integer"
-                },
                 "outboundAt": {
                     "type": "string"
                 },
                 "outboundBy": {
                     "type": "integer"
+                },
+                "outboundCode": {
+                    "type": "string"
                 },
                 "outboundTo": {
                     "type": "integer"
@@ -8536,12 +9031,52 @@ const docTemplateadmin = `{
                 }
             }
         },
-        "dto.AssetOutboundUpdateReq": {
+        "dto.AssetOutboundMemberDeleteReq": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "dto.AssetOutboundMemberInsertReq": {
             "type": "object",
             "properties": {
                 "assetId": {
                     "type": "integer"
                 },
+                "assetOutboundCode": {
+                    "type": "string"
+                },
+                "assetOutboundId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.AssetOutboundMemberUpdateReq": {
+            "type": "object",
+            "properties": {
+                "assetId": {
+                    "type": "integer"
+                },
+                "assetOutboundCode": {
+                    "type": "string"
+                },
+                "assetOutboundId": {
+                    "type": "integer"
+                },
+                "id": {
+                    "description": "主键",
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.AssetOutboundUpdateReq": {
+            "type": "object",
+            "properties": {
                 "id": {
                     "description": "主键",
                     "type": "integer"
@@ -8551,6 +9086,9 @@ const docTemplateadmin = `{
                 },
                 "outboundBy": {
                     "type": "integer"
+                },
+                "outboundCode": {
+                    "type": "string"
                 },
                 "outboundTo": {
                     "type": "integer"
@@ -11194,9 +11732,6 @@ const docTemplateadmin = `{
         "models.AssetInbound": {
             "type": "object",
             "properties": {
-                "assetId": {
-                    "type": "integer"
-                },
                 "fromCode": {
                     "type": "string"
                 },
@@ -11208,6 +11743,9 @@ const docTemplateadmin = `{
                 },
                 "inboundBy": {
                     "type": "integer"
+                },
+                "inboundCode": {
+                    "type": "string"
                 },
                 "inboundFrom": {
                     "type": "integer"
@@ -11223,12 +11761,29 @@ const docTemplateadmin = `{
                 }
             }
         },
-        "models.AssetOutbound": {
+        "models.AssetInboundMember": {
             "type": "object",
             "properties": {
                 "assetId": {
                     "type": "integer"
                 },
+                "assetInboundCode": {
+                    "type": "string"
+                },
+                "assetInboundId": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "$ref": "#/definitions/models.XTime"
+                }
+            }
+        },
+        "models.AssetOutbound": {
+            "type": "object",
+            "properties": {
                 "id": {
                     "type": "integer"
                 },
@@ -11237,6 +11792,9 @@ const docTemplateadmin = `{
                 },
                 "outboundBy": {
                     "type": "integer"
+                },
+                "outboundCode": {
+                    "type": "string"
                 },
                 "outboundTo": {
                     "type": "integer"
@@ -11249,6 +11807,26 @@ const docTemplateadmin = `{
                 },
                 "warehouseId": {
                     "type": "integer"
+                }
+            }
+        },
+        "models.AssetOutboundMember": {
+            "type": "object",
+            "properties": {
+                "assetId": {
+                    "type": "integer"
+                },
+                "assetOutboundCode": {
+                    "type": "string"
+                },
+                "assetOutboundId": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "$ref": "#/definitions/models.XTime"
                 }
             }
         },
@@ -11440,6 +12018,9 @@ const docTemplateadmin = `{
             "type": "object",
             "properties": {
                 "administratorId": {
+                    "type": "integer"
+                },
+                "createBy": {
                     "type": "integer"
                 },
                 "id": {
