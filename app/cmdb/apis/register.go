@@ -39,6 +39,7 @@ var ispList = []string{
 // 黑名单的SN， 因为有些SN都是一样的，只能通过主机名来确定唯一性
 var blackMap = map[string]bool{
 	"01234567890123456789AB": true,
+	"Default string":         true,
 }
 
 func RemoveBracketContent(s string) string {

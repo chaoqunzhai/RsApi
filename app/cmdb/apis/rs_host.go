@@ -292,7 +292,9 @@ func (e RsHost) Count(c *gin.Context) {
 
 	var offlineCount int64
 
-	e.Orm.Model(&models.RsHost{}).Where("healthy_at <= DATE_SUB(NOW(), INTERVAL 30 MINUTE) OR healthy_at IS NULL").Count(&offlineCount)
+	e.Orm.Model(&models.RsHost{}).Where("healthy_at <= DATE_SUB(NOW(), INTERVAL 30 MINUTE) OR healthy_at IS NULL").Updates(map[string]interface{}{
+		"status": global.HostOffline,
+	}).Count(&offlineCount)
 
 	//自建机房数量
 	var ZjCount int64
@@ -311,7 +313,9 @@ func (e RsHost) Count(c *gin.Context) {
 	//在线
 
 	var onlineCount int64
-	e.Orm.Model(&models.RsHost{}).Where(" healthy_at >= DATE_SUB(NOW(), INTERVAL 30 MINUTE)").Count(&onlineCount)
+	e.Orm.Model(&models.RsHost{}).Where(" healthy_at >= DATE_SUB(NOW(), INTERVAL 30 MINUTE)").Updates(map[string]interface{}{
+		"status": global.HostSuccess,
+	}).Count(&onlineCount)
 
 	var ZjLineCount int64
 	e.Orm.Model(&models.RsHost{}).Where("belong IN (0,1) and healthy_at >= DATE_SUB(NOW(), INTERVAL 30 MINUTE)").Count(&ZjLineCount)
@@ -443,7 +447,6 @@ func (e RsHost) GetPage(c *gin.Context) {
 
 				if row.HealthyAt.Valid {
 					if int(nowTime.Sub(row.HealthyAt.Time).Minutes()) > 6 { //如果上报的时间大于5分钟 那就删掉线了
-
 						e.Orm.Model(&models.RsHost{}).Where("id = ?", row.Id).Updates(map[string]interface{}{
 							"status": global.HostOffline,
 						})
