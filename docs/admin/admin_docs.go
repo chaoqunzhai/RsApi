@@ -4326,282 +4326,6 @@ const docTemplateadmin = `{
                 }
             }
         },
-        "/api/v1/rc-idc": {
-            "get": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
-                "description": "获取RcIdc列表",
-                "tags": [
-                    "RcIdc"
-                ],
-                "summary": "获取RcIdc列表",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "开关",
-                        "name": "enable",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "机房名称",
-                        "name": "name",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "机房状态",
-                        "name": "status",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "机房归属",
-                        "name": "belong",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "机房类型",
-                        "name": "typeId",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "商务人员",
-                        "name": "businessUser",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "所在区域",
-                        "name": "region",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "是否跨省",
-                        "name": "transProvince",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "页条数",
-                        "name": "pageSize",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "页码",
-                        "name": "pageIndex",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{\"code\": 200, \"data\": [...]}",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/response.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "allOf": [
-                                                {
-                                                    "$ref": "#/definitions/response.Page"
-                                                },
-                                                {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "list": {
-                                                            "type": "array",
-                                                            "items": {
-                                                                "$ref": "#/definitions/models.RcIdc"
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            ]
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                }
-            },
-            "post": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
-                "description": "创建RcIdc",
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "RcIdc"
-                ],
-                "summary": "创建RcIdc",
-                "parameters": [
-                    {
-                        "description": "data",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.RcIdcInsertReq"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{\"code\": 200, \"message\": \"添加成功\"}",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
-                "description": "删除RcIdc",
-                "tags": [
-                    "RcIdc"
-                ],
-                "summary": "删除RcIdc",
-                "parameters": [
-                    {
-                        "description": "body",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.RcIdcDeleteReq"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{\"code\": 200, \"message\": \"删除成功\"}",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/rc-idc/{id}": {
-            "get": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
-                "description": "获取RcIdc",
-                "tags": [
-                    "RcIdc"
-                ],
-                "summary": "获取RcIdc",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "id",
-                        "name": "id",
-                        "in": "path"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{\"code\": 200, \"data\": [...]}",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/response.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/models.RcIdc"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                }
-            },
-            "put": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
-                "description": "修改RcIdc",
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "RcIdc"
-                ],
-                "summary": "修改RcIdc",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "body",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.RcIdcUpdateReq"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{\"code\": 200, \"message\": \"修改成功\"}",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/register/healthy": {
-            "post": {
-                "description": "主动上报",
-                "tags": [
-                    "主机上报"
-                ],
-                "summary": "主机存活注册",
-                "responses": {
-                    "200": {
-                        "description": "{\"code\": 200, \"data\": \"\",\"msg\":\"successful\"}",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
         "/api/v1/role": {
             "get": {
                 "security": [
@@ -4821,6 +4545,1241 @@ const docTemplateadmin = `{
                 }
             }
         },
+        "/api/v1/rs-business": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取RsBusiness列表",
+                "tags": [
+                    "RsBusiness"
+                ],
+                "summary": "获取RsBusiness列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "开关",
+                        "name": "enable",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "业务云名称",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页条数",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageIndex",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.Page"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/models.RsBusiness"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "创建RsBusiness",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RsBusiness"
+                ],
+                "summary": "创建RsBusiness",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsBusinessInsertReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"添加成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "删除RsBusiness",
+                "tags": [
+                    "RsBusiness"
+                ],
+                "summary": "删除RsBusiness",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsBusinessDeleteReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"删除成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rs-business/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取RsBusiness",
+                "tags": [
+                    "RsBusiness"
+                ],
+                "summary": "获取RsBusiness",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.RsBusiness"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "修改RsBusiness",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RsBusiness"
+                ],
+                "summary": "修改RsBusiness",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsBusinessUpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"修改成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rs-contract": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取RsContract列表",
+                "tags": [
+                    "RsContract"
+                ],
+                "summary": "获取RsContract列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "合同名称",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "合同编号",
+                        "name": "number",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "商务人员",
+                        "name": "buId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "所属客户ID",
+                        "name": "customId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "签订人",
+                        "name": "signatoryId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "合同类型,contract_type",
+                        "name": "type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "结算方式,settlement_type",
+                        "name": "settlementType",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "地址",
+                        "name": "address",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "电话",
+                        "name": "phone",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页条数",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageIndex",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.Page"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/models.RsContract"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "创建RsContract",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RsContract"
+                ],
+                "summary": "创建RsContract",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsContractInsertReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"添加成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "删除RsContract",
+                "tags": [
+                    "RsContract"
+                ],
+                "summary": "删除RsContract",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsContractDeleteReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"删除成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rs-contract/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取RsContract",
+                "tags": [
+                    "RsContract"
+                ],
+                "summary": "获取RsContract",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.RsContract"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "修改RsContract",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RsContract"
+                ],
+                "summary": "修改RsContract",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsContractUpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"修改成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rs-custom": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取RsCustom列表",
+                "tags": [
+                    "RsCustom"
+                ],
+                "summary": "获取RsCustom列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "客户名称",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "客户类型,customer_type",
+                        "name": "type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "合作状态,work_status",
+                        "name": "cooperation",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页条数",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageIndex",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.Page"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/models.RsCustom"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "创建RsCustom",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RsCustom"
+                ],
+                "summary": "创建RsCustom",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsCustomInsertReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"添加成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "删除RsCustom",
+                "tags": [
+                    "RsCustom"
+                ],
+                "summary": "删除RsCustom",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsCustomDeleteReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"删除成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rs-custom-user": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取RsCustomUser列表",
+                "tags": [
+                    "RsCustomUser"
+                ],
+                "summary": "获取RsCustomUser列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "姓名",
+                        "name": "userName",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "所属客户",
+                        "name": "customId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "所属商务人员",
+                        "name": "buId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "联系号码",
+                        "name": "phone",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页条数",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageIndex",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.Page"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/models.RsCustomUser"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "创建RsCustomUser",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RsCustomUser"
+                ],
+                "summary": "创建RsCustomUser",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsCustomUserInsertReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"添加成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "删除RsCustomUser",
+                "tags": [
+                    "RsCustomUser"
+                ],
+                "summary": "删除RsCustomUser",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsCustomUserDeleteReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"删除成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rs-custom-user/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取RsCustomUser",
+                "tags": [
+                    "RsCustomUser"
+                ],
+                "summary": "获取RsCustomUser",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.RsCustomUser"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "修改RsCustomUser",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RsCustomUser"
+                ],
+                "summary": "修改RsCustomUser",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsCustomUserUpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"修改成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rs-custom/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取RsCustom",
+                "tags": [
+                    "RsCustom"
+                ],
+                "summary": "获取RsCustom",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.RsCustom"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "修改RsCustom",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RsCustom"
+                ],
+                "summary": "修改RsCustom",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsCustomUpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"修改成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rs-dial": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取RsDial列表",
+                "tags": [
+                    "RsDial"
+                ],
+                "summary": "获取RsDial列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "所属客户",
+                        "name": "customId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "关联合同",
+                        "name": "contractId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "带宽类型,broadband_type",
+                        "name": "broadbandType",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "是否管理线",
+                        "name": "isManager",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "IP地址",
+                        "name": "ip",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "线路名称",
+                        "name": "dialName",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "拨号状态,1:已联网 0:未联网 -1:联网异常",
+                        "name": "networkingStatus",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "拨号状态,1:已拨通 0:待使用 -1:拨号异常",
+                        "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "拨号状态,0:录入 1:自动上报",
+                        "name": "source",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "关联的IDC",
+                        "name": "idcId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "关联主机ID",
+                        "name": "hostId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "关联网卡ID",
+                        "name": "deviceId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页条数",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageIndex",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.Page"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/models.RsDial"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "创建RsDial",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RsDial"
+                ],
+                "summary": "创建RsDial",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsDialInsertReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"添加成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "删除RsDial",
+                "tags": [
+                    "RsDial"
+                ],
+                "summary": "删除RsDial",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsDialDeleteReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"删除成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rs-dial/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取RsDial",
+                "tags": [
+                    "RsDial"
+                ],
+                "summary": "获取RsDial",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.RsDial"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "修改RsDial",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RsDial"
+                ],
+                "summary": "修改RsDial",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsDialUpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"修改成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/rs-host": {
             "get": {
                 "security": [
@@ -5015,6 +5974,383 @@ const docTemplateadmin = `{
                 }
             }
         },
+        "/api/v1/rs-host-charging-day": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取RsHostChargingDay列表",
+                "tags": [
+                    "RsHostChargingDay"
+                ],
+                "summary": "获取RsHostChargingDay列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "切换的业务ID",
+                        "name": "businessId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "关联的主机ID",
+                        "name": "hostId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页条数",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageIndex",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.Page"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/models.RsHostChargingDay"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "创建RsHostChargingDay",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RsHostChargingDay"
+                ],
+                "summary": "创建RsHostChargingDay",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsHostChargingDayInsertReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"添加成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "删除RsHostChargingDay",
+                "tags": [
+                    "RsHostChargingDay"
+                ],
+                "summary": "删除RsHostChargingDay",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsHostChargingDayDeleteReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"删除成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rs-host-charging-day/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取RsHostChargingDay",
+                "tags": [
+                    "RsHostChargingDay"
+                ],
+                "summary": "获取RsHostChargingDay",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.RsHostChargingDay"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "修改RsHostChargingDay",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RsHostChargingDay"
+                ],
+                "summary": "修改RsHostChargingDay",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsHostChargingDayUpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"修改成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rs-host-switch-log": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取RsHostSwitchLog列表",
+                "tags": [
+                    "RsHostSwitchLog"
+                ],
+                "summary": "获取RsHostSwitchLog列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "切换的主机ID",
+                        "name": "hostId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "切换的新业务ID",
+                        "name": "businessId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "原来的业务SN",
+                        "name": "businessSn",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页条数",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageIndex",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.Page"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/models.RsHostSwitchLog"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "删除RsHostSwitchLog",
+                "tags": [
+                    "RsHostSwitchLog"
+                ],
+                "summary": "删除RsHostSwitchLog",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsHostSwitchLogDeleteReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"删除成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rs-host-switch-log/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取RsHostSwitchLog",
+                "tags": [
+                    "RsHostSwitchLog"
+                ],
+                "summary": "获取RsHostSwitchLog",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.RsHostSwitchLog"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/rs-host/{id}": {
             "get": {
                 "security": [
@@ -5085,6 +6421,482 @@ const docTemplateadmin = `{
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/dto.RsHostUpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"修改成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rs-idc": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取RsIdc列表",
+                "tags": [
+                    "RsIdc"
+                ],
+                "summary": "获取RsIdc列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "机房编号",
+                        "name": "number",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "机房名称",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "所属客户",
+                        "name": "customUser",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "机房类型",
+                        "name": "typeId",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "商务人员",
+                        "name": "businessUser",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "机房状态",
+                        "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "机房归属",
+                        "name": "belong",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页条数",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageIndex",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.Page"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/models.RsIdc"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "创建RsIdc",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RsIdc"
+                ],
+                "summary": "创建RsIdc",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsIdcInsertReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"添加成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "删除RsIdc",
+                "tags": [
+                    "RsIdc"
+                ],
+                "summary": "删除RsIdc",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsIdcDeleteReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"删除成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rs-idc/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取RsIdc",
+                "tags": [
+                    "RsIdc"
+                ],
+                "summary": "获取RsIdc",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.RsIdc"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "修改RsIdc",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RsIdc"
+                ],
+                "summary": "修改RsIdc",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsIdcUpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"修改成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rs-tag": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取RsTag列表",
+                "tags": [
+                    "RsTag"
+                ],
+                "summary": "获取RsTag列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "开关",
+                        "name": "enable",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "业务云名称",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页条数",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageIndex",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.Page"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/models.RsTag"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "创建RsTag",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RsTag"
+                ],
+                "summary": "创建RsTag",
+                "parameters": [
+                    {
+                        "description": "data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsTagInsertReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"添加成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "删除RsTag",
+                "tags": [
+                    "RsTag"
+                ],
+                "summary": "删除RsTag",
+                "parameters": [
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsTagDeleteReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"message\": \"删除成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rs-tag/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取RsTag",
+                "tags": [
+                    "RsTag"
+                ],
+                "summary": "获取RsTag",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\": 200, \"data\": [...]}",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/models.RsTag"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "修改RsTag",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "RsTag"
+                ],
+                "summary": "修改RsTag",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RsTagUpdateReq"
                         }
                     }
                 ],
@@ -6395,14 +8207,8 @@ const docTemplateadmin = `{
                 "categoryName": {
                     "type": "string"
                 },
-                "createBy": {
-                    "type": "integer"
-                },
                 "remark": {
                     "type": "string"
-                },
-                "updateBy": {
-                    "type": "integer"
                 }
             }
         },
@@ -6412,18 +8218,12 @@ const docTemplateadmin = `{
                 "categoryName": {
                     "type": "string"
                 },
-                "createBy": {
-                    "type": "integer"
-                },
                 "id": {
                     "description": "主键",
                     "type": "integer"
                 },
                 "remark": {
                     "type": "string"
-                },
-                "updateBy": {
-                    "type": "integer"
                 }
             }
         },
@@ -6458,9 +8258,6 @@ const docTemplateadmin = `{
                 "assetId": {
                     "type": "integer"
                 },
-                "createBy": {
-                    "type": "integer"
-                },
                 "disposalAt": {
                     "type": "string"
                 },
@@ -6481,9 +8278,6 @@ const docTemplateadmin = `{
                 },
                 "remark": {
                     "type": "string"
-                },
-                "updateBy": {
-                    "type": "integer"
                 }
             }
         },
@@ -6494,9 +8288,6 @@ const docTemplateadmin = `{
                     "type": "number"
                 },
                 "assetId": {
-                    "type": "integer"
-                },
-                "createBy": {
                     "type": "integer"
                 },
                 "disposalAt": {
@@ -6523,9 +8314,6 @@ const docTemplateadmin = `{
                 },
                 "remark": {
                     "type": "string"
-                },
-                "updateBy": {
-                    "type": "integer"
                 }
             }
         },
@@ -6543,9 +8331,6 @@ const docTemplateadmin = `{
         "dto.AssetGroupInsertReq": {
             "type": "object",
             "properties": {
-                "createBy": {
-                    "type": "integer"
-                },
                 "groupName": {
                     "type": "string"
                 },
@@ -6554,9 +8339,6 @@ const docTemplateadmin = `{
                 },
                 "remark": {
                     "type": "string"
-                },
-                "updateBy": {
-                    "type": "integer"
                 }
             }
         },
@@ -6580,13 +8362,7 @@ const docTemplateadmin = `{
                 "assetId": {
                     "type": "integer"
                 },
-                "createBy": {
-                    "type": "integer"
-                },
                 "isMain": {
-                    "type": "integer"
-                },
-                "updateBy": {
                     "type": "integer"
                 }
             }
@@ -6600,17 +8376,11 @@ const docTemplateadmin = `{
                 "assetId": {
                     "type": "integer"
                 },
-                "createBy": {
-                    "type": "integer"
-                },
                 "id": {
                     "description": "主键",
                     "type": "integer"
                 },
                 "isMain": {
-                    "type": "integer"
-                },
-                "updateBy": {
                     "type": "integer"
                 }
             }
@@ -6618,9 +8388,6 @@ const docTemplateadmin = `{
         "dto.AssetGroupUpdateReq": {
             "type": "object",
             "properties": {
-                "createBy": {
-                    "type": "integer"
-                },
                 "groupName": {
                     "type": "string"
                 },
@@ -6633,9 +8400,6 @@ const docTemplateadmin = `{
                 },
                 "remark": {
                     "type": "string"
-                },
-                "updateBy": {
-                    "type": "integer"
                 }
             }
         },
@@ -6656,9 +8420,6 @@ const docTemplateadmin = `{
                 "assetId": {
                     "type": "integer"
                 },
-                "createBy": {
-                    "type": "integer"
-                },
                 "fromCode": {
                     "type": "string"
                 },
@@ -6674,9 +8435,6 @@ const docTemplateadmin = `{
                 "remark": {
                     "type": "string"
                 },
-                "updateBy": {
-                    "type": "integer"
-                },
                 "warehouseId": {
                     "type": "integer"
                 }
@@ -6686,9 +8444,6 @@ const docTemplateadmin = `{
             "type": "object",
             "properties": {
                 "assetId": {
-                    "type": "integer"
-                },
-                "createBy": {
                     "type": "integer"
                 },
                 "fromCode": {
@@ -6710,9 +8465,6 @@ const docTemplateadmin = `{
                 "remark": {
                     "type": "string"
                 },
-                "updateBy": {
-                    "type": "integer"
-                },
                 "warehouseId": {
                     "type": "integer"
                 }
@@ -6728,9 +8480,6 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "categoryId": {
-                    "type": "integer"
-                },
-                "createBy": {
                     "type": "integer"
                 },
                 "remark": {
@@ -6750,9 +8499,6 @@ const docTemplateadmin = `{
                 },
                 "unitPrice": {
                     "type": "number"
-                },
-                "updateBy": {
-                    "type": "integer"
                 }
             }
         },
@@ -6773,9 +8519,6 @@ const docTemplateadmin = `{
                 "assetId": {
                     "type": "integer"
                 },
-                "createBy": {
-                    "type": "integer"
-                },
                 "outboundAt": {
                     "type": "string"
                 },
@@ -6788,9 +8531,6 @@ const docTemplateadmin = `{
                 "remark": {
                     "type": "string"
                 },
-                "updateBy": {
-                    "type": "integer"
-                },
                 "warehouseId": {
                     "type": "integer"
                 }
@@ -6800,9 +8540,6 @@ const docTemplateadmin = `{
             "type": "object",
             "properties": {
                 "assetId": {
-                    "type": "integer"
-                },
-                "createBy": {
                     "type": "integer"
                 },
                 "id": {
@@ -6820,9 +8557,6 @@ const docTemplateadmin = `{
                 },
                 "remark": {
                     "type": "string"
-                },
-                "updateBy": {
-                    "type": "integer"
                 },
                 "warehouseId": {
                     "type": "integer"
@@ -6867,9 +8601,6 @@ const docTemplateadmin = `{
                 "categoryId": {
                     "type": "integer"
                 },
-                "createBy": {
-                    "type": "integer"
-                },
                 "quantity": {
                     "type": "integer"
                 },
@@ -6893,9 +8624,6 @@ const docTemplateadmin = `{
                 },
                 "unitPrice": {
                     "type": "number"
-                },
-                "updateBy": {
-                    "type": "integer"
                 }
             }
         },
@@ -6926,9 +8654,6 @@ const docTemplateadmin = `{
                 "categoryId": {
                     "type": "integer"
                 },
-                "createBy": {
-                    "type": "integer"
-                },
                 "id": {
                     "description": "主键",
                     "type": "integer"
@@ -6956,9 +8681,6 @@ const docTemplateadmin = `{
                 },
                 "unitPrice": {
                     "type": "number"
-                },
-                "updateBy": {
-                    "type": "integer"
                 }
             }
         },
@@ -6982,9 +8704,6 @@ const docTemplateadmin = `{
                 "categoryId": {
                     "type": "integer"
                 },
-                "createBy": {
-                    "type": "integer"
-                },
                 "purchaseAt": {
                     "type": "string"
                 },
@@ -7014,9 +8733,6 @@ const docTemplateadmin = `{
                 },
                 "unitPrice": {
                     "type": "number"
-                },
-                "updateBy": {
-                    "type": "integer"
                 }
             }
         },
@@ -7027,9 +8743,6 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "categoryId": {
-                    "type": "integer"
-                },
-                "createBy": {
                     "type": "integer"
                 },
                 "id": {
@@ -7065,9 +8778,6 @@ const docTemplateadmin = `{
                 },
                 "unitPrice": {
                     "type": "number"
-                },
-                "updateBy": {
-                    "type": "integer"
                 }
             }
         },
@@ -7088,9 +8798,6 @@ const docTemplateadmin = `{
                 "assetId": {
                     "type": "integer"
                 },
-                "createBy": {
-                    "type": "integer"
-                },
                 "reason": {
                     "type": "string"
                 },
@@ -7102,9 +8809,6 @@ const docTemplateadmin = `{
                 },
                 "returnPerson": {
                     "type": "integer"
-                },
-                "updateBy": {
-                    "type": "integer"
                 }
             }
         },
@@ -7112,9 +8816,6 @@ const docTemplateadmin = `{
             "type": "object",
             "properties": {
                 "assetId": {
-                    "type": "integer"
-                },
-                "createBy": {
                     "type": "integer"
                 },
                 "id": {
@@ -7131,9 +8832,6 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "returnPerson": {
-                    "type": "integer"
-                },
-                "updateBy": {
                     "type": "integer"
                 }
             }
@@ -7155,17 +8853,11 @@ const docTemplateadmin = `{
                 "categoryId": {
                     "type": "integer"
                 },
-                "createBy": {
-                    "type": "integer"
-                },
                 "quantity": {
                     "type": "integer"
                 },
                 "remark": {
                     "type": "string"
-                },
-                "updateBy": {
-                    "type": "integer"
                 },
                 "warehouseId": {
                     "type": "integer"
@@ -7178,9 +8870,6 @@ const docTemplateadmin = `{
                 "categoryId": {
                     "type": "integer"
                 },
-                "createBy": {
-                    "type": "integer"
-                },
                 "id": {
                     "description": "主键",
                     "type": "integer"
@@ -7190,9 +8879,6 @@ const docTemplateadmin = `{
                 },
                 "remark": {
                     "type": "string"
-                },
-                "updateBy": {
-                    "type": "integer"
                 },
                 "warehouseId": {
                     "type": "integer"
@@ -7219,9 +8905,6 @@ const docTemplateadmin = `{
                 "contactPerson": {
                     "type": "string"
                 },
-                "createBy": {
-                    "type": "integer"
-                },
                 "email": {
                     "type": "string"
                 },
@@ -7233,9 +8916,6 @@ const docTemplateadmin = `{
                 },
                 "supplierName": {
                     "type": "string"
-                },
-                "updateBy": {
-                    "type": "integer"
                 }
             }
         },
@@ -7247,9 +8927,6 @@ const docTemplateadmin = `{
                 },
                 "contactPerson": {
                     "type": "string"
-                },
-                "createBy": {
-                    "type": "integer"
                 },
                 "email": {
                     "type": "string"
@@ -7266,9 +8943,6 @@ const docTemplateadmin = `{
                 },
                 "supplierName": {
                     "type": "string"
-                },
-                "updateBy": {
-                    "type": "integer"
                 }
             }
         },
@@ -7282,9 +8956,6 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "categoryId": {
-                    "type": "integer"
-                },
-                "createBy": {
                     "type": "integer"
                 },
                 "id": {
@@ -7308,9 +8979,6 @@ const docTemplateadmin = `{
                 },
                 "unitPrice": {
                     "type": "number"
-                },
-                "updateBy": {
-                    "type": "integer"
                 }
             }
         },
@@ -7331,14 +8999,8 @@ const docTemplateadmin = `{
                 "administratorId": {
                     "type": "integer"
                 },
-                "createBy": {
-                    "type": "integer"
-                },
                 "remark": {
                     "type": "string"
-                },
-                "updateBy": {
-                    "type": "integer"
                 },
                 "warehouseName": {
                     "type": "string"
@@ -7351,18 +9013,12 @@ const docTemplateadmin = `{
                 "administratorId": {
                     "type": "integer"
                 },
-                "createBy": {
-                    "type": "integer"
-                },
                 "id": {
                     "description": "主键",
                     "type": "integer"
                 },
                 "remark": {
                     "type": "string"
-                },
-                "updateBy": {
-                    "type": "integer"
                 },
                 "warehouseName": {
                     "type": "string"
@@ -7391,150 +9047,11 @@ const docTemplateadmin = `{
                 }
             }
         },
-        "dto.RcIdcDeleteReq": {
-            "type": "object",
-            "properties": {
-                "ids": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
-                }
-            }
-        },
-        "dto.RcIdcInsertReq": {
-            "type": "object",
-            "properties": {
-                "address": {
-                    "type": "string"
-                },
-                "belong": {
-                    "type": "string"
-                },
-                "businessUser": {
-                    "type": "string"
-                },
-                "charging": {
-                    "type": "string"
-                },
-                "createBy": {
-                    "type": "integer"
-                },
-                "customUser": {
-                    "type": "string"
-                },
-                "desc": {
-                    "type": "string"
-                },
-                "enable": {
-                    "type": "string"
-                },
-                "ipV6": {
-                    "type": "string"
-                },
-                "layer": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "price": {
-                    "type": "string"
-                },
-                "region": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "string"
-                },
-                "transProvince": {
-                    "type": "string"
-                },
-                "typeId": {
-                    "type": "string"
-                },
-                "updateBy": {
-                    "type": "integer"
-                },
-                "weChatName": {
-                    "type": "string"
-                }
-            }
-        },
-        "dto.RcIdcUpdateReq": {
-            "type": "object",
-            "properties": {
-                "address": {
-                    "type": "string"
-                },
-                "belong": {
-                    "type": "string"
-                },
-                "businessUser": {
-                    "type": "string"
-                },
-                "charging": {
-                    "type": "string"
-                },
-                "createBy": {
-                    "type": "integer"
-                },
-                "customUser": {
-                    "type": "string"
-                },
-                "desc": {
-                    "type": "string"
-                },
-                "enable": {
-                    "type": "string"
-                },
-                "id": {
-                    "description": "主键编码",
-                    "type": "integer"
-                },
-                "ipV6": {
-                    "type": "string"
-                },
-                "layer": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "price": {
-                    "type": "string"
-                },
-                "region": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "string"
-                },
-                "transProvince": {
-                    "type": "string"
-                },
-                "typeId": {
-                    "type": "string"
-                },
-                "updateBy": {
-                    "type": "integer"
-                },
-                "weChatName": {
-                    "type": "string"
-                }
-            }
-        },
         "dto.ResetSysUserPwdReq": {
             "type": "object",
             "properties": {
-                "createBy": {
-                    "type": "integer"
-                },
                 "password": {
                     "type": "string"
-                },
-                "updateBy": {
-                    "type": "integer"
                 },
                 "userId": {
                     "description": "用户ID",
@@ -7563,6 +9080,637 @@ const docTemplateadmin = `{
                 }
             }
         },
+        "dto.RsBandwidthFeesInsertReq": {
+            "type": "object",
+            "properties": {
+                "LinePrice": {
+                    "type": "number"
+                },
+                "charging": {
+                    "type": "integer"
+                },
+                "down": {
+                    "type": "number"
+                },
+                "id": {
+                    "description": "主键编码",
+                    "type": "integer"
+                },
+                "isp": {
+                    "type": "integer"
+                },
+                "managerLineCost": {
+                    "type": "number"
+                },
+                "moreDialing": {
+                    "type": "integer"
+                },
+                "region": {},
+                "transProd": {
+                    "type": "integer"
+                },
+                "up": {
+                    "type": "number"
+                }
+            }
+        },
+        "dto.RsBusinessDeleteReq": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "dto.RsBusinessInsertReq": {
+            "type": "object",
+            "properties": {
+                "billingMethod": {
+                    "type": "integer"
+                },
+                "costCnf": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.RsCostCnfInsertReq"
+                    }
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "enName": {
+                    "type": "string"
+                },
+                "endUsage": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "parentId": {
+                    "type": "integer"
+                },
+                "startUsage": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.RsBusinessUpdateReq": {
+            "type": "object",
+            "properties": {
+                "billingMethod": {
+                    "type": "integer"
+                },
+                "costCnf": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.RsCostCnfInsertReq"
+                    }
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "enName": {
+                    "type": "string"
+                },
+                "endUsage": {
+                    "type": "string"
+                },
+                "id": {
+                    "description": "主键编码",
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "parentId": {
+                    "type": "integer"
+                },
+                "startUsage": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.RsContractDeleteReq": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "dto.RsContractInsertReq": {
+            "type": "object",
+            "properties": {
+                "accountName": {
+                    "type": "string"
+                },
+                "address": {
+                    "type": "string"
+                },
+                "bandwidthFees": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.RsBandwidthFeesInsertReq"
+                    }
+                },
+                "bankAccount": {
+                    "type": "string"
+                },
+                "bankName": {
+                    "type": "string"
+                },
+                "buId": {
+                    "type": "integer"
+                },
+                "customId": {
+                    "type": "integer"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "endTimeAt": {
+                    "type": "string"
+                },
+                "identifyNumber": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "number": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "settlementType": {
+                    "type": "integer"
+                },
+                "signatoryId": {
+                    "type": "integer"
+                },
+                "startTimeAt": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "integer"
+                },
+                "userId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.RsContractUpdateReq": {
+            "type": "object",
+            "properties": {
+                "accountName": {
+                    "type": "string"
+                },
+                "address": {
+                    "type": "string"
+                },
+                "bandwidthFees": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.RsBandwidthFeesInsertReq"
+                    }
+                },
+                "bankAccount": {
+                    "type": "string"
+                },
+                "bankName": {
+                    "type": "string"
+                },
+                "buId": {
+                    "type": "integer"
+                },
+                "customId": {
+                    "type": "integer"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "endTimeAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "description": "主键编码",
+                    "type": "integer"
+                },
+                "identifyNumber": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "number": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "settlementType": {
+                    "type": "integer"
+                },
+                "signatoryId": {
+                    "type": "integer"
+                },
+                "startTimeAt": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "integer"
+                },
+                "userId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.RsCostCnfInsertReq": {
+            "type": "object",
+            "properties": {
+                "bandwidthLimit": {
+                    "type": "number"
+                },
+                "bandwidthLower": {
+                    "type": "number"
+                },
+                "buId": {
+                    "type": "integer"
+                },
+                "dialType": {
+                    "type": "integer"
+                },
+                "id": {
+                    "description": "主键编码",
+                    "type": "integer"
+                },
+                "ipType": {
+                    "type": "integer"
+                },
+                "isp": {
+                    "type": "integer"
+                },
+                "minimum": {
+                    "type": "number"
+                },
+                "price": {
+                    "type": "number"
+                }
+            }
+        },
+        "dto.RsCustomDeleteReq": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "dto.RsCustomInsertReq": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "cooperation": {
+                    "type": "integer"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "region": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.RsCustomUpdateReq": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "cooperation": {
+                    "type": "integer"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "id": {
+                    "description": "主键编码",
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "region": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.RsCustomUserDeleteReq": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "dto.RsCustomUserInsertReq": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "buId": {
+                    "type": "integer"
+                },
+                "customId": {
+                    "type": "integer"
+                },
+                "dept": {
+                    "type": "string"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "duties": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "region": {
+                    "type": "string"
+                },
+                "userName": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.RsCustomUserUpdateReq": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "buId": {
+                    "type": "integer"
+                },
+                "customId": {
+                    "type": "integer"
+                },
+                "dept": {
+                    "type": "string"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "duties": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "description": "主键编码",
+                    "type": "integer"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "region": {
+                    "type": "string"
+                },
+                "userName": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.RsDialDeleteReq": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "dto.RsDialInsertReq": {
+            "type": "object",
+            "properties": {
+                "account": {
+                    "type": "string"
+                },
+                "broadbandType": {
+                    "type": "integer"
+                },
+                "contractId": {
+                    "type": "integer"
+                },
+                "customId": {
+                    "type": "integer"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "deviceId": {
+                    "type": "integer"
+                },
+                "dialName": {
+                    "type": "string"
+                },
+                "hostId": {
+                    "type": "integer"
+                },
+                "idcId": {
+                    "type": "integer"
+                },
+                "ip": {
+                    "type": "string"
+                },
+                "isManager": {
+                    "type": "integer"
+                },
+                "ispId": {
+                    "type": "integer"
+                },
+                "mac": {
+                    "type": "string"
+                },
+                "networkingStatus": {
+                    "type": "integer"
+                },
+                "pass": {
+                    "type": "string"
+                },
+                "runTimeAt": {
+                    "type": "string"
+                },
+                "source": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.RsDialUpdateReq": {
+            "type": "object",
+            "properties": {
+                "RunTimeAt": {
+                    "type": "string"
+                },
+                "account": {
+                    "type": "string"
+                },
+                "broadbandType": {
+                    "type": "integer"
+                },
+                "contractId": {
+                    "type": "integer"
+                },
+                "customId": {
+                    "type": "integer"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "deviceId": {
+                    "type": "integer"
+                },
+                "dialName": {
+                    "type": "string"
+                },
+                "hostId": {
+                    "type": "integer"
+                },
+                "id": {
+                    "description": "主键编码",
+                    "type": "integer"
+                },
+                "idcId": {
+                    "type": "integer"
+                },
+                "ip": {
+                    "type": "string"
+                },
+                "isManager": {
+                    "type": "integer"
+                },
+                "ispId": {
+                    "type": "integer"
+                },
+                "mac": {
+                    "type": "string"
+                },
+                "networkingStatus": {
+                    "type": "integer"
+                },
+                "pass": {
+                    "type": "string"
+                },
+                "source": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.RsHostChargingDayDeleteReq": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "dto.RsHostChargingDayInsertReq": {
+            "type": "object",
+            "properties": {
+                "banlance95": {
+                    "type": "string"
+                },
+                "businessId": {
+                    "type": "string"
+                },
+                "cost": {
+                    "type": "string"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "hostId": {
+                    "type": "string"
+                },
+                "sla": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.RsHostChargingDayUpdateReq": {
+            "type": "object",
+            "properties": {
+                "banlance95": {
+                    "type": "string"
+                },
+                "businessId": {
+                    "type": "string"
+                },
+                "cost": {
+                    "type": "string"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "hostId": {
+                    "type": "string"
+                },
+                "id": {
+                    "description": "主键编码",
+                    "type": "integer"
+                },
+                "sla": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.RsHostDeleteReq": {
             "type": "object",
             "properties": {
@@ -7577,31 +9725,22 @@ const docTemplateadmin = `{
         "dto.RsHostInsertReq": {
             "type": "object",
             "properties": {
-                "balance": {
+                "address": {
                     "type": "string"
+                },
+                "balance": {
+                    "type": "number"
                 },
                 "belong": {
-                    "type": "string"
-                },
-                "businessSn": {
-                    "type": "string"
-                },
-                "city": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "cpu": {
-                    "type": "string"
-                },
-                "createBy": {
                     "type": "integer"
                 },
                 "desc": {
                     "type": "string"
                 },
                 "disk": {
-                    "type": "string"
-                },
-                "enable": {
                     "type": "string"
                 },
                 "hostName": {
@@ -7611,16 +9750,16 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "isp": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "kernel": {
                     "type": "string"
                 },
                 "layer": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "memory": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "netDevice": {
                     "type": "string"
@@ -7628,7 +9767,7 @@ const docTemplateadmin = `{
                 "operator": {
                     "type": "string"
                 },
-                "province": {
+                "region": {
                     "type": "string"
                 },
                 "remark": {
@@ -7638,41 +9777,40 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "status": {
-                    "type": "string"
-                },
-                "updateBy": {
                     "type": "integer"
+                }
+            }
+        },
+        "dto.RsHostSwitchLogDeleteReq": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 }
             }
         },
         "dto.RsHostUpdateReq": {
             "type": "object",
             "properties": {
-                "balance": {
+                "address": {
                     "type": "string"
+                },
+                "balance": {
+                    "type": "number"
                 },
                 "belong": {
-                    "type": "string"
-                },
-                "businessSn": {
-                    "type": "string"
-                },
-                "city": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "cpu": {
-                    "type": "string"
-                },
-                "createBy": {
                     "type": "integer"
                 },
                 "desc": {
                     "type": "string"
                 },
                 "disk": {
-                    "type": "string"
-                },
-                "enable": {
                     "type": "string"
                 },
                 "hostName": {
@@ -7686,24 +9824,21 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "isp": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "kernel": {
                     "type": "string"
                 },
                 "layer": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "memory": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "netDevice": {
                     "type": "string"
                 },
-                "operator": {
-                    "type": "string"
-                },
-                "province": {
+                "region": {
                     "type": "string"
                 },
                 "remark": {
@@ -7713,10 +9848,171 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.RsIdcDeleteReq": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "dto.RsIdcInsertReq": {
+            "type": "object",
+            "properties": {
+                "address": {
                     "type": "string"
                 },
-                "updateBy": {
+                "belong": {
                     "type": "integer"
+                },
+                "buId": {
+                    "type": "integer"
+                },
+                "customId": {
+                    "type": "integer"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "ipV6": {
+                    "type": "integer"
+                },
+                "moreDialing": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "number": {
+                    "type": "integer"
+                },
+                "region": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "transProvince": {
+                    "type": "integer"
+                },
+                "typeId": {
+                    "type": "integer"
+                },
+                "webHookUrl": {
+                    "type": "string"
+                },
+                "wechatName": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.RsIdcUpdateReq": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "belong": {
+                    "type": "integer"
+                },
+                "buId": {
+                    "type": "integer"
+                },
+                "customId": {
+                    "type": "integer"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "id": {
+                    "description": "主键编码",
+                    "type": "integer"
+                },
+                "ipV6": {
+                    "type": "integer"
+                },
+                "moreDialing": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "number": {
+                    "type": "integer"
+                },
+                "region": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "transProvince": {
+                    "type": "integer"
+                },
+                "typeId": {
+                    "type": "integer"
+                },
+                "webHookUrl": {
+                    "type": "string"
+                },
+                "wechatName": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.RsTagDeleteReq": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "dto.RsTagInsertReq": {
+            "type": "object",
+            "properties": {
+                "desc": {
+                    "type": "string"
+                },
+                "enable": {
+                    "type": "integer"
+                },
+                "layer": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.RsTagUpdateReq": {
+            "type": "object",
+            "properties": {
+                "desc": {
+                    "type": "string"
+                },
+                "enable": {
+                    "type": "integer"
+                },
+                "id": {
+                    "description": "主键编码",
+                    "type": "integer"
+                },
+                "layer": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
                 }
             }
         },
@@ -7737,9 +10033,6 @@ const docTemplateadmin = `{
                 "action": {
                     "type": "string"
                 },
-                "createBy": {
-                    "type": "integer"
-                },
                 "handle": {
                     "type": "string"
                 },
@@ -7755,9 +10048,6 @@ const docTemplateadmin = `{
                 },
                 "type": {
                     "type": "string"
-                },
-                "updateBy": {
-                    "type": "integer"
                 }
             }
         },
@@ -7784,9 +10074,6 @@ const docTemplateadmin = `{
                 "configValue": {
                     "type": "string"
                 },
-                "createBy": {
-                    "type": "integer"
-                },
                 "id": {
                     "description": "编码",
                     "type": "integer"
@@ -7796,9 +10083,6 @@ const docTemplateadmin = `{
                 },
                 "remark": {
                     "type": "string"
-                },
-                "updateBy": {
-                    "type": "integer"
                 }
             }
         },
@@ -7816,9 +10100,6 @@ const docTemplateadmin = `{
         "dto.SysDeptInsertReq": {
             "type": "object",
             "properties": {
-                "createBy": {
-                    "type": "integer"
-                },
                 "deptId": {
                     "description": "编码",
                     "type": "integer"
@@ -7853,9 +10134,6 @@ const docTemplateadmin = `{
                 },
                 "status": {
                     "description": "状态",
-                    "type": "integer"
-                },
-                "updateBy": {
                     "type": "integer"
                 }
             }
@@ -7863,9 +10141,6 @@ const docTemplateadmin = `{
         "dto.SysDeptUpdateReq": {
             "type": "object",
             "properties": {
-                "createBy": {
-                    "type": "integer"
-                },
                 "deptId": {
                     "description": "编码",
                     "type": "integer"
@@ -7900,9 +10175,6 @@ const docTemplateadmin = `{
                 },
                 "status": {
                     "description": "状态",
-                    "type": "integer"
-                },
-                "updateBy": {
                     "type": "integer"
                 }
             }
@@ -7932,9 +10204,6 @@ const docTemplateadmin = `{
         "dto.SysDictDataInsertReq": {
             "type": "object",
             "properties": {
-                "createBy": {
-                    "type": "integer"
-                },
                 "cssClass": {
                     "type": "string"
                 },
@@ -7963,9 +10232,6 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "status": {
-                    "type": "integer"
-                },
-                "updateBy": {
                     "type": "integer"
                 }
             }
@@ -7973,9 +10239,6 @@ const docTemplateadmin = `{
         "dto.SysDictDataUpdateReq": {
             "type": "object",
             "properties": {
-                "createBy": {
-                    "type": "integer"
-                },
                 "cssClass": {
                     "type": "string"
                 },
@@ -8008,35 +10271,23 @@ const docTemplateadmin = `{
                 },
                 "status": {
                     "type": "integer"
-                },
-                "updateBy": {
-                    "type": "integer"
                 }
             }
         },
         "dto.SysDictTypeDeleteReq": {
             "type": "object",
             "properties": {
-                "createBy": {
-                    "type": "integer"
-                },
                 "ids": {
                     "type": "array",
                     "items": {
                         "type": "integer"
                     }
-                },
-                "updateBy": {
-                    "type": "integer"
                 }
             }
         },
         "dto.SysDictTypeInsertReq": {
             "type": "object",
             "properties": {
-                "createBy": {
-                    "type": "integer"
-                },
                 "dictName": {
                     "type": "string"
                 },
@@ -8050,9 +10301,6 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "status": {
-                    "type": "integer"
-                },
-                "updateBy": {
                     "type": "integer"
                 }
             }
@@ -8060,9 +10308,6 @@ const docTemplateadmin = `{
         "dto.SysDictTypeUpdateReq": {
             "type": "object",
             "properties": {
-                "createBy": {
-                    "type": "integer"
-                },
                 "dictName": {
                     "type": "string"
                 },
@@ -8076,9 +10321,6 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "status": {
-                    "type": "integer"
-                },
-                "updateBy": {
                     "type": "integer"
                 }
             }
@@ -8097,17 +10339,11 @@ const docTemplateadmin = `{
         "dto.SysMenuDeleteReq": {
             "type": "object",
             "properties": {
-                "createBy": {
-                    "type": "integer"
-                },
                 "ids": {
                     "type": "array",
                     "items": {
                         "type": "integer"
                     }
-                },
-                "updateBy": {
-                    "type": "integer"
                 }
             }
         },
@@ -8131,9 +10367,6 @@ const docTemplateadmin = `{
                 "component": {
                     "description": "组件",
                     "type": "string"
-                },
-                "createBy": {
-                    "type": "integer"
                 },
                 "icon": {
                     "description": "图标",
@@ -8188,9 +10421,6 @@ const docTemplateadmin = `{
                 "title": {
                     "description": "显示名称",
                     "type": "string"
-                },
-                "updateBy": {
-                    "type": "integer"
                 },
                 "visible": {
                     "description": "是否显示",
@@ -8219,9 +10449,6 @@ const docTemplateadmin = `{
                     "description": "组件",
                     "type": "string"
                 },
-                "createBy": {
-                    "type": "integer"
-                },
                 "icon": {
                     "description": "图标",
                     "type": "string"
@@ -8276,9 +10503,6 @@ const docTemplateadmin = `{
                     "description": "显示名称",
                     "type": "string"
                 },
-                "updateBy": {
-                    "type": "integer"
-                },
                 "visible": {
                     "description": "是否显示",
                     "type": "string"
@@ -8299,26 +10523,17 @@ const docTemplateadmin = `{
         "dto.SysPostDeleteReq": {
             "type": "object",
             "properties": {
-                "createBy": {
-                    "type": "integer"
-                },
                 "ids": {
                     "type": "array",
                     "items": {
                         "type": "integer"
                     }
-                },
-                "updateBy": {
-                    "type": "integer"
                 }
             }
         },
         "dto.SysPostInsertReq": {
             "type": "object",
             "properties": {
-                "createBy": {
-                    "type": "integer"
-                },
                 "postCode": {
                     "type": "string"
                 },
@@ -8335,9 +10550,6 @@ const docTemplateadmin = `{
                     "type": "integer"
                 },
                 "status": {
-                    "type": "integer"
-                },
-                "updateBy": {
                     "type": "integer"
                 }
             }
@@ -8345,9 +10557,6 @@ const docTemplateadmin = `{
         "dto.SysPostUpdateReq": {
             "type": "object",
             "properties": {
-                "createBy": {
-                    "type": "integer"
-                },
                 "postCode": {
                     "type": "string"
                 },
@@ -8364,9 +10573,6 @@ const docTemplateadmin = `{
                     "type": "integer"
                 },
                 "status": {
-                    "type": "integer"
-                },
-                "updateBy": {
                     "type": "integer"
                 }
             }
@@ -8387,9 +10593,6 @@ const docTemplateadmin = `{
             "properties": {
                 "admin": {
                     "type": "boolean"
-                },
-                "createBy": {
-                    "type": "integer"
                 },
                 "dataScope": {
                     "type": "string"
@@ -8445,9 +10648,6 @@ const docTemplateadmin = `{
                     "items": {
                         "$ref": "#/definitions/go-admin_app_admin_models.SysMenu"
                     }
-                },
-                "updateBy": {
-                    "type": "integer"
                 }
             }
         },
@@ -8456,9 +10656,6 @@ const docTemplateadmin = `{
             "properties": {
                 "admin": {
                     "type": "boolean"
-                },
-                "createBy": {
-                    "type": "integer"
                 },
                 "dataScope": {
                     "type": "string"
@@ -8514,9 +10711,6 @@ const docTemplateadmin = `{
                     "items": {
                         "$ref": "#/definitions/go-admin_app_admin_models.SysMenu"
                     }
-                },
-                "updateBy": {
-                    "type": "integer"
                 }
             }
         },
@@ -8526,10 +10720,8 @@ const docTemplateadmin = `{
                 "avatar": {
                     "type": "string"
                 },
-                "createBy": {
-                    "type": "integer"
-                },
                 "deptId": {
+                    "description": "Email    string ` + "`" + `json:\"email\" comment:\"邮箱\" vd:\"len($)\u003e0,email\"` + "`" + `",
                     "type": "integer"
                 },
                 "email": {
@@ -8550,8 +10742,11 @@ const docTemplateadmin = `{
                 "remark": {
                     "type": "string"
                 },
-                "roleId": {
-                    "type": "integer"
+                "roleIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 },
                 "sex": {
                     "type": "string"
@@ -8559,9 +10754,6 @@ const docTemplateadmin = `{
                 "status": {
                     "type": "string",
                     "default": "1"
-                },
-                "updateBy": {
-                    "type": "integer"
                 },
                 "userId": {
                     "description": "用户ID",
@@ -8578,16 +10770,17 @@ const docTemplateadmin = `{
                 "avatar": {
                     "type": "string"
                 },
-                "createBy": {
-                    "type": "integer"
-                },
                 "deptId": {
+                    "description": "Email    string ` + "`" + `json:\"email\" comment:\"邮箱\" vd:\"len($)\u003e0,email\"` + "`" + `",
                     "type": "integer"
                 },
                 "email": {
                     "type": "string"
                 },
                 "nickName": {
+                    "type": "string"
+                },
+                "password": {
                     "type": "string"
                 },
                 "phone": {
@@ -8599,8 +10792,11 @@ const docTemplateadmin = `{
                 "remark": {
                     "type": "string"
                 },
-                "roleId": {
-                    "type": "integer"
+                "roleIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 },
                 "sex": {
                     "type": "string"
@@ -8608,9 +10804,6 @@ const docTemplateadmin = `{
                 "status": {
                     "type": "string",
                     "default": "1"
-                },
-                "updateBy": {
-                    "type": "integer"
                 },
                 "userId": {
                     "description": "用户ID",
@@ -8624,9 +10817,6 @@ const docTemplateadmin = `{
         "dto.UpdateStatusReq": {
             "type": "object",
             "properties": {
-                "createBy": {
-                    "type": "integer"
-                },
                 "roleId": {
                     "description": "角色编码",
                     "type": "integer"
@@ -8634,23 +10824,14 @@ const docTemplateadmin = `{
                 "status": {
                     "description": "状态",
                     "type": "string"
-                },
-                "updateBy": {
-                    "type": "integer"
                 }
             }
         },
         "dto.UpdateSysUserStatusReq": {
             "type": "object",
             "properties": {
-                "createBy": {
-                    "type": "integer"
-                },
                 "status": {
                     "type": "string"
-                },
-                "updateBy": {
-                    "type": "integer"
                 },
                 "userId": {
                     "description": "用户ID",
@@ -8662,12 +10843,6 @@ const docTemplateadmin = `{
             "type": "object",
             "properties": {
                 "action": {
-                    "type": "string"
-                },
-                "createBy": {
-                    "type": "integer"
-                },
-                "createdAt": {
                     "type": "string"
                 },
                 "handle": {
@@ -8684,9 +10859,6 @@ const docTemplateadmin = `{
                 },
                 "type": {
                     "type": "string"
-                },
-                "updateBy": {
-                    "type": "integer"
                 },
                 "updatedAt": {
                     "type": "string"
@@ -8708,12 +10880,6 @@ const docTemplateadmin = `{
                 "configValue": {
                     "type": "string"
                 },
-                "createBy": {
-                    "type": "integer"
-                },
-                "createdAt": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "integer"
                 },
@@ -8723,11 +10889,8 @@ const docTemplateadmin = `{
                 "remark": {
                     "type": "string"
                 },
-                "updateBy": {
-                    "type": "integer"
-                },
                 "updatedAt": {
-                    "type": "string"
+                    "$ref": "#/definitions/models.XTime"
                 }
             }
         },
@@ -8739,12 +10902,6 @@ const docTemplateadmin = `{
                     "items": {
                         "$ref": "#/definitions/go-admin_app_admin_models.SysDept"
                     }
-                },
-                "createBy": {
-                    "type": "integer"
-                },
-                "createdAt": {
-                    "type": "string"
                 },
                 "dataScope": {
                     "type": "string"
@@ -8787,11 +10944,8 @@ const docTemplateadmin = `{
                     "description": "状态",
                     "type": "integer"
                 },
-                "updateBy": {
-                    "type": "integer"
-                },
                 "updatedAt": {
-                    "type": "string"
+                    "$ref": "#/definitions/models.XTime"
                 }
             }
         },
@@ -8817,12 +10971,6 @@ const docTemplateadmin = `{
                     }
                 },
                 "component": {
-                    "type": "string"
-                },
-                "createBy": {
-                    "type": "integer"
-                },
-                "createdAt": {
                     "type": "string"
                 },
                 "dataScope": {
@@ -8879,11 +11027,8 @@ const docTemplateadmin = `{
                 "title": {
                     "type": "string"
                 },
-                "updateBy": {
-                    "type": "integer"
-                },
                 "updatedAt": {
-                    "type": "string"
+                    "$ref": "#/definitions/models.XTime"
                 },
                 "visible": {
                     "type": "string"
@@ -8925,12 +11070,6 @@ const docTemplateadmin = `{
                 "categoryId": {
                     "type": "integer"
                 },
-                "createBy": {
-                    "type": "integer"
-                },
-                "createdAt": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "integer"
                 },
@@ -8952,11 +11091,8 @@ const docTemplateadmin = `{
                 "unitPrice": {
                     "type": "number"
                 },
-                "updateBy": {
-                    "type": "integer"
-                },
                 "updatedAt": {
-                    "type": "string"
+                    "$ref": "#/definitions/models.XTime"
                 }
             }
         },
@@ -8966,23 +11102,14 @@ const docTemplateadmin = `{
                 "categoryName": {
                     "type": "string"
                 },
-                "createBy": {
-                    "type": "integer"
-                },
-                "createdAt": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "integer"
                 },
                 "remark": {
                     "type": "string"
                 },
-                "updateBy": {
-                    "type": "integer"
-                },
                 "updatedAt": {
-                    "type": "string"
+                    "$ref": "#/definitions/models.XTime"
                 }
             }
         },
@@ -8994,12 +11121,6 @@ const docTemplateadmin = `{
                 },
                 "assetId": {
                     "type": "integer"
-                },
-                "createBy": {
-                    "type": "integer"
-                },
-                "createdAt": {
-                    "type": "string"
                 },
                 "disposalAt": {
                     "type": "string"
@@ -9025,23 +11146,14 @@ const docTemplateadmin = `{
                 "remark": {
                     "type": "string"
                 },
-                "updateBy": {
-                    "type": "integer"
-                },
                 "updatedAt": {
-                    "type": "string"
+                    "$ref": "#/definitions/models.XTime"
                 }
             }
         },
         "models.AssetGroup": {
             "type": "object",
             "properties": {
-                "createBy": {
-                    "type": "integer"
-                },
-                "createdAt": {
-                    "type": "string"
-                },
                 "groupName": {
                     "type": "string"
                 },
@@ -9054,11 +11166,8 @@ const docTemplateadmin = `{
                 "remark": {
                     "type": "string"
                 },
-                "updateBy": {
-                    "type": "integer"
-                },
                 "updatedAt": {
-                    "type": "string"
+                    "$ref": "#/definitions/models.XTime"
                 }
             }
         },
@@ -9071,23 +11180,14 @@ const docTemplateadmin = `{
                 "assetId": {
                     "type": "integer"
                 },
-                "createBy": {
-                    "type": "integer"
-                },
-                "createdAt": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "integer"
                 },
                 "isMain": {
                     "type": "integer"
                 },
-                "updateBy": {
-                    "type": "integer"
-                },
                 "updatedAt": {
-                    "type": "string"
+                    "$ref": "#/definitions/models.XTime"
                 }
             }
         },
@@ -9096,12 +11196,6 @@ const docTemplateadmin = `{
             "properties": {
                 "assetId": {
                     "type": "integer"
-                },
-                "createBy": {
-                    "type": "integer"
-                },
-                "createdAt": {
-                    "type": "string"
                 },
                 "fromCode": {
                     "type": "string"
@@ -9121,11 +11215,8 @@ const docTemplateadmin = `{
                 "remark": {
                     "type": "string"
                 },
-                "updateBy": {
-                    "type": "integer"
-                },
                 "updatedAt": {
-                    "type": "string"
+                    "$ref": "#/definitions/models.XTime"
                 },
                 "warehouseId": {
                     "type": "integer"
@@ -9137,12 +11228,6 @@ const docTemplateadmin = `{
             "properties": {
                 "assetId": {
                     "type": "integer"
-                },
-                "createBy": {
-                    "type": "integer"
-                },
-                "createdAt": {
-                    "type": "string"
                 },
                 "id": {
                     "type": "integer"
@@ -9159,11 +11244,8 @@ const docTemplateadmin = `{
                 "remark": {
                     "type": "string"
                 },
-                "updateBy": {
-                    "type": "integer"
-                },
                 "updatedAt": {
-                    "type": "string"
+                    "$ref": "#/definitions/models.XTime"
                 },
                 "warehouseId": {
                     "type": "integer"
@@ -9178,12 +11260,6 @@ const docTemplateadmin = `{
                 },
                 "categoryId": {
                     "type": "integer"
-                },
-                "createBy": {
-                    "type": "integer"
-                },
-                "createdAt": {
-                    "type": "string"
                 },
                 "id": {
                     "type": "integer"
@@ -9218,11 +11294,8 @@ const docTemplateadmin = `{
                 "unitPrice": {
                     "type": "number"
                 },
-                "updateBy": {
-                    "type": "integer"
-                },
                 "updatedAt": {
-                    "type": "string"
+                    "$ref": "#/definitions/models.XTime"
                 }
             }
         },
@@ -9253,12 +11326,6 @@ const docTemplateadmin = `{
                 "categoryId": {
                     "type": "integer"
                 },
-                "createBy": {
-                    "type": "integer"
-                },
-                "createdAt": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "integer"
                 },
@@ -9286,11 +11353,8 @@ const docTemplateadmin = `{
                 "unitPrice": {
                     "type": "number"
                 },
-                "updateBy": {
-                    "type": "integer"
-                },
                 "updatedAt": {
-                    "type": "string"
+                    "$ref": "#/definitions/models.XTime"
                 }
             }
         },
@@ -9299,12 +11363,6 @@ const docTemplateadmin = `{
             "properties": {
                 "assetId": {
                     "type": "integer"
-                },
-                "createBy": {
-                    "type": "integer"
-                },
-                "createdAt": {
-                    "type": "string"
                 },
                 "id": {
                     "type": "integer"
@@ -9321,11 +11379,8 @@ const docTemplateadmin = `{
                 "returnPerson": {
                     "type": "integer"
                 },
-                "updateBy": {
-                    "type": "integer"
-                },
                 "updatedAt": {
-                    "type": "string"
+                    "$ref": "#/definitions/models.XTime"
                 }
             }
         },
@@ -9334,12 +11389,6 @@ const docTemplateadmin = `{
             "properties": {
                 "categoryId": {
                     "type": "integer"
-                },
-                "createBy": {
-                    "type": "integer"
-                },
-                "createdAt": {
-                    "type": "string"
                 },
                 "id": {
                     "type": "integer"
@@ -9350,11 +11399,8 @@ const docTemplateadmin = `{
                 "remark": {
                     "type": "string"
                 },
-                "updateBy": {
-                    "type": "integer"
-                },
                 "updatedAt": {
-                    "type": "string"
+                    "$ref": "#/definitions/models.XTime"
                 },
                 "warehouseId": {
                     "type": "integer"
@@ -9368,12 +11414,6 @@ const docTemplateadmin = `{
                     "type": "string"
                 },
                 "contactPerson": {
-                    "type": "string"
-                },
-                "createBy": {
-                    "type": "integer"
-                },
-                "createdAt": {
                     "type": "string"
                 },
                 "email": {
@@ -9391,11 +11431,8 @@ const docTemplateadmin = `{
                 "supplierName": {
                     "type": "string"
                 },
-                "updateBy": {
-                    "type": "integer"
-                },
                 "updatedAt": {
-                    "type": "string"
+                    "$ref": "#/definitions/models.XTime"
                 }
             }
         },
@@ -9405,173 +11442,615 @@ const docTemplateadmin = `{
                 "administratorId": {
                     "type": "integer"
                 },
-                "createBy": {
-                    "type": "integer"
-                },
-                "createdAt": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "integer"
                 },
                 "remark": {
                     "type": "string"
                 },
-                "updateBy": {
-                    "type": "integer"
-                },
                 "updatedAt": {
-                    "type": "string"
+                    "$ref": "#/definitions/models.XTime"
                 },
                 "warehouseName": {
                     "type": "string"
                 }
             }
         },
-        "models.RcIdc": {
+        "models.RsBandwidthFees": {
             "type": "object",
             "properties": {
-                "address": {
-                    "type": "string"
-                },
-                "belong": {
-                    "type": "string"
-                },
-                "businessUser": {
-                    "type": "string"
-                },
                 "charging": {
-                    "type": "string"
-                },
-                "createBy": {
                     "type": "integer"
                 },
-                "createdAt": {
+                "down": {
+                    "type": "number"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "isp": {
+                    "type": "integer"
+                },
+                "linePrice": {
+                    "type": "number"
+                },
+                "managerLineCost": {
+                    "type": "number"
+                },
+                "moreDialing": {
+                    "type": "integer"
+                },
+                "region": {
                     "type": "string"
                 },
-                "customUser": {
-                    "type": "string"
+                "transProd": {
+                    "type": "integer"
                 },
+                "up": {
+                    "type": "number"
+                },
+                "updatedAt": {
+                    "$ref": "#/definitions/models.XTime"
+                }
+            }
+        },
+        "models.RsBusiness": {
+            "type": "object",
+            "properties": {
+                "billingMethod": {
+                    "type": "integer"
+                },
+                "children": {},
+                "costCnf": {},
                 "desc": {
                     "type": "string"
                 },
-                "enable": {
+                "enName": {
+                    "type": "string"
+                },
+                "endUsage": {
                     "type": "string"
                 },
                 "id": {
                     "type": "integer"
                 },
-                "ipV6": {
+                "layer": {
+                    "type": "integer"
+                },
+                "name": {
                     "type": "string"
                 },
-                "layer": {
+                "parentId": {
+                    "type": "integer"
+                },
+                "startUsage": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "$ref": "#/definitions/models.XTime"
+                },
+                "updatedUser": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.RsContract": {
+            "type": "object",
+            "properties": {
+                "accountName": {
+                    "type": "string"
+                },
+                "address": {
+                    "type": "string"
+                },
+                "bandwidthFees": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.RsBandwidthFees"
+                    }
+                },
+                "bankAccount": {
+                    "type": "string"
+                },
+                "bankName": {
+                    "type": "string"
+                },
+                "buId": {
+                    "type": "integer"
+                },
+                "customId": {
+                    "type": "integer"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "endTimeAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "identifyNumber": {
                     "type": "string"
                 },
                 "name": {
                     "type": "string"
                 },
-                "price": {
+                "number": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "settlementType": {
+                    "type": "integer"
+                },
+                "signatoryId": {
+                    "type": "integer"
+                },
+                "startTimeAt": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "$ref": "#/definitions/models.XTime"
+                },
+                "userId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.RsCustom": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "cooperation": {
+                    "type": "integer"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
                     "type": "string"
                 },
                 "region": {
                     "type": "string"
                 },
-                "status": {
-                    "type": "string"
-                },
-                "transProvince": {
-                    "type": "string"
-                },
-                "typeId": {
-                    "type": "string"
-                },
-                "updateBy": {
+                "type": {
                     "type": "integer"
                 },
                 "updatedAt": {
+                    "$ref": "#/definitions/models.XTime"
+                }
+            }
+        },
+        "models.RsCustomUser": {
+            "type": "object",
+            "properties": {
+                "address": {
                     "type": "string"
                 },
-                "weChatName": {
+                "buId": {
+                    "type": "integer"
+                },
+                "customId": {
+                    "type": "integer"
+                },
+                "dept": {
                     "type": "string"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "duties": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "region": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "$ref": "#/definitions/models.XTime"
+                },
+                "userName": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.RsDial": {
+            "type": "object",
+            "properties": {
+                "account": {
+                    "type": "string"
+                },
+                "broadbandType": {
+                    "type": "integer"
+                },
+                "bu": {
+                    "type": "string"
+                },
+                "contractId": {
+                    "type": "integer"
+                },
+                "customId": {
+                    "type": "integer"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "deviceId": {
+                    "type": "integer"
+                },
+                "deviceName": {
+                    "type": "string"
+                },
+                "dialName": {
+                    "type": "string"
+                },
+                "hostId": {
+                    "type": "integer"
+                },
+                "hostInfo": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "idcId": {
+                    "type": "integer"
+                },
+                "idcInfo": {},
+                "ip": {
+                    "type": "string"
+                },
+                "ipV6": {
+                    "type": "string"
+                },
+                "isManager": {
+                    "type": "integer"
+                },
+                "ispId": {
+                    "type": "integer"
+                },
+                "ispName": {
+                    "type": "string"
+                },
+                "mac": {
+                    "type": "string"
+                },
+                "natType": {
+                    "type": "string"
+                },
+                "networkingStatus": {
+                    "type": "integer"
+                },
+                "pass": {
+                    "type": "string"
+                },
+                "runTimeAt": {
+                    "type": "string"
+                },
+                "source": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "$ref": "#/definitions/models.XTime"
                 }
             }
         },
         "models.RsHost": {
             "type": "object",
             "properties": {
-                "balance": {
-                    "type": "string"
-                },
-                "belong": {
-                    "type": "string"
-                },
-                "businessSn": {
-                    "type": "string"
-                },
-                "city": {
-                    "type": "string"
-                },
-                "cpu": {
-                    "type": "string"
-                },
-                "createBy": {
+                "allLine": {
                     "type": "integer"
                 },
-                "createdAt": {
-                    "type": "string"
+                "auth": {
+                    "type": "integer"
+                },
+                "balance": {
+                    "type": "number"
+                },
+                "belong": {
+                    "type": "integer"
+                },
+                "business": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.RsBusiness"
+                    }
+                },
+                "cpu": {
+                    "type": "integer"
                 },
                 "desc": {
                     "type": "string"
                 },
-                "disk": {
+                "dialList": {},
+                "disk": {},
+                "gateway": {
                     "type": "string"
                 },
-                "enable": {
-                    "type": "string"
+                "healthy": {
+                    "$ref": "#/definitions/sql.NullTime"
                 },
-                "hostName": {
+                "hostname": {
                     "type": "string"
                 },
                 "id": {
                     "type": "integer"
                 },
+                "idc": {
+                    "type": "integer"
+                },
+                "idcInfo": {},
                 "ip": {
                     "type": "string"
                 },
                 "isp": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "kernel": {
                     "type": "string"
                 },
-                "layer": {
+                "lineBandwidth": {
+                    "type": "number"
+                },
+                "lineType": {
+                    "type": "integer"
+                },
+                "mac": {
+                    "type": "string"
+                },
+                "mask": {
                     "type": "string"
                 },
                 "memory": {
+                    "type": "integer"
+                },
+                "memoryMonitor": {},
+                "netDevice": {},
+                "networkType": {
+                    "type": "integer"
+                },
+                "probeShell": {
                     "type": "string"
                 },
-                "netDevice": {
+                "publicIp": {
                     "type": "string"
                 },
-                "operator": {
-                    "type": "string"
-                },
-                "province": {
+                "region": {
                     "type": "string"
                 },
                 "remark": {
+                    "description": "166陕西延安宜川集义郭东机房电信1-2-11(30*100M) 拆分解析到线路和带宽",
+                    "type": "string"
+                },
+                "remotePort": {
                     "type": "string"
                 },
                 "sn": {
                     "type": "string"
                 },
                 "status": {
-                    "type": "string"
+                    "type": "integer"
                 },
-                "updateBy": {
+                "system": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "tag": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.RsTag"
+                    }
+                },
+                "transProvince": {
                     "type": "integer"
                 },
                 "updatedAt": {
+                    "$ref": "#/definitions/models.XTime"
+                },
+                "updatedUser": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.RsHostChargingDay": {
+            "type": "object",
+            "properties": {
+                "banlance95": {
+                    "type": "string"
+                },
+                "businessId": {
+                    "type": "string"
+                },
+                "cost": {
+                    "type": "string"
+                },
+                "createBy": {
+                    "type": "integer"
+                },
+                "createdAt": {
+                    "$ref": "#/definitions/models.XTime"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "hostId": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "sla": {
+                    "type": "string"
+                },
+                "updatedUser": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.RsHostSwitchLog": {
+            "type": "object",
+            "properties": {
+                "bu_en_source": {
+                    "type": "string"
+                },
+                "bu_source": {
+                    "type": "string"
+                },
+                "bu_target_id": {
+                    "type": "integer"
+                },
+                "businessInfo": {},
+                "createBy": {
+                    "type": "integer"
+                },
+                "createdAt": {
+                    "$ref": "#/definitions/models.XTime"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "hostId": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "jobId": {
+                    "type": "string"
+                },
+                "updatedUser": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.RsIdc": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "belong": {
+                    "type": "integer"
+                },
+                "buId": {
+                    "type": "integer"
+                },
+                "customId": {
+                    "type": "integer"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "ipV6": {
+                    "type": "integer"
+                },
+                "moreDialing": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "number": {
+                    "type": "integer"
+                },
+                "region": {
+                    "type": "string"
+                },
+                "rsIdcCount": {
+                    "$ref": "#/definitions/models.RsIdcCount"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "transProvince": {
+                    "type": "integer"
+                },
+                "typeId": {
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "$ref": "#/definitions/models.XTime"
+                },
+                "webHookUrl": {
+                    "type": "string"
+                },
+                "wechatName": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.RsIdcCount": {
+            "type": "object",
+            "properties": {
+                "allHost": {
+                    "type": "integer"
+                },
+                "buLine": {
+                    "type": "integer"
+                },
+                "managerLine": {
+                    "type": "integer"
+                },
+                "offLine": {
+                    "type": "integer"
+                },
+                "onLine": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.RsTag": {
+            "type": "object",
+            "properties": {
+                "desc": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "$ref": "#/definitions/models.XTime"
+                },
+                "updatedUser": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.XTime": {
+            "type": "object",
+            "properties": {
+                "time.Time": {
                     "type": "string"
                 }
             }
@@ -9605,6 +12084,18 @@ const docTemplateadmin = `{
                 },
                 "status": {
                     "type": "string"
+                }
+            }
+        },
+        "sql.NullTime": {
+            "type": "object",
+            "properties": {
+                "time": {
+                    "type": "string"
+                },
+                "valid": {
+                    "description": "Valid is true if Time is not NULL",
+                    "type": "boolean"
                 }
             }
         },
@@ -9766,9 +12257,6 @@ const docTemplateadmin = `{
                         "$ref": "#/definitions/tools.SysColumns"
                     }
                 },
-                "createBy": {
-                    "type": "integer"
-                },
                 "createdAt": {
                     "type": "string"
                 },
@@ -9863,9 +12351,6 @@ const docTemplateadmin = `{
                 },
                 "treeParentCode": {
                     "type": "string"
-                },
-                "updateBy": {
-                    "type": "integer"
                 },
                 "updatedAt": {
                     "type": "string"

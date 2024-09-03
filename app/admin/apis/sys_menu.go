@@ -192,10 +192,10 @@ func (e SysMenu) GetMenuRole(c *gin.Context) {
 		return
 	}
 
-	result, err := s.SetMenuRole(user.GetRoleName(c))
+	result, err := s.SetMenuRole(user.GetUserId(c))
 
 	if err != nil {
-		e.Error(500, err, "查询失败")
+		e.Error(401, err, "暂无菜单配置,无权登录")
 		return
 	}
 

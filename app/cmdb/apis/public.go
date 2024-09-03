@@ -10,13 +10,14 @@ import (
 	"github.com/go-admin-team/go-admin-core/sdk/pkg/utils"
 	"github.com/google/uuid"
 	"go-admin/app/cmdb/service"
+	"go-admin/app/cmdb/service/dto"
 	models2 "go-admin/cmd/migrate/migration/models"
 	"go-admin/common/file_store"
 	"io/ioutil"
 	"strings"
 )
 
-const path = "static/uploadfile/"
+const UploadPath = "static/uploadfile/"
 
 type FileResponse struct {
 	Size     int64  `json:"size"`
@@ -109,11 +110,11 @@ func (e *Public) baseImg(c *gin.Context, fileResponse FileResponse, urlPerfix st
 	ddd, _ := base64.StdEncoding.DecodeString(file2list[1])
 	guid := uuid.New().String()
 	fileName := guid + ".jpg"
-	err := utils.IsNotExistMkDir(path)
+	err := utils.IsNotExistMkDir(UploadPath)
 	if err != nil {
 		e.Error(500, errors.New(""), "初始化文件路径失败")
 	}
-	base64File := path + fileName
+	base64File := UploadPath + fileName
 	_ = ioutil.WriteFile(base64File, ddd, 0666)
 	typeStr := strings.Replace(strings.Replace(file2list[0], "data:", "", -1), ";base64", "", -1)
 	fileResponse = FileResponse{
@@ -144,12 +145,12 @@ func (e *Public) multipleFile(c *gin.Context, urlPerfix string) []FileResponse {
 		guid := uuid.New().String()
 		fileName := guid + utils.GetExt(f.Filename)
 
-		err := utils.IsNotExistMkDir(path)
+		err := utils.IsNotExistMkDir(UploadPath)
 		if err != nil {
 
 			e.Error(500, errors.New(""), "初始化文件路径失败")
 		}
-		multipartFileName := path + fileName
+		multipartFileName := UploadPath + fileName
 		err1 := c.SaveUploadedFile(f, multipartFileName)
 		fileType, _ := utils.GetType(multipartFileName)
 		if err1 == nil {
@@ -187,11 +188,11 @@ func (e *Public) singleFile(c *gin.Context, fileResponse FileResponse, urlPerfix
 
 	fileName := guid + utils.GetExt(files.Filename)
 
-	err = utils.IsNotExistMkDir(path)
+	err = utils.IsNotExistMkDir(UploadPath)
 	if err != nil {
 		e.Error(500, errors.New(""), "初始化文件路径失败")
 	}
-	singleFile := path + fileName
+	singleFile := UploadPath + fileName
 	_ = c.SaveUploadedFile(files, singleFile)
 	fileType, _ := utils.GetType(singleFile)
 	fileResponse = FileResponse{
@@ -230,4 +231,25 @@ func ossUpload(name string, path string) error {
 func qiniuUpload(name string, path string) error {
 	oss := file_store.ALiYunOSS{}
 	return oss.UpLoad(name, path)
+}
+
+func (e *Public) OperationLog(c *gin.Context) {
+	req := dto.OperationLogReq{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
+
+	var lists []models2.OperationLog
+	e.Orm.Model(&models2.OperationLog{}).Where("object_id = ? and module = ?",
+		req.Id, req.Module).Order("created_at desc").Find(&lists)
+
+	e.PageOK(lists, len(lists), 1, -1, "successful")
+	return
+
 }

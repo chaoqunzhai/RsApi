@@ -60,6 +60,36 @@ func (e SysRole) GetPage(c *gin.Context) {
 	e.PageOK(list, int(count), req.GetPageIndex(), req.GetPageSize(), "查询成功")
 }
 
+func (e SysRole) BindUser(c *gin.Context) {
+	s := service.SysRole{}
+	req := dto.SysRoleBindUserGetPageReq{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req, binding.Form).
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
+
+	roleModel := models.SysRole{}
+
+	result := make([]models.SysUser, 0)
+	e.Orm.Model(&models.SysRole{}).Where("role_name = ?", req.Name).Limit(1).Find(&roleModel)
+	if roleModel.RoleId == 0 {
+		e.OK(result, "")
+		return
+	}
+	var userIds []int
+	e.Orm.Raw("select user_id from sys_user_bind_role  where role_id = ?", roleModel.RoleId).Scan(&userIds)
+
+	e.Orm.Model(&models.SysUser{}).Where("user_id in ?", userIds).Find(&result)
+	e.PageOK(result, len(result), 1, -1, "查询成功")
+	return
+}
+
 // Get
 // @Summary 获取Role数据
 // @Description 获取JSON

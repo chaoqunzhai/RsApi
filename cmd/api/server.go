@@ -71,6 +71,7 @@ func setup() {
 	//queue.Register(global.ApiCheck, models.SaveSysApi)
 	//go queue.Run()
 
+	InitializationDialMap()
 	usageStr := `starting api server...`
 	log.Println(usageStr)
 }

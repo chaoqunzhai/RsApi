@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"go-admin/app/admin/models"
 	"go-admin/common"
 	"net/http"
@@ -21,14 +22,14 @@ import (
 func PayloadFunc(data interface{}) jwt.MapClaims {
 	if v, ok := data.(map[string]interface{}); ok {
 		u, _ := v["user"].(SysUser)
-		r, _ := v["role"].(SysRole)
+		//r, _ := v["role"].(SysRole)
 		return jwt.MapClaims{
-			jwt.IdentityKey:  u.UserId,
-			jwt.RoleIdKey:    r.RoleId,
-			jwt.RoleKey:      r.RoleKey,
-			jwt.NiceKey:      u.Username,
-			jwt.DataScopeKey: r.DataScope,
-			jwt.RoleNameKey:  r.RoleName,
+			jwt.IdentityKey: u.UserId,
+			jwt.NiceKey:     u.Username,
+			//jwt.RoleIdKey:    r.RoleId,
+			//jwt.RoleKey:      r.RoleKey,
+			//jwt.DataScopeKey: r.DataScope,
+			//jwt.RoleNameKey:  r.RoleName,
 		}
 	}
 	return jwt.MapClaims{}
@@ -39,10 +40,10 @@ func IdentityHandler(c *gin.Context) interface{} {
 	return map[string]interface{}{
 		"IdentityKey": claims["identity"],
 		"UserName":    claims["nice"],
-		"RoleKey":     claims["rolekey"],
-		"UserId":      claims["identity"],
-		"RoleIds":     claims["roleid"],
-		"DataScope":   claims["datascope"],
+		//"RoleKey":     claims["rolekey"],
+		"UserId": claims["identity"],
+		//"RoleIds":     claims["roleid"],
+		//"DataScope":   claims["datascope"],
 	}
 }
 
@@ -93,17 +94,17 @@ func Authenticator(c *gin.Context) (interface{}, error) {
 			return nil, jwt.ErrInvalidVerificationode
 		}
 	}
-	sysUser, role, e := loginVals.GetUser(db)
+	sysUser, e := loginVals.GetUser(db)
 	if e == nil {
 		username = loginVals.Username
 
-		return map[string]interface{}{"user": sysUser, "role": role}, nil
+		return map[string]interface{}{"user": sysUser}, nil
 	} else {
 		msg = "登录失败"
 		status = "1"
 		log.Warnf("%s login failed!", loginVals.Username)
 	}
-	return nil, jwt.ErrFailedAuthentication
+	return nil, errors.New("用户名或密码错误")
 }
 
 // LoginLogToDB Write log to database

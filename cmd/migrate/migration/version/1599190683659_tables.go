@@ -41,12 +41,23 @@ func _1599190683659Tables(db *gorm.DB, version string) error {
 			new(models.TbDemo),
 			// RS
 			new(models.ChinaData),
-			new(models.RsCloud),
+			new(models.Business),
+			new(models.Tag),
+			new(models.BusinessCostCnf),
 			new(models.Idc),
-			new(models.IdcBandwidth),
 			new(models.Host),
 			new(models.HostSystem),
 			new(models.HostSoftware),
+			new(models.HostSwitchLog),
+			new(models.HostNetDevice),
+			new(models.Dial),
+			new(models.Contract),
+			new(models.HostChargingDay),
+			new(models.Custom),
+			new(models.CustomUser),
+			new(models.BandwidthFees),
+			new(models.HostExecLog),
+			new(models.OperationLog),
 		)
 		if err != nil {
 			return err

@@ -40,3 +40,7 @@ func (u *BaseUser) Verify(db *gorm.DB, tableName string) bool {
 	db.Table(tableName).Where("username = ?", u.Username).First(u)
 	return u.GetPasswordHash() == u.PasswordHash
 }
+
+type ExtendUserBy struct {
+	UpdatedUser string `json:"updatedUser" gorm:"-"`
+}

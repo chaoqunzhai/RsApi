@@ -235,7 +235,7 @@ func genTableInit(tx *gorm.DB, tablesList []string, i int, c *gin.Context) (tool
 	data.IsDataScope = 1
 	data.IsAuth = 1
 
-	data.FunctionAuthor = "wenjianzhang"
+	data.FunctionAuthor = "rsSoftware"
 	for i := 0; i < len(dbcolumn); i++ {
 		var column tools.SysColumns
 		column.ColumnComment = dbcolumn[i].ColumnComment

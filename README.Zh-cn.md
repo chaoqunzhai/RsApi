@@ -1,32 +1,6 @@
 # rs-api
 
 
-## ✨ 特性
-
-- 遵循 RESTful API 设计规范
-
-- 基于 GIN WEB API 框架，提供了丰富的中间件支持（用户认证、跨域、访问日志、追踪ID等）
-
-- 基于Casbin的 RBAC 访问控制模型
-
-- JWT 认证
-
-- 支持 Swagger 文档(基于swaggo)
-
-- 基于 GORM 的数据库存储，可扩展多种类型数据库
-
-- 配置文件简单的模型映射，快速能够得到想要的配置
-
-- 代码生成工具
-
-- 表单构建工具
-
-- 多指令模式
-
-- 多租户的支持
-
-- TODO: 单元测试
-
 ### 环境要求
 
 go 1.18
@@ -34,28 +8,6 @@ go 1.18
 node版本: v14.16.0
 
 npm版本: 6.14.11
-
-### 开发目录创建
-
-```bash
-
-# 创建开发目录
-mkdir goadmin
-cd goadmin
-```
-
-### 获取代码
-
-> 重点注意：两个项目必须放在同一文件夹下；
-
-```bash
-# 获取后端代码
-git clone https://github.com/go-admin-team/go-admin.git
-
-# 获取前端代码
-git clone https://github.com/go-admin-team/go-admin-ui.git
-
-```
 
 ### 启动说明
 
@@ -104,8 +56,8 @@ cgo: exec gcc: exec: "gcc": executable file not found in %PATH%
 
 ``` bash
 # 首次配置需要初始化数据库资源信息
-# macOS or linux 下使用
-$ ./go-admin migrate -c config/settings.dev.yml
+
+export GOOS=darwin && export GOARCH=amd64 && go build  && ./go-admin migrate -c config/settings.yml
 
 # ⚠️注意:windows 下使用
 $ go-admin.exe migrate -c config/settings.dev.yml
@@ -148,25 +100,11 @@ go generate
 
 ```bash
 # windows
-env GOOS=windows GOARCH=amd64 go build main.go
+env GOOS=windows GOARCH=amd64 go build  -o rs-api
 
 # or
 # linux
-env GOOS=linux GOARCH=amd64 go build main.go
+env GOOS=linux GOARCH=amd64 go build -o rs-api -ldflags "-X main.Version=5.0"
+
 ```
-
-### UI交互端启动说明
-
-```bash
-# 安装依赖
-npm install
-
-# 建议不要直接使用 cnpm 安装依赖，会有各种诡异的 bug。可以通过如下操作解决 npm 下载速度慢的问题
-npm install --registry=https://registry.npmmirror.com
-
-# 启动服务
-npm run dev
-```
-
-
 

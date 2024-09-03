@@ -55,6 +55,12 @@ deploy:
 
 
 # use to develop environment by yunbyte
+.PHONY: build-doc
+build-doc:
+	go mod tidy
+	go fmt ./...
+	CGO_ENABLED=0 go generate
+
 .PHONY: build-dev
 build-dev:
 	go mod tidy

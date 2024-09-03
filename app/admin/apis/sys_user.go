@@ -522,7 +522,7 @@ func (e SysUser) GetInfo(c *gin.Context) {
 		mp["buttons"] = buttons
 	} else {
 		list, _ := r.GetById(user.GetRoleId(c))
-		mp["permissions"] = list
+		mp["permissions"] = permissions
 		mp["buttons"] = list
 	}
 	sysUser := models.SysUser{}
@@ -532,7 +532,7 @@ func (e SysUser) GetInfo(c *gin.Context) {
 		e.Error(http.StatusUnauthorized, err, "登录失败")
 		return
 	}
-	mp["introduction"] = " am a super administrator"
+	mp["introduction"] = ""
 	mp["avatar"] = "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif"
 	if sysUser.Avatar != "" {
 		mp["avatar"] = sysUser.Avatar

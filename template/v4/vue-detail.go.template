@@ -1,0 +1,121 @@
+{{$tableComment:=.TableComment}}
+<template>
+    <a-spin :spinning="spinning">
+        <div class="spin-content">
+            <el-form ref="form" :model="form" label-width="100px" size="mini">
+                <el-row>
+                    {{ range .Columns }}
+                        {{- $x := .IsInsert -}}
+                        {{- if (eq $x "1") -}}
+                            {{- if (.Pk) }}
+                            {{- else if eq .GoField "CreatedAt" -}}
+                            {{- else if eq .GoField "layer" -}}
+                            {{- else if eq .GoField "DeletedAt" -}}
+                            {{- else if eq .GoField "CreateBy" -}}
+                            {{- else }}
+                                <el-col :span="8">
+                                    <el-form-item label="{{.ColumnComment}}：" prop="{{.JsonField}}">
+                                        {{ if eq "input" .HtmlType -}}
+                                        {{"{{"}} form.{{.JsonField}} {{"}}"}}
+                                        {{- else if eq "select" .HtmlType -}}
+                                            {{- if ne .FkTableName "" -}}
+                                            {{"{{"}} selectDictLabel({{.JsonField}}Options, form.{{.JsonField}}) {{"}}"}}
+                                            {{- else -}}
+                                            {{"{{"}} selectDictLabel({{.JsonField}}Options, form.{{.JsonField}}) {{"}}"}}
+                                            {{- end -}}
+                                        {{- else if eq "radio" .HtmlType -}}
+                                            <el-radio-group v-model="form.{{.JsonField}}" disabled>
+                                                <el-radio
+                                                        v-for="dict in {{.JsonField}}Options"
+                                                        :key="dict.value"
+                                                        :label="dict.value"
+                                                >{{"{{"}} dict.label {{"}}"}}</el-radio>
+                                            </el-radio-group>
+                                        {{- else if eq "file" .HtmlType -}}
+                                            <img :src="form.{{.JsonField}}" class="el-upload el-upload--picture-card" style="float:left">
+                                        {{- else if eq "datetime" .HtmlType -}}
+                                            {{"{{"}} parseTime(form.{{.JsonField}}) {{"}}"}}
+                                        {{- else if eq "textarea" .HtmlType -}}
+                                            {{"{{"}} form.{{.JsonField}} {{"}}"}}
+                                        {{- end }}
+                                    </el-form-item>
+                                </el-col>
+                            {{- end }}
+                        {{- end }}
+                    {{- end }}
+                </el-row>
+            </el-form>
+            <a-tabs default-active-key="1">
+                <a-tab-pane key="1" tab="操作日志" force-render>
+                    <Logs :id="id" :mode="'{{.ClassName}}'"/>
+                </a-tab-pane>
+            </a-tabs>
+        </div>
+    </a-spin>
+
+</template>
+
+<script>
+    import Logs from '@/components/Logs/index.vue'
+    import { get{{.ClassName}} } from '@/api/{{ .PackageName}}/{{ .MLTBName}}'
+    {{ $package:=.PackageName }}
+    {{range .Columns}}
+    {{- if ne .FkTableName "" -}}
+    import {list{{.FkTableNameClass}} } from '@/api/{{ $package }}/{{ .FkTableNamePackage}}'
+    {{ end -}}
+    {{- end -}}
+
+    export default {
+        name: '{{.ClassName}}Detail',
+        props: {
+            id: {
+              type: String,
+              default: ''
+            }
+        },
+        watch: {
+            id(newVal, oldVal) {
+              if (newVal !== oldVal) {
+                this.getDataById()
+              }
+            }
+        },
+        components: {
+            Logs
+        },
+        data() {
+            return {
+                {{range .Columns}}
+                {{- if ne .DictType "" -}}
+                {{.JsonField}}Options: [],
+                {{- end -}}
+                {{- end }}
+                form: {
+                },
+                spinning: false
+        }
+        },
+        created() {
+            this.getDataById()
+            {{range .Columns}}
+            {{- if ne .DictType "" -}}
+            this.getDicts('{{.DictType}}').then(response => {
+                this.{{.JsonField}}Options = response.data
+            })
+            {{ end -}}
+            {{- if ne .FkTableName "" -}}
+            this.get{{.FkTableNameClass}}Items()
+            {{ end -}}
+            {{- end -}}
+        },
+        methods: {
+            getDataById() {
+                this.spinning = true
+                get{{.ClassName}}(this.id).then(response => {
+                    this.spinning = false
+                    this.form = response.data
+                })
+            }
+        }
+    }
+</script>

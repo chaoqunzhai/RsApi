@@ -27,7 +27,7 @@ func registerSysMenuRouter(v1 *gin.RouterGroup, authMiddleware *jwt.GinJWTMiddle
 	r1 := v1.Group("").Use(authMiddleware.MiddlewareFunc())
 	{
 		r1.GET("/menurole", api.GetMenuRole)
-		//r1.GET("/menuids", api.GetMenuIDS)
+
 	}
 
 }

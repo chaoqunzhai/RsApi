@@ -6,6 +6,9 @@ type Pagination struct {
 }
 
 func (m *Pagination) GetPageIndex() int {
+	if m.PageIndex == -1 {
+		return -1
+	}
 	if m.PageIndex <= 0 {
 		m.PageIndex = 1
 	}

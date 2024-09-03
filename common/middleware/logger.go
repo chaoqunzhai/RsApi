@@ -93,14 +93,17 @@ func LoggerToFile() gin.HandlerFunc {
 		log.WithFields(logData).Info()
 
 		if c.Request.Method != "OPTIONS" && config.LoggerConfig.EnabledDB && statusCode != 404 {
-			SetDBOperLog(c, clientIP, statusCode, reqUri, reqMethod, latencyTime, body, result, statusBus)
+			SetDBOperaLog(c, clientIP, statusCode, reqUri, reqMethod, latencyTime, body, result, statusBus)
 		}
 	}
 }
 
-// SetDBOperLog 写入操作日志表 fixme 该方法后续即将弃用
-func SetDBOperLog(c *gin.Context, clientIP string, statusCode int, reqUri string, reqMethod string, latencyTime time.Duration, body string, result string, status int) {
+// SetDBOperaLog 写入操作日志表
+func SetDBOperaLog(c *gin.Context, clientIP string, statusCode int, reqUri string, reqMethod string, latencyTime time.Duration, body string, result string, status int) {
 
+	if reqMethod == "GET" {
+		return
+	}
 	log := api.GetRequestLogger(c)
 	l := make(map[string]interface{})
 	l["_fullPath"] = c.FullPath()

@@ -6,25 +6,38 @@
 package dto
 
 type RegisterMetrics struct {
-	CPU            int                    `json:"CPU"`
-	Memory         string                 `json:"memory"`
-	Disk           string                 `json:"disk"`
-	Sn             string                 `json:"sn"`
-	Hostname       string                 `json:"hostname"`
-	Ip             string                 `json:"ip"`
-	Business       string                 `json:"business"`
-	Kernel         string                 `json:"kernel"`
-	BusinessSn     map[string]string      `json:"business_sn"`
-	Remark         string                 `json:"remark"`
-	Province       string                 `json:"province"`
-	City           string                 `json:"city"`
-	Isp            string                 `json:"isp"`
-	NetDevice      string                 `json:"netDevice"`
-	Balance        float64                `json:"balance"`
-	TransmitNumber float64                `json:"transmitNumber"`
-	ReceiveNumber  float64                `json:"receiveNumber"`
-	MemoryMap      map[string]interface{} `json:"memoryMap"`
-	ExtendMap      []SoftwareRow          `json:"extendMap"`
+	Belong         int               `json:"belong"`
+	CPU            int               `json:"CPU"`
+	Memory         uint64            `json:"memory"`
+	Disk           string            `json:"disk"`
+	Sn             string            `json:"sn"`
+	Hostname       string            `json:"hostname"`
+	Ip             string            `json:"ip"`
+	Mac            string            `json:"mac"`
+	Mask           string            `json:"mask"`
+	Gateway        string            `json:"gateway"`
+	NetType        int               `json:"netType"`
+	PublicIp       string            `json:"publicIp"`
+	Business       string            `json:"business"`
+	Kernel         string            `json:"kernel"`
+	RemotePort     string            `json:"remotePort"`
+	BusinessSn     map[string]string `json:"business_sn"`
+	Remark         string            `json:"remark"`
+	Province       string            `json:"province"`
+	City           string            `json:"city"`
+	Isp            string            `json:"isp"`
+	NetDevice      string            `json:"netDevice"`
+	Balance        float64           `json:"balance"`
+	BandwidthCnf   BandWithCnf       `json:"bandwidthCnf"`
+	TransmitNumber float64           `json:"transmitNumber"`
+	ReceiveNumber  float64           `json:"receiveNumber"`
+	MemoryMap      map[string]uint64 `json:"memoryMap"`
+	Dial           []*RegisterDial   `json:"dial"` //拨号列表
+	ExtendMap      []SoftwareRow     `json:"extendMap"`
+}
+type BandWithCnf struct {
+	Line  float64 `json:"line"`
+	Width float64 `json:"width"`
 }
 
 type SoftwareRow struct {

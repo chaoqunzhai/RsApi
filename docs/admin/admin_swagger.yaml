@@ -10,26 +10,18 @@ definitions:
     properties:
       categoryName:
         type: string
-      createBy:
-        type: integer
       remark:
         type: string
-      updateBy:
-        type: integer
     type: object
   dto.AssetCategoryUpdateReq:
     properties:
       categoryName:
         type: string
-      createBy:
-        type: integer
       id:
         description: 主键
         type: integer
       remark:
         type: string
-      updateBy:
-        type: integer
     type: object
   dto.AssetDeleteReq:
     properties:
@@ -51,8 +43,6 @@ definitions:
         type: number
       assetId:
         type: integer
-      createBy:
-        type: integer
       disposalAt:
         type: string
       disposalPerson:
@@ -67,16 +57,12 @@ definitions:
         type: string
       remark:
         type: string
-      updateBy:
-        type: integer
     type: object
   dto.AssetDisposalUpdateReq:
     properties:
       amount:
         type: number
       assetId:
-        type: integer
-      createBy:
         type: integer
       disposalAt:
         type: string
@@ -95,8 +81,6 @@ definitions:
         type: string
       remark:
         type: string
-      updateBy:
-        type: integer
     type: object
   dto.AssetGroupDeleteReq:
     properties:
@@ -107,16 +91,12 @@ definitions:
     type: object
   dto.AssetGroupInsertReq:
     properties:
-      createBy:
-        type: integer
       groupName:
         type: string
       mainAssetId:
         type: integer
       remark:
         type: string
-      updateBy:
-        type: integer
     type: object
   dto.AssetGroupMemberDeleteReq:
     properties:
@@ -131,11 +111,7 @@ definitions:
         type: integer
       assetId:
         type: integer
-      createBy:
-        type: integer
       isMain:
-        type: integer
-      updateBy:
         type: integer
     type: object
   dto.AssetGroupMemberUpdateReq:
@@ -144,20 +120,14 @@ definitions:
         type: integer
       assetId:
         type: integer
-      createBy:
-        type: integer
       id:
         description: 主键
         type: integer
       isMain:
         type: integer
-      updateBy:
-        type: integer
     type: object
   dto.AssetGroupUpdateReq:
     properties:
-      createBy:
-        type: integer
       groupName:
         type: string
       id:
@@ -167,8 +137,6 @@ definitions:
         type: integer
       remark:
         type: string
-      updateBy:
-        type: integer
     type: object
   dto.AssetInboundDeleteReq:
     properties:
@@ -181,8 +149,6 @@ definitions:
     properties:
       assetId:
         type: integer
-      createBy:
-        type: integer
       fromCode:
         type: string
       inboundAt:
@@ -193,16 +159,12 @@ definitions:
         type: integer
       remark:
         type: string
-      updateBy:
-        type: integer
       warehouseId:
         type: integer
     type: object
   dto.AssetInboundUpdateReq:
     properties:
       assetId:
-        type: integer
-      createBy:
         type: integer
       fromCode:
         type: string
@@ -217,8 +179,6 @@ definitions:
         type: integer
       remark:
         type: string
-      updateBy:
-        type: integer
       warehouseId:
         type: integer
     type: object
@@ -229,8 +189,6 @@ definitions:
       brand:
         type: string
       categoryId:
-        type: integer
-      createBy:
         type: integer
       remark:
         type: string
@@ -244,8 +202,6 @@ definitions:
         type: string
       unitPrice:
         type: number
-      updateBy:
-        type: integer
     type: object
   dto.AssetOutboundDeleteReq:
     properties:
@@ -258,8 +214,6 @@ definitions:
     properties:
       assetId:
         type: integer
-      createBy:
-        type: integer
       outboundAt:
         type: string
       outboundBy:
@@ -268,16 +222,12 @@ definitions:
         type: integer
       remark:
         type: string
-      updateBy:
-        type: integer
       warehouseId:
         type: integer
     type: object
   dto.AssetOutboundUpdateReq:
     properties:
       assetId:
-        type: integer
-      createBy:
         type: integer
       id:
         description: 主键
@@ -290,8 +240,6 @@ definitions:
         type: integer
       remark:
         type: string
-      updateBy:
-        type: integer
       warehouseId:
         type: integer
     type: object
@@ -320,8 +268,6 @@ definitions:
         type: string
       categoryId:
         type: integer
-      createBy:
-        type: integer
       quantity:
         type: integer
       remark:
@@ -338,8 +284,6 @@ definitions:
         type: string
       unitPrice:
         type: number
-      updateBy:
-        type: integer
     type: object
   dto.AssetPurchaseApplyUpdateReq:
     properties:
@@ -359,8 +303,6 @@ definitions:
         type: string
       categoryId:
         type: integer
-      createBy:
-        type: integer
       id:
         description: 主键
         type: integer
@@ -380,8 +322,6 @@ definitions:
         type: string
       unitPrice:
         type: number
-      updateBy:
-        type: integer
     type: object
   dto.AssetPurchaseDeleteReq:
     properties:
@@ -396,8 +336,6 @@ definitions:
         type: string
       categoryId:
         type: integer
-      createBy:
-        type: integer
       purchaseAt:
         type: string
       purchaseCode:
@@ -418,16 +356,12 @@ definitions:
         type: string
       unitPrice:
         type: number
-      updateBy:
-        type: integer
     type: object
   dto.AssetPurchaseUpdateReq:
     properties:
       brand:
         type: string
       categoryId:
-        type: integer
-      createBy:
         type: integer
       id:
         description: 主键
@@ -452,8 +386,6 @@ definitions:
         type: string
       unitPrice:
         type: number
-      updateBy:
-        type: integer
     type: object
   dto.AssetReturnDeleteReq:
     properties:
@@ -466,8 +398,6 @@ definitions:
     properties:
       assetId:
         type: integer
-      createBy:
-        type: integer
       reason:
         type: string
       remark:
@@ -476,14 +406,10 @@ definitions:
         type: string
       returnPerson:
         type: integer
-      updateBy:
-        type: integer
     type: object
   dto.AssetReturnUpdateReq:
     properties:
       assetId:
-        type: integer
-      createBy:
         type: integer
       id:
         description: 主键
@@ -495,8 +421,6 @@ definitions:
       returnAt:
         type: string
       returnPerson:
-        type: integer
-      updateBy:
         type: integer
     type: object
   dto.AssetStockDeleteReq:
@@ -510,22 +434,16 @@ definitions:
     properties:
       categoryId:
         type: integer
-      createBy:
-        type: integer
       quantity:
         type: integer
       remark:
         type: string
-      updateBy:
-        type: integer
       warehouseId:
         type: integer
     type: object
   dto.AssetStockUpdateReq:
     properties:
       categoryId:
-        type: integer
-      createBy:
         type: integer
       id:
         description: 主键
@@ -534,8 +452,6 @@ definitions:
         type: integer
       remark:
         type: string
-      updateBy:
-        type: integer
       warehouseId:
         type: integer
     type: object
@@ -552,8 +468,6 @@ definitions:
         type: string
       contactPerson:
         type: string
-      createBy:
-        type: integer
       email:
         type: string
       phoneNumber:
@@ -562,8 +476,6 @@ definitions:
         type: string
       supplierName:
         type: string
-      updateBy:
-        type: integer
     type: object
   dto.AssetSupplierUpdateReq:
     properties:
@@ -571,8 +483,6 @@ definitions:
         type: string
       contactPerson:
         type: string
-      createBy:
-        type: integer
       email:
         type: string
       id:
@@ -584,8 +494,6 @@ definitions:
         type: string
       supplierName:
         type: string
-      updateBy:
-        type: integer
     type: object
   dto.AssetUpdateReq:
     properties:
@@ -594,8 +502,6 @@ definitions:
       brand:
         type: string
       categoryId:
-        type: integer
-      createBy:
         type: integer
       id:
         description: 主键
@@ -612,8 +518,6 @@ definitions:
         type: string
       unitPrice:
         type: number
-      updateBy:
-        type: integer
     type: object
   dto.AssetWarehouseDeleteReq:
     properties:
@@ -626,12 +530,8 @@ definitions:
     properties:
       administratorId:
         type: integer
-      createBy:
-        type: integer
       remark:
         type: string
-      updateBy:
-        type: integer
       warehouseName:
         type: string
     type: object
@@ -639,15 +539,11 @@ definitions:
     properties:
       administratorId:
         type: integer
-      createBy:
-        type: integer
       id:
         description: 主键
         type: integer
       remark:
         type: string
-      updateBy:
-        type: integer
       warehouseName:
         type: string
     type: object
@@ -665,102 +561,10 @@ definitions:
       oldPassword:
         type: string
     type: object
-  dto.RcIdcDeleteReq:
-    properties:
-      ids:
-        items:
-          type: integer
-        type: array
-    type: object
-  dto.RcIdcInsertReq:
-    properties:
-      address:
-        type: string
-      belong:
-        type: string
-      businessUser:
-        type: string
-      charging:
-        type: string
-      createBy:
-        type: integer
-      customUser:
-        type: string
-      desc:
-        type: string
-      enable:
-        type: string
-      ipV6:
-        type: string
-      layer:
-        type: string
-      name:
-        type: string
-      price:
-        type: string
-      region:
-        type: string
-      status:
-        type: string
-      transProvince:
-        type: string
-      typeId:
-        type: string
-      updateBy:
-        type: integer
-      weChatName:
-        type: string
-    type: object
-  dto.RcIdcUpdateReq:
-    properties:
-      address:
-        type: string
-      belong:
-        type: string
-      businessUser:
-        type: string
-      charging:
-        type: string
-      createBy:
-        type: integer
-      customUser:
-        type: string
-      desc:
-        type: string
-      enable:
-        type: string
-      id:
-        description: 主键编码
-        type: integer
-      ipV6:
-        type: string
-      layer:
-        type: string
-      name:
-        type: string
-      price:
-        type: string
-      region:
-        type: string
-      status:
-        type: string
-      transProvince:
-        type: string
-      typeId:
-        type: string
-      updateBy:
-        type: integer
-      weChatName:
-        type: string
-    type: object
   dto.ResetSysUserPwdReq:
     properties:
-      createBy:
-        type: integer
       password:
         type: string
-      updateBy:
-        type: integer
       userId:
         description: 用户ID
         type: integer
@@ -779,6 +583,423 @@ definitions:
     - dataScope
     - roleId
     type: object
+  dto.RsBandwidthFeesInsertReq:
+    properties:
+      LinePrice:
+        type: number
+      charging:
+        type: integer
+      down:
+        type: number
+      id:
+        description: 主键编码
+        type: integer
+      isp:
+        type: integer
+      managerLineCost:
+        type: number
+      moreDialing:
+        type: integer
+      region: {}
+      transProd:
+        type: integer
+      up:
+        type: number
+    type: object
+  dto.RsBusinessDeleteReq:
+    properties:
+      ids:
+        items:
+          type: integer
+        type: array
+    type: object
+  dto.RsBusinessInsertReq:
+    properties:
+      billingMethod:
+        type: integer
+      costCnf:
+        items:
+          $ref: '#/definitions/dto.RsCostCnfInsertReq'
+        type: array
+      desc:
+        type: string
+      enName:
+        type: string
+      endUsage:
+        type: string
+      name:
+        type: string
+      parentId:
+        type: integer
+      startUsage:
+        type: string
+      status:
+        type: integer
+    type: object
+  dto.RsBusinessUpdateReq:
+    properties:
+      billingMethod:
+        type: integer
+      costCnf:
+        items:
+          $ref: '#/definitions/dto.RsCostCnfInsertReq'
+        type: array
+      desc:
+        type: string
+      enName:
+        type: string
+      endUsage:
+        type: string
+      id:
+        description: 主键编码
+        type: integer
+      name:
+        type: string
+      parentId:
+        type: integer
+      startUsage:
+        type: string
+      status:
+        type: integer
+    type: object
+  dto.RsContractDeleteReq:
+    properties:
+      ids:
+        items:
+          type: integer
+        type: array
+    type: object
+  dto.RsContractInsertReq:
+    properties:
+      accountName:
+        type: string
+      address:
+        type: string
+      bandwidthFees:
+        items:
+          $ref: '#/definitions/dto.RsBandwidthFeesInsertReq'
+        type: array
+      bankAccount:
+        type: string
+      bankName:
+        type: string
+      buId:
+        type: integer
+      customId:
+        type: integer
+      desc:
+        type: string
+      endTimeAt:
+        type: string
+      identifyNumber:
+        type: string
+      name:
+        type: string
+      number:
+        type: string
+      phone:
+        type: string
+      settlementType:
+        type: integer
+      signatoryId:
+        type: integer
+      startTimeAt:
+        type: string
+      type:
+        type: integer
+      userId:
+        type: integer
+    type: object
+  dto.RsContractUpdateReq:
+    properties:
+      accountName:
+        type: string
+      address:
+        type: string
+      bandwidthFees:
+        items:
+          $ref: '#/definitions/dto.RsBandwidthFeesInsertReq'
+        type: array
+      bankAccount:
+        type: string
+      bankName:
+        type: string
+      buId:
+        type: integer
+      customId:
+        type: integer
+      desc:
+        type: string
+      endTimeAt:
+        type: string
+      id:
+        description: 主键编码
+        type: integer
+      identifyNumber:
+        type: string
+      name:
+        type: string
+      number:
+        type: string
+      phone:
+        type: string
+      settlementType:
+        type: integer
+      signatoryId:
+        type: integer
+      startTimeAt:
+        type: string
+      type:
+        type: integer
+      userId:
+        type: integer
+    type: object
+  dto.RsCostCnfInsertReq:
+    properties:
+      bandwidthLimit:
+        type: number
+      bandwidthLower:
+        type: number
+      buId:
+        type: integer
+      dialType:
+        type: integer
+      id:
+        description: 主键编码
+        type: integer
+      ipType:
+        type: integer
+      isp:
+        type: integer
+      minimum:
+        type: number
+      price:
+        type: number
+    type: object
+  dto.RsCustomDeleteReq:
+    properties:
+      ids:
+        items:
+          type: integer
+        type: array
+    type: object
+  dto.RsCustomInsertReq:
+    properties:
+      address:
+        type: string
+      cooperation:
+        type: integer
+      desc:
+        type: string
+      name:
+        type: string
+      region:
+        type: string
+      type:
+        type: integer
+    type: object
+  dto.RsCustomUpdateReq:
+    properties:
+      address:
+        type: string
+      cooperation:
+        type: integer
+      desc:
+        type: string
+      id:
+        description: 主键编码
+        type: integer
+      name:
+        type: string
+      region:
+        type: string
+      type:
+        type: integer
+    type: object
+  dto.RsCustomUserDeleteReq:
+    properties:
+      ids:
+        items:
+          type: integer
+        type: array
+    type: object
+  dto.RsCustomUserInsertReq:
+    properties:
+      address:
+        type: string
+      buId:
+        type: integer
+      customId:
+        type: integer
+      dept:
+        type: string
+      desc:
+        type: string
+      duties:
+        type: string
+      email:
+        type: string
+      phone:
+        type: string
+      region:
+        type: string
+      userName:
+        type: string
+    type: object
+  dto.RsCustomUserUpdateReq:
+    properties:
+      address:
+        type: string
+      buId:
+        type: integer
+      customId:
+        type: integer
+      dept:
+        type: string
+      desc:
+        type: string
+      duties:
+        type: string
+      email:
+        type: string
+      id:
+        description: 主键编码
+        type: integer
+      phone:
+        type: string
+      region:
+        type: string
+      userName:
+        type: string
+    type: object
+  dto.RsDialDeleteReq:
+    properties:
+      ids:
+        items:
+          type: integer
+        type: array
+    type: object
+  dto.RsDialInsertReq:
+    properties:
+      account:
+        type: string
+      broadbandType:
+        type: integer
+      contractId:
+        type: integer
+      customId:
+        type: integer
+      desc:
+        type: string
+      deviceId:
+        type: integer
+      dialName:
+        type: string
+      hostId:
+        type: integer
+      idcId:
+        type: integer
+      ip:
+        type: string
+      isManager:
+        type: integer
+      ispId:
+        type: integer
+      mac:
+        type: string
+      networkingStatus:
+        type: integer
+      pass:
+        type: string
+      runTimeAt:
+        type: string
+      source:
+        type: integer
+      status:
+        type: integer
+    type: object
+  dto.RsDialUpdateReq:
+    properties:
+      RunTimeAt:
+        type: string
+      account:
+        type: string
+      broadbandType:
+        type: integer
+      contractId:
+        type: integer
+      customId:
+        type: integer
+      desc:
+        type: string
+      deviceId:
+        type: integer
+      dialName:
+        type: string
+      hostId:
+        type: integer
+      id:
+        description: 主键编码
+        type: integer
+      idcId:
+        type: integer
+      ip:
+        type: string
+      isManager:
+        type: integer
+      ispId:
+        type: integer
+      mac:
+        type: string
+      networkingStatus:
+        type: integer
+      pass:
+        type: string
+      source:
+        type: integer
+      status:
+        type: integer
+    type: object
+  dto.RsHostChargingDayDeleteReq:
+    properties:
+      ids:
+        items:
+          type: integer
+        type: array
+    type: object
+  dto.RsHostChargingDayInsertReq:
+    properties:
+      banlance95:
+        type: string
+      businessId:
+        type: string
+      cost:
+        type: string
+      desc:
+        type: string
+      hostId:
+        type: string
+      sla:
+        type: string
+    type: object
+  dto.RsHostChargingDayUpdateReq:
+    properties:
+      banlance95:
+        type: string
+      businessId:
+        type: string
+      cost:
+        type: string
+      desc:
+        type: string
+      hostId:
+        type: string
+      id:
+        description: 主键编码
+        type: integer
+      sla:
+        type: string
+    type: object
   dto.RsHostDeleteReq:
     properties:
       ids:
@@ -788,70 +1009,63 @@ definitions:
     type: object
   dto.RsHostInsertReq:
     properties:
+      address:
+        type: string
       balance:
-        type: string
+        type: number
       belong:
-        type: string
-      businessSn:
-        type: string
-      city:
-        type: string
+        type: integer
       cpu:
-        type: string
-      createBy:
         type: integer
       desc:
         type: string
       disk:
-        type: string
-      enable:
         type: string
       hostName:
         type: string
       ip:
         type: string
       isp:
-        type: string
+        type: integer
       kernel:
         type: string
       layer:
-        type: string
+        type: integer
       memory:
-        type: string
+        type: integer
       netDevice:
         type: string
       operator:
         type: string
-      province:
+      region:
         type: string
       remark:
         type: string
       sn:
         type: string
       status:
-        type: string
-      updateBy:
         type: integer
+    type: object
+  dto.RsHostSwitchLogDeleteReq:
+    properties:
+      ids:
+        items:
+          type: integer
+        type: array
     type: object
   dto.RsHostUpdateReq:
     properties:
+      address:
+        type: string
       balance:
-        type: string
+        type: number
       belong:
-        type: string
-      businessSn:
-        type: string
-      city:
-        type: string
+        type: integer
       cpu:
-        type: string
-      createBy:
         type: integer
       desc:
         type: string
       disk:
-        type: string
-      enable:
         type: string
       hostName:
         type: string
@@ -861,27 +1075,131 @@ definitions:
       ip:
         type: string
       isp:
-        type: string
+        type: integer
       kernel:
         type: string
       layer:
-        type: string
+        type: integer
       memory:
-        type: string
+        type: integer
       netDevice:
         type: string
-      operator:
-        type: string
-      province:
+      region:
         type: string
       remark:
         type: string
       sn:
         type: string
       status:
-        type: string
-      updateBy:
         type: integer
+    type: object
+  dto.RsIdcDeleteReq:
+    properties:
+      ids:
+        items:
+          type: integer
+        type: array
+    type: object
+  dto.RsIdcInsertReq:
+    properties:
+      address:
+        type: string
+      belong:
+        type: integer
+      buId:
+        type: integer
+      customId:
+        type: integer
+      desc:
+        type: string
+      ipV6:
+        type: integer
+      moreDialing:
+        type: integer
+      name:
+        type: string
+      number:
+        type: integer
+      region:
+        type: string
+      status:
+        type: integer
+      transProvince:
+        type: integer
+      typeId:
+        type: integer
+      webHookUrl:
+        type: string
+      wechatName:
+        type: string
+    type: object
+  dto.RsIdcUpdateReq:
+    properties:
+      address:
+        type: string
+      belong:
+        type: integer
+      buId:
+        type: integer
+      customId:
+        type: integer
+      desc:
+        type: string
+      id:
+        description: 主键编码
+        type: integer
+      ipV6:
+        type: integer
+      moreDialing:
+        type: integer
+      name:
+        type: string
+      number:
+        type: integer
+      region:
+        type: string
+      status:
+        type: integer
+      transProvince:
+        type: integer
+      typeId:
+        type: integer
+      webHookUrl:
+        type: string
+      wechatName:
+        type: string
+    type: object
+  dto.RsTagDeleteReq:
+    properties:
+      ids:
+        items:
+          type: integer
+        type: array
+    type: object
+  dto.RsTagInsertReq:
+    properties:
+      desc:
+        type: string
+      enable:
+        type: integer
+      layer:
+        type: string
+      name:
+        type: string
+    type: object
+  dto.RsTagUpdateReq:
+    properties:
+      desc:
+        type: string
+      enable:
+        type: integer
+      id:
+        description: 主键编码
+        type: integer
+      layer:
+        type: string
+      name:
+        type: string
     type: object
   dto.SysApiDeleteReq:
     properties:
@@ -894,8 +1212,6 @@ definitions:
     properties:
       action:
         type: string
-      createBy:
-        type: integer
       handle:
         type: string
       id:
@@ -907,8 +1223,6 @@ definitions:
         type: string
       type:
         type: string
-      updateBy:
-        type: integer
     type: object
   dto.SysConfigByKeyReq:
     properties:
@@ -925,8 +1239,6 @@ definitions:
         type: string
       configValue:
         type: string
-      createBy:
-        type: integer
       id:
         description: 编码
         type: integer
@@ -934,8 +1246,6 @@ definitions:
         type: string
       remark:
         type: string
-      updateBy:
-        type: integer
     type: object
   dto.SysDeptDeleteReq:
     properties:
@@ -946,8 +1256,6 @@ definitions:
     type: object
   dto.SysDeptInsertReq:
     properties:
-      createBy:
-        type: integer
       deptId:
         description: 编码
         type: integer
@@ -974,14 +1282,10 @@ definitions:
         type: integer
       status:
         description: 状态
-        type: integer
-      updateBy:
         type: integer
     type: object
   dto.SysDeptUpdateReq:
     properties:
-      createBy:
-        type: integer
       deptId:
         description: 编码
         type: integer
@@ -1008,8 +1312,6 @@ definitions:
         type: integer
       status:
         description: 状态
-        type: integer
-      updateBy:
         type: integer
     type: object
   dto.SysDictDataDeleteReq:
@@ -1028,8 +1330,6 @@ definitions:
     type: object
   dto.SysDictDataInsertReq:
     properties:
-      createBy:
-        type: integer
       cssClass:
         type: string
       default:
@@ -1049,14 +1349,10 @@ definitions:
       remark:
         type: string
       status:
-        type: integer
-      updateBy:
         type: integer
     type: object
   dto.SysDictDataUpdateReq:
     properties:
-      createBy:
-        type: integer
       cssClass:
         type: string
       default:
@@ -1079,24 +1375,16 @@ definitions:
         type: string
       status:
         type: integer
-      updateBy:
-        type: integer
     type: object
   dto.SysDictTypeDeleteReq:
     properties:
-      createBy:
-        type: integer
       ids:
         items:
           type: integer
         type: array
-      updateBy:
-        type: integer
     type: object
   dto.SysDictTypeInsertReq:
     properties:
-      createBy:
-        type: integer
       dictName:
         type: string
       dictType:
@@ -1106,14 +1394,10 @@ definitions:
       remark:
         type: string
       status:
-        type: integer
-      updateBy:
         type: integer
     type: object
   dto.SysDictTypeUpdateReq:
     properties:
-      createBy:
-        type: integer
       dictName:
         type: string
       dictType:
@@ -1123,8 +1407,6 @@ definitions:
       remark:
         type: string
       status:
-        type: integer
-      updateBy:
         type: integer
     type: object
   dto.SysLoginLogDeleteReq:
@@ -1136,14 +1418,10 @@ definitions:
     type: object
   dto.SysMenuDeleteReq:
     properties:
-      createBy:
-        type: integer
       ids:
         items:
           type: integer
         type: array
-      updateBy:
-        type: integer
     type: object
   dto.SysMenuInsertReq:
     properties:
@@ -1160,8 +1438,6 @@ definitions:
       component:
         description: 组件
         type: string
-      createBy:
-        type: integer
       icon:
         description: 图标
         type: string
@@ -1202,8 +1478,6 @@ definitions:
       title:
         description: 显示名称
         type: string
-      updateBy:
-        type: integer
       visible:
         description: 是否显示
         type: string
@@ -1223,8 +1497,6 @@ definitions:
       component:
         description: 组件
         type: string
-      createBy:
-        type: integer
       icon:
         description: 图标
         type: string
@@ -1265,8 +1537,6 @@ definitions:
       title:
         description: 显示名称
         type: string
-      updateBy:
-        type: integer
       visible:
         description: 是否显示
         type: string
@@ -1280,19 +1550,13 @@ definitions:
     type: object
   dto.SysPostDeleteReq:
     properties:
-      createBy:
-        type: integer
       ids:
         items:
           type: integer
         type: array
-      updateBy:
-        type: integer
     type: object
   dto.SysPostInsertReq:
     properties:
-      createBy:
-        type: integer
       postCode:
         type: string
       postId:
@@ -1304,14 +1568,10 @@ definitions:
       sort:
         type: integer
       status:
-        type: integer
-      updateBy:
         type: integer
     type: object
   dto.SysPostUpdateReq:
     properties:
-      createBy:
-        type: integer
       postCode:
         type: string
       postId:
@@ -1323,8 +1583,6 @@ definitions:
       sort:
         type: integer
       status:
-        type: integer
-      updateBy:
         type: integer
     type: object
   dto.SysRoleDeleteReq:
@@ -1338,8 +1596,6 @@ definitions:
     properties:
       admin:
         type: boolean
-      createBy:
-        type: integer
       dataScope:
         type: string
       deptIds:
@@ -1379,15 +1635,11 @@ definitions:
         items:
           $ref: '#/definitions/go-admin_app_admin_models.SysMenu'
         type: array
-      updateBy:
-        type: integer
     type: object
   dto.SysRoleUpdateReq:
     properties:
       admin:
         type: boolean
-      createBy:
-        type: integer
       dataScope:
         type: string
       deptIds:
@@ -1427,16 +1679,13 @@ definitions:
         items:
           $ref: '#/definitions/go-admin_app_admin_models.SysMenu'
         type: array
-      updateBy:
-        type: integer
     type: object
   dto.SysUserInsertReq:
     properties:
       avatar:
         type: string
-      createBy:
-        type: integer
       deptId:
+        description: Email    string `json:"email" comment:"邮箱" vd:"len($)>0,email"`
         type: integer
       email:
         type: string
@@ -1450,15 +1699,15 @@ definitions:
         type: integer
       remark:
         type: string
-      roleId:
-        type: integer
+      roleIds:
+        items:
+          type: integer
+        type: array
       sex:
         type: string
       status:
         default: "1"
         type: string
-      updateBy:
-        type: integer
       userId:
         description: 用户ID
         type: integer
@@ -1469,13 +1718,14 @@ definitions:
     properties:
       avatar:
         type: string
-      createBy:
-        type: integer
       deptId:
+        description: Email    string `json:"email" comment:"邮箱" vd:"len($)>0,email"`
         type: integer
       email:
         type: string
       nickName:
+        type: string
+      password:
         type: string
       phone:
         type: string
@@ -1483,15 +1733,15 @@ definitions:
         type: integer
       remark:
         type: string
-      roleId:
-        type: integer
+      roleIds:
+        items:
+          type: integer
+        type: array
       sex:
         type: string
       status:
         default: "1"
         type: string
-      updateBy:
-        type: integer
       userId:
         description: 用户ID
         type: integer
@@ -1500,25 +1750,17 @@ definitions:
     type: object
   dto.UpdateStatusReq:
     properties:
-      createBy:
-        type: integer
       roleId:
         description: 角色编码
         type: integer
       status:
         description: 状态
         type: string
-      updateBy:
-        type: integer
     type: object
   dto.UpdateSysUserStatusReq:
     properties:
-      createBy:
-        type: integer
       status:
         type: string
-      updateBy:
-        type: integer
       userId:
         description: 用户ID
         type: integer
@@ -1526,10 +1768,6 @@ definitions:
   go-admin_app_admin_models.SysApi:
     properties:
       action:
-        type: string
-      createBy:
-        type: integer
-      createdAt:
         type: string
       handle:
         type: string
@@ -1541,8 +1779,6 @@ definitions:
         type: string
       type:
         type: string
-      updateBy:
-        type: integer
       updatedAt:
         type: string
     type: object
@@ -1556,20 +1792,14 @@ definitions:
         type: string
       configValue:
         type: string
-      createBy:
-        type: integer
-      createdAt:
-        type: string
       id:
         type: integer
       isFrontend:
         type: string
       remark:
         type: string
-      updateBy:
-        type: integer
       updatedAt:
-        type: string
+        $ref: '#/definitions/models.XTime'
     type: object
   go-admin_app_admin_models.SysDept:
     properties:
@@ -1577,10 +1807,6 @@ definitions:
         items:
           $ref: '#/definitions/go-admin_app_admin_models.SysDept'
         type: array
-      createBy:
-        type: integer
-      createdAt:
-        type: string
       dataScope:
         type: string
       deptId:
@@ -1611,10 +1837,8 @@ definitions:
       status:
         description: 状态
         type: integer
-      updateBy:
-        type: integer
       updatedAt:
-        type: string
+        $ref: '#/definitions/models.XTime'
     type: object
   go-admin_app_admin_models.SysMenu:
     properties:
@@ -1631,10 +1855,6 @@ definitions:
           $ref: '#/definitions/go-admin_app_admin_models.SysMenu'
         type: array
       component:
-        type: string
-      createBy:
-        type: integer
-      createdAt:
         type: string
       dataScope:
         type: string
@@ -1672,10 +1892,8 @@ definitions:
         type: array
       title:
         type: string
-      updateBy:
-        type: integer
       updatedAt:
-        type: string
+        $ref: '#/definitions/models.XTime'
       visible:
         type: string
     type: object
@@ -1703,10 +1921,6 @@ definitions:
         type: string
       categoryId:
         type: integer
-      createBy:
-        type: integer
-      createdAt:
-        type: string
       id:
         type: integer
       remark:
@@ -1721,27 +1935,19 @@ definitions:
         type: string
       unitPrice:
         type: number
-      updateBy:
-        type: integer
       updatedAt:
-        type: string
+        $ref: '#/definitions/models.XTime'
     type: object
   models.AssetCategory:
     properties:
       categoryName:
         type: string
-      createBy:
-        type: integer
-      createdAt:
-        type: string
       id:
         type: integer
       remark:
         type: string
-      updateBy:
-        type: integer
       updatedAt:
-        type: string
+        $ref: '#/definitions/models.XTime'
     type: object
   models.AssetDisposal:
     properties:
@@ -1749,10 +1955,6 @@ definitions:
         type: number
       assetId:
         type: integer
-      createBy:
-        type: integer
-      createdAt:
-        type: string
       disposalAt:
         type: string
       disposalPerson:
@@ -1769,17 +1971,11 @@ definitions:
         type: string
       remark:
         type: string
-      updateBy:
-        type: integer
       updatedAt:
-        type: string
+        $ref: '#/definitions/models.XTime'
     type: object
   models.AssetGroup:
     properties:
-      createBy:
-        type: integer
-      createdAt:
-        type: string
       groupName:
         type: string
       id:
@@ -1788,10 +1984,8 @@ definitions:
         type: integer
       remark:
         type: string
-      updateBy:
-        type: integer
       updatedAt:
-        type: string
+        $ref: '#/definitions/models.XTime'
     type: object
   models.AssetGroupMember:
     properties:
@@ -1799,27 +1993,17 @@ definitions:
         type: integer
       assetId:
         type: integer
-      createBy:
-        type: integer
-      createdAt:
-        type: string
       id:
         type: integer
       isMain:
         type: integer
-      updateBy:
-        type: integer
       updatedAt:
-        type: string
+        $ref: '#/definitions/models.XTime'
     type: object
   models.AssetInbound:
     properties:
       assetId:
         type: integer
-      createBy:
-        type: integer
-      createdAt:
-        type: string
       fromCode:
         type: string
       id:
@@ -1832,10 +2016,8 @@ definitions:
         type: integer
       remark:
         type: string
-      updateBy:
-        type: integer
       updatedAt:
-        type: string
+        $ref: '#/definitions/models.XTime'
       warehouseId:
         type: integer
     type: object
@@ -1843,10 +2025,6 @@ definitions:
     properties:
       assetId:
         type: integer
-      createBy:
-        type: integer
-      createdAt:
-        type: string
       id:
         type: integer
       outboundAt:
@@ -1857,10 +2035,8 @@ definitions:
         type: integer
       remark:
         type: string
-      updateBy:
-        type: integer
       updatedAt:
-        type: string
+        $ref: '#/definitions/models.XTime'
       warehouseId:
         type: integer
     type: object
@@ -1870,10 +2046,6 @@ definitions:
         type: string
       categoryId:
         type: integer
-      createBy:
-        type: integer
-      createdAt:
-        type: string
       id:
         type: integer
       purchaseAt:
@@ -1896,10 +2068,8 @@ definitions:
         type: string
       unitPrice:
         type: number
-      updateBy:
-        type: integer
       updatedAt:
-        type: string
+        $ref: '#/definitions/models.XTime'
     type: object
   models.AssetPurchaseApply:
     properties:
@@ -1919,10 +2089,6 @@ definitions:
         type: string
       categoryId:
         type: integer
-      createBy:
-        type: integer
-      createdAt:
-        type: string
       id:
         type: integer
       quantity:
@@ -1941,19 +2107,13 @@ definitions:
         type: string
       unitPrice:
         type: number
-      updateBy:
-        type: integer
       updatedAt:
-        type: string
+        $ref: '#/definitions/models.XTime'
     type: object
   models.AssetReturn:
     properties:
       assetId:
         type: integer
-      createBy:
-        type: integer
-      createdAt:
-        type: string
       id:
         type: integer
       reason:
@@ -1964,29 +2124,21 @@ definitions:
         type: string
       returnPerson:
         type: integer
-      updateBy:
-        type: integer
       updatedAt:
-        type: string
+        $ref: '#/definitions/models.XTime'
     type: object
   models.AssetStock:
     properties:
       categoryId:
         type: integer
-      createBy:
-        type: integer
-      createdAt:
-        type: string
       id:
         type: integer
       quantity:
         type: integer
       remark:
         type: string
-      updateBy:
-        type: integer
       updatedAt:
-        type: string
+        $ref: '#/definitions/models.XTime'
       warehouseId:
         type: integer
     type: object
@@ -1995,10 +2147,6 @@ definitions:
       address:
         type: string
       contactPerson:
-        type: string
-      createBy:
-        type: integer
-      createdAt:
         type: string
       email:
         type: string
@@ -2010,126 +2158,419 @@ definitions:
         type: string
       supplierName:
         type: string
-      updateBy:
-        type: integer
       updatedAt:
-        type: string
+        $ref: '#/definitions/models.XTime'
     type: object
   models.AssetWarehouse:
     properties:
       administratorId:
         type: integer
-      createBy:
-        type: integer
-      createdAt:
-        type: string
       id:
         type: integer
       remark:
         type: string
-      updateBy:
-        type: integer
       updatedAt:
-        type: string
+        $ref: '#/definitions/models.XTime'
       warehouseName:
         type: string
     type: object
-  models.RcIdc:
+  models.RsBandwidthFees:
     properties:
-      address:
-        type: string
-      belong:
-        type: string
-      businessUser:
-        type: string
       charging:
-        type: string
-      createBy:
         type: integer
-      createdAt:
+      down:
+        type: number
+      id:
+        type: integer
+      isp:
+        type: integer
+      linePrice:
+        type: number
+      managerLineCost:
+        type: number
+      moreDialing:
+        type: integer
+      region:
         type: string
-      customUser:
-        type: string
+      transProd:
+        type: integer
+      up:
+        type: number
+      updatedAt:
+        $ref: '#/definitions/models.XTime'
+    type: object
+  models.RsBusiness:
+    properties:
+      billingMethod:
+        type: integer
+      children: {}
+      costCnf: {}
       desc:
         type: string
-      enable:
+      enName:
+        type: string
+      endUsage:
         type: string
       id:
         type: integer
-      ipV6:
-        type: string
       layer:
+        type: integer
+      name:
+        type: string
+      parentId:
+        type: integer
+      startUsage:
+        type: string
+      status:
+        type: integer
+      updatedAt:
+        $ref: '#/definitions/models.XTime'
+      updatedUser:
+        type: string
+    type: object
+  models.RsContract:
+    properties:
+      accountName:
+        type: string
+      address:
+        type: string
+      bandwidthFees:
+        items:
+          $ref: '#/definitions/models.RsBandwidthFees'
+        type: array
+      bankAccount:
+        type: string
+      bankName:
+        type: string
+      buId:
+        type: integer
+      customId:
+        type: integer
+      desc:
+        type: string
+      endTimeAt:
+        type: string
+      id:
+        type: integer
+      identifyNumber:
         type: string
       name:
         type: string
-      price:
+      number:
         type: string
-      region:
+      phone:
         type: string
-      status:
+      settlementType:
+        type: integer
+      signatoryId:
+        type: integer
+      startTimeAt:
         type: string
-      transProvince:
-        type: string
-      typeId:
-        type: string
-      updateBy:
+      type:
         type: integer
       updatedAt:
-        type: string
-      weChatName:
-        type: string
-    type: object
-  models.RsHost:
-    properties:
-      balance:
-        type: string
-      belong:
-        type: string
-      businessSn:
-        type: string
-      city:
-        type: string
-      cpu:
-        type: string
-      createBy:
+        $ref: '#/definitions/models.XTime'
+      userId:
         type: integer
-      createdAt:
+    type: object
+  models.RsCustom:
+    properties:
+      address:
         type: string
+      cooperation:
+        type: integer
       desc:
-        type: string
-      disk:
-        type: string
-      enable:
-        type: string
-      hostName:
         type: string
       id:
         type: integer
+      name:
+        type: string
+      region:
+        type: string
+      type:
+        type: integer
+      updatedAt:
+        $ref: '#/definitions/models.XTime'
+    type: object
+  models.RsCustomUser:
+    properties:
+      address:
+        type: string
+      buId:
+        type: integer
+      customId:
+        type: integer
+      dept:
+        type: string
+      desc:
+        type: string
+      duties:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      phone:
+        type: string
+      region:
+        type: string
+      updatedAt:
+        $ref: '#/definitions/models.XTime'
+      userName:
+        type: string
+    type: object
+  models.RsDial:
+    properties:
+      account:
+        type: string
+      broadbandType:
+        type: integer
+      bu:
+        type: string
+      contractId:
+        type: integer
+      customId:
+        type: integer
+      desc:
+        type: string
+      deviceId:
+        type: integer
+      deviceName:
+        type: string
+      dialName:
+        type: string
+      hostId:
+        type: integer
+      hostInfo:
+        additionalProperties: true
+        type: object
+      id:
+        type: integer
+      idcId:
+        type: integer
+      idcInfo: {}
+      ip:
+        type: string
+      ipV6:
+        type: string
+      isManager:
+        type: integer
+      ispId:
+        type: integer
+      ispName:
+        type: string
+      mac:
+        type: string
+      natType:
+        type: string
+      networkingStatus:
+        type: integer
+      pass:
+        type: string
+      runTimeAt:
+        type: string
+      source:
+        type: integer
+      status:
+        type: integer
+      updatedAt:
+        $ref: '#/definitions/models.XTime'
+    type: object
+  models.RsHost:
+    properties:
+      allLine:
+        type: integer
+      auth:
+        type: integer
+      balance:
+        type: number
+      belong:
+        type: integer
+      business:
+        items:
+          $ref: '#/definitions/models.RsBusiness'
+        type: array
+      cpu:
+        type: integer
+      desc:
+        type: string
+      dialList: {}
+      disk: {}
+      gateway:
+        type: string
+      healthy:
+        $ref: '#/definitions/sql.NullTime'
+      hostname:
+        type: string
+      id:
+        type: integer
+      idc:
+        type: integer
+      idcInfo: {}
       ip:
         type: string
       isp:
-        type: string
+        type: integer
       kernel:
         type: string
-      layer:
+      lineBandwidth:
+        type: number
+      lineType:
+        type: integer
+      mac:
+        type: string
+      mask:
         type: string
       memory:
+        type: integer
+      memoryMonitor: {}
+      netDevice: {}
+      networkType:
+        type: integer
+      probeShell:
         type: string
-      netDevice:
+      publicIp:
         type: string
-      operator:
-        type: string
-      province:
+      region:
         type: string
       remark:
+        description: 166陕西延安宜川集义郭东机房电信1-2-11(30*100M) 拆分解析到线路和带宽
+        type: string
+      remotePort:
         type: string
       sn:
         type: string
       status:
-        type: string
-      updateBy:
+        type: integer
+      system:
+        additionalProperties: true
+        type: object
+      tag:
+        items:
+          $ref: '#/definitions/models.RsTag'
+        type: array
+      transProvince:
         type: integer
       updatedAt:
+        $ref: '#/definitions/models.XTime'
+      updatedUser:
+        type: string
+    type: object
+  models.RsHostChargingDay:
+    properties:
+      banlance95:
+        type: string
+      businessId:
+        type: string
+      cost:
+        type: string
+      createBy:
+        type: integer
+      createdAt:
+        $ref: '#/definitions/models.XTime'
+      desc:
+        type: string
+      hostId:
+        type: string
+      id:
+        type: integer
+      sla:
+        type: string
+      updatedUser:
+        type: string
+    type: object
+  models.RsHostSwitchLog:
+    properties:
+      bu_en_source:
+        type: string
+      bu_source:
+        type: string
+      bu_target_id:
+        type: integer
+      businessInfo: {}
+      createBy:
+        type: integer
+      createdAt:
+        $ref: '#/definitions/models.XTime'
+      desc:
+        type: string
+      hostId:
+        type: integer
+      id:
+        type: integer
+      jobId:
+        type: string
+      updatedUser:
+        type: string
+    type: object
+  models.RsIdc:
+    properties:
+      address:
+        type: string
+      belong:
+        type: integer
+      buId:
+        type: integer
+      customId:
+        type: integer
+      desc:
+        type: string
+      id:
+        type: integer
+      ipV6:
+        type: integer
+      moreDialing:
+        type: integer
+      name:
+        type: string
+      number:
+        type: integer
+      region:
+        type: string
+      rsIdcCount:
+        $ref: '#/definitions/models.RsIdcCount'
+      status:
+        type: integer
+      transProvince:
+        type: integer
+      typeId:
+        type: integer
+      updatedAt:
+        $ref: '#/definitions/models.XTime'
+      webHookUrl:
+        type: string
+      wechatName:
+        type: string
+    type: object
+  models.RsIdcCount:
+    properties:
+      allHost:
+        type: integer
+      buLine:
+        type: integer
+      managerLine:
+        type: integer
+      offLine:
+        type: integer
+      onLine:
+        type: integer
+    type: object
+  models.RsTag:
+    properties:
+      desc:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      updatedAt:
+        $ref: '#/definitions/models.XTime'
+      updatedUser:
+        type: string
+    type: object
+  models.XTime:
+    properties:
+      time.Time:
         type: string
     type: object
   response.Page:
@@ -2152,6 +2593,14 @@ definitions:
         type: string
       status:
         type: string
+    type: object
+  sql.NullTime:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
     type: object
   tools.Params:
     properties:
@@ -2258,8 +2707,6 @@ definitions:
         items:
           $ref: '#/definitions/tools.SysColumns'
         type: array
-      createBy:
-        type: integer
       createdAt:
         type: string
       crud:
@@ -2326,8 +2773,6 @@ definitions:
         type: string
       treeParentCode:
         type: string
-      updateBy:
-        type: integer
       updatedAt:
         type: string
     type: object
@@ -4924,172 +5369,6 @@ paths:
       summary: 上传图片
       tags:
       - 公共接口
-  /api/v1/rc-idc:
-    delete:
-      description: 删除RcIdc
-      parameters:
-      - description: body
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/dto.RcIdcDeleteReq'
-      responses:
-        "200":
-          description: '{"code": 200, "message": "删除成功"}'
-          schema:
-            $ref: '#/definitions/response.Response'
-      security:
-      - Bearer: []
-      summary: 删除RcIdc
-      tags:
-      - RcIdc
-    get:
-      description: 获取RcIdc列表
-      parameters:
-      - description: 开关
-        in: query
-        name: enable
-        type: string
-      - description: 机房名称
-        in: query
-        name: name
-        type: string
-      - description: 机房状态
-        in: query
-        name: status
-        type: string
-      - description: 机房归属
-        in: query
-        name: belong
-        type: string
-      - description: 机房类型
-        in: query
-        name: typeId
-        type: string
-      - description: 商务人员
-        in: query
-        name: businessUser
-        type: string
-      - description: 所在区域
-        in: query
-        name: region
-        type: string
-      - description: 是否跨省
-        in: query
-        name: transProvince
-        type: string
-      - description: 页条数
-        in: query
-        name: pageSize
-        type: integer
-      - description: 页码
-        in: query
-        name: pageIndex
-        type: integer
-      responses:
-        "200":
-          description: '{"code": 200, "data": [...]}'
-          schema:
-            allOf:
-            - $ref: '#/definitions/response.Response'
-            - properties:
-                data:
-                  allOf:
-                  - $ref: '#/definitions/response.Page'
-                  - properties:
-                      list:
-                        items:
-                          $ref: '#/definitions/models.RcIdc'
-                        type: array
-                    type: object
-              type: object
-      security:
-      - Bearer: []
-      summary: 获取RcIdc列表
-      tags:
-      - RcIdc
-    post:
-      consumes:
-      - application/json
-      description: 创建RcIdc
-      parameters:
-      - description: data
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/dto.RcIdcInsertReq'
-      responses:
-        "200":
-          description: '{"code": 200, "message": "添加成功"}'
-          schema:
-            $ref: '#/definitions/response.Response'
-      security:
-      - Bearer: []
-      summary: 创建RcIdc
-      tags:
-      - RcIdc
-  /api/v1/rc-idc/{id}:
-    get:
-      description: 获取RcIdc
-      parameters:
-      - description: id
-        in: path
-        name: id
-        type: integer
-      responses:
-        "200":
-          description: '{"code": 200, "data": [...]}'
-          schema:
-            allOf:
-            - $ref: '#/definitions/response.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/models.RcIdc'
-              type: object
-      security:
-      - Bearer: []
-      summary: 获取RcIdc
-      tags:
-      - RcIdc
-    put:
-      consumes:
-      - application/json
-      description: 修改RcIdc
-      parameters:
-      - description: id
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: body
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/dto.RcIdcUpdateReq'
-      responses:
-        "200":
-          description: '{"code": 200, "message": "修改成功"}'
-          schema:
-            $ref: '#/definitions/response.Response'
-      security:
-      - Bearer: []
-      summary: 修改RcIdc
-      tags:
-      - RcIdc
-  /api/v1/register/healthy:
-    post:
-      description: 主动上报
-      responses:
-        "200":
-          description: '{"code": 200, "data": "","msg":"successful"}'
-          schema:
-            $ref: '#/definitions/response.Response'
-      summary: 主机存活注册
-      tags:
-      - 主机上报
   /api/v1/role:
     delete:
       description: 删除数据
@@ -5225,6 +5504,741 @@ paths:
       summary: 修改用户角色
       tags:
       - 角色/Role
+  /api/v1/rs-business:
+    delete:
+      description: 删除RsBusiness
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RsBusinessDeleteReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "删除成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 删除RsBusiness
+      tags:
+      - RsBusiness
+    get:
+      description: 获取RsBusiness列表
+      parameters:
+      - description: 开关
+        in: query
+        name: enable
+        type: string
+      - description: 业务云名称
+        in: query
+        name: name
+        type: string
+      - description: 页条数
+        in: query
+        name: pageSize
+        type: integer
+      - description: 页码
+        in: query
+        name: pageIndex
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/response.Page'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/models.RsBusiness'
+                        type: array
+                    type: object
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取RsBusiness列表
+      tags:
+      - RsBusiness
+    post:
+      consumes:
+      - application/json
+      description: 创建RsBusiness
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RsBusinessInsertReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "添加成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 创建RsBusiness
+      tags:
+      - RsBusiness
+  /api/v1/rs-business/{id}:
+    get:
+      description: 获取RsBusiness
+      parameters:
+      - description: id
+        in: path
+        name: id
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.RsBusiness'
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取RsBusiness
+      tags:
+      - RsBusiness
+    put:
+      consumes:
+      - application/json
+      description: 修改RsBusiness
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RsBusinessUpdateReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "修改成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 修改RsBusiness
+      tags:
+      - RsBusiness
+  /api/v1/rs-contract:
+    delete:
+      description: 删除RsContract
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RsContractDeleteReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "删除成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 删除RsContract
+      tags:
+      - RsContract
+    get:
+      description: 获取RsContract列表
+      parameters:
+      - description: 合同名称
+        in: query
+        name: name
+        type: string
+      - description: 合同编号
+        in: query
+        name: number
+        type: string
+      - description: 商务人员
+        in: query
+        name: buId
+        type: integer
+      - description: 所属客户ID
+        in: query
+        name: customId
+        type: integer
+      - description: 签订人
+        in: query
+        name: signatoryId
+        type: integer
+      - description: 合同类型,contract_type
+        in: query
+        name: type
+        type: integer
+      - description: 结算方式,settlement_type
+        in: query
+        name: settlementType
+        type: integer
+      - description: 地址
+        in: query
+        name: address
+        type: string
+      - description: 电话
+        in: query
+        name: phone
+        type: string
+      - description: 页条数
+        in: query
+        name: pageSize
+        type: integer
+      - description: 页码
+        in: query
+        name: pageIndex
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/response.Page'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/models.RsContract'
+                        type: array
+                    type: object
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取RsContract列表
+      tags:
+      - RsContract
+    post:
+      consumes:
+      - application/json
+      description: 创建RsContract
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RsContractInsertReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "添加成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 创建RsContract
+      tags:
+      - RsContract
+  /api/v1/rs-contract/{id}:
+    get:
+      description: 获取RsContract
+      parameters:
+      - description: id
+        in: path
+        name: id
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.RsContract'
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取RsContract
+      tags:
+      - RsContract
+    put:
+      consumes:
+      - application/json
+      description: 修改RsContract
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RsContractUpdateReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "修改成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 修改RsContract
+      tags:
+      - RsContract
+  /api/v1/rs-custom:
+    delete:
+      description: 删除RsCustom
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RsCustomDeleteReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "删除成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 删除RsCustom
+      tags:
+      - RsCustom
+    get:
+      description: 获取RsCustom列表
+      parameters:
+      - description: 客户名称
+        in: query
+        name: name
+        type: string
+      - description: 客户类型,customer_type
+        in: query
+        name: type
+        type: integer
+      - description: 合作状态,work_status
+        in: query
+        name: cooperation
+        type: integer
+      - description: 页条数
+        in: query
+        name: pageSize
+        type: integer
+      - description: 页码
+        in: query
+        name: pageIndex
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/response.Page'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/models.RsCustom'
+                        type: array
+                    type: object
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取RsCustom列表
+      tags:
+      - RsCustom
+    post:
+      consumes:
+      - application/json
+      description: 创建RsCustom
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RsCustomInsertReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "添加成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 创建RsCustom
+      tags:
+      - RsCustom
+  /api/v1/rs-custom-user:
+    delete:
+      description: 删除RsCustomUser
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RsCustomUserDeleteReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "删除成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 删除RsCustomUser
+      tags:
+      - RsCustomUser
+    get:
+      description: 获取RsCustomUser列表
+      parameters:
+      - description: 姓名
+        in: query
+        name: userName
+        type: string
+      - description: 所属客户
+        in: query
+        name: customId
+        type: string
+      - description: 所属商务人员
+        in: query
+        name: buId
+        type: string
+      - description: 联系号码
+        in: query
+        name: phone
+        type: string
+      - description: 页条数
+        in: query
+        name: pageSize
+        type: integer
+      - description: 页码
+        in: query
+        name: pageIndex
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/response.Page'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/models.RsCustomUser'
+                        type: array
+                    type: object
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取RsCustomUser列表
+      tags:
+      - RsCustomUser
+    post:
+      consumes:
+      - application/json
+      description: 创建RsCustomUser
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RsCustomUserInsertReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "添加成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 创建RsCustomUser
+      tags:
+      - RsCustomUser
+  /api/v1/rs-custom-user/{id}:
+    get:
+      description: 获取RsCustomUser
+      parameters:
+      - description: id
+        in: path
+        name: id
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.RsCustomUser'
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取RsCustomUser
+      tags:
+      - RsCustomUser
+    put:
+      consumes:
+      - application/json
+      description: 修改RsCustomUser
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RsCustomUserUpdateReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "修改成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 修改RsCustomUser
+      tags:
+      - RsCustomUser
+  /api/v1/rs-custom/{id}:
+    get:
+      description: 获取RsCustom
+      parameters:
+      - description: id
+        in: path
+        name: id
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.RsCustom'
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取RsCustom
+      tags:
+      - RsCustom
+    put:
+      consumes:
+      - application/json
+      description: 修改RsCustom
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RsCustomUpdateReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "修改成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 修改RsCustom
+      tags:
+      - RsCustom
+  /api/v1/rs-dial:
+    delete:
+      description: 删除RsDial
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RsDialDeleteReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "删除成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 删除RsDial
+      tags:
+      - RsDial
+    get:
+      description: 获取RsDial列表
+      parameters:
+      - description: 所属客户
+        in: query
+        name: customId
+        type: integer
+      - description: 关联合同
+        in: query
+        name: contractId
+        type: integer
+      - description: 带宽类型,broadband_type
+        in: query
+        name: broadbandType
+        type: integer
+      - description: 是否管理线
+        in: query
+        name: isManager
+        type: integer
+      - description: IP地址
+        in: query
+        name: ip
+        type: string
+      - description: 线路名称
+        in: query
+        name: dialName
+        type: string
+      - description: 拨号状态,1:已联网 0:未联网 -1:联网异常
+        in: query
+        name: networkingStatus
+        type: integer
+      - description: 拨号状态,1:已拨通 0:待使用 -1:拨号异常
+        in: query
+        name: status
+        type: integer
+      - description: 拨号状态,0:录入 1:自动上报
+        in: query
+        name: source
+        type: integer
+      - description: 关联的IDC
+        in: query
+        name: idcId
+        type: integer
+      - description: 关联主机ID
+        in: query
+        name: hostId
+        type: integer
+      - description: 关联网卡ID
+        in: query
+        name: deviceId
+        type: integer
+      - description: 页条数
+        in: query
+        name: pageSize
+        type: integer
+      - description: 页码
+        in: query
+        name: pageIndex
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/response.Page'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/models.RsDial'
+                        type: array
+                    type: object
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取RsDial列表
+      tags:
+      - RsDial
+    post:
+      consumes:
+      - application/json
+      description: 创建RsDial
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RsDialInsertReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "添加成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 创建RsDial
+      tags:
+      - RsDial
+  /api/v1/rs-dial/{id}:
+    get:
+      description: 获取RsDial
+      parameters:
+      - description: id
+        in: path
+        name: id
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.RsDial'
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取RsDial
+      tags:
+      - RsDial
+    put:
+      consumes:
+      - application/json
+      description: 修改RsDial
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RsDialUpdateReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "修改成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 修改RsDial
+      tags:
+      - RsDial
   /api/v1/rs-host:
     delete:
       description: 删除RsHost
@@ -5343,6 +6357,225 @@ paths:
       summary: 创建RsHost
       tags:
       - RsHost
+  /api/v1/rs-host-charging-day:
+    delete:
+      description: 删除RsHostChargingDay
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RsHostChargingDayDeleteReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "删除成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 删除RsHostChargingDay
+      tags:
+      - RsHostChargingDay
+    get:
+      description: 获取RsHostChargingDay列表
+      parameters:
+      - description: 切换的业务ID
+        in: query
+        name: businessId
+        type: string
+      - description: 关联的主机ID
+        in: query
+        name: hostId
+        type: string
+      - description: 页条数
+        in: query
+        name: pageSize
+        type: integer
+      - description: 页码
+        in: query
+        name: pageIndex
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/response.Page'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/models.RsHostChargingDay'
+                        type: array
+                    type: object
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取RsHostChargingDay列表
+      tags:
+      - RsHostChargingDay
+    post:
+      consumes:
+      - application/json
+      description: 创建RsHostChargingDay
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RsHostChargingDayInsertReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "添加成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 创建RsHostChargingDay
+      tags:
+      - RsHostChargingDay
+  /api/v1/rs-host-charging-day/{id}:
+    get:
+      description: 获取RsHostChargingDay
+      parameters:
+      - description: id
+        in: path
+        name: id
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.RsHostChargingDay'
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取RsHostChargingDay
+      tags:
+      - RsHostChargingDay
+    put:
+      consumes:
+      - application/json
+      description: 修改RsHostChargingDay
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RsHostChargingDayUpdateReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "修改成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 修改RsHostChargingDay
+      tags:
+      - RsHostChargingDay
+  /api/v1/rs-host-switch-log:
+    delete:
+      description: 删除RsHostSwitchLog
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RsHostSwitchLogDeleteReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "删除成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 删除RsHostSwitchLog
+      tags:
+      - RsHostSwitchLog
+    get:
+      description: 获取RsHostSwitchLog列表
+      parameters:
+      - description: 切换的主机ID
+        in: query
+        name: hostId
+        type: string
+      - description: 切换的新业务ID
+        in: query
+        name: businessId
+        type: string
+      - description: 原来的业务SN
+        in: query
+        name: businessSn
+        type: string
+      - description: 页条数
+        in: query
+        name: pageSize
+        type: integer
+      - description: 页码
+        in: query
+        name: pageIndex
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/response.Page'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/models.RsHostSwitchLog'
+                        type: array
+                    type: object
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取RsHostSwitchLog列表
+      tags:
+      - RsHostSwitchLog
+  /api/v1/rs-host-switch-log/{id}:
+    get:
+      description: 获取RsHostSwitchLog
+      parameters:
+      - description: id
+        in: path
+        name: id
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.RsHostSwitchLog'
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取RsHostSwitchLog
+      tags:
+      - RsHostSwitchLog
   /api/v1/rs-host/{id}:
     get:
       description: 获取RsHost
@@ -5392,6 +6625,288 @@ paths:
       summary: 修改RsHost
       tags:
       - RsHost
+  /api/v1/rs-idc:
+    delete:
+      description: 删除RsIdc
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RsIdcDeleteReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "删除成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 删除RsIdc
+      tags:
+      - RsIdc
+    get:
+      description: 获取RsIdc列表
+      parameters:
+      - description: 机房编号
+        in: query
+        name: number
+        type: integer
+      - description: 机房名称
+        in: query
+        name: name
+        type: string
+      - description: 所属客户
+        in: query
+        name: customUser
+        type: integer
+      - description: 机房类型
+        in: query
+        name: typeId
+        type: integer
+      - description: 商务人员
+        in: query
+        name: businessUser
+        type: integer
+      - description: 机房状态
+        in: query
+        name: status
+        type: integer
+      - description: 机房归属
+        in: query
+        name: belong
+        type: integer
+      - description: 页条数
+        in: query
+        name: pageSize
+        type: integer
+      - description: 页码
+        in: query
+        name: pageIndex
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/response.Page'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/models.RsIdc'
+                        type: array
+                    type: object
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取RsIdc列表
+      tags:
+      - RsIdc
+    post:
+      consumes:
+      - application/json
+      description: 创建RsIdc
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RsIdcInsertReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "添加成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 创建RsIdc
+      tags:
+      - RsIdc
+  /api/v1/rs-idc/{id}:
+    get:
+      description: 获取RsIdc
+      parameters:
+      - description: id
+        in: path
+        name: id
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.RsIdc'
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取RsIdc
+      tags:
+      - RsIdc
+    put:
+      consumes:
+      - application/json
+      description: 修改RsIdc
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RsIdcUpdateReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "修改成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 修改RsIdc
+      tags:
+      - RsIdc
+  /api/v1/rs-tag:
+    delete:
+      description: 删除RsTag
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RsTagDeleteReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "删除成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 删除RsTag
+      tags:
+      - RsTag
+    get:
+      description: 获取RsTag列表
+      parameters:
+      - description: 开关
+        in: query
+        name: enable
+        type: string
+      - description: 业务云名称
+        in: query
+        name: name
+        type: string
+      - description: 页条数
+        in: query
+        name: pageSize
+        type: integer
+      - description: 页码
+        in: query
+        name: pageIndex
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/response.Page'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/models.RsTag'
+                        type: array
+                    type: object
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取RsTag列表
+      tags:
+      - RsTag
+    post:
+      consumes:
+      - application/json
+      description: 创建RsTag
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RsTagInsertReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "添加成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 创建RsTag
+      tags:
+      - RsTag
+  /api/v1/rs-tag/{id}:
+    get:
+      description: 获取RsTag
+      parameters:
+      - description: id
+        in: path
+        name: id
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.RsTag'
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取RsTag
+      tags:
+      - RsTag
+    put:
+      consumes:
+      - application/json
+      description: 修改RsTag
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RsTagUpdateReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "修改成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 修改RsTag
+      tags:
+      - RsTag
   /api/v1/server-monitor:
     get:
       description: 获取JSON

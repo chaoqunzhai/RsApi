@@ -92,16 +92,17 @@ type SysUserInsertReq struct {
 	UserId   int    `json:"userId" comment:"用户ID"` // 用户ID
 	Username string `json:"username" comment:"用户名" vd:"len($)>0"`
 	Password string `json:"password" comment:"密码"`
-	NickName string `json:"nickName" comment:"昵称" vd:"len($)>0"`
-	Phone    string `json:"phone" comment:"手机号" vd:"len($)>0"`
-	RoleId   int    `json:"roleId" comment:"角色ID"`
+	NickName string `json:"nickName" comment:"昵称"`
+	Phone    string `json:"phone" comment:"手机号"`
+	RoleIds  []int  `json:"roleIds" comment:"角色ID"`
 	Avatar   string `json:"avatar" comment:"头像"`
 	Sex      string `json:"sex" comment:"性别"`
-	Email    string `json:"email" comment:"邮箱" vd:"len($)>0,email"`
-	DeptId   int    `json:"deptId" comment:"部门" vd:"$>0"`
-	PostId   int    `json:"postId" comment:"岗位"`
-	Remark   string `json:"remark" comment:"备注"`
-	Status   string `json:"status" comment:"状态" vd:"len($)>0" default:"1"`
+	Email    string `json:"email" comment:"邮箱" `
+	//Email    string `json:"email" comment:"邮箱" vd:"len($)>0,email"`
+	DeptId int    `json:"deptId" comment:"部门" `
+	PostId int    `json:"postId" comment:"岗位"`
+	Remark string `json:"remark" comment:"备注"`
+	Status string `json:"status" comment:"状态"  default:"1"`
 	common.ControlBy
 }
 
@@ -113,7 +114,6 @@ func (s *SysUserInsertReq) Generate(model *models.SysUser) {
 	model.Password = s.Password
 	model.NickName = s.NickName
 	model.Phone = s.Phone
-	model.RoleId = s.RoleId
 	model.Avatar = s.Avatar
 	model.Sex = s.Sex
 	model.Email = s.Email
@@ -131,16 +131,18 @@ func (s *SysUserInsertReq) GetId() interface{} {
 type SysUserUpdateReq struct {
 	UserId   int    `json:"userId" comment:"用户ID"` // 用户ID
 	Username string `json:"username" comment:"用户名" vd:"len($)>0"`
-	NickName string `json:"nickName" comment:"昵称" vd:"len($)>0"`
-	Phone    string `json:"phone" comment:"手机号" vd:"len($)>0"`
-	RoleId   int    `json:"roleId" comment:"角色ID"`
+	Password string `json:"password" comment:"密码"`
+	NickName string `json:"nickName" comment:"昵称"`
+	Phone    string `json:"phone" comment:"手机号"`
+	RoleIds  []int  `json:"roleIds" comment:"角色ID"`
 	Avatar   string `json:"avatar" comment:"头像"`
 	Sex      string `json:"sex" comment:"性别"`
-	Email    string `json:"email" comment:"邮箱" vd:"len($)>0,email"`
-	DeptId   int    `json:"deptId" comment:"部门" vd:"$>0"`
-	PostId   int    `json:"postId" comment:"岗位"`
-	Remark   string `json:"remark" comment:"备注"`
-	Status   string `json:"status" comment:"状态" default:"1"`
+	Email    string `json:"email" comment:"邮箱" `
+	//Email    string `json:"email" comment:"邮箱" vd:"len($)>0,email"`
+	DeptId int    `json:"deptId" comment:"部门" `
+	PostId int    `json:"postId" comment:"岗位"`
+	Remark string `json:"remark" comment:"备注"`
+	Status string `json:"status" comment:"状态"  default:"1"`
 	common.ControlBy
 }
 
@@ -151,7 +153,7 @@ func (s *SysUserUpdateReq) Generate(model *models.SysUser) {
 	model.Username = s.Username
 	model.NickName = s.NickName
 	model.Phone = s.Phone
-	model.RoleId = s.RoleId
+
 	model.Avatar = s.Avatar
 	model.Sex = s.Sex
 	model.Email = s.Email
