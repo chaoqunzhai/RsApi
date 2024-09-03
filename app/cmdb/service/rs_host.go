@@ -46,11 +46,14 @@ func (e *RsHost) GetPage(c *dto.RsHostGetPageReq, p *actions.DataPermission, lis
 	}
 
 	if c.BusinessId != "" {
+
 		var bindHostId []int
 
 		e.Orm.Raw(fmt.Sprintf("select host_id from host_bind_business where business_id in (%v)", c.BusinessId)).Scan(&bindHostId)
 
 		orm = orm.Where("id in (?)", bindHostId)
+
+		fmt.Println("查询业务", bindHostId, len(bindHostId))
 	}
 
 	if c.HostName != "" {

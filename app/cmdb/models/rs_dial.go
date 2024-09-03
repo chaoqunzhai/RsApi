@@ -2,9 +2,7 @@ package models
 
 import (
 	"database/sql"
-	models2 "go-admin/cmd/migrate/migration/models"
 	"go-admin/common/models"
-	"go-admin/global"
 	"gorm.io/gorm"
 )
 
@@ -19,6 +17,7 @@ type RsDial struct {
 	Account          string                 `json:"account" gorm:"type:varchar(25);comment:账号"`
 	Ip               string                 `json:"ip" gorm:"type:varchar(16);comment:IP地址"`
 	IpV6             string                 `json:"ipV6" gorm:"type:varchar(50);comment:IPV6地址"`
+	VlanId           string                 `json:"vlanId" gorm:"type:varchar(10);comment:vlanId"`
 	Pass             string                 `json:"pass" gorm:"type:varchar(20);comment:密码"`
 	Mac              string                 `json:"mac" gorm:"type:varchar(30);comment:MAC地址"`
 	DialName         string                 `json:"dialName" gorm:"type:varchar(20);comment:线路名称"`
@@ -58,31 +57,31 @@ func (e *RsDial) AfterFind(tx *gorm.DB) (err error) {
 		"name": "",
 	}
 
-	if e.IdcId > 0 {
-		var idcRow RsIdc
-		tx.Model(&idcRow).Select("id,name").Where("id = ?", e.HostId).Find(&idcRow)
-		if idcRow.Id > 0 {
-			e.IdcInfo = map[string]interface{}{
-				"name": idcRow.Name,
-			}
-		}
-	}
-	e.IspName = global.IspMap[e.IspId]
-	if e.HostId > 0 {
-		var host RsHost
-		tx.Model(&host).Select("id,host_name,sn").Where("id = ?", e.HostId).Find(&host)
-		if host.Id > 0 {
-			e.HostInfo = map[string]interface{}{
-				"hostname": host.HostName,
-				"sn":       host.Sn,
-			}
-		}
-	}
-	if e.DeviceId > 0 {
-		var DeviceName models2.HostNetDevice
-		tx.Model(&DeviceName).Select("name").Where("id = ?", e.DeviceId).Find(&DeviceName)
-		e.DeviceName = DeviceName.Name
-	}
+	//if e.IdcId > 0 {
+	//	var idcRow RsIdc
+	//	tx.Model(&idcRow).Select("id,name").Where("id = ?", e.HostId).Find(&idcRow)
+	//	if idcRow.Id > 0 {
+	//		e.IdcInfo = map[string]interface{}{
+	//			"name": idcRow.Name,
+	//		}
+	//	}
+	//}
+	//e.IspName = global.IspMap[e.IspId]
+	//if e.HostId > 0 {
+	//	var host RsHost
+	//	tx.Model(&host).Select("id,host_name,sn").Where("id = ?", e.HostId).Find(&host)
+	//	if host.Id > 0 {
+	//		e.HostInfo = map[string]interface{}{
+	//			"hostname": host.HostName,
+	//			"sn":       host.Sn,
+	//		}
+	//	}
+	//}
+	//if e.DeviceId > 0 {
+	//	var DeviceName models2.HostNetDevice
+	//	tx.Model(&DeviceName).Select("name").Where("id = ?", e.DeviceId).Find(&DeviceName)
+	//	e.DeviceName = DeviceName.Name
+	//}
 	return nil
 }
 func (e *RsDial) Generate() models.ActiveRecord {

@@ -57,14 +57,51 @@ func (e RsDial) GetPage(c *gin.Context) {
 	p := actions.GetPermissionFromContext(c)
 	list := make([]models.RsDial, 0)
 	var count int64
-
 	err = s.GetPage(&req, p, &list, &count)
+
+	deviceIds := make([]int, 0)
+	hostIds := make([]int, 0)
+	idcIds := make([]int, 0)
+	for _, row := range list {
+
+		deviceIds = append(deviceIds, row.DeviceId)
+		idcIds = append(idcIds, row.IdcId)
+		hostIds = append(hostIds, row.HostId)
+	}
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("获取RsDial失败，\r\n失败信息 %s", err.Error()))
 		return
 	}
+	HostMap := s.GetHostMap(hostIds)
 
-	e.PageOK(list, int(count), req.GetPageIndex(), req.GetPageSize(), "查询成功")
+	IdcMapData := s.GetIdcList(idcIds)
+
+	DeviceMapData := s.GetDeviceIdMap(deviceIds)
+
+	result := make([]interface{}, 0)
+
+	for _, row := range list {
+
+		if dat, ok := HostMap[row.HostId]; ok {
+			row.HostInfo = map[string]interface{}{
+				"hostname": dat.HostName,
+				"sn":       dat.Sn,
+			}
+		}
+
+		if dat, ok := IdcMapData[row.IdcId]; ok {
+			row.IdcInfo = map[string]interface{}{
+				"name": dat.Name,
+			}
+		}
+
+		if dat, ok := DeviceMapData[row.HostId]; ok {
+			row.DeviceName = dat.Name
+		}
+		result = append(result, row)
+	}
+
+	e.PageOK(result, int(count), req.GetPageIndex(), req.GetPageSize(), "查询成功")
 }
 
 // Get 获取RsDial

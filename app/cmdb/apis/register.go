@@ -178,7 +178,7 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 	hostInstance.Belong = req.Belong
 	hostInstance.Sn = SN
 	hostInstance.HostName = HOSTNAME
-	hostInstance.Ip = req.Ip
+	//hostInstance.Ip = req.Ip
 
 	if req.NetType > 0 { //只有非0是才会进行保存
 		hostInstance.NetworkType = req.NetType
@@ -186,9 +186,9 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 	hostInstance.Mac = req.Mac
 	hostInstance.Mask = req.Mask
 	hostInstance.Gateway = req.Gateway
-	hostInstance.PublicIp = req.PublicIp
+	//hostInstance.PublicIp = req.PublicIp
 	hostInstance.Cpu = req.CPU
-	hostInstance.Kernel = req.Kernel
+	//hostInstance.Kernel = req.Kernel
 	hostInstance.RemotePort = req.RemotePort
 	hostInstance.Status = global.HostSuccess
 	hostInstance.Memory = req.Memory
@@ -308,6 +308,7 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 				"bu":        DialRow.BU,
 				"ip_v6":     DialRow.IpV6,
 				"nat_type":  DialRow.NT,
+				"vlan_id":   DialRow.VlanId,
 				"device_id": bindNetDeviceId,
 			}
 			if DialRow.NS != 0 {
@@ -322,6 +323,7 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 			DialRowModel.Pass = DialRow.P
 			DialRowModel.Ip = DialRow.Ip
 			DialRowModel.IpV6 = DialRow.IpV6
+			DialRowModel.VlanId = DialRow.VlanId
 			DialRowModel.Mac = DialRow.Mac
 			DialRowModel.DialName = DialRow.D
 			DialRowModel.NatType = DialRow.NT
