@@ -9,7 +9,7 @@ import (
 type AssetInbound struct {
 	models.Model
 
-	AssetId     int       `json:"assetId" gorm:"type:int;comment:资产编码"`
+	InboundCode string    `json:"inboundCode" gorm:"type:varchar(100);comment:入库单号"`
 	WarehouseId int       `json:"warehouseId" gorm:"type:int;comment:库房编码"`
 	InboundFrom int8      `json:"inboundFrom" gorm:"type:tinyint(1);comment:来源(1=采购、0=直接入库)"`
 	FromCode    string    `json:"fromCode" gorm:"type:varchar(100);comment:来源凭证编码(采购编码)"`

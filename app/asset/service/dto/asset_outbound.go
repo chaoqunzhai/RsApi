@@ -10,27 +10,26 @@ import (
 
 type AssetOutboundGetPageReq struct {
 	dto.Pagination `search:"-"`
-	AssetId        string    `form:"assetId"  search:"type:exact;column:asset_id;table:asset_outbound" comment:"资产编码"`
-	WarehouseId    string    `form:"warehouseId"  search:"type:exact;column:warehouse_id;table:asset_outbound" comment:"库房编码"`
-	OutboundTo     string    `form:"outboundTo"  search:"type:exact;column:outbound_to;table:asset_outbound" comment:"出库去向(客户编码)"`
-	OutboundBy     string    `form:"outboundBy"  search:"type:exact;column:outbound_by;table:asset_outbound" comment:"出库人编码"`
-	OutboundAt     time.Time `form:"outboundAt"  search:"type:exact;column:outbound_at;table:asset_outbound" comment:"出库时间"`
+	OutboundCode   string `form:"outboundCode"  search:"type:exact;column:outbound_code;table:asset_outbound" comment:"出库单号"`
+	WarehouseId    int    `form:"warehouseId"  search:"type:exact;column:warehouse_id;table:asset_outbound" comment:"库房编码"`
+	OutboundTo     int    `form:"outboundTo"  search:"type:exact;column:outbound_to;table:asset_outbound" comment:"出库去向(客户编码)"`
+	OutboundBy     int    `form:"outboundBy"  search:"type:exact;column:outbound_by;table:asset_outbound" comment:"出库人编码"`
 	AssetOutboundOrder
 }
 
 type AssetOutboundOrder struct {
-	Id          string `form:"idOrder"  search:"type:order;column:id;table:asset_outbound"`
-	AssetId     string `form:"assetIdOrder"  search:"type:order;column:asset_id;table:asset_outbound"`
-	WarehouseId string `form:"warehouseIdOrder"  search:"type:order;column:warehouse_id;table:asset_outbound"`
-	OutboundTo  string `form:"outboundToOrder"  search:"type:order;column:outbound_to;table:asset_outbound"`
-	OutboundBy  string `form:"outboundByOrder"  search:"type:order;column:outbound_by;table:asset_outbound"`
-	OutboundAt  string `form:"outboundAtOrder"  search:"type:order;column:outbound_at;table:asset_outbound"`
-	Remark      string `form:"remarkOrder"  search:"type:order;column:remark;table:asset_outbound"`
-	CreatedAt   string `form:"createdAtOrder"  search:"type:order;column:created_at;table:asset_outbound"`
-	UpdatedAt   string `form:"updatedAtOrder"  search:"type:order;column:updated_at;table:asset_outbound"`
-	DeletedAt   string `form:"deletedAtOrder"  search:"type:order;column:deleted_at;table:asset_outbound"`
-	CreateBy    string `form:"createByOrder"  search:"type:order;column:create_by;table:asset_outbound"`
-	UpdateBy    string `form:"updateByOrder"  search:"type:order;column:update_by;table:asset_outbound"`
+	Id           string `form:"idOrder"  search:"type:order;column:id;table:asset_outbound"`
+	OutboundCode string `form:"outboundCodeOrder"  search:"type:order;column:outbound_code;table:asset_outbound"`
+	WarehouseId  string `form:"warehouseIdOrder"  search:"type:order;column:warehouse_id;table:asset_outbound"`
+	OutboundTo   string `form:"outboundToOrder"  search:"type:order;column:outbound_to;table:asset_outbound"`
+	OutboundBy   string `form:"outboundByOrder"  search:"type:order;column:outbound_by;table:asset_outbound"`
+	OutboundAt   string `form:"outboundAtOrder"  search:"type:order;column:outbound_at;table:asset_outbound"`
+	Remark       string `form:"remarkOrder"  search:"type:order;column:remark;table:asset_outbound"`
+	CreatedAt    string `form:"createdAtOrder"  search:"type:order;column:created_at;table:asset_outbound"`
+	UpdatedAt    string `form:"updatedAtOrder"  search:"type:order;column:updated_at;table:asset_outbound"`
+	DeletedAt    string `form:"deletedAtOrder"  search:"type:order;column:deleted_at;table:asset_outbound"`
+	CreateBy     string `form:"createByOrder"  search:"type:order;column:create_by;table:asset_outbound"`
+	UpdateBy     string `form:"updateByOrder"  search:"type:order;column:update_by;table:asset_outbound"`
 }
 
 func (m *AssetOutboundGetPageReq) GetNeedSearch() interface{} {
@@ -38,13 +37,13 @@ func (m *AssetOutboundGetPageReq) GetNeedSearch() interface{} {
 }
 
 type AssetOutboundInsertReq struct {
-	Id          int       `json:"-" comment:"主键"` // 主键
-	AssetId     int       `json:"assetId" comment:"资产编码"`
-	WarehouseId int       `json:"warehouseId" comment:"库房编码"`
-	OutboundTo  int       `json:"outboundTo" comment:"出库去向(客户编码)"`
-	OutboundBy  int       `json:"outboundBy" comment:"出库人编码"`
-	OutboundAt  time.Time `json:"outboundAt" comment:"出库时间"`
-	Remark      string    `json:"remark" comment:"备注"`
+	Id           int       `json:"-" comment:"主键"` // 主键
+	OutboundCode string    `json:"outboundCode" comment:"出库单号"`
+	WarehouseId  int       `json:"warehouseId" comment:"库房编码"`
+	OutboundTo   int       `json:"outboundTo" comment:"出库去向(客户编码)"`
+	OutboundBy   int       `json:"outboundBy" comment:"出库人编码"`
+	OutboundAt   time.Time `json:"outboundAt" comment:"出库时间"`
+	Remark       string    `json:"remark" comment:"备注"`
 	common.ControlBy
 }
 
@@ -52,7 +51,7 @@ func (s *AssetOutboundInsertReq) Generate(model *models.AssetOutbound) {
 	if s.Id == 0 {
 		model.Model = common.Model{Id: s.Id}
 	}
-	model.AssetId = s.AssetId
+	model.OutboundCode = s.OutboundCode
 	model.WarehouseId = s.WarehouseId
 	model.OutboundTo = s.OutboundTo
 	model.OutboundBy = s.OutboundBy
@@ -66,13 +65,13 @@ func (s *AssetOutboundInsertReq) GetId() interface{} {
 }
 
 type AssetOutboundUpdateReq struct {
-	Id          int       `uri:"id" comment:"主键"` // 主键
-	AssetId     int       `json:"assetId" comment:"资产编码"`
-	WarehouseId int       `json:"warehouseId" comment:"库房编码"`
-	OutboundTo  int       `json:"outboundTo" comment:"出库去向(客户编码)"`
-	OutboundBy  int       `json:"outboundBy" comment:"出库人编码"`
-	OutboundAt  time.Time `json:"outboundAt" comment:"出库时间"`
-	Remark      string    `json:"remark" comment:"备注"`
+	Id           int       `uri:"id" comment:"主键"` // 主键
+	OutboundCode string    `json:"outboundCode" comment:"出库单号"`
+	WarehouseId  int       `json:"warehouseId" comment:"库房编码"`
+	OutboundTo   int       `json:"outboundTo" comment:"出库去向(客户编码)"`
+	OutboundBy   int       `json:"outboundBy" comment:"出库人编码"`
+	OutboundAt   time.Time `json:"outboundAt" comment:"出库时间"`
+	Remark       string    `json:"remark" comment:"备注"`
 	common.ControlBy
 }
 
@@ -80,7 +79,7 @@ func (s *AssetOutboundUpdateReq) Generate(model *models.AssetOutbound) {
 	if s.Id == 0 {
 		model.Model = common.Model{Id: s.Id}
 	}
-	model.AssetId = s.AssetId
+	model.OutboundCode = s.OutboundCode
 	model.WarehouseId = s.WarehouseId
 	model.OutboundTo = s.OutboundTo
 	model.OutboundBy = s.OutboundBy
