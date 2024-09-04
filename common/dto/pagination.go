@@ -17,7 +17,7 @@ func (m *Pagination) GetPageIndex() int {
 
 func (m *Pagination) GetPageSize() int {
 	if m.PageSize <= 0 {
-		m.PageSize = 10
+		m.PageSize = 100000
 	}
 	return m.PageSize
 }

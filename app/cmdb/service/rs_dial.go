@@ -38,7 +38,7 @@ func (e *RsDial) GetDeviceIdMap(ids []int) map[int]models2.HostNetDevice {
 	HostDeviceIdMap := make(map[int]models2.HostNetDevice, 0)
 
 	var HostList []models2.HostNetDevice
-	e.Orm.Model(&models2.HostNetDevice{}).Select("name").Where("id in ? ", ids).Find(&HostList)
+	e.Orm.Model(&models2.HostNetDevice{}).Select("name,id").Where("id in ? ", ids).Find(&HostList)
 
 	for _, row := range HostList {
 

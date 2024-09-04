@@ -254,23 +254,57 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 			var (
 				DeviceRow models2.HostNetDevice
 			)
+			NetDeviceInfo := strings.Split(NetDeviceName, ":")
+			var status int
+			var DeviceName string
+			if len(NetDeviceInfo) > 1 { //有状态
+				DeviceName = NetDeviceInfo[0]
+				DeviceStatus := NetDeviceInfo[1]
+				if DeviceStatus == "UP" {
+					status = 1
+				} else {
+					status = -1
+				}
+			} else {
+				DeviceName = NetDeviceName
+				status = 1
+			}
+			if strings.HasSuffix(DeviceName, "UNKNOWN") { //没有识别的网卡不做处理
+				continue
+			}
+			if strings.HasPrefix(DeviceName, "lo") { //回环端口
+				continue
+			}
+			if strings.HasPrefix(DeviceName, "docker") {
+				continue
+			}
+			if strings.HasPrefix(DeviceName, "ppp") {
+				continue
+			}
+			//获取的网卡有的是@拼接的
+			DeviceNameList := strings.Split(DeviceName, "@")
+			if len(DeviceNameList) == 0 {
+				continue
+			}
+			inDbDeviceName := DeviceNameList[0]
 			e.Orm.Model(&models2.HostNetDevice{}).Where("host_id = ? and `name` = ?",
-				hostInstance.Id, NetDeviceName).First(&DeviceRow)
+				hostInstance.Id, inDbDeviceName).First(&DeviceRow)
+			//如果 DeviceName 有 @ 那就需要特殊处理
+
 			DeviceRow.HostId = hostInstance.Id
-			DeviceRow.Name = NetDeviceName
+			DeviceRow.Name = inDbDeviceName
 			DeviceRow.UpdatedAt = models3.XTime{
 				Time: time.Now(),
 			}
-			DeviceRow.Status = 1
+			DeviceRow.Status = status
 			e.Orm.Save(&DeviceRow)
-			NetDeviceMap[NetDeviceName] = DeviceRow.Id
+			NetDeviceMap[inDbDeviceName] = DeviceRow.Id
 		}
 
 	}
 	//拨号列表,
 	for _, DialRow := range req.Dial {
 
-		//如果列表存在 全局的缓存中 那就自动归到idc下
 		var (
 			DialRowModel models.RsDial
 			DialCount    int64

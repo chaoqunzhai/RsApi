@@ -236,6 +236,18 @@ func (e *RsHost) GetIdcList(ids []int) map[int][]interface{} {
 	return RowMap
 
 }
+
+func (e *RsHost) GetBusinessMap() map[string]string {
+	var List []models.RsBusiness
+	cache := make(map[string]string, 0)
+	e.Orm.Model(&models.RsBusiness{}).Select("name,en_name").Find(&List)
+
+	for _, row := range List {
+		cache[row.EnName] = row.Name
+	}
+	return cache
+
+}
 func (e *RsHost) GetHostSoftware(ids []int) map[int][]models2.HostSoftware {
 	HostSoftwareMap := make(map[int][]models2.HostSoftware, 0)
 

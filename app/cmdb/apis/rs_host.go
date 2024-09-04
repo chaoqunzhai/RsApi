@@ -427,6 +427,7 @@ func (e RsHost) GetPage(c *gin.Context) {
 		hostIds = append(hostIds, row.Id)
 		idcIds = append(idcIds, row.Idc)
 	}
+	BusinessMap := s.GetBusinessMap()
 	HostSoftwareMap := s.GetHostSoftware(hostIds)
 
 	HostMapMonitorData := s.GetMonitorData(hostIds)
@@ -475,23 +476,14 @@ func (e RsHost) GetPage(c *gin.Context) {
 
 		snList := make([]dto.LabelRow, 0)
 
-		snList = append(snList, dto.LabelRow{
-			Label: "主机SN",
-			Value: row.Sn,
-		})
 		if businessSnList, ok := HostSoftwareMap[row.Id]; ok {
 			for _, item := range businessSnList {
 				if strings.HasPrefix(item.Key, "sn_") {
-					Label := ""
-					switch item.Key {
-					case "sn_baishan":
-						Label = "白山SN:"
-					case "sn_jinshan":
-						Label = "金山SN:"
 
-					}
+					itemKey := strings.Replace(item.Key, "sn_", "", -1)
+					snName := BusinessMap[itemKey]
 					snList = append(snList, dto.LabelRow{
-						Label: Label,
+						Label: snName,
 						Value: item.Value,
 					})
 				}

@@ -95,7 +95,7 @@ func (e RsDial) GetPage(c *gin.Context) {
 			}
 		}
 
-		if dat, ok := DeviceMapData[row.HostId]; ok {
+		if dat, ok := DeviceMapData[row.DeviceId]; ok {
 			row.DeviceName = dat.Name
 		}
 		result = append(result, row)
