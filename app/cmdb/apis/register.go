@@ -395,11 +395,10 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 			if val == "" {
 				continue
 			}
-			snKey := fmt.Sprintf("sn_%v", key)
 			e.Orm.Model(&models2.HostSoftware{}).Where("host_id = ? and `key` = ?",
-				hostInstance.Id, snKey).First(&snRow)
+				hostInstance.Id, key).First(&snRow)
 			snRow.HostId = hostInstance.Id
-			snRow.Key = snKey
+			snRow.Key = key
 			snRow.Value = val
 			e.Orm.Save(&snRow)
 		}
