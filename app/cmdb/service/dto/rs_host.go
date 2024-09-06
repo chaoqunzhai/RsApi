@@ -12,7 +12,7 @@ import (
 
 type RegisterDial struct {
 	BU     string `json:"bu"`
-	VlanId string `json:"vlanId"`
+	VlanId string `json:"vlan_id"`
 	A      string `json:"a"` //账号
 	P      string `json:"p"` //密码
 	I      string `json:"i"` //绑定物理网卡
