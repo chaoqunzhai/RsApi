@@ -73,6 +73,16 @@ func (e *RsHost) GetPage(c *dto.RsHostGetPageReq, p *actions.DataPermission, lis
 		}
 
 	}
+	if c.Region != "" {
+		var idcList []models.RsIdc
+		e.Orm.Model(&models.RsIdc{}).Select("id").Where("region like ?", fmt.Sprintf("%%%v%%", c.Region)).Find(&idcList)
+		var cache []int
+		for _, idc := range idcList {
+			cache = append(cache, idc.Id)
+		}
+		orm = orm.Where("idc in (?)", cache)
+
+	}
 	err = orm.Scopes(
 		cDto.MakeCondition(c.GetNeedSearch()),
 		cDto.Paginate(c.GetPageSize(), c.GetPageIndex()),

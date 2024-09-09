@@ -85,7 +85,7 @@ type RsHostGetPageReq struct {
 	IdcName        string `form:"idcName" search:"-"`
 	IdcNumber      string `form:"idcNumber" search:"-"`
 	BusinessId     string `form:"businessId" search:"-"`
-	Region         string `form:"region"  search:"type:exact;column:region;table:rs_host" comment:"所在区域"`
+	Region         string `form:"region"  search:"-" comment:"所在区域"`
 	LineType       int    `form:"lineType" search:"type:exact;column:line_type;table:rs_host" comment:"线路类型"`
 	HostName       string `form:"hostname"  search:"-" comment:"主机名"`
 	Sn             string `form:"sn"  search:"type:contains;column:sn;table:rs_host" comment:"sn"`
