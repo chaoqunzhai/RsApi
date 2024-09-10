@@ -7,6 +7,7 @@ type Dial struct {
 	Bu               string       `json:"bu" gorm:"type:varchar(50);comment:bu业务"`
 	Enable           bool         `json:"enable" gorm:"default:true"`
 	CustomId         int          `json:"customId" gorm:"comment:所属客户"`
+	VlanId           string       `json:"vlanId" gorm:"type:varchar(10);comment:vlanId"`
 	ContractId       int          `json:"contractId" gorm:"comment:关联合同"`
 	BroadbandType    int          `json:"broadbandType" gorm:"comment:带宽类型,broadband_type"`
 	IsManager        int64        `json:"isManager" gorm:"type:tinyint(1);comment:是否管理线"`

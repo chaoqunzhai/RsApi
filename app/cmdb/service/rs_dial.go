@@ -3,6 +3,8 @@ package service
 import (
 	"errors"
 	"fmt"
+	models2 "go-admin/cmd/migrate/migration/models"
+	"go-admin/common/utils"
 
 	"github.com/go-admin-team/go-admin-core/sdk/service"
 	"gorm.io/gorm"
@@ -15,6 +17,47 @@ import (
 
 type RsDial struct {
 	service.Service
+}
+
+func (e *RsDial) GetIdcList(ids []int) map[int]models.RsIdc {
+
+	RowMap := make(map[int]models.RsIdc, 0)
+
+	ids = utils.RemoveRepeatInt(ids)
+	var RowList []models.RsIdc
+	e.Orm.Model(&models.RsIdc{}).Select("id,name").Where("id in ? ", ids).Find(&RowList)
+
+	for _, idc := range RowList {
+
+		RowMap[idc.Id] = idc
+	}
+	return RowMap
+
+}
+func (e *RsDial) GetDeviceIdMap(ids []int) map[int]models2.HostNetDevice {
+	HostDeviceIdMap := make(map[int]models2.HostNetDevice, 0)
+
+	var HostList []models2.HostNetDevice
+	e.Orm.Model(&models2.HostNetDevice{}).Select("name,id").Where("id in ? ", ids).Find(&HostList)
+
+	for _, row := range HostList {
+
+		HostDeviceIdMap[row.Id] = row
+	}
+	return HostDeviceIdMap
+
+}
+func (e *RsDial) GetHostMap(ids []int) map[int]models2.Host {
+	HostSoftwareMap := make(map[int]models2.Host, 0)
+
+	var HostList []models2.Host
+	e.Orm.Model(&models2.Host{}).Select("id,host_name,sn").Where("id in ? ", ids).Find(&HostList)
+
+	for _, row := range HostList {
+		HostSoftwareMap[row.Id] = row
+	}
+	return HostSoftwareMap
+
 }
 
 // GetPage 获取RsDial列表

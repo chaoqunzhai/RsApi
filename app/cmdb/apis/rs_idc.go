@@ -77,7 +77,7 @@ func (e RsIdc) GetPage(c *gin.Context) {
 	//}
 
 	var hostList []models.RsHost
-	e.Orm.Model(&models.RsHost{}).Where("idc in ?", idcList).Find(&hostList)
+	e.Orm.Model(&models.RsHost{}).Select("idc,status").Where("idc in ?", idcList).Find(&hostList)
 
 	for _, host := range hostList {
 		RsIdcCount, ok := idcMap[host.Idc]

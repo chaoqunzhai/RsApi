@@ -292,7 +292,9 @@ func (e RsHost) Count(c *gin.Context) {
 
 	var offlineCount int64
 
-	e.Orm.Model(&models.RsHost{}).Where("healthy_at <= DATE_SUB(NOW(), INTERVAL 30 MINUTE) OR healthy_at IS NULL").Count(&offlineCount)
+	e.Orm.Model(&models.RsHost{}).Where("healthy_at <= DATE_SUB(NOW(), INTERVAL 30 MINUTE) OR healthy_at IS NULL").Updates(map[string]interface{}{
+		"status": global.HostOffline,
+	}).Count(&offlineCount)
 
 	//自建机房数量
 	var ZjCount int64
@@ -311,7 +313,9 @@ func (e RsHost) Count(c *gin.Context) {
 	//在线
 
 	var onlineCount int64
-	e.Orm.Model(&models.RsHost{}).Where(" healthy_at >= DATE_SUB(NOW(), INTERVAL 30 MINUTE)").Count(&onlineCount)
+	e.Orm.Model(&models.RsHost{}).Where(" healthy_at >= DATE_SUB(NOW(), INTERVAL 30 MINUTE)").Updates(map[string]interface{}{
+		"status": global.HostSuccess,
+	}).Count(&onlineCount)
 
 	var ZjLineCount int64
 	e.Orm.Model(&models.RsHost{}).Where("belong IN (0,1) and healthy_at >= DATE_SUB(NOW(), INTERVAL 30 MINUTE)").Count(&ZjLineCount)
@@ -423,6 +427,7 @@ func (e RsHost) GetPage(c *gin.Context) {
 		hostIds = append(hostIds, row.Id)
 		idcIds = append(idcIds, row.Idc)
 	}
+	BusinessMap := s.GetBusinessMap()
 	HostSoftwareMap := s.GetHostSoftware(hostIds)
 
 	HostMapMonitorData := s.GetMonitorData(hostIds)
@@ -443,7 +448,6 @@ func (e RsHost) GetPage(c *gin.Context) {
 
 				if row.HealthyAt.Valid {
 					if int(nowTime.Sub(row.HealthyAt.Time).Minutes()) > 6 { //如果上报的时间大于5分钟 那就删掉线了
-
 						e.Orm.Model(&models.RsHost{}).Where("id = ?", row.Id).Updates(map[string]interface{}{
 							"status": global.HostOffline,
 						})
@@ -472,23 +476,14 @@ func (e RsHost) GetPage(c *gin.Context) {
 
 		snList := make([]dto.LabelRow, 0)
 
-		snList = append(snList, dto.LabelRow{
-			Label: "主机SN",
-			Value: row.Sn,
-		})
 		if businessSnList, ok := HostSoftwareMap[row.Id]; ok {
 			for _, item := range businessSnList {
 				if strings.HasPrefix(item.Key, "sn_") {
-					Label := ""
-					switch item.Key {
-					case "sn_baishan":
-						Label = "白山SN:"
-					case "sn_jinshan":
-						Label = "金山SN:"
 
-					}
+					itemKey := strings.Replace(item.Key, "sn_", "", -1)
+					snName := BusinessMap[itemKey]
 					snList = append(snList, dto.LabelRow{
-						Label: Label,
+						Label: snName,
 						Value: item.Value,
 					})
 				}

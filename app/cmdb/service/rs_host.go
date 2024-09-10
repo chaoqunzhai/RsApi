@@ -46,11 +46,14 @@ func (e *RsHost) GetPage(c *dto.RsHostGetPageReq, p *actions.DataPermission, lis
 	}
 
 	if c.BusinessId != "" {
+
 		var bindHostId []int
 
 		e.Orm.Raw(fmt.Sprintf("select host_id from host_bind_business where business_id in (%v)", c.BusinessId)).Scan(&bindHostId)
 
 		orm = orm.Where("id in (?)", bindHostId)
+
+		fmt.Println("查询业务", bindHostId, len(bindHostId))
 	}
 
 	if c.HostName != "" {
@@ -68,6 +71,16 @@ func (e *RsHost) GetPage(c *dto.RsHostGetPageReq, p *actions.DataPermission, lis
 			//多个元素 就是精确搜索了
 			orm = orm.Where("host_name in ? OR sn in ?", newHostList, newHostList)
 		}
+
+	}
+	if c.Region != "" {
+		var idcList []models.RsIdc
+		e.Orm.Model(&models.RsIdc{}).Select("id").Where("region like ?", fmt.Sprintf("%%%v%%", c.Region)).Find(&idcList)
+		var cache []int
+		for _, idc := range idcList {
+			cache = append(cache, idc.Id)
+		}
+		orm = orm.Where("idc in (?)", cache)
 
 	}
 	err = orm.Scopes(
@@ -231,6 +244,18 @@ func (e *RsHost) GetIdcList(ids []int) map[int][]interface{} {
 		RowMap[idc.Id] = cache
 	}
 	return RowMap
+
+}
+
+func (e *RsHost) GetBusinessMap() map[string]string {
+	var List []models.RsBusiness
+	cache := make(map[string]string, 0)
+	e.Orm.Model(&models.RsBusiness{}).Select("name,en_name").Find(&List)
+
+	for _, row := range List {
+		cache[row.EnName] = row.Name
+	}
+	return cache
 
 }
 func (e *RsHost) GetHostSoftware(ids []int) map[int][]models2.HostSoftware {

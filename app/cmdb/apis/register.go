@@ -39,6 +39,7 @@ var ispList = []string{
 // 黑名单的SN， 因为有些SN都是一样的，只能通过主机名来确定唯一性
 var blackMap = map[string]bool{
 	"01234567890123456789AB": true,
+	"Default string":         true,
 }
 
 func RemoveBracketContent(s string) string {
@@ -177,7 +178,7 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 	hostInstance.Belong = req.Belong
 	hostInstance.Sn = SN
 	hostInstance.HostName = HOSTNAME
-	hostInstance.Ip = req.Ip
+	//hostInstance.Ip = req.Ip
 
 	if req.NetType > 0 { //只有非0是才会进行保存
 		hostInstance.NetworkType = req.NetType
@@ -185,9 +186,9 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 	hostInstance.Mac = req.Mac
 	hostInstance.Mask = req.Mask
 	hostInstance.Gateway = req.Gateway
-	hostInstance.PublicIp = req.PublicIp
+	//hostInstance.PublicIp = req.PublicIp
 	hostInstance.Cpu = req.CPU
-	hostInstance.Kernel = req.Kernel
+	//hostInstance.Kernel = req.Kernel
 	hostInstance.RemotePort = req.RemotePort
 	hostInstance.Status = global.HostSuccess
 	hostInstance.Memory = req.Memory
@@ -253,23 +254,57 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 			var (
 				DeviceRow models2.HostNetDevice
 			)
+			NetDeviceInfo := strings.Split(NetDeviceName, ":")
+			var status int
+			var DeviceName string
+			if len(NetDeviceInfo) > 1 { //有状态
+				DeviceName = NetDeviceInfo[0]
+				DeviceStatus := NetDeviceInfo[1]
+				if DeviceStatus == "UP" {
+					status = 1
+				} else {
+					status = -1
+				}
+			} else {
+				DeviceName = NetDeviceName
+				status = 1
+			}
+			if strings.HasSuffix(DeviceName, "UNKNOWN") { //没有识别的网卡不做处理
+				continue
+			}
+			if strings.HasPrefix(DeviceName, "lo") { //回环端口
+				continue
+			}
+			if strings.HasPrefix(DeviceName, "docker") {
+				continue
+			}
+			if strings.HasPrefix(DeviceName, "ppp") {
+				continue
+			}
+			//获取的网卡有的是@拼接的
+			DeviceNameList := strings.Split(DeviceName, "@")
+			if len(DeviceNameList) == 0 {
+				continue
+			}
+			inDbDeviceName := DeviceNameList[0]
 			e.Orm.Model(&models2.HostNetDevice{}).Where("host_id = ? and `name` = ?",
-				hostInstance.Id, NetDeviceName).First(&DeviceRow)
+				hostInstance.Id, inDbDeviceName).First(&DeviceRow)
+			//如果 DeviceName 有 @ 那就需要特殊处理
+
 			DeviceRow.HostId = hostInstance.Id
-			DeviceRow.Name = NetDeviceName
+			DeviceRow.Name = inDbDeviceName
 			DeviceRow.UpdatedAt = models3.XTime{
 				Time: time.Now(),
 			}
-			DeviceRow.Status = 1
+			DeviceRow.Status = status
 			e.Orm.Save(&DeviceRow)
-			NetDeviceMap[NetDeviceName] = DeviceRow.Id
+			NetDeviceMap[inDbDeviceName] = DeviceRow.Id
 		}
 
 	}
 	//拨号列表,
 	for _, DialRow := range req.Dial {
 
-		//如果列表存在 全局的缓存中 那就自动归到idc下
 		var (
 			DialRowModel models.RsDial
 			DialCount    int64
@@ -307,6 +342,7 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 				"bu":        DialRow.BU,
 				"ip_v6":     DialRow.IpV6,
 				"nat_type":  DialRow.NT,
+				"vlan_id":   DialRow.VlanId,
 				"device_id": bindNetDeviceId,
 			}
 			if DialRow.NS != 0 {
@@ -321,6 +357,7 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 			DialRowModel.Pass = DialRow.P
 			DialRowModel.Ip = DialRow.Ip
 			DialRowModel.IpV6 = DialRow.IpV6
+			DialRowModel.VlanId = DialRow.VlanId
 			DialRowModel.Mac = DialRow.Mac
 			DialRowModel.DialName = DialRow.D
 			DialRowModel.NatType = DialRow.NT
@@ -358,11 +395,10 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 			if val == "" {
 				continue
 			}
-			snKey := fmt.Sprintf("sn_%v", key)
 			e.Orm.Model(&models2.HostSoftware{}).Where("host_id = ? and `key` = ?",
-				hostInstance.Id, snKey).First(&snRow)
+				hostInstance.Id, key).First(&snRow)
 			snRow.HostId = hostInstance.Id
-			snRow.Key = snKey
+			snRow.Key = key
 			snRow.Value = val
 			e.Orm.Save(&snRow)
 		}

@@ -11,17 +11,18 @@ import (
 // 主机拨号的信息
 
 type RegisterDial struct {
-	BU   string `json:"bu"`
-	A    string `json:"a"` //账号
-	P    string `json:"p"` //密码
-	I    string `json:"i"` //绑定物理网卡
-	D    string `json:"d"` //ppo线路名称 虚拟网卡名称
-	S    int    `json:"s"` //状态
-	Ip   string `json:"ip"`
-	IpV6 string `json:"ipv_6"`
-	Mac  string `json:"mac"`
-	NT   string `json:"nt"` //网络类型
-	NS   int    `json:"ns"` //联网状态
+	BU     string `json:"bu"`
+	VlanId string `json:"vlan_id"`
+	A      string `json:"a"` //账号
+	P      string `json:"p"` //密码
+	I      string `json:"i"` //绑定物理网卡
+	D      string `json:"d"` //ppo线路名称 虚拟网卡名称
+	S      int    `json:"s"` //状态
+	Ip     string `json:"ip"`
+	IpV6   string `json:"ipv_6"`
+	Mac    string `json:"mac"`
+	NT     string `json:"nt"` //网络类型
+	NS     int    `json:"ns"` //联网状态
 }
 
 // 内存使用率的格式化
@@ -84,7 +85,7 @@ type RsHostGetPageReq struct {
 	IdcName        string `form:"idcName" search:"-"`
 	IdcNumber      string `form:"idcNumber" search:"-"`
 	BusinessId     string `form:"businessId" search:"-"`
-	Region         string `form:"region"  search:"type:exact;column:region;table:rs_host" comment:"所在区域"`
+	Region         string `form:"region"  search:"-" comment:"所在区域"`
 	LineType       int    `form:"lineType" search:"type:exact;column:line_type;table:rs_host" comment:"线路类型"`
 	HostName       string `form:"hostname"  search:"-" comment:"主机名"`
 	Sn             string `form:"sn"  search:"type:contains;column:sn;table:rs_host" comment:"sn"`
