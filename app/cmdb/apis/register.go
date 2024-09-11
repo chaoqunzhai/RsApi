@@ -137,22 +137,28 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 	req := dto.RegisterMetrics{}
 	err := e.MakeContext(c).
 		MakeOrm().
-		Bind(&req, binding.JSON).
 		Errors
 	if err != nil {
 		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
+
+	if ShouldBindBodyWithErr := c.ShouldBindBodyWith(&req, binding.JSON); ShouldBindBodyWithErr != nil {
+		e.Logger.Error(ShouldBindBodyWithErr)
 		body, readErr := ioutil.ReadAll(c.Request.Body)
 		if readErr != nil {
-			e.Error(500, err, err.Error())
+			e.Error(500, ShouldBindBodyWithErr, ShouldBindBodyWithErr.Error())
 			return
 		}
 		defer func() {
 			_ = c.Request.Body.Close()
 		}()
 		e.Logger.Error(fmt.Sprintf("post Body: %v", string(body)))
-		e.Error(500, err, err.Error())
+		e.Error(500, ShouldBindBodyWithErr, ShouldBindBodyWithErr.Error())
 		return
 	}
+
 	registerHeaderKey := c.GetHeader("RsRole")
 
 	if strings.TrimSpace(registerHeaderKey) != "rs-sre" {
