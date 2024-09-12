@@ -6,9 +6,20 @@ import (
 	"gorm.io/gorm"
 )
 
+type AdditionsOrder struct {
+	models.Model
+	models.ModelTime
+	models.ControlBy
+	OrderId     string `json:"orderId" gorm:"type:varchar(50);index;comment:关联的入库单号"`
+	StoreRoomId int    `json:"storeRoomId" gorm:"index;comment:关联库房"`
+}
+
+func (AdditionsOrder) TableName() string {
+	return "additions_order"
+}
+
 type AdditionsWarehousing struct {
 	models.Model
-	CustomId         int          `json:"customId" gorm:"index;comment:供应商ID"`
 	StoreRoomId      int          `json:"storeRoomId" gorm:"index;comment:关联库房"`
 	PurchaseAt       sql.NullTime `json:"-" gorm:"type:datetime(3);comment:采购日期"`
 	ExpireAt         sql.NullTime `json:"-" gorm:"type:datetime(3);comment:维保到期日"`

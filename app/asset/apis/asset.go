@@ -78,10 +78,10 @@ func (e AdditionsWarehousing) GetStorePage(c *gin.Context) {
 	}
 
 	p := actions.GetPermissionFromContext(c)
-	list := make([]models2.AdditionsOrder, 0)
+	list := make([]models.AdditionsOrder, 0)
 	var count int64
 
-	var data models2.AdditionsOrder
+	var data models.AdditionsOrder
 
 	err = e.Orm.Model(&data).
 		Scopes(
@@ -170,6 +170,7 @@ func (e AdditionsWarehousing) Insert(c *gin.Context) {
 	for _, row := range req.List {
 		err = s.Insert(order.Id, req.StoreRoomId, &row)
 		if err != nil {
+			fmt.Println("err!", err)
 			continue
 		}
 
