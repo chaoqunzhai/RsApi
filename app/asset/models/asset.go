@@ -20,7 +20,7 @@ type AdditionsWarehousing struct {
 	Brand            string       `json:"brand" gorm:"type:varchar(50);comment:品牌名称"`
 	Sn               string       `json:"sn" gorm:"type:varchar(100);comment:资产SN"`
 	UnitId           int64        `json:"unitId" gorm:"type:bigint;comment:单位"`
-	Price            string       `json:"price" gorm:"type:varchar(50);comment:价格"`
+	Price            float64      `json:"price" gorm:"comment:价格"`
 	UserId           int64        `json:"userId" gorm:"type:bigint;comment:采购人员ID"`
 	Desc             string       `json:"desc" gorm:"type:varchar(30);comment:备注"`
 	PurchaseAtFormat string       `json:"purchaseAtFormat" gorm:"-"`
