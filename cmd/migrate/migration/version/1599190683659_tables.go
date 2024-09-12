@@ -58,6 +58,10 @@ func _1599190683659Tables(db *gorm.DB, version string) error {
 			new(models.BandwidthFees),
 			new(models.HostExecLog),
 			new(models.OperationLog),
+
+			//资产
+			new(models.AdditionsOrder),
+			new(models.Additions),
 		)
 		if err != nil {
 			return err

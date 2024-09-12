@@ -10,12 +10,12 @@ import (
 )
 
 func init() {
-	routerCheckRole = append(routerCheckRole, registerAssetRouter)
+	routerCheckRole = append(routerCheckRole, registerAdditionsWarehousingRouter)
 }
 
-// registerAssetRouter
-func registerAssetRouter(v1 *gin.RouterGroup, authMiddleware *jwt.GinJWTMiddleware) {
-	api := apis.Asset{}
+// registerAdditionsWarehousingRouter
+func registerAdditionsWarehousingRouter(v1 *gin.RouterGroup, authMiddleware *jwt.GinJWTMiddleware) {
+	api := apis.AdditionsWarehousing{}
 	r := v1.Group("/asset").Use(authMiddleware.MiddlewareFunc()).Use(middleware.AuthCheckRole())
 	{
 		r.GET("", actions.PermissionAction(), api.GetPage)

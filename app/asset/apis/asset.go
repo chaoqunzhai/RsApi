@@ -2,6 +2,8 @@ package apis
 
 import (
 	"fmt"
+	models2 "go-admin/cmd/migrate/migration/models"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-admin-team/go-admin-core/sdk/api"
@@ -14,30 +16,30 @@ import (
 	"go-admin/common/actions"
 )
 
-type Asset struct {
+type AdditionsWarehousing struct {
 	api.Api
 }
 
-// GetPage 获取资产详情列表
-// @Summary 获取资产详情列表
-// @Description 获取资产详情列表
-// @Tags 资产详情
-// @Param assetCode query string false "资产编号"
-// @Param snCode query string false "SN编码"
-// @Param categoryId query string false "资产类别"
-// @Param specification query string false "规格型号"
-// @Param brand query string false "品牌"
-// @Param unit query string false "计量单位"
-// @Param unitPrice query string false "单价"
-// @Param status query string false "状态(0=在库, 1=出库, 2=在用, 3=处置)"
+// GetPage 获取AdditionsWarehousing列表
+// @Summary 获取AdditionsWarehousing列表
+// @Description 获取AdditionsWarehousing列表
+// @Tags AdditionsWarehousing
+// @Param categoryId query int64 false "关联的资产分类ID"
+// @Param supplierId query int64 false "供应商ID"
+// @Param wId query int64 false "关联的入库单号"
+// @Param name query string false "资产名称"
+// @Param spec query string false "规格型号"
+// @Param brand query string false "品牌名称"
+// @Param sn query string false "资产SN"
+// @Param userId query string false "采购人员ID"
 // @Param pageSize query int false "页条数"
 // @Param pageIndex query int false "页码"
-// @Success 200 {object} response.Response{data=response.Page{list=[]models.Asset}} "{"code": 200, "data": [...]}"
-// @Router /api/v1/asset [get]
+// @Success 200 {object} response.Response{data=response.Page{list=[]models.AdditionsWarehousing}} "{"code": 200, "data": [...]}"
+// @Router /api/v1/additions-warehousing [get]
 // @Security Bearer
-func (e Asset) GetPage(c *gin.Context) {
-	req := dto.AssetGetPageReq{}
-	s := service.Asset{}
+func (e AdditionsWarehousing) GetPage(c *gin.Context) {
+	req := dto.AdditionsWarehousingGetPageReq{}
+	s := service.AdditionsWarehousing{}
 	err := e.MakeContext(c).
 		MakeOrm().
 		Bind(&req).
@@ -50,29 +52,29 @@ func (e Asset) GetPage(c *gin.Context) {
 	}
 
 	p := actions.GetPermissionFromContext(c)
-	list := make([]models.Asset, 0)
+	list := make([]models.AdditionsWarehousing, 0)
 	var count int64
 
 	err = s.GetPage(&req, p, &list, &count)
 	if err != nil {
-		e.Error(500, err, fmt.Sprintf("获取资产详情失败，\r\n失败信息 %s", err.Error()))
+		e.Error(500, err, fmt.Sprintf("获取AdditionsWarehousing失败，\r\n失败信息 %s", err.Error()))
 		return
 	}
 
 	e.PageOK(list, int(count), req.GetPageIndex(), req.GetPageSize(), "查询成功")
 }
 
-// Get 获取资产详情
-// @Summary 获取资产详情
-// @Description 获取资产详情
-// @Tags 资产详情
+// Get 获取AdditionsWarehousing
+// @Summary 获取AdditionsWarehousing
+// @Description 获取AdditionsWarehousing
+// @Tags AdditionsWarehousing
 // @Param id path int false "id"
-// @Success 200 {object} response.Response{data=models.Asset} "{"code": 200, "data": [...]}"
-// @Router /api/v1/asset/{id} [get]
+// @Success 200 {object} response.Response{data=models.AdditionsWarehousing} "{"code": 200, "data": [...]}"
+// @Router /api/v1/additions-warehousing/{id} [get]
 // @Security Bearer
-func (e Asset) Get(c *gin.Context) {
-	req := dto.AssetGetReq{}
-	s := service.Asset{}
+func (e AdditionsWarehousing) Get(c *gin.Context) {
+	req := dto.AdditionsWarehousingGetReq{}
+	s := service.AdditionsWarehousing{}
 	err := e.MakeContext(c).
 		MakeOrm().
 		Bind(&req).
@@ -83,31 +85,31 @@ func (e Asset) Get(c *gin.Context) {
 		e.Error(500, err, err.Error())
 		return
 	}
-	var object models.Asset
+	var object models.AdditionsWarehousing
 
 	p := actions.GetPermissionFromContext(c)
 	err = s.Get(&req, p, &object)
 	if err != nil {
-		e.Error(500, err, fmt.Sprintf("获取资产详情失败，\r\n失败信息 %s", err.Error()))
+		e.Error(500, err, fmt.Sprintf("获取AdditionsWarehousing失败，\r\n失败信息 %s", err.Error()))
 		return
 	}
 
 	e.OK(object, "查询成功")
 }
 
-// Insert 创建资产详情
-// @Summary 创建资产详情
-// @Description 创建资产详情
-// @Tags 资产详情
+// Insert 创建AdditionsWarehousing
+// @Summary 创建AdditionsWarehousing
+// @Description 创建AdditionsWarehousing
+// @Tags AdditionsWarehousing
 // @Accept application/json
 // @Product application/json
-// @Param data body dto.AssetInsertReq true "data"
+// @Param data body dto.AdditionsWarehousingInsertReq true "data"
 // @Success 200 {object} response.Response	"{"code": 200, "message": "添加成功"}"
-// @Router /api/v1/asset [post]
+// @Router /api/v1/additions-warehousing [post]
 // @Security Bearer
-func (e Asset) Insert(c *gin.Context) {
+func (e AdditionsWarehousing) Insert(c *gin.Context) {
 	req := dto.AssetInsertReq{}
-	s := service.Asset{}
+	s := service.AdditionsWarehousing{}
 	err := e.MakeContext(c).
 		MakeOrm().
 		Bind(&req).
@@ -118,32 +120,42 @@ func (e Asset) Insert(c *gin.Context) {
 		e.Error(500, err, err.Error())
 		return
 	}
-	// 设置创建人
-	req.SetCreateBy(user.GetUserId(c))
-
-	err = s.Insert(&req)
-	if err != nil {
-		e.Error(500, err, fmt.Sprintf("创建资产详情失败，\r\n失败信息 %s", err.Error()))
+	if len(req.List) == 0 {
+		e.Error(500, nil, "资产列表不存在")
 		return
 	}
+	order := models2.AdditionsOrder{
+		OrderId:     fmt.Sprintf("%v", time.Now().Unix()),
+		StoreRoomId: req.StoreRoomId,
+	}
+	order.CreateBy = user.GetUserId(c)
 
-	e.OK(req.GetId(), "创建成功")
+	e.Orm.Create(&order)
+	for _, row := range req.List {
+		err = s.Insert(order.Id, req.StoreRoomId, &row)
+		if err != nil {
+			continue
+		}
+
+	}
+
+	e.OK("", "创建成功")
 }
 
-// Update 修改资产详情
-// @Summary 修改资产详情
-// @Description 修改资产详情
-// @Tags 资产详情
+// Update 修改AdditionsWarehousing
+// @Summary 修改AdditionsWarehousing
+// @Description 修改AdditionsWarehousing
+// @Tags AdditionsWarehousing
 // @Accept application/json
 // @Product application/json
 // @Param id path int true "id"
-// @Param data body dto.AssetUpdateReq true "body"
+// @Param data body dto.AdditionsWarehousingUpdateReq true "body"
 // @Success 200 {object} response.Response	"{"code": 200, "message": "修改成功"}"
-// @Router /api/v1/asset/{id} [put]
+// @Router /api/v1/additions-warehousing/{id} [put]
 // @Security Bearer
-func (e Asset) Update(c *gin.Context) {
-	req := dto.AssetUpdateReq{}
-	s := service.Asset{}
+func (e AdditionsWarehousing) Update(c *gin.Context) {
+	req := dto.AdditionsWarehousingUpdateReq{}
+	s := service.AdditionsWarehousing{}
 	err := e.MakeContext(c).
 		MakeOrm().
 		Bind(&req).
@@ -159,23 +171,23 @@ func (e Asset) Update(c *gin.Context) {
 
 	err = s.Update(&req, p)
 	if err != nil {
-		e.Error(500, err, fmt.Sprintf("修改资产详情失败，\r\n失败信息 %s", err.Error()))
+		e.Error(500, err, fmt.Sprintf("修改AdditionsWarehousing失败，\r\n失败信息 %s", err.Error()))
 		return
 	}
 	e.OK(req.GetId(), "修改成功")
 }
 
-// Delete 删除资产详情
-// @Summary 删除资产详情
-// @Description 删除资产详情
-// @Tags 资产详情
-// @Param data body dto.AssetDeleteReq true "body"
+// Delete 删除AdditionsWarehousing
+// @Summary 删除AdditionsWarehousing
+// @Description 删除AdditionsWarehousing
+// @Tags AdditionsWarehousing
+// @Param data body dto.AdditionsWarehousingDeleteReq true "body"
 // @Success 200 {object} response.Response	"{"code": 200, "message": "删除成功"}"
-// @Router /api/v1/asset [delete]
+// @Router /api/v1/additions-warehousing [delete]
 // @Security Bearer
-func (e Asset) Delete(c *gin.Context) {
-	s := service.Asset{}
-	req := dto.AssetDeleteReq{}
+func (e AdditionsWarehousing) Delete(c *gin.Context) {
+	s := service.AdditionsWarehousing{}
+	req := dto.AdditionsWarehousingDeleteReq{}
 	err := e.MakeContext(c).
 		MakeOrm().
 		Bind(&req).
@@ -192,7 +204,7 @@ func (e Asset) Delete(c *gin.Context) {
 
 	err = s.Remove(&req, p)
 	if err != nil {
-		e.Error(500, err, fmt.Sprintf("删除资产详情失败，\r\n失败信息 %s", err.Error()))
+		e.Error(500, err, fmt.Sprintf("删除AdditionsWarehousing失败，\r\n失败信息 %s", err.Error()))
 		return
 	}
 	e.OK(req.GetId(), "删除成功")
