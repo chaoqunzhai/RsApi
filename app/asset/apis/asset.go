@@ -3,6 +3,7 @@ package apis
 import (
 	"fmt"
 	models2 "go-admin/cmd/migrate/migration/models"
+	cDto "go-admin/common/dto"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -56,6 +57,41 @@ func (e AdditionsWarehousing) GetPage(c *gin.Context) {
 	var count int64
 
 	err = s.GetPage(&req, p, &list, &count)
+	if err != nil {
+		e.Error(500, err, fmt.Sprintf("获取AdditionsWarehousing失败，\r\n失败信息 %s", err.Error()))
+		return
+	}
+
+	e.PageOK(list, int(count), req.GetPageIndex(), req.GetPageSize(), "查询成功")
+}
+
+func (e AdditionsWarehousing) GetStorePage(c *gin.Context) {
+	req := dto.AdditionsOrderGetPageReq{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
+
+	p := actions.GetPermissionFromContext(c)
+	list := make([]models2.AdditionsOrder, 0)
+	var count int64
+
+	var data models2.AdditionsOrder
+
+	err = e.Orm.Model(&data).
+		Scopes(
+			cDto.MakeCondition(req.GetNeedSearch()),
+			cDto.Paginate(req.GetPageSize(), req.GetPageIndex()),
+			actions.Permission(data.TableName(), p),
+		).
+		Find(&list).Limit(-1).Offset(-1).
+		Count(&count).Error
+
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("获取AdditionsWarehousing失败，\r\n失败信息 %s", err.Error()))
 		return
@@ -142,17 +178,6 @@ func (e AdditionsWarehousing) Insert(c *gin.Context) {
 	e.OK("", "创建成功")
 }
 
-// Update 修改AdditionsWarehousing
-// @Summary 修改AdditionsWarehousing
-// @Description 修改AdditionsWarehousing
-// @Tags AdditionsWarehousing
-// @Accept application/json
-// @Product application/json
-// @Param id path int true "id"
-// @Param data body dto.AdditionsWarehousingUpdateReq true "body"
-// @Success 200 {object} response.Response	"{"code": 200, "message": "修改成功"}"
-// @Router /api/v1/additions-warehousing/{id} [put]
-// @Security Bearer
 func (e AdditionsWarehousing) Update(c *gin.Context) {
 	req := dto.AdditionsWarehousingUpdateReq{}
 	s := service.AdditionsWarehousing{}
@@ -166,15 +191,67 @@ func (e AdditionsWarehousing) Update(c *gin.Context) {
 		e.Error(500, err, err.Error())
 		return
 	}
-	req.SetUpdateBy(user.GetUserId(c))
-	p := actions.GetPermissionFromContext(c)
 
-	err = s.Update(&req, p)
-	if err != nil {
-		e.Error(500, err, fmt.Sprintf("修改AdditionsWarehousing失败，\r\n失败信息 %s", err.Error()))
+	var order models.AdditionsWarehousing
+
+	e.Orm.Model(&order).Where("id = ?", req.Id).Limit(1).Find(&order)
+	if order.Id == 0 {
+		e.Error(500, nil, "数据不存在")
 		return
 	}
-	e.OK(req.GetId(), "修改成功")
+
+	p := actions.GetPermissionFromContext(c)
+	err = s.Update(&req, p)
+
+	e.OK("", "修改成功")
+}
+
+// Update 修改AdditionsWarehousing
+// @Summary 修改AdditionsWarehousing
+// @Description 修改AdditionsWarehousing
+// @Tags AdditionsWarehousing
+// @Accept application/json
+// @Product application/json
+// @Param id path int true "id"
+// @Param data body dto.AdditionsWarehousingUpdateReq true "body"
+// @Success 200 {object} response.Response	"{"code": 200, "message": "修改成功"}"
+// @Router /api/v1/additions-warehousing/{id} [put]
+// @Security Bearer
+func (e AdditionsWarehousing) UpdateStore(c *gin.Context) {
+	req := dto.AssetUpdateReq{}
+	s := service.AdditionsWarehousing{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
+
+	var order models2.AdditionsOrder
+
+	e.Orm.Model(&order).Where("id = ?", req.Id).Limit(1).Find(&order)
+	if order.Id == 0 {
+		e.Error(500, nil, "数据不存在")
+		return
+	}
+	order.StoreRoomId = req.StoreRoomId
+
+	e.Orm.Save(&order)
+
+	p := actions.GetPermissionFromContext(c)
+
+	for _, row := range req.List {
+		err = s.UpdateStore(req.StoreRoomId, &row, p)
+		if err != nil {
+			continue
+		}
+	}
+
+	e.OK("", "修改成功")
 }
 
 // Delete 删除AdditionsWarehousing

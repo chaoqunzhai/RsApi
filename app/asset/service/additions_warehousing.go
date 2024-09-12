@@ -99,7 +99,6 @@ func (e *AdditionsWarehousing) Insert(orderId, StoreRoomId int, c *dto.Additions
 	return nil
 }
 
-// Update 修改AdditionsWarehousing对象
 func (e *AdditionsWarehousing) Update(c *dto.AdditionsWarehousingUpdateReq, p *actions.DataPermission) error {
 	var err error
 	var data = models.AdditionsWarehousing{}
@@ -108,6 +107,72 @@ func (e *AdditionsWarehousing) Update(c *dto.AdditionsWarehousingUpdateReq, p *a
 	).First(&data, c.GetId())
 	c.Generate(&data)
 
+	if c.PurchaseAt != "" {
+		if star, err := time.ParseInLocation(time.DateTime, c.PurchaseAt, global.LOC); err == nil {
+			data.PurchaseAt = sql.NullTime{
+				Time:  star,
+				Valid: true,
+			}
+		}
+
+	} else {
+		data.PurchaseAt = sql.NullTime{}
+	}
+
+	if c.ExpireAt != "" {
+		if end, err := time.ParseInLocation(time.DateTime, c.ExpireAt, global.LOC); err == nil {
+			data.ExpireAt = sql.NullTime{
+				Time:  end,
+				Valid: true,
+			}
+		}
+
+	} else {
+		data.ExpireAt = sql.NullTime{}
+	}
+	db := e.Orm.Save(&data)
+	if err = db.Error; err != nil {
+		e.Log.Errorf("AdditionsWarehousingService Save error:%s \r\n", err)
+		return err
+	}
+	if db.RowsAffected == 0 {
+		return errors.New("无权更新该数据")
+	}
+	return nil
+}
+
+func (e *AdditionsWarehousing) UpdateStore(StoreRoomId int, c *dto.AdditionsWarehousingUpdateReq, p *actions.DataPermission) error {
+	var err error
+	var data = models.AdditionsWarehousing{}
+	e.Orm.Scopes(
+		actions.Permission(data.TableName(), p),
+	).First(&data, c.GetId())
+	c.Generate(&data)
+
+	data.StoreRoomId = StoreRoomId
+	if c.PurchaseAt != "" {
+		if star, err := time.ParseInLocation(time.DateTime, c.PurchaseAt, global.LOC); err == nil {
+			data.PurchaseAt = sql.NullTime{
+				Time:  star,
+				Valid: true,
+			}
+		}
+
+	} else {
+		data.PurchaseAt = sql.NullTime{}
+	}
+
+	if c.ExpireAt != "" {
+		if end, err := time.ParseInLocation(time.DateTime, c.ExpireAt, global.LOC); err == nil {
+			data.ExpireAt = sql.NullTime{
+				Time:  end,
+				Valid: true,
+			}
+		}
+
+	} else {
+		data.ExpireAt = sql.NullTime{}
+	}
 	db := e.Orm.Save(&data)
 	if err = db.Error; err != nil {
 		e.Log.Errorf("AdditionsWarehousingService Save error:%s \r\n", err)

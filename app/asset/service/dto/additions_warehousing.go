@@ -1,12 +1,21 @@
 package dto
 
 import (
-	"time"
-
 	"go-admin/app/asset/models"
 	"go-admin/common/dto"
 	common "go-admin/common/models"
 )
+
+type AdditionsOrderGetPageReq struct {
+	dto.Pagination `search:"-"`
+	StoreRoomId    int64  `form:"storeRoomId"  search:"type:exact;column:storeroom_Id;table:additions_order" comment:"关联的库房ID"`
+	WId            int64  `form:"wId"  search:"type:exact;column:w_id;table:additions_order" comment:"关联的入库单号"`
+	Name           string `form:"name"  search:"type:contains;column:name;table:additions_order" comment:"资产名称"`
+}
+
+func (m *AdditionsOrderGetPageReq) GetNeedSearch() interface{} {
+	return *m
+}
 
 type AdditionsWarehousingGetPageReq struct {
 	dto.Pagination `search:"-"`
@@ -45,7 +54,6 @@ func (m *AdditionsWarehousingGetPageReq) GetNeedSearch() interface{} {
 }
 
 type AssetInsertReq struct {
-	Id          int                             `json:"-" comment:"主键编码"` // 主键编码
 	StoreRoomId int                             `json:"storeRoomId" comment:"存放位置"`
 	Desc        string                          `json:"desc" comment:"备注"`
 	List        []AdditionsWarehousingInsertReq `json:"list" comment:"资产列表"`
@@ -67,6 +75,13 @@ type AdditionsWarehousingInsertReq struct {
 	common.ControlBy
 }
 
+type AssetUpdateReq struct {
+	Id          int                             `uri:"id" comment:"主键编码"` // 主键编码
+	StoreRoomId int                             `json:"storeRoomId" comment:"存放位置"`
+	Desc        string                          `json:"desc" comment:"备注"`
+	List        []AdditionsWarehousingUpdateReq `json:"list" comment:"资产列表"`
+}
+
 func (s *AdditionsWarehousingInsertReq) Generate(model *models.AdditionsWarehousing) {
 
 	model.CategoryId = s.CategoryId
@@ -83,20 +98,20 @@ func (s *AdditionsWarehousingInsertReq) Generate(model *models.AdditionsWarehous
 }
 
 type AdditionsWarehousingUpdateReq struct {
-	Id         int       `uri:"id" comment:"主键编码"` // 主键编码
-	PurchaseAt time.Time `json:"purchaseAt" comment:"采购日期"`
-	ExpireAt   time.Time `json:"expireAt" comment:"维保到期日"`
-	CategoryId int64     `json:"categoryId" comment:"关联的资产分类ID"`
-	SupplierId int64     `json:"supplierId" comment:"供应商ID"`
-	WId        int64     `json:"wId" comment:"关联的入库单号"`
-	Name       string    `json:"name" comment:"资产名称"`
-	Spec       string    `json:"spec" comment:"规格型号"`
-	Brand      string    `json:"brand" comment:"品牌名称"`
-	Sn         string    `json:"sn" comment:"资产SN"`
-	UnitId     int64     `json:"unitId" comment:"单位"`
-	Price      string    `json:"price" comment:"价格"`
-	UserId     int64     `json:"userId" comment:"采购人员ID"`
-	Desc       string    `json:"desc" comment:"备注"`
+	Id         int    `json:"id" comment:"主键编码"` // 主键编码
+	PurchaseAt string `json:"purchaseAt" comment:"采购日期"`
+	ExpireAt   string `json:"expireAt" comment:"维保到期日"`
+	CategoryId int64  `json:"categoryId" comment:"关联的资产分类ID"`
+	SupplierId int64  `json:"supplierId" comment:"供应商ID"`
+	WId        int64  `json:"wId" comment:"关联的入库单号"`
+	Name       string `json:"name" comment:"资产名称"`
+	Spec       string `json:"spec" comment:"规格型号"`
+	Brand      string `json:"brand" comment:"品牌名称"`
+	Sn         string `json:"sn" comment:"资产SN"`
+	UnitId     int64  `json:"unitId" comment:"单位"`
+	Price      string `json:"price" comment:"价格"`
+	UserId     int64  `json:"userId" comment:"采购人员ID"`
+	Desc       string `json:"desc" comment:"备注"`
 	common.ControlBy
 }
 

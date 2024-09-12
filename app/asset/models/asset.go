@@ -8,6 +8,7 @@ import (
 
 type AdditionsWarehousing struct {
 	models.Model
+	CustomId         int          `json:"customId" gorm:"index;comment:供应商ID"`
 	StoreRoomId      int          `json:"storeRoomId" gorm:"index;comment:关联库房"`
 	PurchaseAt       sql.NullTime `json:"-" gorm:"type:datetime(3);comment:采购日期"`
 	ExpireAt         sql.NullTime `json:"-" gorm:"type:datetime(3);comment:维保到期日"`
