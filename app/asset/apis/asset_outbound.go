@@ -22,11 +22,10 @@ type AssetOutbound struct {
 // @Summary 获取资产出库记录列表
 // @Description 获取资产出库记录列表
 // @Tags 资产出库记录
-// @Param assetId query string false "资产编码"
-// @Param warehouseId query string false "库房编码"
-// @Param outboundTo query string false "出库去向(客户编码)"
-// @Param outboundBy query string false "出库人编码"
-// @Param outboundAt query time.Time false "出库时间"
+// @Param outboundCode query string false "出库单号"
+// @Param warehouseId query int64 false "库房编码"
+// @Param outboundTo query int64 false "出库去向(客户编码)"
+// @Param outboundBy query int64 false "出库人编码"
 // @Param pageSize query int false "页条数"
 // @Param pageIndex query int false "页码"
 // @Success 200 {object} response.Response{data=response.Page{list=[]models.AssetOutbound}} "{"code": 200, "data": [...]}"

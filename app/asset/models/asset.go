@@ -14,7 +14,7 @@ type Asset struct {
 	Brand         string  `json:"brand" gorm:"type:varchar(100);comment:品牌"`
 	Unit          string  `json:"unit" gorm:"type:varchar(50);comment:计量单位"`
 	UnitPrice     float64 `json:"unitPrice" gorm:"type:decimal(10,2);comment:单价"`
-	Status        int8    `json:"status" gorm:"type:tinyint(1);comment:状态(0=在库, 1=出库, 2=在用, 3=处置)"`
+	Status        int8    `json:"status" gorm:"type:tinyint(1);comment:状态(1=在库, 2=出库, 3=在用, 4=处置)"`
 	Remark        string  `json:"remark" gorm:"type:text;comment:备注"`
 	models.ModelTime
 	models.ControlBy

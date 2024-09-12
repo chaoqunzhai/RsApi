@@ -147,14 +147,14 @@ definitions:
     type: object
   dto.AssetInboundInsertReq:
     properties:
-      assetId:
-        type: integer
       fromCode:
         type: string
       inboundAt:
         type: string
       inboundBy:
         type: integer
+      inboundCode:
+        type: string
       inboundFrom:
         type: integer
       remark:
@@ -162,10 +162,36 @@ definitions:
       warehouseId:
         type: integer
     type: object
-  dto.AssetInboundUpdateReq:
+  dto.AssetInboundMemberDeleteReq:
+    properties:
+      ids:
+        items:
+          type: integer
+        type: array
+    type: object
+  dto.AssetInboundMemberInsertReq:
     properties:
       assetId:
         type: integer
+      assetInboundCode:
+        type: string
+      assetInboundId:
+        type: integer
+    type: object
+  dto.AssetInboundMemberUpdateReq:
+    properties:
+      assetId:
+        type: integer
+      assetInboundCode:
+        type: string
+      assetInboundId:
+        type: integer
+      id:
+        description: 主键
+        type: integer
+    type: object
+  dto.AssetInboundUpdateReq:
+    properties:
       fromCode:
         type: string
       id:
@@ -175,6 +201,8 @@ definitions:
         type: string
       inboundBy:
         type: integer
+      inboundCode:
+        type: string
       inboundFrom:
         type: integer
       remark:
@@ -212,12 +240,12 @@ definitions:
     type: object
   dto.AssetOutboundInsertReq:
     properties:
-      assetId:
-        type: integer
       outboundAt:
         type: string
       outboundBy:
         type: integer
+      outboundCode:
+        type: string
       outboundTo:
         type: integer
       remark:
@@ -225,10 +253,36 @@ definitions:
       warehouseId:
         type: integer
     type: object
-  dto.AssetOutboundUpdateReq:
+  dto.AssetOutboundMemberDeleteReq:
+    properties:
+      ids:
+        items:
+          type: integer
+        type: array
+    type: object
+  dto.AssetOutboundMemberInsertReq:
     properties:
       assetId:
         type: integer
+      assetOutboundCode:
+        type: string
+      assetOutboundId:
+        type: integer
+    type: object
+  dto.AssetOutboundMemberUpdateReq:
+    properties:
+      assetId:
+        type: integer
+      assetOutboundCode:
+        type: string
+      assetOutboundId:
+        type: integer
+      id:
+        description: 主键
+        type: integer
+    type: object
+  dto.AssetOutboundUpdateReq:
+    properties:
       id:
         description: 主键
         type: integer
@@ -236,6 +290,8 @@ definitions:
         type: string
       outboundBy:
         type: integer
+      outboundCode:
+        type: string
       outboundTo:
         type: integer
       remark:
@@ -2002,8 +2058,6 @@ definitions:
     type: object
   models.AssetInbound:
     properties:
-      assetId:
-        type: integer
       fromCode:
         type: string
       id:
@@ -2012,6 +2066,8 @@ definitions:
         type: string
       inboundBy:
         type: integer
+      inboundCode:
+        type: string
       inboundFrom:
         type: integer
       remark:
@@ -2021,16 +2077,29 @@ definitions:
       warehouseId:
         type: integer
     type: object
-  models.AssetOutbound:
+  models.AssetInboundMember:
     properties:
       assetId:
         type: integer
+      assetInboundCode:
+        type: string
+      assetInboundId:
+        type: integer
+      id:
+        type: integer
+      updatedAt:
+        $ref: '#/definitions/models.XTime'
+    type: object
+  models.AssetOutbound:
+    properties:
       id:
         type: integer
       outboundAt:
         type: string
       outboundBy:
         type: integer
+      outboundCode:
+        type: string
       outboundTo:
         type: integer
       remark:
@@ -2039,6 +2108,19 @@ definitions:
         $ref: '#/definitions/models.XTime'
       warehouseId:
         type: integer
+    type: object
+  models.AssetOutboundMember:
+    properties:
+      assetId:
+        type: integer
+      assetOutboundCode:
+        type: string
+      assetOutboundId:
+        type: integer
+      id:
+        type: integer
+      updatedAt:
+        $ref: '#/definitions/models.XTime'
     type: object
   models.AssetPurchase:
     properties:
@@ -2164,6 +2246,8 @@ definitions:
   models.AssetWarehouse:
     properties:
       administratorId:
+        type: integer
+      createBy:
         type: integer
       id:
         type: integer
@@ -3447,26 +3531,22 @@ paths:
     get:
       description: 获取资产入库记录列表
       parameters:
-      - description: 资产编码
+      - description: 入库单号
         in: query
-        name: assetId
+        name: inboundCode
         type: string
       - description: 库房编码
         in: query
         name: warehouseId
-        type: string
+        type: integer
       - description: 来源(1=采购、0=直接入库)
         in: query
         name: inboundFrom
-        type: string
-      - description: 来源凭证编码(采购编码)
-        in: query
-        name: fromCode
-        type: string
+        type: integer
       - description: 入库人编码
         in: query
         name: inboundBy
-        type: string
+        type: integer
       - description: 页条数
         in: query
         name: pageSize
@@ -3518,6 +3598,141 @@ paths:
       summary: 创建资产入库记录
       tags:
       - 资产入库记录
+  /api/v1/asset-inbound-member:
+    delete:
+      description: 删除资产入库成员表
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetInboundMemberDeleteReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "删除成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 删除资产入库成员表
+      tags:
+      - 资产入库成员表
+    get:
+      description: 获取资产入库成员表列表
+      parameters:
+      - description: 资产入库编码
+        in: query
+        name: assetInboundId
+        type: integer
+      - description: 资产入库单号
+        in: query
+        name: assetInboundCode
+        type: string
+      - description: 资产编码
+        in: query
+        name: assetId
+        type: integer
+      - description: 页条数
+        in: query
+        name: pageSize
+        type: integer
+      - description: 页码
+        in: query
+        name: pageIndex
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/response.Page'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/models.AssetInboundMember'
+                        type: array
+                    type: object
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取资产入库成员表列表
+      tags:
+      - 资产入库成员表
+    post:
+      consumes:
+      - application/json
+      description: 创建资产入库成员表
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetInboundMemberInsertReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "添加成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 创建资产入库成员表
+      tags:
+      - 资产入库成员表
+  /api/v1/asset-inbound-member/{id}:
+    get:
+      description: 获取资产入库成员表
+      parameters:
+      - description: id
+        in: path
+        name: id
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.AssetInboundMember'
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取资产入库成员表
+      tags:
+      - 资产入库成员表
+    put:
+      consumes:
+      - application/json
+      description: 修改资产入库成员表
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetInboundMemberUpdateReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "修改成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 修改资产入库成员表
+      tags:
+      - 资产入库成员表
   /api/v1/asset-inbound/{id}:
     get:
       description: 获取资产入库记录
@@ -3590,22 +3805,22 @@ paths:
     get:
       description: 获取资产出库记录列表
       parameters:
-      - description: 资产编码
+      - description: 出库单号
         in: query
-        name: assetId
+        name: outboundCode
         type: string
       - description: 库房编码
         in: query
         name: warehouseId
-        type: string
+        type: integer
       - description: 出库去向(客户编码)
         in: query
         name: outboundTo
-        type: string
+        type: integer
       - description: 出库人编码
         in: query
         name: outboundBy
-        type: string
+        type: integer
       - description: 页条数
         in: query
         name: pageSize
@@ -3657,6 +3872,141 @@ paths:
       summary: 创建资产出库记录
       tags:
       - 资产出库记录
+  /api/v1/asset-outbound-member:
+    delete:
+      description: 删除资产出库成员表
+      parameters:
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetOutboundMemberDeleteReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "删除成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 删除资产出库成员表
+      tags:
+      - 资产出库成员表
+    get:
+      description: 获取资产出库成员表列表
+      parameters:
+      - description: 资产出库编码
+        in: query
+        name: assetOutboundId
+        type: string
+      - description: 资产出库单号
+        in: query
+        name: assetOutboundCode
+        type: string
+      - description: 资产编码
+        in: query
+        name: assetId
+        type: string
+      - description: 页条数
+        in: query
+        name: pageSize
+        type: integer
+      - description: 页码
+        in: query
+        name: pageIndex
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/response.Page'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/models.AssetOutboundMember'
+                        type: array
+                    type: object
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取资产出库成员表列表
+      tags:
+      - 资产出库成员表
+    post:
+      consumes:
+      - application/json
+      description: 创建资产出库成员表
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetOutboundMemberInsertReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "添加成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 创建资产出库成员表
+      tags:
+      - 资产出库成员表
+  /api/v1/asset-outbound-member/{id}:
+    get:
+      description: 获取资产出库成员表
+      parameters:
+      - description: id
+        in: path
+        name: id
+        type: integer
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.AssetOutboundMember'
+              type: object
+      security:
+      - Bearer: []
+      summary: 获取资产出库成员表
+      tags:
+      - 资产出库成员表
+    put:
+      consumes:
+      - application/json
+      description: 修改资产出库成员表
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: body
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AssetOutboundMemberUpdateReq'
+      responses:
+        "200":
+          description: '{"code": 200, "message": "修改成功"}'
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: 修改资产出库成员表
+      tags:
+      - 资产出库成员表
   /api/v1/asset-outbound/{id}:
     get:
       description: 获取资产出库记录

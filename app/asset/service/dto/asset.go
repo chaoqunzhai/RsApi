@@ -15,7 +15,7 @@ type AssetGetPageReq struct {
 	Brand          string `form:"brand"  search:"type:exact;column:brand;table:asset" comment:"品牌"`
 	Unit           string `form:"unit"  search:"type:exact;column:unit;table:asset" comment:"计量单位"`
 	UnitPrice      string `form:"unitPrice"  search:"type:exact;column:unit_price;table:asset" comment:"单价"`
-	Status         string `form:"status"  search:"type:exact;column:status;table:asset" comment:"状态(0=在库, 1=出库, 2=在用, 3=处置)"`
+	Status         string `form:"status"  search:"type:exact;column:status;table:asset" comment:"状态(1=在库, 2=出库, 3=在用, 4=处置)"`
 	AssetOrder
 }
 
@@ -50,7 +50,7 @@ type AssetInsertReq struct {
 	Brand         string  `json:"brand" comment:"品牌"`
 	Unit          string  `json:"unit" comment:"计量单位"`
 	UnitPrice     float64 `json:"unitPrice" comment:"单价"`
-	Status        int8    `json:"status" comment:"状态(0=在库, 1=出库, 2=在用, 3=处置)"`
+	Status        int8    `json:"status" comment:"状态(1=在库, 2=出库, 3=在用, 4=处置)"`
 	Remark        string  `json:"remark" comment:"备注"`
 	common.ControlBy
 }
@@ -84,7 +84,7 @@ type AssetUpdateReq struct {
 	Brand         string  `json:"brand" comment:"品牌"`
 	Unit          string  `json:"unit" comment:"计量单位"`
 	UnitPrice     float64 `json:"unitPrice" comment:"单价"`
-	Status        int8    `json:"status" comment:"状态(0=在库, 1=出库, 2=在用, 3=处置)"`
+	Status        int8    `json:"status" comment:"状态(1=在库, 2=出库, 3=在用, 4=处置)"`
 	Remark        string  `json:"remark" comment:"备注"`
 	common.ControlBy
 }

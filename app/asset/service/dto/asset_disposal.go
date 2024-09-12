@@ -40,8 +40,8 @@ type AssetDisposalInsertReq struct {
 	AssetId        int       `json:"assetId" comment:"资产编码"`
 	DisposalPerson int       `json:"disposalPerson" comment:"处置人编码"`
 	Reason         string    `json:"reason" comment:"处置原因"`
-	DisposalWay    int8      `json:"disposalWay" comment:"处置方式(0=报废, 1=出售, 2=出租, 3=退租, 4=捐赠, 5=其它)"`
-	DisposalType   int8      `json:"disposalType" comment:"处置地点类型(0=机房, 1=库房)"`
+	DisposalWay    int8      `json:"disposalWay" comment:"处置方式(1=报废, 2=出售, 3=出租, 4=退租, 5=捐赠, 6=其它)"`
+	DisposalType   int8      `json:"disposalType" comment:"处置地点类型(1=机房, 2=库房)"`
 	LocationId     int       `json:"locationId" comment:"处置地点编码(机房编码/库房编码)"`
 	Amount         float64   `json:"amount" comment:"处置金额"`
 	DisposalAt     time.Time `json:"disposalAt" comment:"处置时间"`
@@ -74,8 +74,8 @@ type AssetDisposalUpdateReq struct {
 	AssetId        int       `json:"assetId" comment:"资产编码"`
 	DisposalPerson int       `json:"disposalPerson" comment:"处置人编码"`
 	Reason         string    `json:"reason" comment:"处置原因"`
-	DisposalWay    int8      `json:"disposalWay" comment:"处置方式(0=报废, 1=出售, 2=出租, 3=退租, 4=捐赠, 5=其它)"`
-	DisposalType   int8      `json:"disposalType" comment:"处置地点类型(0=机房, 1=库房)"`
+	DisposalWay    int8      `json:"disposalWay" comment:"处置方式(1=报废, 2=出售, 3=出租, 4=退租, 5=捐赠, 6=其它)"`
+	DisposalType   int8      `json:"disposalType" comment:"处置地点类型(1=机房, 2=库房)"`
 	LocationId     int       `json:"locationId" comment:"处置地点编码(机房编码/库房编码)"`
 	Amount         float64   `json:"amount" comment:"处置金额"`
 	DisposalAt     time.Time `json:"disposalAt" comment:"处置时间"`

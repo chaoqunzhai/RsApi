@@ -20,7 +20,7 @@ type AssetPurchaseApply struct {
 	TotalAmount   float64   `json:"totalAmount" gorm:"type:decimal(10,2);comment:预估金额"`
 	ApplyReason   string    `json:"applyReason" gorm:"type:text;comment:申购理由"`
 	ApplyAt       time.Time `json:"applyAt" gorm:"type:date;comment:申购日期"`
-	Status        int8      `json:"status" gorm:"type:tinyint(1);comment:申购状态(0=待审批, 1=已审批, 2=已驳回, 3=已取消)"`
+	Status        int8      `json:"status" gorm:"type:tinyint(1);comment:申购状态(1=待审批, 2=已审批, 3=已驳回, 4=已取消)"`
 	Approver      int       `json:"approver" gorm:"type:int;comment:审批人编码"`
 	ApproveAt     time.Time `json:"approveAt" gorm:"type:date;comment:审批时间"`
 	Remark        string    `json:"remark" gorm:"type:text;comment:备注"`

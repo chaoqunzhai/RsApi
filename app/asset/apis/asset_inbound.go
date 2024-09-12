@@ -22,11 +22,11 @@ type AssetInbound struct {
 // @Summary 获取资产入库记录列表
 // @Description 获取资产入库记录列表
 // @Tags 资产入库记录
-// @Param assetId query string false "资产编码"
-// @Param warehouseId query string false "库房编码"
-// @Param inboundFrom query string false "来源(1=采购、0=直接入库)"
-// @Param fromCode query string false "来源凭证编码(采购编码)"
-// @Param inboundBy query string false "入库人编码"
+// @Param inboundCode query string false "入库单号"
+// @Param warehouseId query int64 false "库房编码"
+// @Param inboundFrom query int64 false "来源(1=采购、0=直接入库)"
+// @Param inboundBy query int64 false "入库人编码"
+// @Param inboundAt query time.Time false "入库时间"
 // @Param pageSize query int false "页条数"
 // @Param pageIndex query int false "页码"
 // @Success 200 {object} response.Response{data=response.Page{list=[]models.AssetInbound}} "{"code": 200, "data": [...]}"
