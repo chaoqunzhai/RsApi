@@ -3,6 +3,7 @@ package apis
 import (
 	"fmt"
 	cDto "go-admin/common/dto"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -172,7 +173,7 @@ func (e AdditionsWarehousing) Get(c *gin.Context) {
 }
 
 func (e AdditionsWarehousing) GetStore(c *gin.Context) {
-	req := dto.AdditionsWarehousingGetReq{}
+	req := dto.AdditionsOrderGetReq{}
 	s := service.AdditionsWarehousing{}
 	err := e.MakeContext(c).
 		MakeOrm().
@@ -184,18 +185,24 @@ func (e AdditionsWarehousing) GetStore(c *gin.Context) {
 		e.Error(500, err, err.Error())
 		return
 	}
+	orderId := c.Param("id")
+
+	pageSizeInt, _ := strconv.Atoi(c.Query("pageSize"))
+	pageIndexInt, _ := strconv.Atoi(c.Query("pageIndex"))
 	var object models.AdditionsOrder
 
-	e.Orm.Model(models.AdditionsOrder{}).Where("id = ?", req.Id).Limit(1).Find(&object)
+	e.Orm.Model(models.AdditionsOrder{}).Where("id = ?", orderId).Limit(1).Find(&object)
 	if object.Id == 0 {
 		e.Error(500, nil, "入库单不存在")
 		return
 	}
 
 	var bindAsset []models.AdditionsWarehousing
-	e.Orm.Model(models.AdditionsWarehousing{}).Where("w_id = ?", req.Id).Find(&bindAsset)
+	e.Orm.Model(models.AdditionsWarehousing{}).Where("w_id = ?", orderId).Scopes(
+		cDto.Paginate(pageSizeInt, pageIndexInt),
+	).Find(&bindAsset).Limit(-1).Offset(-1)
 	object.Asset = bindAsset
-	e.OK(object, "查询成功")
+	e.PageOK(object, len(bindAsset), req.PageIndex, req.PageSize, "")
 	return
 }
 
