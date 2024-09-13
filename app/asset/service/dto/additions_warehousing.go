@@ -8,9 +8,11 @@ import (
 
 type AdditionsOrderGetPageReq struct {
 	dto.Pagination `search:"-"`
-	StoreRoomId    int64  `form:"storeRoomId"  search:"type:exact;column:storeroom_Id;table:additions_order" comment:"关联的库房ID"`
-	WId            int64  `form:"wId"  search:"type:exact;column:w_id;table:additions_order" comment:"关联的入库单号"`
-	Name           string `form:"name"  search:"type:contains;column:name;table:additions_order" comment:"资产名称"`
+	StoreRoomId    string `form:"storeRoomId"  search:"type:exact;column:storeroom_Id;table:additions_order" comment:"关联的库房ID"`
+	OrderId        string `form:"orderId"  search:"type:contains;column:order_id;table:additions_order" comment:"关联的入库单号"`
+	Name           string `form:"name"  search:"-" comment:"资产名称"`
+	StartTimeAt    string `form:"startTimeAt"  search:"type:gte;column:created_at;table:additions_order" comment:"入库开始时间"`
+	EndTimeAt      string `form:"endTimeAt"  search:"type:lte;column:created_at;table:additions_order" comment:"入库结束时间"`
 }
 
 func (m *AdditionsOrderGetPageReq) GetNeedSearch() interface{} {
@@ -148,7 +150,8 @@ func (s *AdditionsWarehousingGetReq) GetId() interface{} {
 
 // AdditionsWarehousingDeleteReq 功能删除请求参数
 type AdditionsWarehousingDeleteReq struct {
-	Ids []int `json:"ids"`
+	Ids      []int `json:"ids"`
+	Unscoped int   `json:"unscoped"`
 }
 
 func (s *AdditionsWarehousingDeleteReq) GetId() interface{} {

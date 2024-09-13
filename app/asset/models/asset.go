@@ -10,8 +10,9 @@ type AdditionsOrder struct {
 	models.Model
 	models.ModelTime
 	models.ControlBy
-	OrderId     string `json:"orderId" gorm:"type:varchar(50);index;comment:关联的入库单号"`
-	StoreRoomId int    `json:"storeRoomId" gorm:"index;comment:关联库房"`
+	OrderId     string      `json:"orderId" gorm:"type:varchar(50);index;comment:关联的入库单号"`
+	StoreRoomId int         `json:"storeRoomId" gorm:"index;comment:关联库房"`
+	Asset       interface{} `json:"asset" gorm:"-"`
 }
 
 func (AdditionsOrder) TableName() string {

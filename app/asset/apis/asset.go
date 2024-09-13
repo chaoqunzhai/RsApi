@@ -2,7 +2,6 @@ package apis
 
 import (
 	"fmt"
-	models2 "go-admin/cmd/migrate/migration/models"
 	cDto "go-admin/common/dto"
 	"time"
 
@@ -83,21 +82,60 @@ func (e AdditionsWarehousing) GetStorePage(c *gin.Context) {
 
 	var data models.AdditionsOrder
 
-	err = e.Orm.Model(&data).
-		Scopes(
-			cDto.MakeCondition(req.GetNeedSearch()),
-			cDto.Paginate(req.GetPageSize(), req.GetPageIndex()),
-			actions.Permission(data.TableName(), p),
-		).
+	orm := e.Orm.Model(&data)
+	if req.Name != "" {
+		var assetList []models.AdditionsWarehousing
+		e.Orm.Model(&models.AdditionsWarehousing{}).Select("w_id").Where("name like ?", "%"+req.Name+"%").Find(&assetList)
+
+		var assetWinds []int64
+		for _, asset := range assetList {
+			assetWinds = append(assetWinds, asset.WId)
+		}
+		orm = orm.Where("id in (?)", assetWinds)
+	}
+	err = orm.Scopes(
+		cDto.MakeCondition(req.GetNeedSearch()),
+		cDto.Paginate(req.GetPageSize(), req.GetPageIndex()),
+		actions.Permission(data.TableName(), p),
+	).
 		Find(&list).Limit(-1).Offset(-1).
 		Count(&count).Error
+
+	result := make([]interface{}, 0)
 
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("获取AdditionsWarehousing失败，\r\n失败信息 %s", err.Error()))
 		return
 	}
+	idS := make([]int, 0)
+	for _, v := range list {
+		idS = append(idS, v.Id)
+	}
+	var asset []models.AdditionsWarehousing
+	e.Orm.Model(&models.AdditionsWarehousing{}).Select("name,w_id,id").Where("w_id in ?", idS).Find(&asset)
+	assetMap := make(map[int64][]string, 0)
+	for _, v := range asset {
 
-	e.PageOK(list, int(count), req.GetPageIndex(), req.GetPageSize(), "查询成功")
+		assetList, ok := assetMap[v.WId]
+		if !ok {
+			assetList = make([]string, 0)
+		}
+		assetList = append(assetList, v.Name)
+		assetMap[v.WId] = assetList
+	}
+
+	for _, v := range list {
+		assetList, ok := assetMap[int64(v.Id)]
+
+		if ok {
+			v.Asset = assetList
+		} else {
+			v.Asset = make([]interface{}, 0)
+		}
+		result = append(result, v)
+	}
+
+	e.PageOK(result, int(count), req.GetPageIndex(), req.GetPageSize(), "查询成功")
 }
 
 // Get 获取AdditionsWarehousing
@@ -133,6 +171,34 @@ func (e AdditionsWarehousing) Get(c *gin.Context) {
 	e.OK(object, "查询成功")
 }
 
+func (e AdditionsWarehousing) GetStore(c *gin.Context) {
+	req := dto.AdditionsWarehousingGetReq{}
+	s := service.AdditionsWarehousing{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
+	var object models.AdditionsOrder
+
+	e.Orm.Model(models.AdditionsOrder{}).Where("id = ?", req.Id).Limit(1).Find(&object)
+	if object.Id == 0 {
+		e.Error(500, nil, "入库单不存在")
+		return
+	}
+
+	var bindAsset []models.AdditionsWarehousing
+	e.Orm.Model(models.AdditionsWarehousing{}).Where("w_id = ?", req.Id).Find(&bindAsset)
+	object.Asset = bindAsset
+	e.OK(object, "查询成功")
+	return
+}
+
 // Insert 创建AdditionsWarehousing
 // @Summary 创建AdditionsWarehousing
 // @Description 创建AdditionsWarehousing
@@ -160,7 +226,7 @@ func (e AdditionsWarehousing) Insert(c *gin.Context) {
 		e.Error(500, nil, "资产列表不存在")
 		return
 	}
-	order := models2.AdditionsOrder{
+	order := models.AdditionsOrder{
 		OrderId:     fmt.Sprintf("%v", time.Now().Unix()),
 		StoreRoomId: req.StoreRoomId,
 	}
@@ -232,7 +298,7 @@ func (e AdditionsWarehousing) UpdateStore(c *gin.Context) {
 		return
 	}
 
-	var order models2.AdditionsOrder
+	var order models.AdditionsOrder
 
 	e.Orm.Model(&order).Where("id = ?", req.Id).Limit(1).Find(&order)
 	if order.Id == 0 {
@@ -285,5 +351,38 @@ func (e AdditionsWarehousing) Delete(c *gin.Context) {
 		e.Error(500, err, fmt.Sprintf("删除AdditionsWarehousing失败，\r\n失败信息 %s", err.Error()))
 		return
 	}
+	e.OK(req.GetId(), "删除成功")
+}
+
+func (e AdditionsWarehousing) StoreDelete(c *gin.Context) {
+	s := service.AdditionsWarehousing{}
+	req := dto.AdditionsWarehousingDeleteReq{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
+
+	p := actions.GetPermissionFromContext(c)
+
+	var data models.AdditionsOrder
+
+	db := e.Orm.Model(&data).
+		Scopes(
+			actions.Permission(data.TableName(), p),
+		).Delete(&data, req.GetId())
+	if err = db.Error; err != nil {
+		e.Error(500, err, fmt.Sprintf("删除AdditionsWarehousing失败，\r\n失败信息 %s", err.Error()))
+		return
+	}
+	if req.Unscoped == 1 {
+		e.Orm.Model(&models.AdditionsWarehousing{}).Where("w_id in ?", req.GetId()).Delete(&models.AdditionsWarehousing{})
+	}
+
 	e.OK(req.GetId(), "删除成功")
 }

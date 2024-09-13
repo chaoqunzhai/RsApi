@@ -29,10 +29,10 @@ func registerAdditionsWarehousingRouter(v1 *gin.RouterGroup, authMiddleware *jwt
 	rStore := v1.Group("/asset-store").Use(authMiddleware.MiddlewareFunc()).Use(middleware.AuthCheckRole())
 	{
 		rStore.GET("", actions.PermissionAction(), api.GetStorePage)
-		rStore.GET("/:id", actions.PermissionAction(), api.Get)
+		rStore.GET("/:id", actions.PermissionAction(), api.GetStore)
 		rStore.POST("", api.Insert)
 		rStore.PUT("/:id", actions.PermissionAction(), api.UpdateStore)
-		rStore.DELETE("", api.Delete)
+		rStore.DELETE("", api.StoreDelete)
 	}
 
 }
