@@ -197,12 +197,13 @@ func (e AdditionsWarehousing) GetStore(c *gin.Context) {
 		return
 	}
 
+	var count int64
 	var bindAsset []models.AdditionsWarehousing
 	e.Orm.Model(models.AdditionsWarehousing{}).Where("w_id = ?", orderId).Scopes(
 		cDto.Paginate(pageSizeInt, pageIndexInt),
-	).Find(&bindAsset).Limit(-1).Offset(-1)
+	).Find(&bindAsset).Limit(-1).Offset(-1).Count(&count)
 	object.Asset = bindAsset
-	e.PageOK(object, len(bindAsset), req.PageIndex, req.PageSize, "")
+	e.PageOK(object, int(count), pageIndexInt, pageSizeInt, "")
 	return
 }
 
