@@ -58,7 +58,7 @@ func (m *AdditionsWarehousingGetPageReq) GetNeedSearch() interface{} {
 type AssetInsertReq struct {
 	StoreRoomId int                             `json:"storeRoomId" comment:"存放位置"`
 	Desc        string                          `json:"desc" comment:"备注"`
-	List        []AdditionsWarehousingInsertReq `json:"list" comment:"资产列表"`
+	Asset       []AdditionsWarehousingInsertReq `json:"list" comment:"资产列表"`
 }
 type AdditionsWarehousingInsertReq struct {
 	PurchaseAt string  `json:"purchaseAt" comment:"采购日期"`
@@ -81,7 +81,7 @@ type AssetUpdateReq struct {
 	Id          int                             `uri:"id" comment:"主键编码"` // 主键编码
 	StoreRoomId int                             `json:"storeRoomId" comment:"存放位置"`
 	Desc        string                          `json:"desc" comment:"备注"`
-	List        []AdditionsWarehousingUpdateReq `json:"list" comment:"资产列表"`
+	Asset       []AdditionsWarehousingUpdateReq `json:"list" comment:"资产列表"`
 }
 
 func (s *AdditionsWarehousingInsertReq) Generate(model *models.AdditionsWarehousing) {

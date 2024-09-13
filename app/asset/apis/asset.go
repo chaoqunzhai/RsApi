@@ -222,7 +222,7 @@ func (e AdditionsWarehousing) Insert(c *gin.Context) {
 		e.Error(500, err, err.Error())
 		return
 	}
-	if len(req.List) == 0 {
+	if len(req.Asset) == 0 {
 		e.Error(500, nil, "资产列表不存在")
 		return
 	}
@@ -233,7 +233,7 @@ func (e AdditionsWarehousing) Insert(c *gin.Context) {
 	order.CreateBy = user.GetUserId(c)
 
 	e.Orm.Create(&order)
-	for _, row := range req.List {
+	for _, row := range req.Asset {
 		err = s.Insert(order.Id, req.StoreRoomId, &row)
 		if err != nil {
 			fmt.Println("err!", err)
@@ -311,7 +311,7 @@ func (e AdditionsWarehousing) UpdateStore(c *gin.Context) {
 
 	p := actions.GetPermissionFromContext(c)
 
-	for _, row := range req.List {
+	for _, row := range req.Asset {
 		err = s.UpdateStore(req.StoreRoomId, &row, p)
 		if err != nil {
 			continue
