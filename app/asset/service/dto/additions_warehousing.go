@@ -8,7 +8,7 @@ import (
 
 type AdditionsOrderGetPageReq struct {
 	dto.Pagination `search:"-"`
-	StoreRoomId    string `form:"storeRoomId"  search:"type:exact;column:storeroom_Id;table:additions_order" comment:"关联的库房ID"`
+	StoreRoomId    string `form:"storeRoomId"  search:"type:exact;column:store_room_id;table:additions_order" comment:"关联的库房ID"`
 	OrderId        string `form:"orderId"  search:"type:contains;column:order_id;table:additions_order" comment:"关联的入库单号"`
 	Name           string `form:"name"  search:"-" comment:"资产名称"`
 	StartTimeAt    string `form:"startTimeAt"  search:"type:gte;column:created_at;table:additions_order" comment:"入库开始时间"`
@@ -22,7 +22,7 @@ func (m *AdditionsOrderGetPageReq) GetNeedSearch() interface{} {
 type AdditionsWarehousingGetPageReq struct {
 	dto.Pagination `search:"-"`
 	CategoryId     int64  `form:"categoryId"  search:"type:exact;column:category_id;table:additions_warehousing" comment:"关联的资产分类ID"`
-	StoreRoomId    int64  `form:"storeRoomId"  search:"type:exact;column:storeroom_Id;table:additions_warehousing" comment:"关联的库房ID"`
+	StoreRoomId    int64  `form:"storeRoomId"  search:"type:exact;column:store_room_id;table:additions_warehousing" comment:"关联的库房ID"`
 	SupplierId     int64  `form:"supplierId"  search:"type:exact;column:supplier_id;table:additions_warehousing" comment:"供应商ID"`
 	WId            int64  `form:"wId"  search:"type:exact;column:w_id;table:additions_warehousing" comment:"关联的入库单号"`
 	Name           string `form:"name"  search:"type:contains;column:name;table:additions_warehousing" comment:"资产名称"`
