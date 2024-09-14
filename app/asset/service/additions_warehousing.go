@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"go-admin/global"
+	"strconv"
 	"time"
 
 	"github.com/go-admin-team/go-admin-core/sdk/service"
@@ -99,14 +100,18 @@ func (e *AdditionsWarehousing) Insert(orderId, StoreRoomId int, c *dto.Additions
 	return nil
 }
 
-func (e *AdditionsWarehousing) Update(c *dto.AdditionsWarehousingUpdateReq, p *actions.DataPermission) error {
+func (e *AdditionsWarehousing) Update(uid string, c *dto.AdditionsWarehousingUpdateReq, p *actions.DataPermission) error {
 	var err error
 	var data = models.AdditionsWarehousing{}
 	e.Orm.Scopes(
 		actions.Permission(data.TableName(), p),
-	).First(&data, c.GetId())
+	).First(&data, uid)
 	c.Generate(&data)
 
+	data.Id = func() int {
+		uu, _ := strconv.Atoi(uid)
+		return uu
+	}()
 	if c.PurchaseAt != "" {
 		if star, err := time.ParseInLocation(time.DateTime, c.PurchaseAt, global.LOC); err == nil {
 			data.PurchaseAt = sql.NullTime{

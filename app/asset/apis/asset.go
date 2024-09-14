@@ -267,16 +267,17 @@ func (e AdditionsWarehousing) Update(c *gin.Context) {
 		return
 	}
 
+	uid := c.Param("id")
 	var order models.AdditionsWarehousing
 
-	e.Orm.Model(&order).Where("id = ?", req.Id).Limit(1).Find(&order)
+	e.Orm.Model(&order).Where("id = ?", uid).Limit(1).Find(&order)
 	if order.Id == 0 {
 		e.Error(500, nil, "数据不存在")
 		return
 	}
 
 	p := actions.GetPermissionFromContext(c)
-	err = s.Update(&req, p)
+	err = s.Update(uid, &req, p)
 
 	e.OK("", "修改成功")
 }
