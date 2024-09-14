@@ -34,7 +34,7 @@ type ModelBaseTime struct {
 }
 
 type ModelTime struct {
-	CreatedAt XTime          `json:"-" gorm:"comment:创建时间"`
+	CreatedAt XTime          `json:"createdAt" gorm:"comment:创建时间"`
 	UpdatedAt XTime          `json:"updatedAt" gorm:"comment:最后更新时间"`
 	DeletedAt gorm.DeletedAt `json:"-" gorm:"index;comment:删除时间"`
 }
