@@ -61,7 +61,8 @@ func _1599190683659Tables(db *gorm.DB, version string) error {
 
 			//资产
 			new(models.AdditionsOrder),
-			new(models.Additions),
+			new(models.AdditionsWarehousing),
+			new(models.Combination),
 		)
 		if err != nil {
 			return err

@@ -28,10 +28,13 @@ type AdditionsWarehousing struct {
 	CategoryId       int64        `json:"categoryId" gorm:"type:bigint;comment:关联的资产分类ID"`
 	SupplierId       int64        `json:"supplierId" gorm:"type:bigint;comment:供应商ID"`
 	WId              int64        `json:"wId" gorm:"type:bigint;comment:关联的入库单号"`
+	CombinationId    int          `json:"combinationId" gorm:"index;comment:组合ID"`
+	ParentId         int          `json:"parentId" gorm:"index;type:int(1);default:1;comment:1:可组合的资产  2:不可组合的资产"`
 	Name             string       `json:"name" gorm:"type:varchar(50);comment:资产名称"`
 	Spec             string       `json:"spec" gorm:"type:varchar(50);comment:规格型号"`
 	Brand            string       `json:"brand" gorm:"type:varchar(50);comment:品牌名称"`
 	Sn               string       `json:"sn" gorm:"type:varchar(100);comment:资产SN"`
+	Status           int          `json:"status" gorm:"type:int(1);default:1;comment:资产状态"`
 	UnitId           int64        `json:"unitId" gorm:"type:bigint;comment:单位"`
 	Price            float64      `json:"price" gorm:"comment:价格"`
 	UserId           int64        `json:"userId" gorm:"type:bigint;comment:采购人员ID"`
