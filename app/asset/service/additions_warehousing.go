@@ -3,6 +3,7 @@ package service
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"go-admin/global"
 	"strconv"
 	"time"
@@ -25,12 +26,18 @@ func (e *AdditionsWarehousing) GetPage(c *dto.AdditionsWarehousingGetPageReq, p 
 	var err error
 	var data models.AdditionsWarehousing
 
-	err = e.Orm.Model(&data).
-		Scopes(
-			cDto.MakeCondition(c.GetNeedSearch()),
-			cDto.Paginate(c.GetPageSize(), c.GetPageIndex()),
-			actions.Permission(data.TableName(), p),
-		).
+	orm := e.Orm.Model(&data)
+
+	if c.Search != "" {
+
+		orm = orm.Where("sn like ? or code like ?", "%"+c.Search+"%", "%"+c.Search+"%")
+	}
+
+	err = orm.Scopes(
+		cDto.MakeCondition(c.GetNeedSearch()),
+		cDto.Paginate(c.GetPageSize(), c.GetPageIndex()),
+		actions.Permission(data.TableName(), p),
+	).
 		Find(list).Limit(-1).Offset(-1).
 		Count(count).Error
 	if err != nil {
@@ -93,6 +100,10 @@ func (e *AdditionsWarehousing) Insert(orderId, StoreRoomId int, c *dto.Additions
 	}
 
 	err = e.Orm.Create(&data).Error
+	Code := fmt.Sprintf("ZC%08d", data.Id)
+	e.Orm.Model(&models.AdditionsWarehousing{}).Where("id = ?", data.Id).Updates(map[string]interface{}{
+		"code": Code,
+	})
 	if err != nil {
 		e.Log.Errorf("AdditionsWarehousingService Insert error:%s \r\n", err)
 		return err

@@ -22,6 +22,7 @@ func (AdditionsOrder) TableName() string {
 
 type AdditionsWarehousing struct {
 	models.Model
+	Code             string       `json:"code"  gorm:"type:varchar(50);comment:资产编码" `
 	StoreRoomId      int          `json:"storeRoomId" gorm:"index;comment:关联库房"`
 	PurchaseAt       sql.NullTime `json:"-" gorm:"type:datetime(3);comment:采购日期"`
 	ExpireAt         sql.NullTime `json:"-" gorm:"type:datetime(3);comment:维保到期日"`

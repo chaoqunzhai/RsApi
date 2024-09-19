@@ -147,9 +147,9 @@ func (e Combination) Insert(c *gin.Context) {
 		return
 	}
 
-	JOBI := fmt.Sprintf("RS%08d", uid)
+	Code := fmt.Sprintf("RS%08d", uid)
 	e.Orm.Model(&models.Combination{}).Where("id = ?", uid).Updates(map[string]interface{}{
-		"job_id": JOBI,
+		"code": Code,
 	})
 	var bindCount int64
 	e.Orm.Model(&models.AdditionsWarehousing{}).Where("id in ? and combination_id > 0", req.Asset).Count(&bindCount)

@@ -17,6 +17,7 @@ func (AdditionsOrder) TableName() string {
 
 type AdditionsWarehousing struct {
 	Model
+	Code          string       `json:"code"  gorm:"type:varchar(50);comment:资产编码" `
 	CreatedAt     time.Time    `json:"createdAt" gorm:"comment:创建时间"`
 	PurchaseAt    sql.NullTime `json:"purchaseAt" gorm:"comment:采购日期"`
 	StoreRoomId   int          `json:"storeRoomId" gorm:"index;comment:关联库房"`
@@ -43,7 +44,7 @@ func (AdditionsWarehousing) TableName() string {
 
 type Combination struct {
 	RichGlobal
-	JobId  string `json:"jobId"  gorm:"type:varchar(50);comment:组合编号" `
+	Code   string `json:"code"  gorm:"type:varchar(50);comment:组合编号" `
 	Status int    `json:"status" gorm:"index;type:int(1);default:1;comment:资产状态"`
 }
 

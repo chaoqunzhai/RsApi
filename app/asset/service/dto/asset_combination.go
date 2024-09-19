@@ -30,9 +30,9 @@ func (m *CombinationGetPageReq) GetNeedSearch() interface{} {
 }
 
 type CombinationInsertReq struct {
-	Id     int    `json:"-" comment:"主键编码"` // 主键编码
-	Desc   string `json:"desc" comment:"描述信息"`
-	JobId  string `json:"jobId" comment:"组合编号"`
+	Id   int    `json:"-" comment:"主键编码"` // 主键编码
+	Desc string `json:"desc" comment:"描述信息"`
+
 	Status string `json:"status" comment:"资产状态"`
 	Asset  []int  `json:"asset"`
 	common.ControlBy
@@ -44,7 +44,7 @@ func (s *CombinationInsertReq) Generate(model *models.Combination) {
 	}
 	model.CreateBy = s.CreateBy // 添加这而，需要记录是被谁创建的
 	model.Desc = s.Desc
-	model.JobId = s.JobId
+
 	model.Status = s.Status
 }
 
@@ -53,9 +53,9 @@ func (s *CombinationInsertReq) GetId() interface{} {
 }
 
 type CombinationUpdateReq struct {
-	Id     int    `uri:"id" comment:"主键编码"` // 主键编码
-	Desc   string `json:"desc" comment:"描述信息"`
-	JobId  string `json:"jobId" comment:"组合编号"`
+	Id   int    `uri:"id" comment:"主键编码"` // 主键编码
+	Desc string `json:"desc" comment:"描述信息"`
+
 	Status string `json:"status" comment:"资产状态"`
 	Asset  []int  `json:"asset"`
 	common.ControlBy
@@ -67,7 +67,7 @@ func (s *CombinationUpdateReq) Generate(model *models.Combination) {
 	}
 	model.UpdateBy = s.UpdateBy // 添加这而，需要记录是被谁更新的
 	model.Desc = s.Desc
-	model.JobId = s.JobId
+
 	model.Status = s.Status
 }
 
