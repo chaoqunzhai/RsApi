@@ -33,6 +33,11 @@ func (e *AdditionsWarehousing) GetPage(c *dto.AdditionsWarehousingGetPageReq, p 
 		orm = orm.Where("sn like ? or code like ?", "%"+c.Search+"%", "%"+c.Search+"%")
 	}
 
+	if c.CategoryId > 0 {
+		orm = orm.Where("category_id = ?", c.CategoryId)
+	} else {
+		orm = orm.Where("category_id != 1")
+	}
 	err = orm.Scopes(
 		cDto.MakeCondition(c.GetNeedSearch()),
 		cDto.Paginate(c.GetPageSize(), c.GetPageIndex()),
