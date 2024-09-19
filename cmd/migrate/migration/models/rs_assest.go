@@ -26,7 +26,6 @@ type AdditionsWarehousing struct {
 	SupplierId    int          `json:"supplierId"  gorm:"index;comment:供应商ID"`
 	WId           int          `json:"WId" gorm:"index;comment:关联的入库ID"`
 	CombinationId int          `json:"combinationId" gorm:"index;default:0;comment:组合ID"`
-	ParentId      int          `json:"parentId" gorm:"index;type:int(1);default:1;comment:1:可组合的资产  2:不可组合的资产"`
 	Name          string       `json:"name"  gorm:"type:varchar(50);comment:资产名称" `
 	Spec          string       `json:"spec" gorm:"type:varchar(50);comment:规格型号" `
 	Brand         string       `json:"brand" gorm:"type:varchar(50);comment:品牌名称" `
