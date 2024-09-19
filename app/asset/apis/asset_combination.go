@@ -120,7 +120,7 @@ func (e Combination) Get(c *gin.Context) {
 //开机后首次自动注册
 
 func (e Combination) AutoInsert(c *gin.Context) {
-	req := dto.CombinationInsertReq{}
+	req := dto.CombinationAutoReq{}
 	s := service.Combination{}
 	err := e.MakeContext(c).
 		MakeOrm().

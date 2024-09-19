@@ -22,7 +22,7 @@ type AdditionsWarehousing struct {
 }
 
 // GetPage 获取AdditionsWarehousing列表
-func (e *AdditionsWarehousing) GetPage(c *dto.AdditionsWarehousingGetPageReq, p *actions.DataPermission, list *[]models.AdditionsWarehousing, count *int64) error {
+func (e *AdditionsWarehousing) GetPage(combinationId string, c *dto.AdditionsWarehousingGetPageReq, p *actions.DataPermission, list *[]models.AdditionsWarehousing, count *int64) error {
 	var err error
 	var data models.AdditionsWarehousing
 
@@ -33,6 +33,15 @@ func (e *AdditionsWarehousing) GetPage(c *dto.AdditionsWarehousingGetPageReq, p 
 		orm = orm.Where("sn like ? or code like ?", "%"+c.Search+"%", "%"+c.Search+"%")
 	}
 
+	if combinationId != "" {
+
+		if combinationId == "0" {
+
+			orm = orm.Where("combination_id = 0 ")
+		} else {
+			orm = orm.Where("combination_id != 0 ")
+		}
+	}
 	if c.CategoryId > 0 {
 		orm = orm.Where("category_id = ?", c.CategoryId)
 	} else {

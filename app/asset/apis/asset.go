@@ -52,11 +52,13 @@ func (e AdditionsWarehousing) GetPage(c *gin.Context) {
 		return
 	}
 
+	combinationId := c.Query("combinationId")
+	fmt.Println("combinationId", combinationId)
 	p := actions.GetPermissionFromContext(c)
 	list := make([]models.AdditionsWarehousing, 0)
 	var count int64
 
-	err = s.GetPage(&req, p, &list, &count)
+	err = s.GetPage(combinationId, &req, p, &list, &count)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("获取AdditionsWarehousing失败，\r\n失败信息 %s", err.Error()))
 		return
