@@ -111,7 +111,31 @@ func (e Combination) Get(c *gin.Context) {
 		return
 	}
 
+	var assetList []models.AdditionsWarehousing
+	e.Orm.Model(&models.AdditionsWarehousing{}).Where("combination_id = ?", req.Id).Find(&assetList)
+	object.Asset = assetList
 	e.OK(object, "查询成功")
+}
+
+//开机后首次自动注册
+
+func (e Combination) AutoInsert(c *gin.Context) {
+	req := dto.CombinationInsertReq{}
+	s := service.Combination{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
+
+	e.OK("", "successful")
+	return
+
 }
 
 // Insert 创建Combination
@@ -233,10 +257,28 @@ func (e Combination) Delete(c *gin.Context) {
 	// req.SetUpdateBy(user.GetUserId(c))
 	p := actions.GetPermissionFromContext(c)
 
-	err = s.Remove(&req, p)
+	newIds := make([]int, 0)
+
+	for _, row := range req.Ids {
+		var count int64
+		e.Orm.Model(&models.Combination{}).Where("id = ? and status = 1", row).Count(&count)
+		if count > 0 {
+			continue
+		}
+		newIds = append(newIds, row)
+	}
+	if len(newIds) == 0 {
+		e.Error(500, nil, "所选组合不可删除")
+		return
+	}
+	err = s.Remove(newIds, p)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("删除Combination失败，\r\n失败信息 %s", err.Error()))
 		return
 	}
+
+	e.Orm.Model(&models.AdditionsWarehousing{}).Where("combination_id in ?", newIds).Updates(map[string]interface{}{
+		"combination_id": 0,
+	})
 	e.OK(req.GetId(), "删除成功")
 }

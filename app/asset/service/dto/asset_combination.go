@@ -29,6 +29,16 @@ func (m *CombinationGetPageReq) GetNeedSearch() interface{} {
 	return *m
 }
 
+type CombinationAutoReq struct {
+	Sn       string     `json:"sn" comment:"服务器SN"`
+	DiskSn   []AutoDisk `json:"diskSn" comment:"磁盘SN"`
+	MemorySn []string   `json:"memorySn" comment:"内存条SN"`
+}
+
+type AutoDisk struct {
+	Name string `json:"name"`
+	Sn   string `json:"sn"`
+}
 type CombinationInsertReq struct {
 	Id   int    `json:"-" comment:"主键编码"` // 主键编码
 	Desc string `json:"desc" comment:"描述信息"`

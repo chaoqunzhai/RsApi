@@ -91,13 +91,13 @@ func (e *Combination) Update(c *dto.CombinationUpdateReq, p *actions.DataPermiss
 }
 
 // Remove 删除Combination
-func (e *Combination) Remove(d *dto.CombinationDeleteReq, p *actions.DataPermission) error {
+func (e *Combination) Remove(newIds []int, p *actions.DataPermission) error {
 	var data models.Combination
 
 	db := e.Orm.Model(&data).
 		Scopes(
 			actions.Permission(data.TableName(), p),
-		).Delete(&data, d.GetId())
+		).Delete(&data, newIds)
 	if err := db.Error; err != nil {
 		e.Log.Errorf("Service RemoveCombination error:%s \r\n", err)
 		return err
