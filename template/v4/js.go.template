@@ -10,7 +10,7 @@ export function list{{.ClassName}}(query) {
 }
 
 // 查询{{.ClassName}}详细
-export function get{{.ClassName}} ({{.PkJsonField}}) {
+export function get{{.ClassName}}({{.PkJsonField}}) {
     return request({
         url: '/api/v1/{{.ModuleName}}/' + {{.PkJsonField}},
         method: 'get'
