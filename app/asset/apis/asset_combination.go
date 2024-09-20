@@ -20,6 +20,15 @@ type Combination struct {
 	api.Api
 }
 
+func (e Combination) BindCustomMap(ids []int) map[int]interface{} {
+	dat := make(map[int]interface{}, 0)
+	if len(ids) <= 0 {
+		return dat
+	}
+
+	return dat
+
+}
 func (e Combination) HostBindIdcData(ids []int) map[int]interface{} {
 
 	//获取关联的主机列表
@@ -108,6 +117,7 @@ func (e Combination) GetPage(c *gin.Context) {
 		return
 	}
 	bindIds := make([]int, 0)
+
 	bindHostIds := make([]int, 0)
 	for _, row := range list {
 		if row.HostId > 0 {
@@ -150,6 +160,7 @@ func (e Combination) GetPage(c *gin.Context) {
 			//主机位置
 			row.RegionInfo = hostBindIdcData[row.HostId]
 		}
+
 		result = append(result, row)
 	}
 	e.PageOK(result, int(count), req.GetPageIndex(), req.GetPageSize(), "查询成功")

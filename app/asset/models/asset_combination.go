@@ -6,6 +6,7 @@ import (
 
 type Combination struct {
 	models.Model
+	CustomId   int                    `json:"customId" gorm:"type:bigint;comment:所属客户ID"`
 	HostId     int                    `json:"hostId" gorm:"type:bigint;comment:关联的上线CMDB ID"`
 	Desc       string                 `json:"desc" gorm:"type:varchar(35);comment:描述信息"`
 	Code       string                 `json:"code" gorm:"type:varchar(50);comment:组合编号"`
@@ -14,6 +15,7 @@ type Combination struct {
 	Asset      []AdditionsWarehousing `json:"asset" gorm:"-"`
 	Price      float64                `json:"price" gorm:"-"`
 	RegionInfo interface{}            `json:"regionInfo" gorm:"-"`
+	CustomInfo interface{}            `json:"customInfo" gorm:"-"`
 	models.ModelTime
 	models.ControlBy
 }

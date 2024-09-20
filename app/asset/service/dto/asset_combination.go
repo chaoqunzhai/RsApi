@@ -8,7 +8,10 @@ import (
 
 type CombinationGetPageReq struct {
 	dto.Pagination `search:"-"`
-	JobId          string `form:"jobId"  search:"type:contains;column:job_id;table:combination" comment:"组合编号"`
+	CustomId       int    `form:"customId" search:"type:exact;column:custom_id;table:combination"`
+	HostId         int    `form:"hostId" search:"type:exact;column:host_id;table:combination"`
+	IdcId          int    `form:"idcId" search:"type:exact;column:idc_id;table:combination"`
+	Code           string `form:"code"  search:"type:contains;column:code;table:combination" comment:"组合编号"`
 	Status         string `form:"status"  search:"type:exact;column:status;table:combination" comment:"资产状态"`
 	CombinationOrder
 }
