@@ -412,11 +412,13 @@ func (e RsHost) GetPage(c *gin.Context) {
 	list := make([]models.RsHost, 0)
 	var count int64
 
+	getList := time.Now()
 	err = s.GetPage(&req, p, &list, &count)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("获取RsHost失败，\r\n失败信息 %s", err.Error()))
 		return
 	}
+	getEndList := time.Now().Sub(getList)
 	result := make([]map[string]interface{}, 0)
 	nowTime := time.Now()
 
@@ -427,6 +429,8 @@ func (e RsHost) GetPage(c *gin.Context) {
 		hostIds = append(hostIds, row.Id)
 		idcIds = append(idcIds, row.Idc)
 	}
+	fmt.Println("关联数据查询开始")
+	bindTime := time.Now()
 	BusinessMap := s.GetBusinessMap()
 	HostSoftwareMap := s.GetHostSoftware(hostIds)
 
@@ -437,6 +441,13 @@ func (e RsHost) GetPage(c *gin.Context) {
 	DialMapData := s.GetDialData(hostIds)
 
 	BusinessMapData := service.GetHostBindBusinessMap(e.Orm, hostIds)
+
+	fmt.Println("关联数据查询完毕")
+	bindEndTime := time.Now().Sub(bindTime)
+
+	makeList := time.Now()
+	updateOfflineIds := make([]int, 0)
+	fmt.Println("构造数据开始")
 	for _, row := range list {
 		customRow := make(map[string]interface{}, 1)
 		customRow["updatedAt"] = fmt.Sprintf("%v", row.UpdatedAt.Format(time.DateTime))
@@ -448,9 +459,7 @@ func (e RsHost) GetPage(c *gin.Context) {
 
 				if row.HealthyAt.Valid {
 					if int(nowTime.Sub(row.HealthyAt.Time).Minutes()) > 6 { //如果上报的时间大于5分钟 那就删掉线了
-						e.Orm.Model(&models.RsHost{}).Where("id = ?", row.Id).Updates(map[string]interface{}{
-							"status": global.HostOffline,
-						})
+						updateOfflineIds = append(updateOfflineIds, row.Id)
 
 					} else { //在5分钟内
 						validStatus = global.HostSuccess
@@ -461,9 +470,7 @@ func (e RsHost) GetPage(c *gin.Context) {
 				}
 
 				if validStatus == global.HostOffline {
-					e.Orm.Model(&models.RsHost{}).Where("id = ?", row.Id).Updates(map[string]interface{}{
-						"status": global.HostOffline,
-					})
+					updateOfflineIds = append(updateOfflineIds, row.Id)
 				}
 
 			}
@@ -543,8 +550,29 @@ func (e RsHost) GetPage(c *gin.Context) {
 		}
 		result = append(result, customRow)
 	}
+	fmt.Println("构造数据结束")
+	if len(updateOfflineIds) > 0 {
+		e.Orm.Model(&models.RsHost{}).Where("id in ?", updateOfflineIds).Updates(map[string]interface{}{
+			"status": global.HostOffline,
+		})
+	}
 
-	e.PageOK(result, int(count), req.GetPageIndex(), req.GetPageSize(), "查询成功")
+	makeEndTime := time.Now().Sub(makeList)
+
+	runTime := map[string]interface{}{
+		"getDataRunTime": getEndList.Seconds(),
+		"bindRunTime":    bindEndTime.Seconds(),
+		"makeListTime":   makeEndTime.Seconds(),
+	}
+
+	codomData := map[string]interface{}{
+		"count":     int(count),
+		"list":      result,
+		"pageIndex": req.GetPageIndex(),
+		"pageSize":  req.GetPageSize(),
+		"runTime":   runTime,
+	}
+	e.OK(codomData, "查询成功")
 }
 
 // Get 获取RsHost

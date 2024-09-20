@@ -53,7 +53,7 @@ func (e *RsHost) GetPage(c *dto.RsHostGetPageReq, p *actions.DataPermission, lis
 
 		orm = orm.Where("id in (?)", bindHostId)
 
-		fmt.Println("查询业务", bindHostId, len(bindHostId))
+		//fmt.Println("查询业务", bindHostId, len(bindHostId))
 	}
 
 	if c.HostName != "" {
@@ -376,6 +376,7 @@ func GetHostBindBusinessMap(orm *gorm.DB, ids []int) map[int][]dto.LabelRow {
 	if len(cacheIds) == 0 {
 		return map[int][]dto.LabelRow{}
 	}
+	cacheIds = utils.RemoveRepeatStr(cacheIds)
 	hostBindIdc := fmt.Sprintf("select business_id,host_id from host_bind_business where `host_id` in (%v)", strings.Join(cacheIds, ","))
 	var bindIds []struct {
 		HostId     int `json:"host_id"`
@@ -391,6 +392,7 @@ func GetHostBindBusinessMap(orm *gorm.DB, ids []int) map[int][]dto.LabelRow {
 	for _, r := range bindIds {
 		cacheBuIds = append(cacheBuIds, r.BusinessId)
 	}
+	cacheBuIds = utils.RemoveRepeatInt(cacheBuIds)
 	orm.Model(&models.RsBusiness{}).Select("name,id").Where("id in ?", cacheBuIds).Find(&RsBusinessList)
 
 	BusinessMap := make(map[int]dto.LabelRow, 0)

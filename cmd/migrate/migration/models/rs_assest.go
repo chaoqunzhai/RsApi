@@ -45,6 +45,7 @@ type Combination struct {
 	RichGlobal
 	Code   string `json:"code"  gorm:"type:varchar(50);comment:组合编号" `
 	Status int    `json:"status" gorm:"index;type:int(1);default:1;comment:资产状态"`
+	HostId int    `json:"hostId" gorm:"type:bigint;comment:关联的上线CMDB ID"`
 }
 
 func (Combination) TableName() string {

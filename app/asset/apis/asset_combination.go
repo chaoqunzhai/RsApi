@@ -2,6 +2,8 @@ package apis
 
 import (
 	"fmt"
+	models2 "go-admin/cmd/migrate/migration/models"
+	"go-admin/common/utils"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-admin-team/go-admin-core/sdk/api"
@@ -16,6 +18,59 @@ import (
 
 type Combination struct {
 	api.Api
+}
+
+func (e Combination) HostBindIdcData(ids []int) map[int]interface{} {
+
+	//获取关联的主机列表
+	dat := make(map[int]interface{}, 0)
+	if len(ids) <= 0 {
+		return dat
+	}
+	var hostList []models2.Host
+	idsList := make([]int, 0)
+	//查询主机列表
+	e.Orm.Model(&models2.Host{}).Select("id,idc").Where("id in ?", ids).Find(&hostList)
+	for _, row := range hostList {
+		idsList = append(idsList, row.Idc)
+	}
+	idsList = utils.RemoveRepeatInt(idsList)
+	var RowList []models2.Idc
+	e.Orm.Model(&models2.Idc{}).Where("id in ? ", idsList).Find(&RowList)
+	IdcMapData := make(map[int]models2.Idc, 0)
+	//做出idc的MAP
+	for _, row := range RowList {
+		IdcMapData[row.Id] = row
+	}
+	//把IDC数据放到对应的主机上
+
+	for _, row := range hostList {
+		if idcInfo, ok := IdcMapData[row.Idc]; ok {
+			dat[row.Id] = map[string]interface{}{
+				"val": idcInfo.Name,
+			}
+		}
+	}
+
+	return dat
+
+}
+func (e Combination) StoreRoomMapInfo(ids []int) map[int]interface{} {
+
+	dat := make(map[int]interface{}, 0)
+
+	if len(ids) <= 0 {
+		return dat
+	}
+	var StoreRoomLists []models.AssetWarehouse
+	e.Orm.Model(&models.AssetWarehouse{}).Where("id in ?", ids).Find(&StoreRoomLists)
+	for _, row := range StoreRoomLists {
+		dat[row.Id] = map[string]interface{}{
+			"val": row.WarehouseName,
+		}
+	}
+
+	return dat
 }
 
 // GetPage 获取Combination列表
@@ -53,21 +108,35 @@ func (e Combination) GetPage(c *gin.Context) {
 		return
 	}
 	bindIds := make([]int, 0)
+	bindHostIds := make([]int, 0)
 	for _, row := range list {
+		if row.HostId > 0 {
+			bindHostIds = append(bindHostIds, row.HostId)
+		}
 		bindIds = append(bindIds, row.Id)
 	}
+
 	var assetList []models.AdditionsWarehousing
-	e.Orm.Model(&models.AdditionsWarehousing{}).Select("id,combination_id").Where("combination_id in ?", bindIds).Find(&assetList)
+	e.Orm.Model(&models.AdditionsWarehousing{}).Select("id,combination_id,price,store_room_id").Where("combination_id in ?", bindIds).Find(&assetList)
 
 	bindMap := make(map[int]int, 0)
+	bindPriceMap := make(map[int]float64, 0)
+	StoreRoomIdLists := make([]int, 0)
 	for _, row := range assetList {
+		StoreRoomIdLists = append(StoreRoomIdLists, row.StoreRoomId)
 		bindCount, ok := bindMap[row.CombinationId]
+		bindPrice, ok := bindPriceMap[row.CombinationId]
 		if !ok {
 			bindCount = 0
+			bindPrice = 0
 		}
 		bindCount += 1
+		bindPrice += row.Price
+		bindPriceMap[row.CombinationId] = bindPrice
 		bindMap[row.CombinationId] = bindCount
 	}
+
+	hostBindIdcData := e.HostBindIdcData(bindHostIds)
 
 	result := make([]interface{}, 0)
 
@@ -75,6 +144,11 @@ func (e Combination) GetPage(c *gin.Context) {
 
 		if AssetCount, ok := bindMap[row.Id]; ok {
 			row.AssetCount = AssetCount
+		}
+		row.Price = bindPriceMap[row.Id]
+		if row.HostId > 0 {
+			//主机位置
+			row.RegionInfo = hostBindIdcData[row.HostId]
 		}
 		result = append(result, row)
 	}
@@ -114,6 +188,14 @@ func (e Combination) Get(c *gin.Context) {
 	var assetList []models.AdditionsWarehousing
 	e.Orm.Model(&models.AdditionsWarehousing{}).Where("combination_id = ?", req.Id).Find(&assetList)
 	object.Asset = assetList
+
+	if object.HostId > 0 {
+		//主机位置
+		hostBindIdcData := e.HostBindIdcData([]int{object.HostId})
+		object.RegionInfo = hostBindIdcData[object.HostId]
+	}
+
+	object.Price = 1
 	e.OK(object, "查询成功")
 }
 
@@ -261,16 +343,13 @@ func (e Combination) Delete(c *gin.Context) {
 
 	for _, row := range req.Ids {
 		var count int64
+		//只有在库的时候 才能删除
 		e.Orm.Model(&models.Combination{}).Where("id = ? and status = 1", row).Count(&count)
 		if count > 0 {
-			continue
+			newIds = append(newIds, row)
 		}
-		newIds = append(newIds, row)
 	}
-	if len(newIds) == 0 {
-		e.Error(500, nil, "所选组合不可删除")
-		return
-	}
+
 	err = s.Remove(newIds, p)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("删除Combination失败，\r\n失败信息 %s", err.Error()))
