@@ -1,89 +1,108 @@
 {{$tableComment:=.TableComment}}
 <template>
     <BasicLayout>
-        <template #wrapper>
-            <el-card class="box-card">
-                <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="72px">
-                    {{range .Columns}}
-                        {{- $x := .IsQuery -}}
-                        {{- if (eq $x "1") -}}
-                            <el-form-item v-show="searchField.includes('{{.JsonField}}')" label="{{.ColumnComment}}" prop="{{.JsonField}}">
-                                {{- if ne .FkTableName "" -}}
-                                <el-select v-model="queryParams.{{.JsonField}}" placeholder="请选择" clearable size="small" {{if eq .IsEdit "false" -}} :disabled="isEdit" {{- end }}>
+    <template #header>
+        <el-form ref="queryForm" :model="queryParams" class="queryForm" style="transform: translateY(4px)">
+            <el-row :gutter="20" style="position: relative">
+            {{range .Columns}}
+                {{- $x := .IsQuery -}}
+                {{- if (eq $x "1") -}}
+                    <el-col :sm="24" :xs="24" :md="12" :xl="6" :lg="6" v-show="searchField.includes('{{.JsonField}}')">
+                        <el-form-item label="{{.ColumnComment}}:" prop="{{.JsonField}}">
+                            {{- if ne .FkTableName "" -}}
+                            <el-select v-model="queryParams.{{.JsonField}}" placeholder="请选择" clearable size="small" {{if eq .IsEdit "false" -}} :disabled="isEdit" {{- end }}>
+                                <el-option
+                                        v-for="dict in {{.JsonField}}Options"
+                                        :key="dict.key"
+                                        :label="dict.value"
+                                        :value="dict.key"
+                                />
+                            </el-select>
+                            {{- else -}}
+                            {{if eq .DictType "" -}}
+                                <el-input v-model="queryParams.{{.JsonField}}" placeholder="请输入{{.ColumnComment}}" clearable size="small" @keyup.enter.native="handleQuery"/>
+                            {{- else -}}
+                                <el-select v-model="queryParams.{{.JsonField}}" placeholder="{{.ColumnComment}}" clearable size="small">
                                     <el-option
                                             v-for="dict in {{.JsonField}}Options"
-                                            :key="dict.key"
-                                            :label="dict.value"
-                                            :value="dict.key"
+                                            :key="dict.value"
+                                            :label="dict.label"
+                                            :value="dict.value"
                                     />
                                 </el-select>
-                                {{- else -}}
-                                {{if eq .DictType "" -}}
-                                    <el-input v-model="queryParams.{{.JsonField}}" placeholder="请输入{{.ColumnComment}}" clearable size="small" @keyup.enter.native="handleQuery"/>
-                                {{- else -}}
-                                    <el-select v-model="queryParams.{{.JsonField}}" placeholder="{{.ColumnComment}}" clearable size="small">
-                                        <el-option
-                                                v-for="dict in {{.JsonField}}Options"
-                                                :key="dict.value"
-                                                :label="dict.label"
-                                                :value="dict.value"
-                                        />
-                                    </el-select>
-                                {{- end}}
-                                {{- end}}
-                            </el-form-item>
-                        {{end}}
-                    {{- end }}
-                    <el-form-item style="margin-left: 20px">
-                        <a-button type="primary" icon="search" @click="handleQuery">搜索</a-button>
-                        <a-button style="margin-left: 10px" @click="resetQuery"><a-icon type="sync" />重置</a-button>
-                        <a-button type="link" @click="toggleAdvanced">
-                            <template v-if="searchField.length >= 3">
-                                <template v-if="searchField.length > 3">
-                                    收起<a-icon type="up" />
-                                </template>
-                                <template v-else>
-                                    展开<a-icon type="down" />
-                                </template>
-                            </template>
-                        </a-button>
-                    </el-form-item>
-                </el-form>
+                            {{- end}}
+                            {{- end}}
+                        </el-form-item>
+                    </el-col>
+                {{end}}
+            {{- end }}
+            <el-col :sm="24" :xs="24" :md="12" :xl="6" :lg="6" v-if="searchField.length % 4 == 0">
+               <el-form-item label=" "><el-input hidden/></el-form-item>
+            </el-col>
+            <el-col style="position: absolute;right: 0;bottom: 0px" :sm="24" :xs="24" :md="12" :xl="6" :lg="6" >
+                <el-form-item style="text-align: right">
+                  <a-button
+                    type="primary"
+                    icon="search"
+                    @click="handleQuery"
+                  >搜索</a-button>
+                  <a-button
+                    style="margin-left: 10px"
+                    @click="resetQuery"
+                  ><a-icon type="sync" />重置</a-button>
+                  <a-button
+                    type="link"
+                    style="padding-right: 0"
+                    @click="toggleAdvanced"
+                  >
+                    <template v-if="searchField.length > 3">
+                      收起<a-icon type="up" />
+                    </template>
+                    <template v-else>
+                      展开<a-icon type="down" />
+                    </template>
+                  </a-button>
+                </el-form-item>
+            </el-col>
+            </el-row>
+        </el-form>
+    </template>
+        <template #wrapper>
+            <el-row :gutter="10" class="mb8" style="transform: translateY(-2px);height: 32px">
+                <el-col :span="1.5">
+                    <a-button
+                            v-permisaction="['{{.PackageName}}:{{.BusinessName}}:add']"
+                            type="primary"
+                            icon="plus"
+                            @click="handleAdd"
+                    >新增
+                    </a-button>
+                </el-col>
+                <el-col :span="1.5">
+                    <a-button
+                            v-permisaction="['{{.PackageName}}:{{.BusinessName}}:edit']"
+                            type="success"
+                            icon="edit"
+                            size="mini"
+                            :disabled="single"
+                            @click="handleUpdate"
+                    >修改
+                    </a-button>
+                </el-col>
+                <el-col :span="1.5">
+                    <a-button
+                            v-permisaction="['{{.PackageName}}:{{.BusinessName}}:remove']"
+                            type="danger"
+                            icon="delete"
+                            :disabled="multiple"
+                            @click="handleDelete"
+                    >删除
+                    </a-button>
+                </el-col>
+            </el-row>
 
-                <el-row :gutter="10" class="mb8">
-                    <el-col :span="1.5">
-                        <a-button
-                                v-permisaction="['{{.PackageName}}:{{.BusinessName}}:add']"
-                                type="primary"
-                                icon="plus"
-                                @click="handleAdd"
-                        >新增
-                        </a-button>
-                    </el-col>
-                    <el-col :span="1.5">
-                        <a-button
-                                v-permisaction="['{{.PackageName}}:{{.BusinessName}}:edit']"
-                                type="success"
-                                icon="edit"
-                                size="mini"
-                                :disabled="single"
-                                @click="handleUpdate"
-                        >修改
-                        </a-button>
-                    </el-col>
-                    <el-col :span="1.5">
-                        <a-button
-                                v-permisaction="['{{.PackageName}}:{{.BusinessName}}:remove']"
-                                type="danger"
-                                icon="delete"
-                                :disabled="multiple"
-                                @click="handleDelete"
-                        >删除
-                        </a-button>
-                    </el-col>
-                </el-row>
-
-                <el-table v-loading="loading" :data="{{.BusinessName}}List" @selection-change="handleSelectionChange">
+            <div style="flex: 1">
+                <el-table v-loading="loading" :height="'98%'" :data="{{.BusinessName}}List" @selection-change="handleSelectionChange">
                     <el-table-column type="selection" width="55" align="center"/>
                     {{- range .Columns -}}
                         {{- $x := .IsList -}}
@@ -91,7 +110,7 @@
                             {{- if ne .FkTableName "" -}}
                             <el-table-column label="{{.ColumnComment}}" align="center" prop="{{.JsonField}}" :formatter="{{.JsonField}}Format" width="100">
                                 <template slot-scope="scope">
-                                    {{ "{{" }} {{.JsonField}}Format(scope.row) {{"}}"}}
+                                    {{ "{{" }} selectDictLabel({{.JsonField}}Options, scope.row.{{.JsonField}}) {{"}}"}}
                                 </template>
                             </el-table-column>
 
@@ -147,111 +166,111 @@
                         </template>
                     </el-table-column>
                 </el-table>
-
+            </div>
+            <div style="height: 45px;padding-top: 5px">
                 <pagination
-                        v-show="total>0"
-                        :total="total"
-                        :page.sync="queryParams.pageIndex"
-                        :limit.sync="queryParams.pageSize"
-                        @pagination="getList"
+                  v-show="total>0"
+                  :total="total"
+                  :page.sync="queryParams.pageIndex"
+                  :limit.sync="queryParams.pageSize"
+                  @pagination="getList"
                 />
+            </div>
+            <a-drawer
+                      placement="right"
+                      v-if="detailVisible"
+                      :headerStyle="{position: 'sticky', top: 0, zIndex: 999}"
+                      :closable="true"
+                      :width="'65%'"
+                      :visible="detailVisible"
+                      @close="detailVisible = false"
+                    >
+                      <template #title>
+                        详情
+                        <a-button type="link" @click="reLoadDetail">
+                          <a-icon type="reload" />刷新
+                        </a-button>
+                      </template>
+                      <Detail ref="Detail" :id="rowId"></Detail>
+            </a-drawer>
 
-                <a-drawer
-                          placement="right"
-                          v-if="detailVisible"
-                          :headerStyle="{position: 'sticky', top: 0, zIndex: 999}"
-                          :closable="true"
-                          :width="'65%'"
-                          :visible="detailVisible"
-                          @close="detailVisible = false"
-                        >
-                          <template #title>
-                            详情
-                            <a-button type="link" @click="reLoadDetail">
-                              <a-icon type="reload" />刷新
-                            </a-button>
-                          </template>
-                          <Detail ref="Detail" :id="rowId"></Detail>
-                </a-drawer>
-
-                <!-- 添加或修改对话框 -->
-                <a-modal :title="title" :visible="open" :centered="true" @ok="submitForm" @cancel="cancel" okText="确定" cancelText="取消" width="800px">
-                    <el-form ref="form" :model="form" :rules="rules" label-width="120px">
-                        <el-row>
-                            {{ range .Columns }}
-                                {{- $x := .IsInsert -}}
-                                {{- if (eq $x "1") -}}
-                                    {{- if (.Pk) }}
-                                    {{- else if eq .GoField "CreatedAt" -}}
-                                    {{- else if eq .GoField "UpdatedAt" -}}
-                                    {{- else if eq .GoField "DeletedAt" -}}
-                                    {{- else if eq .GoField "UpdateBy" -}}
-                                    {{- else if eq .GoField "CreateBy" -}}
-                                    {{- else }}
-                                        <el-col :span="12">
-                                            <el-form-item label="{{.ColumnComment}}" prop="{{.JsonField}}">
-                                                {{ if eq "input" .HtmlType -}}
-                                                    <el-input v-model="form.{{.JsonField}}" placeholder="{{.ColumnComment}}"
-                                                              {{if eq .IsEdit "false" -}}:disabled="isEdit" {{- end}}/>
-                                                {{- else if eq "select" .HtmlType -}}
-                                                    {{- if ne .FkTableName "" -}}
-                                                    <el-select v-model="form.{{.JsonField}}"
-                                                               placeholder="请选择" {{if eq .IsEdit "false" -}} :disabled="isEdit" {{- end }}>
-                                                        <el-option
-                                                                v-for="dict in {{.JsonField}}Options"
-                                                                :key="dict.key"
-                                                                :label="dict.value"
-                                                                :value="dict.key"
-                                                        />
-                                                    </el-select>
-                                                    {{- else -}}
-                                                    <el-select v-model="form.{{.JsonField}}"
-                                                               placeholder="请选择" {{if eq .IsEdit "false" -}} :disabled="isEdit" {{- end }}>
-                                                        <el-option
-                                                                v-for="dict in {{.JsonField}}Options"
-                                                                :key="dict.value"
-                                                                :label="dict.label"
-                                                                :value="dict.value"
-                                                        />
-                                                    </el-select>
-                                                    {{- end -}}
-                                                {{- else if eq "radio" .HtmlType -}}
-                                                    <el-radio-group v-model="form.{{.JsonField}}">
-                                                        <el-radio
-                                                                v-for="dict in {{.JsonField}}Options"
-                                                                :key="dict.value"
-                                                                :label="dict.value"
-                                                        >{{"{{"}} dict.label {{"}}"}}</el-radio>
-                                                    </el-radio-group>
-                                                {{- else if eq "file" .HtmlType -}}
-                                                    <el-input
-                                                        v-model="form.{{.JsonField}}"
-                                                        placeholder="图片"
+            <!-- 添加或修改对话框 -->
+            <a-modal :title="title" :visible="open" :centered="true" @ok="submitForm" @cancel="cancel" okText="确定" cancelText="取消" width="800px">
+                <el-form ref="form" :model="form" :rules="rules" label-width="120px">
+                    <el-row>
+                        {{ range .Columns }}
+                            {{- $x := .IsInsert -}}
+                            {{- if (eq $x "1") -}}
+                                {{- if (.Pk) }}
+                                {{- else if eq .GoField "CreatedAt" -}}
+                                {{- else if eq .GoField "UpdatedAt" -}}
+                                {{- else if eq .GoField "DeletedAt" -}}
+                                {{- else if eq .GoField "UpdateBy" -}}
+                                {{- else if eq .GoField "CreateBy" -}}
+                                {{- else }}
+                                    <el-col :span="12">
+                                        <el-form-item label="{{.ColumnComment}}" prop="{{.JsonField}}">
+                                            {{ if eq "input" .HtmlType -}}
+                                                <el-input v-model="form.{{.JsonField}}" placeholder="{{.ColumnComment}}"
+                                                          {{if eq .IsEdit "false" -}}:disabled="isEdit" {{- end}}/>
+                                            {{- else if eq "select" .HtmlType -}}
+                                                {{- if ne .FkTableName "" -}}
+                                                <el-select v-model="form.{{.JsonField}}"
+                                                           placeholder="请选择" {{if eq .IsEdit "false" -}} :disabled="isEdit" {{- end }}>
+                                                    <el-option
+                                                            v-for="dict in {{.JsonField}}Options"
+                                                            :key="dict.key"
+                                                            :label="dict.value"
+                                                            :value="dict.key"
                                                     />
-                                                    <el-button type="primary" @click="fileShow{{.GoField}}">选择文件</el-button>
-                                                {{- else if eq "datetime" .HtmlType -}}
-                                                    <el-date-picker
-                                                            v-model="form.{{.JsonField}}"
-                                                            type="datetime"
-                                                            placeholder="选择日期">
-                                                    </el-date-picker>
-                                                {{- else if eq "textarea" .HtmlType -}}
-                                                    <el-input
-                                                            v-model="form.{{.JsonField}}"
-                                                            type="textarea"
-                                                            :rows="2"
-                                                            placeholder="请输入内容">
-                                                    </el-input>
-                                                {{- end }}
-                                            </el-form-item>
-                                        </el-col>
-                                    {{- end }}
+                                                </el-select>
+                                                {{- else -}}
+                                                <el-select v-model="form.{{.JsonField}}"
+                                                           placeholder="请选择" {{if eq .IsEdit "false" -}} :disabled="isEdit" {{- end }}>
+                                                    <el-option
+                                                            v-for="dict in {{.JsonField}}Options"
+                                                            :key="dict.value"
+                                                            :label="dict.label"
+                                                            :value="dict.value"
+                                                    />
+                                                </el-select>
+                                                {{- end -}}
+                                            {{- else if eq "radio" .HtmlType -}}
+                                                <el-radio-group v-model="form.{{.JsonField}}">
+                                                    <el-radio
+                                                            v-for="dict in {{.JsonField}}Options"
+                                                            :key="dict.value"
+                                                            :label="dict.value"
+                                                    >{{"{{"}} dict.label {{"}}"}}</el-radio>
+                                                </el-radio-group>
+                                            {{- else if eq "file" .HtmlType -}}
+                                                <el-input
+                                                    v-model="form.{{.JsonField}}"
+                                                    placeholder="图片"
+                                                />
+                                                <el-button type="primary" @click="fileShow{{.GoField}}">选择文件</el-button>
+                                            {{- else if eq "datetime" .HtmlType -}}
+                                                <el-date-picker
+                                                        v-model="form.{{.JsonField}}"
+                                                        type="datetime"
+                                                        placeholder="选择日期">
+                                                </el-date-picker>
+                                            {{- else if eq "textarea" .HtmlType -}}
+                                                <el-input
+                                                        v-model="form.{{.JsonField}}"
+                                                        type="textarea"
+                                                        :rows="2"
+                                                        placeholder="请输入内容">
+                                                </el-input>
+                                            {{- end }}
+                                        </el-form-item>
+                                    </el-col>
                                 {{- end }}
                             {{- end }}
-                        </el-row>
-                    </el-form>
-                </a-modal>
-            </el-card>
+                        {{- end }}
+                    </el-row>
+                </el-form>
+            </a-modal>
         </template>
     </BasicLayout>
 </template>
@@ -285,6 +304,7 @@
                 total: 0,
                 // 弹出层标题
                 title: '',
+                dateRange: [],
                 // 是否显示弹出层
                 open: false,
                 detailVisible: false,
@@ -379,16 +399,17 @@
                 this.resetForm('form')
             },
             convertFields(data, mode = 'toString') {
+              const result = { ...data }
               const fieldsToConvert = [{{range .Columns}} {{- if ne .DictType "" -}} '{{.JsonField}}', {{ end -}} {{- end -}}]
               // 遍历字段并进行转换
               fieldsToConvert.forEach(field => {
-                if (mode === 'toString' && typeof data[field] === 'number') {
-                  data[field] = data[field].toString()
-                } else if (mode === 'toNumber' && typeof data[field] === 'string' && !isNaN(data[field])) {
-                  data[field] = Number(data[field])
-                }
+                  if (mode === 'toString' && typeof result[field] === 'number') {
+                    result[field] = result[field].toString() === '0' ? undefined : result[field].toString()
+                  } else if (mode === 'toNumber' && typeof result[field] === 'string' && !isNaN(result[field])) {
+                    result[field] = Number(result[field])
+                  }
               })
-              return data
+              return result
             },
             // 关系
             {{range .Columns}}
@@ -497,7 +518,6 @@
             /** 删除按钮操作 */
             handleDelete(row) {
                 var Ids = (row.{{.PkJsonField}} && [row.{{.PkJsonField}}]) || this.ids
-
                 this.$confirm('是否确认删除编号为"' + Ids + '"的数据项?', '警告', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
