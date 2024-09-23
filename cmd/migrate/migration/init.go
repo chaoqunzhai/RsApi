@@ -48,11 +48,11 @@ func (e *Migration) Migrate() {
 		if err != nil {
 			log.Fatalln(err)
 		}
-		if count > 0 {
-			log.Println(count)
-			count = 0
-			continue
-		}
+		//if count > 0 {
+		//	log.Println(count)
+		//	count = 0
+		//	continue
+		//}
 		err = (e.version[v])(e.db.Debug(), v)
 		if err != nil {
 			log.Fatalln(err)

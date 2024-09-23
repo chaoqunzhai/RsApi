@@ -83,7 +83,7 @@ func (e *AdditionsWarehousing) Get(d *dto.AdditionsWarehousingGetReq, p *actions
 }
 
 // Insert 创建AdditionsWarehousing对象
-func (e *AdditionsWarehousing) Insert(orderId, StoreRoomId int, c *dto.AdditionsWarehousingInsertReq) error {
+func (e *AdditionsWarehousing) Insert(Username string, orderId, StoreRoomId int, c *dto.AdditionsWarehousingInsertReq) error {
 	var err error
 	var data models.AdditionsWarehousing
 	c.Generate(&data)
@@ -122,6 +122,13 @@ func (e *AdditionsWarehousing) Insert(orderId, StoreRoomId int, c *dto.Additions
 		e.Log.Errorf("AdditionsWarehousingService Insert error:%s \r\n", err)
 		return err
 	}
+	e.Orm.Create(&models.AssetRecording{
+		User:      Username,
+		Type:      1,
+		BindOrder: Code,
+		AssetId:   data.Id,
+	})
+
 	return nil
 }
 

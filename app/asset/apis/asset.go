@@ -2,6 +2,7 @@ package apis
 
 import (
 	"fmt"
+	models2 "go-admin/cmd/migrate/migration/models"
 	cDto "go-admin/common/dto"
 	"strconv"
 	"time"
@@ -243,8 +244,12 @@ func (e AdditionsWarehousing) Insert(c *gin.Context) {
 	order.CreateBy = user.GetUserId(c)
 
 	e.Orm.Create(&order)
+
+	var userModel models2.SysUser
+	e.Orm.Model(&models2.SysUser{}).Where("user_id = ?", order.CreateBy).Limit(1).Find(&userModel)
+
 	for _, row := range req.Asset {
-		err = s.Insert(order.Id, req.StoreRoomId, &row)
+		err = s.Insert(userModel.Username, order.Id, req.StoreRoomId, &row)
 		if err != nil {
 			fmt.Println("err!", err)
 			continue
