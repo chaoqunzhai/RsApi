@@ -208,5 +208,10 @@ func (e AssetOutboundOrder) Delete(c *gin.Context) {
 		e.Error(500, err, fmt.Sprintf("删除AssetOutboundOrder失败，\r\n失败信息 %s", err.Error()))
 		return
 	}
+	//更新对应出库的资产 状态为在库 和 out_id = 0
+	e.Orm.Model(&models.AdditionsWarehousing{}).Where("out_id in ?", req.GetId()).Updates(map[string]interface{}{
+		"status": 1,
+		"out_id": 0,
+	})
 	e.OK(req.GetId(), "删除成功")
 }
