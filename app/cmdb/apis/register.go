@@ -423,6 +423,9 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 		e.Orm.Save(&softRow)
 
 	}
-	e.OK("", "successful")
+	c.JSON(200, map[string]interface{}{
+		"code": 200,
+		"msg":  "successful",
+	})
 	return
 }
