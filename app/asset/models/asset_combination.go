@@ -21,7 +21,7 @@ type Combination struct {
 }
 
 func (Combination) TableName() string {
-	return "combination"
+	return "asset_combination"
 }
 
 func (e *Combination) Generate() models.ActiveRecord {

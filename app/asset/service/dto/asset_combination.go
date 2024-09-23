@@ -8,24 +8,24 @@ import (
 
 type CombinationGetPageReq struct {
 	dto.Pagination `search:"-"`
-	CustomId       int    `form:"customId" search:"type:exact;column:custom_id;table:combination"`
-	HostId         int    `form:"hostId" search:"type:exact;column:host_id;table:combination"`
-	IdcId          int    `form:"idcId" search:"type:exact;column:idc_id;table:combination"`
-	Code           string `form:"code"  search:"type:contains;column:code;table:combination" comment:"组合编号"`
-	Status         string `form:"status"  search:"type:exact;column:status;table:combination" comment:"资产状态"`
+	CustomId       int    `form:"customId" search:"type:exact;column:custom_id;table:asset_combination"`
+	HostId         int    `form:"hostId" search:"type:exact;column:host_id;table:asset_combination"`
+	IdcId          int    `form:"idcId" search:"type:exact;column:idc_id;table:asset_combination"`
+	Code           string `form:"code"  search:"type:contains;column:code;table:asset_combination" comment:"组合编号"`
+	Status         string `form:"status"  search:"type:exact;column:status;table:asset_combination" comment:"资产状态"`
 	CombinationOrder
 }
 
 type CombinationOrder struct {
-	Id        string `form:"idOrder"  search:"type:order;column:id;table:combination"`
-	CreateBy  string `form:"createByOrder"  search:"type:order;column:create_by;table:combination"`
-	UpdateBy  string `form:"updateByOrder"  search:"type:order;column:update_by;table:combination"`
-	CreatedAt string `form:"createdAtOrder"  search:"type:order;column:created_at;table:combination"`
-	UpdatedAt string `form:"updatedAtOrder"  search:"type:order;column:updated_at;table:combination"`
-	DeletedAt string `form:"deletedAtOrder"  search:"type:order;column:deleted_at;table:combination"`
-	Desc      string `form:"descOrder"  search:"type:order;column:desc;table:combination"`
-	JobId     string `form:"jobIdOrder"  search:"type:order;column:job_id;table:combination"`
-	Status    string `form:"statusOrder"  search:"type:order;column:status;table:combination"`
+	Id        string `form:"idOrder"  search:"type:order;column:id;table:asset_combination"`
+	CreateBy  string `form:"createByOrder"  search:"type:order;column:create_by;table:asset_combination"`
+	UpdateBy  string `form:"updateByOrder"  search:"type:order;column:update_by;table:asset_combination"`
+	CreatedAt string `form:"createdAtOrder"  search:"type:order;column:created_at;table:asset_combination"`
+	UpdatedAt string `form:"updatedAtOrder"  search:"type:order;column:updated_at;table:asset_combination"`
+	DeletedAt string `form:"deletedAtOrder"  search:"type:order;column:deleted_at;table:asset_combination"`
+	Desc      string `form:"descOrder"  search:"type:order;column:desc;table:asset_combination"`
+	JobId     string `form:"jobIdOrder"  search:"type:order;column:job_id;table:asset_combination"`
+	Status    string `form:"statusOrder"  search:"type:order;column:status;table:asset_combination"`
 }
 
 func (m *CombinationGetPageReq) GetNeedSearch() interface{} {

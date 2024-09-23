@@ -60,6 +60,8 @@ func _1599190683659Tables(db *gorm.DB, version string) error {
 			new(models.OperationLog),
 
 			//资产
+			new(models.AssetWarehouse),
+			new(models.AssetSupplier),
 			new(models.AdditionsOrder),
 			new(models.AdditionsWarehousing),
 			new(models.Combination),

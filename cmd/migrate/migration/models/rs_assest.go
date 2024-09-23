@@ -5,6 +5,31 @@ import (
 	"time"
 )
 
+type AssetWarehouse struct {
+	RichGlobal
+	WarehouseName   string `json:"warehouseName" gorm:"type:varchar(50);index;comment:名字"`
+	AdministratorId int    `json:"administratorId"`
+	Remark          string `json:"remark" gorm:"type:text;comment:备注"`
+}
+
+func (AssetWarehouse) TableName() string {
+	return "asset_warehouse"
+}
+
+type AssetSupplier struct {
+	RichGlobal
+	SupplierName  string `json:"supplierName" gorm:"type:varchar(50);comment:名字"`
+	ContactPerson string `json:"contactPerson" gorm:"type:varchar(50)"`
+	PhoneNumber   string `json:"phoneNumber" gorm:"type:varchar(20)"`
+	Email         string `json:"email" gorm:"type:varchar(50)"`
+	Address       string `json:"address" gorm:"type:varchar(255)"`
+	Remark        string `json:"remark" gorm:"type:varchar(255)"`
+}
+
+func (AssetSupplier) TableName() string {
+	return "asset_supplier"
+}
+
 type AdditionsOrder struct {
 	RichGlobal
 	OrderId     string `json:"orderId" gorm:"type:varchar(50);index;comment:关联的入库单号"`
@@ -12,7 +37,7 @@ type AdditionsOrder struct {
 }
 
 func (AdditionsOrder) TableName() string {
-	return "additions_order"
+	return "asset_additions_order"
 }
 
 type AdditionsWarehousing struct {
@@ -38,7 +63,7 @@ type AdditionsWarehousing struct {
 }
 
 func (AdditionsWarehousing) TableName() string {
-	return "additions_warehousing"
+	return "asset_additions_warehousing"
 }
 
 type Combination struct {
@@ -51,5 +76,5 @@ type Combination struct {
 }
 
 func (Combination) TableName() string {
-	return "combination"
+	return "asset_combination"
 }

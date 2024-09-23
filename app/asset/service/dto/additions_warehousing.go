@@ -8,11 +8,11 @@ import (
 
 type AdditionsOrderGetPageReq struct {
 	dto.Pagination `search:"-"`
-	StoreRoomId    string `form:"storeRoomId"  search:"type:exact;column:store_room_id;table:additions_order" comment:"关联的库房ID"`
-	OrderId        string `form:"orderId"  search:"type:contains;column:order_id;table:additions_order" comment:"关联的入库单号"`
+	StoreRoomId    string `form:"storeRoomId"  search:"type:exact;column:store_room_id;table:asset_additions_order" comment:"关联的库房ID"`
+	OrderId        string `form:"orderId"  search:"type:contains;column:order_id;table:asset_additions_order" comment:"关联的入库单号"`
 	Name           string `form:"name"  search:"-" comment:"资产名称"`
-	StartTimeAt    string `form:"startTimeAt"  search:"type:gte;column:created_at;table:additions_order" comment:"入库开始时间"`
-	EndTimeAt      string `form:"endTimeAt"  search:"type:lte;column:created_at;table:additions_order" comment:"入库结束时间"`
+	StartTimeAt    string `form:"startTimeAt"  search:"type:gte;column:created_at;table:asset_additions_order" comment:"入库开始时间"`
+	EndTimeAt      string `form:"endTimeAt"  search:"type:lte;column:created_at;table:asset_additions_order" comment:"入库结束时间"`
 }
 
 func (m *AdditionsOrderGetPageReq) GetNeedSearch() interface{} {
@@ -24,33 +24,33 @@ type AdditionsWarehousingGetPageReq struct {
 	Search         string `form:"search" search:"-" comment:"搜索SN和编码"`
 	CombinationId  int    `form:"combinationId" search:"-" comment:"组合ID"`
 	CategoryId     int64  `form:"categoryId"  search:"-" comment:"关联的资产分类ID"`
-	StoreRoomId    int64  `form:"storeRoomId"  search:"type:exact;column:store_room_id;table:additions_warehousing" comment:"关联的库房ID"`
-	SupplierId     int64  `form:"supplierId"  search:"type:exact;column:supplier_id;table:additions_warehousing" comment:"供应商ID"`
-	WId            int64  `form:"wId"  search:"type:exact;column:w_id;table:additions_warehousing" comment:"关联的入库单号"`
-	Name           string `form:"name"  search:"type:contains;column:name;table:additions_warehousing" comment:"资产名称"`
-	Spec           string `form:"spec"  search:"type:contains;column:spec;table:additions_warehousing" comment:"规格型号"`
-	Brand          string `form:"brand"  search:"type:exact;column:brand;table:additions_warehousing" comment:"品牌名称"`
-	Sn             string `form:"sn"  search:"type:exact;column:sn;table:additions_warehousing" comment:"资产SN"`
-	UserId         string `form:"userId"  search:"type:exact;column:user_id;table:additions_warehousing" comment:"采购人员ID"`
+	StoreRoomId    int64  `form:"storeRoomId"  search:"type:exact;column:store_room_id;table:asset_additions_warehousing" comment:"关联的库房ID"`
+	SupplierId     int64  `form:"supplierId"  search:"type:exact;column:supplier_id;table:asset_additions_warehousing" comment:"供应商ID"`
+	WId            int64  `form:"wId"  search:"type:exact;column:w_id;table:asset_additions_warehousing" comment:"关联的入库单号"`
+	Name           string `form:"name"  search:"type:contains;column:name;table:asset_additions_warehousing" comment:"资产名称"`
+	Spec           string `form:"spec"  search:"type:contains;column:spec;table:asset_additions_warehousing" comment:"规格型号"`
+	Brand          string `form:"brand"  search:"type:exact;column:brand;table:asset_additions_warehousing" comment:"品牌名称"`
+	Sn             string `form:"sn"  search:"type:exact;column:sn;table:asset_additions_warehousing" comment:"资产SN"`
+	UserId         string `form:"userId"  search:"type:exact;column:user_id;table:asset_additions_warehousing" comment:"采购人员ID"`
 	AdditionsWarehousingOrder
 }
 
 type AdditionsWarehousingOrder struct {
-	Id         string `form:"idOrder"  search:"type:order;column:id;table:additions_warehousing"`
-	CreatedAt  string `form:"createdAtOrder"  search:"type:order;column:created_at;table:additions_warehousing"`
-	PurchaseAt string `form:"purchaseAtOrder"  search:"type:order;column:purchase_at;table:additions_warehousing"`
-	ExpireAt   string `form:"expireAtOrder"  search:"type:order;column:expire_at;table:additions_warehousing"`
-	CategoryId string `form:"categoryIdOrder"  search:"type:order;column:category_id;table:additions_warehousing"`
-	SupplierId string `form:"supplierIdOrder"  search:"type:order;column:supplier_id;table:additions_warehousing"`
-	WId        string `form:"wIdOrder"  search:"type:order;column:w_id;table:additions_warehousing"`
-	Name       string `form:"nameOrder"  search:"type:order;column:name;table:additions_warehousing"`
-	Spec       string `form:"specOrder"  search:"type:order;column:spec;table:additions_warehousing"`
-	Brand      string `form:"brandOrder"  search:"type:order;column:brand;table:additions_warehousing"`
-	Sn         string `form:"snOrder"  search:"type:order;column:sn;table:additions_warehousing"`
-	Unit       string `form:"unitOrder"  search:"type:order;column:unit;table:additions_warehousing"`
-	Price      string `form:"priceOrder"  search:"type:order;column:price;table:additions_warehousing"`
-	UserId     string `form:"userIdOrder"  search:"type:order;column:user_id;table:additions_warehousing"`
-	Desc       string `form:"descOrder"  search:"type:order;column:desc;table:additions_warehousing"`
+	Id         string `form:"idOrder"  search:"type:order;column:id;table:asset_additions_warehousing"`
+	CreatedAt  string `form:"createdAtOrder"  search:"type:order;column:created_at;table:asset_additions_warehousing"`
+	PurchaseAt string `form:"purchaseAtOrder"  search:"type:order;column:purchase_at;table:asset_additions_warehousing"`
+	ExpireAt   string `form:"expireAtOrder"  search:"type:order;column:expire_at;table:asset_additions_warehousing"`
+	CategoryId string `form:"categoryIdOrder"  search:"type:order;column:category_id;table:asset_additions_warehousing"`
+	SupplierId string `form:"supplierIdOrder"  search:"type:order;column:supplier_id;table:asset_additions_warehousing"`
+	WId        string `form:"wIdOrder"  search:"type:order;column:w_id;table:asset_additions_warehousing"`
+	Name       string `form:"nameOrder"  search:"type:order;column:name;table:asset_additions_warehousing"`
+	Spec       string `form:"specOrder"  search:"type:order;column:spec;table:asset_additions_warehousing"`
+	Brand      string `form:"brandOrder"  search:"type:order;column:brand;table:asset_additions_warehousing"`
+	Sn         string `form:"snOrder"  search:"type:order;column:sn;table:asset_additions_warehousing"`
+	Unit       string `form:"unitOrder"  search:"type:order;column:unit;table:asset_additions_warehousing"`
+	Price      string `form:"priceOrder"  search:"type:order;column:price;table:asset_additions_warehousing"`
+	UserId     string `form:"userIdOrder"  search:"type:order;column:user_id;table:asset_additions_warehousing"`
+	Desc       string `form:"descOrder"  search:"type:order;column:desc;table:asset_additions_warehousing"`
 }
 
 func (m *AdditionsWarehousingGetPageReq) GetNeedSearch() interface{} {

@@ -17,7 +17,7 @@ type AdditionsOrder struct {
 }
 
 func (AdditionsOrder) TableName() string {
-	return "additions_order"
+	return "asset_additions_order"
 }
 
 type AdditionsWarehousing struct {
@@ -45,7 +45,7 @@ type AdditionsWarehousing struct {
 }
 
 func (AdditionsWarehousing) TableName() string {
-	return "additions_warehousing"
+	return "asset_additions_warehousing"
 }
 
 func (e *AdditionsWarehousing) GetId() interface{} {
