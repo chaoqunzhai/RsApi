@@ -61,14 +61,9 @@ type AssetOutboundOrderInsertReq struct {
 	IdcId          string `json:"idcId" comment:"idcId"`
 	Count          string `json:"count" comment:"出库数量"`
 
-	Dat AssetOutboundDat `json:"dat"`
+	Asset []int `json:"asset"`
 
 	common.ControlBy
-}
-
-type AssetOutboundDat struct {
-	Combination []int `json:"combination"`
-	Asset       []int `json:"asset"`
 }
 
 func (s *AssetOutboundOrderInsertReq) Generate(model *models.AssetOutboundOrder) {

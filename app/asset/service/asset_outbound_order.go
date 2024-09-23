@@ -76,23 +76,17 @@ func (e *AssetOutboundOrder) Insert(c *dto.AssetOutboundOrderInsertReq) error {
 	//查询关联的值, 以下资产必须是在库的
 	//查询到combination 的组合
 	recordingIds := make([]int, 0)
-	if len(c.Dat.Combination) > 0 {
+
+	//查询到asset中的资产
+	if len(c.Asset) > 0 {
 		var assetList []models.AdditionsWarehousing
-		e.Orm.Model(&models.AdditionsWarehousing{}).Where("combination_id in ? and status = 1", c.Dat.Combination).Updates(map[string]interface{}{
+		e.Orm.Model(&models.AdditionsWarehousing{}).Where("id in ? and status = 1", c.Asset).Updates(map[string]interface{}{
 			"out_id": data.Id,
 			"status": 2,
 		}).Find(&assetList)
 		for _, i := range assetList {
 			recordingIds = append(recordingIds, i.Id)
 		}
-	}
-	//查询到asset中的资产
-	if len(c.Dat.Asset) > 0 {
-		e.Orm.Model(&models.AdditionsWarehousing{}).Where("id in ? and status = 1", c.Dat.Asset).Updates(map[string]interface{}{
-			"out_id": data.Id,
-			"status": 2,
-		})
-		recordingIds = append(recordingIds, c.Dat.Asset...)
 	}
 
 	//进行操作日志记录
