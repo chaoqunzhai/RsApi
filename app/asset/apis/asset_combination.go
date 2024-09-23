@@ -127,12 +127,20 @@ func (e Combination) GetPage(c *gin.Context) {
 	}
 
 	var assetList []models.AdditionsWarehousing
-	e.Orm.Model(&models.AdditionsWarehousing{}).Select("id,combination_id,price,store_room_id").Where("combination_id in ?", bindIds).Find(&assetList)
+	e.Orm.Model(&models.AdditionsWarehousing{}).Where("combination_id in ?", bindIds).Find(&assetList)
 
 	bindMap := make(map[int]int, 0)
+	bindAssetMap := make(map[int][]models.AdditionsWarehousing, 0)
 	bindPriceMap := make(map[int]float64, 0)
 	StoreRoomIdLists := make([]int, 0)
 	for _, row := range assetList {
+
+		assetBindList, assetOk := bindAssetMap[row.CombinationId]
+		if !assetOk {
+			assetBindList = make([]models.AdditionsWarehousing, 0)
+		}
+		assetBindList = append(assetBindList, row)
+		bindAssetMap[row.CombinationId] = assetBindList
 		StoreRoomIdLists = append(StoreRoomIdLists, row.StoreRoomId)
 		bindCount, ok := bindMap[row.CombinationId]
 		bindPrice, ok := bindPriceMap[row.CombinationId]
@@ -161,6 +169,9 @@ func (e Combination) GetPage(c *gin.Context) {
 			row.RegionInfo = hostBindIdcData[row.HostId]
 		}
 
+		if req.Extend == 2 { //展示扩展的信息,例如资产列表
+			row.Asset = bindAssetMap[row.Id]
+		}
 		result = append(result, row)
 	}
 	e.PageOK(result, int(count), req.GetPageIndex(), req.GetPageSize(), "查询成功")

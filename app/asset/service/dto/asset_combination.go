@@ -13,6 +13,7 @@ type CombinationGetPageReq struct {
 	IdcId          int    `form:"idcId" search:"type:exact;column:idc_id;table:asset_combination"`
 	Code           string `form:"code"  search:"type:contains;column:code;table:asset_combination" comment:"组合编号"`
 	Status         string `form:"status"  search:"type:exact;column:status;table:asset_combination" comment:"资产状态"`
+	Extend         int    `form:"extend" search:"-"`
 	CombinationOrder
 }
 
