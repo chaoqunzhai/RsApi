@@ -60,7 +60,7 @@ type AssetOutboundOrderInsertReq struct {
 	UserId         int    `json:"userId" comment:"联系人"`
 	IdcId          int    `json:"idcId" comment:"idcId"`
 	Asset          []int  `json:"asset"`
-
+	Combination    []int  `json:"combination"`
 	common.ControlBy
 }
 

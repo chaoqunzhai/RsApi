@@ -64,6 +64,9 @@ func (e *AssetOutboundOrder) Get(d *dto.AssetOutboundOrderGetReq, p *actions.Dat
 func (e *AssetOutboundOrder) Insert(c *dto.AssetOutboundOrderInsertReq) error {
 	var err error
 	var data models.AssetOutboundOrder
+	var userModel models2.SysUser
+	e.Orm.Model(&models2.SysUser{}).Where("user_id = ?", c.CreateBy).Limit(1).Find(&userModel)
+
 	c.Generate(&data)
 
 	Code := fmt.Sprintf("RK%08d", data.Id)
@@ -78,6 +81,23 @@ func (e *AssetOutboundOrder) Insert(c *dto.AssetOutboundOrderInsertReq) error {
 	//查询到combination 的组合
 	recordingIds := make([]int, 0)
 
+	if len(c.Combination) > 0 {
+		CombinationIds := utils.RemoveRepeatInt(c.Combination)
+		e.Orm.Model(&models.Combination{}).Where("id in ?", CombinationIds).Updates(map[string]interface{}{
+			"status": 2,
+		})
+
+		for _, i := range CombinationIds {
+			e.Orm.Create(&models.AssetRecording{
+				User:      userModel.Username,
+				Type:      2,
+				BindOrder: Code,
+				Info:      "组合出库",
+				AssetId:   i,
+			})
+		}
+
+	}
 	//查询到asset中的资产
 	if len(c.Asset) > 0 {
 		var assetList []models.AdditionsWarehousing
@@ -92,8 +112,6 @@ func (e *AssetOutboundOrder) Insert(c *dto.AssetOutboundOrderInsertReq) error {
 
 	//进行操作日志记录
 	recordingIds = utils.RemoveRepeatInt(recordingIds)
-	var userModel models2.SysUser
-	e.Orm.Model(&models2.SysUser{}).Where("user_id = ?", c.CreateBy).Limit(1).Find(&userModel)
 
 	for _, i := range recordingIds {
 		e.Orm.Create(&models.AssetRecording{

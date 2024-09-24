@@ -288,6 +288,16 @@ func (e Combination) Insert(c *gin.Context) {
 	e.Orm.Model(&models.AdditionsWarehousing{}).Where("id in ?", req.Asset).Updates(map[string]interface{}{
 		"combination_id": uid,
 	})
+	var userModel models2.SysUser
+	e.Orm.Model(&models2.SysUser{}).Where("user_id = ?", user.GetUserId(c)).Limit(1).Find(&userModel)
+	e.Orm.Create(&models.AssetRecording{
+		User:      userModel.Username,
+		Type:      1,
+		BindOrder: Code,
+		Info:      "组合入库",
+		AssetId:   uid,
+	})
+
 	e.OK(req.GetId(), "创建成功")
 }
 
