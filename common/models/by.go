@@ -9,7 +9,7 @@ import (
 )
 
 type ControlBy struct {
-	CreateBy int `json:"-" gorm:"index;comment:创建者"`
+	CreateBy int `json:"createBy" gorm:"index;comment:创建者"`
 	UpdateBy int `json:"-" gorm:"index;comment:更新者"`
 }
 

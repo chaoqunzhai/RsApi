@@ -60,8 +60,35 @@ func (e AssetOutboundOrder) GetPage(c *gin.Context) {
 		e.Error(500, err, fmt.Sprintf("获取AssetOutboundOrder失败，\r\n失败信息 %s", err.Error()))
 		return
 	}
+	idS := make([]int, 0)
+	for _, v := range list {
+		idS = append(idS, v.Id)
+	}
+	var asset []models.AdditionsWarehousing
+	e.Orm.Model(&models.AdditionsWarehousing{}).Where("out_id in ?", idS).Find(&asset)
+	assetMap := make(map[int64][]models.AdditionsWarehousing, 0)
+	for _, v := range asset {
 
-	e.PageOK(list, int(count), req.GetPageIndex(), req.GetPageSize(), "查询成功")
+		assetList, ok := assetMap[v.WId]
+		if !ok {
+			assetList = make([]models.AdditionsWarehousing, 0)
+		}
+		assetList = append(assetList, v)
+		assetMap[v.WId] = assetList
+	}
+	result := make([]interface{}, 0)
+	for _, v := range list {
+		assetList, ok := assetMap[int64(v.Id)]
+
+		if ok {
+			v.Asset = assetList
+		} else {
+			v.Asset = make([]models.AdditionsWarehousing, 0)
+		}
+		result = append(result, v)
+	}
+
+	e.PageOK(result, int(count), req.GetPageIndex(), req.GetPageSize(), "查询成功")
 }
 
 // Get 获取AssetOutboundOrder
