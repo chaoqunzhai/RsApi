@@ -15,8 +15,8 @@ type AssetOutboundOrder struct {
 	Ems            string                 `json:"ems" gorm:"type:varchar(20);comment:物流公司"`
 	TrackingNumber string                 `json:"trackingNumber" gorm:"type:varchar(30);comment:物流单号"`
 	Address        string                 `json:"address" gorm:"type:varchar(255);comment:联系地址"`
-	User           string                 `json:"user" gorm:"type:varchar(50);comment:联系人"`
-	IdcId          string                 `json:"idcId" gorm:"type:bigint;comment:idcId"`
+	UserId         int                    `json:"userId" gorm:"comment:联系人"`
+	IdcId          int                    `json:"idcId" gorm:"type:bigint;comment:idcId"`
 	Count          string                 `json:"count" gorm:"type:bigint;comment:出库数量"`
 	Asset          []AdditionsWarehousing `json:"asset" gorm:"-"`
 	models.ModelTime

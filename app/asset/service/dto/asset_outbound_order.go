@@ -57,11 +57,10 @@ type AssetOutboundOrderInsertReq struct {
 	Ems            string `json:"ems" comment:"物流公司"`
 	TrackingNumber string `json:"trackingNumber" comment:"物流单号"`
 	Address        string `json:"address" comment:"联系地址"`
-	User           string `json:"user" comment:"联系人"`
-	IdcId          string `json:"idcId" comment:"idcId"`
+	UserId         int    `json:"userId" comment:"联系人"`
+	IdcId          int    `json:"idcId" comment:"idcId"`
 	Count          string `json:"count" comment:"出库数量"`
-
-	Asset []int `json:"asset"`
+	Asset          []int  `json:"asset"`
 
 	common.ControlBy
 }
@@ -79,7 +78,7 @@ func (s *AssetOutboundOrderInsertReq) Generate(model *models.AssetOutboundOrder)
 	model.Ems = s.Ems
 	model.TrackingNumber = s.TrackingNumber
 	model.Address = s.Address
-	model.User = s.User
+	model.UserId = s.UserId
 	model.IdcId = s.IdcId
 	model.Count = s.Count
 }
@@ -98,8 +97,8 @@ type AssetOutboundOrderUpdateReq struct {
 	Ems            string `json:"ems" comment:"物流公司"`
 	TrackingNumber string `json:"trackingNumber" comment:"物流单号"`
 	Address        string `json:"address" comment:"联系地址"`
-	User           string `json:"user" comment:"联系人"`
-	IdcId          string `json:"idcId" comment:"idcId"`
+	UserId         int    `json:"userId" gorm:"comment:联系人"`
+	IdcId          int    `json:"idcId" comment:"idcId"`
 	Count          string `json:"count" comment:"出库数量"`
 	common.ControlBy
 }
@@ -117,7 +116,7 @@ func (s *AssetOutboundOrderUpdateReq) Generate(model *models.AssetOutboundOrder)
 	model.Ems = s.Ems
 	model.TrackingNumber = s.TrackingNumber
 	model.Address = s.Address
-	model.User = s.User
+	model.UserId = s.UserId
 	model.IdcId = s.IdcId
 	model.Count = s.Count
 }
