@@ -65,8 +65,10 @@ func (e *AssetOutboundOrder) Insert(c *dto.AssetOutboundOrderInsertReq) error {
 	var err error
 	var data models.AssetOutboundOrder
 	c.Generate(&data)
+
 	Code := fmt.Sprintf("RK%08d", data.Id)
 	data.Code = Code
+	data.Count = 0
 	err = e.Orm.Create(&data).Error
 	if err != nil {
 		e.Log.Errorf("AssetOutboundOrderService Insert error:%s \r\n", err)
@@ -102,6 +104,9 @@ func (e *AssetOutboundOrder) Insert(c *dto.AssetOutboundOrderInsertReq) error {
 			AssetId:   i,
 		})
 	}
+	e.Orm.Model(&models.AssetOutboundOrder{}).Where("id = ?", data.Id).Updates(map[string]interface{}{
+		"count": len(recordingIds),
+	})
 	return nil
 }
 

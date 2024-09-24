@@ -17,7 +17,7 @@ type AssetOutboundOrder struct {
 	Address        string                 `json:"address" gorm:"type:varchar(255);comment:联系地址"`
 	UserId         int                    `json:"userId" gorm:"comment:联系人"`
 	IdcId          int                    `json:"idcId" gorm:"type:bigint;comment:idcId"`
-	Count          string                 `json:"count" gorm:"type:bigint;comment:出库数量"`
+	Count          int                    `json:"count" gorm:"type:bigint;comment:出库数量"`
 	Asset          []AdditionsWarehousing `json:"asset" gorm:"-"`
 	models.ModelTime
 	models.ControlBy
