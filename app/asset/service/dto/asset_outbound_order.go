@@ -51,7 +51,7 @@ type AssetOutboundOrderInsertReq struct {
 	Id             int    `json:"-" comment:"主键编码"` // 主键编码
 	Desc           string `json:"desc" comment:"描述信息"`
 	Code           string `json:"code" comment:"出库编码"`
-	CustomId       string `json:"customId" comment:"所属客户ID"`
+	CustomId       int    `json:"customId" comment:"所属客户ID"`
 	PhoneNumber    string `json:"phoneNumber" comment:""`
 	Region         string `json:"region" comment:"省份城市多ID"`
 	Ems            string `json:"ems" comment:"物流公司"`
@@ -92,7 +92,7 @@ type AssetOutboundOrderUpdateReq struct {
 	Id             int    `uri:"id" comment:"主键编码"` // 主键编码
 	Desc           string `json:"desc" comment:"描述信息"`
 	Code           string `json:"code" comment:"出库编码"`
-	CustomId       string `json:"customId" comment:"所属客户ID"`
+	CustomId       int    `json:"customId" comment:"所属客户ID"`
 	PhoneNumber    string `json:"phoneNumber" comment:""`
 	Region         string `json:"region" comment:"省份城市多ID"`
 	Ems            string `json:"ems" comment:"物流公司"`
