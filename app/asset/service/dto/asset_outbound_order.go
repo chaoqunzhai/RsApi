@@ -59,7 +59,6 @@ type AssetOutboundOrderInsertReq struct {
 	Address        string `json:"address" comment:"联系地址"`
 	UserId         int    `json:"userId" comment:"联系人"`
 	IdcId          int    `json:"idcId" comment:"idcId"`
-	Count          string `json:"count" comment:"出库数量"`
 	Asset          []int  `json:"asset"`
 
 	common.ControlBy
@@ -80,7 +79,6 @@ func (s *AssetOutboundOrderInsertReq) Generate(model *models.AssetOutboundOrder)
 	model.Address = s.Address
 	model.UserId = s.UserId
 	model.IdcId = s.IdcId
-	model.Count = s.Count
 }
 
 func (s *AssetOutboundOrderInsertReq) GetId() interface{} {
@@ -99,7 +97,6 @@ type AssetOutboundOrderUpdateReq struct {
 	Address        string `json:"address" comment:"联系地址"`
 	UserId         int    `json:"userId" gorm:"comment:联系人"`
 	IdcId          int    `json:"idcId" comment:"idcId"`
-	Count          string `json:"count" comment:"出库数量"`
 	common.ControlBy
 }
 
@@ -118,7 +115,6 @@ func (s *AssetOutboundOrderUpdateReq) Generate(model *models.AssetOutboundOrder)
 	model.Address = s.Address
 	model.UserId = s.UserId
 	model.IdcId = s.IdcId
-	model.Count = s.Count
 }
 
 func (s *AssetOutboundOrderUpdateReq) GetId() interface{} {
