@@ -33,6 +33,7 @@ func (AdditionsOrder) TableName() string {
 
 type AdditionsWarehousing struct {
 	models.Model
+	HostId           int          `json:"hostId"  gorm:"comment:关联的CMDB上线的主机ID"`
 	CreateUser       string       `json:"createUser" gorm:"-"`
 	Code             string       `json:"code"  gorm:"type:varchar(50);comment:资产编码" `
 	StoreRoomId      int          `json:"storeRoomId" gorm:"index;comment:关联库房"`

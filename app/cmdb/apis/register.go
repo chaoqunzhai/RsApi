@@ -424,8 +424,9 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 
 	}
 	c.JSON(200, map[string]interface{}{
-		"code": 200,
-		"msg":  "successful",
+		"code":   200,
+		"hostId": hostInstance.Id,
+		"msg":    "successful",
 	})
 	return
 }

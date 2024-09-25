@@ -48,6 +48,7 @@ type AdditionsWarehousing struct {
 	PurchaseAt    sql.NullTime `json:"purchaseAt" gorm:"comment:采购日期"`
 	StoreRoomId   int          `json:"storeRoomId" gorm:"index;comment:关联库房"`
 	ExpireAt      sql.NullTime `json:"expireAt" gorm:"comment:维保到期日"`
+	HostId        int          `json:"hostId"  gorm:"comment:关联的CMDB上线的主机ID"`
 	CategoryId    int          `json:"categoryId" gorm:"index;comment:关联的资产分类ID"`
 	SupplierId    int          `json:"supplierId"  gorm:"index;comment:供应商ID"`
 	WId           int          `json:"WId" gorm:"index;comment:关联的入库ID"`

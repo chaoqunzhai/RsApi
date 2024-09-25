@@ -4,6 +4,7 @@ import (
 	"fmt"
 	models2 "go-admin/cmd/migrate/migration/models"
 	"go-admin/common/utils"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-admin-team/go-admin-core/sdk/api"
@@ -248,6 +249,13 @@ func (e Combination) AutoInsert(c *gin.Context) {
 		e.Error(500, err, err.Error())
 		return
 	}
+	req.Sn = strings.TrimSpace(req.Sn)
+	req.Sn = strings.Replace(req.Sn, "\n", "", -1)
+	if len(req.Sn) == 0 {
+		e.OK("", "successful")
+		return
+	}
+
 	var count int64
 	e.Orm.Model(&models.Combination{}).Where("code = ?", req.Sn).Count(&count)
 	if count > 0 {
@@ -255,6 +263,48 @@ func (e Combination) AutoInsert(c *gin.Context) {
 		return
 	}
 	//主机SN如果 不存在,就创建这么一个组合, 如果存在 不进行操作
+	CombinationRow := models.Combination{
+		Code:   req.Sn,
+		Status: "1",
+	}
+	e.Orm.Create(&CombinationRow)
+	//创建对应的服务器资产
+
+	hostRow := models.AdditionsWarehousing{
+		Code:          req.Sn,
+		CategoryId:    1,
+		CombinationId: CombinationRow.Id,
+		Name:          req.Sn,
+		Spec:          req.Spec,
+		Brand:         req.Brand,
+	}
+	e.Orm.Create(&hostRow)
+	//创建对应的磁盘资产
+	for _, row := range req.DiskSn {
+		assetRow := models.AdditionsWarehousing{
+			Code:          row.Sn,
+			CategoryId:    3,
+			CombinationId: CombinationRow.Id,
+			Name:          row.Name,
+			Spec:          row.Size,
+			Status:        row.Status,
+			UnitId:        2,
+		}
+		e.Orm.Create(&assetRow)
+	}
+	//创建对应的内存条
+	for sn, size := range req.MemorySn {
+		assetRow := models.AdditionsWarehousing{
+			Code:          sn,
+			CategoryId:    2,
+			CombinationId: CombinationRow.Id,
+			Name:          "内存条",
+			Spec:          size,
+			Status:        1,
+			UnitId:        2,
+		}
+		e.Orm.Create(&assetRow)
+	}
 
 	e.OK("", "successful")
 	return
