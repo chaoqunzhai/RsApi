@@ -34,14 +34,17 @@ func (m *CombinationGetPageReq) GetNeedSearch() interface{} {
 }
 
 type CombinationAutoReq struct {
-	Sn       string     `json:"sn" comment:"服务器SN"`
-	DiskSn   []AutoDisk `json:"diskSn" comment:"磁盘SN"`
-	MemorySn []string   `json:"memorySn" comment:"内存条SN"`
+	Sn       string            `json:"sn"`
+	Brand    string            `json:"brand"`
+	Spec     string            `json:"spec"`
+	DiskSn   []AutoDisk        `json:"diskSn" comment:"磁盘SN"`
+	MemorySn map[string]string `json:"memorySn" comment:"内存条SN"`
 }
-
 type AutoDisk struct {
-	Name string `json:"name"`
-	Sn   string `json:"sn"`
+	Name   string `json:"name"`
+	Size   string `json:"size"`
+	Sn     string `json:"sn"`
+	Status int    `json:"status"`
 }
 type CombinationInsertReq struct {
 	Id   int    `json:"-" comment:"主键编码"` // 主键编码

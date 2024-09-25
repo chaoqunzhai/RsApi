@@ -226,7 +226,6 @@ func (e *AdditionsWarehousing) UpdateStore(StoreRoomId int, c *dto.AdditionsWare
 // Remove 删除AdditionsWarehousing
 func (e *AdditionsWarehousing) Remove(d *dto.AdditionsWarehousingDeleteReq, p *actions.DataPermission) error {
 	var data models.AdditionsWarehousing
-
 	db := e.Orm.Model(&data).
 		Scopes(
 			actions.Permission(data.TableName(), p),

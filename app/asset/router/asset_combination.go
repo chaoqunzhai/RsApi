@@ -11,7 +11,6 @@ import (
 
 func init() {
 	routerCheckRole = append(routerCheckRole, registerCombinationRouter)
-	routerNoCheckRole = append(routerNoCheckRole, registerCombinationNoAuthRouter)
 }
 
 // registerCombinationRouter
@@ -24,12 +23,5 @@ func registerCombinationRouter(v1 *gin.RouterGroup, authMiddleware *jwt.GinJWTMi
 		r.POST("", api.Insert)
 		r.PUT("/:id", actions.PermissionAction(), api.Update)
 		r.DELETE("", api.Delete)
-	}
-}
-func registerCombinationNoAuthRouter(v1 *gin.RouterGroup) {
-	api := apis.Combination{}
-	r := v1.Group("/asset-combination")
-	{
-		r.POST("/auto", api.AutoInsert)
 	}
 }

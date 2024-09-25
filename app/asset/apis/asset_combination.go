@@ -248,6 +248,13 @@ func (e Combination) AutoInsert(c *gin.Context) {
 		e.Error(500, err, err.Error())
 		return
 	}
+	var count int64
+	e.Orm.Model(&models.Combination{}).Where("code = ?", req.Sn).Count(&count)
+	if count > 0 {
+		e.OK("", "successful")
+		return
+	}
+	//主机SN如果 不存在,就创建这么一个组合, 如果存在 不进行操作
 
 	e.OK("", "successful")
 	return
