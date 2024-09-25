@@ -20,6 +20,8 @@ type AssetOutboundOrder struct {
 	UserId         int                    `json:"userId" gorm:"comment:联系人"`
 	IdcId          int                    `json:"idcId" gorm:"type:bigint;comment:idcId"`
 	Asset          []AdditionsWarehousing `json:"asset" gorm:"-"`
+	RegionInfo     interface{}            `json:"regionInfo" gorm:"-"`
+	CustomInfo     interface{}            `json:"customInfo" gorm:"-"`
 	models.ModelTime
 	models.ControlBy
 }

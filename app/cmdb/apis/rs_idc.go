@@ -66,18 +66,13 @@ func (e RsIdc) GetPage(c *gin.Context) {
 		idcList = append(idcList, idc.Id)
 		idcMap[idc.Id] = models.RsIdcCount{}
 	}
-	//var dialList []models.RsDial
-	//e.Orm.Model(&models.RsDial{}).Where("idc_id in ?", idcList).Find(&dialList)
-	//for _, dial := range dialList {
-	//	RsIdcCount, ok := idcMap[dial.IdcId]
-	//	if !ok {
-	//		continue
-	//	}
-	//
-	//}
 
 	var hostList []models.RsHost
-	e.Orm.Model(&models.RsHost{}).Select("idc,status").Where("idc in ?", idcList).Find(&hostList)
+	if req.PageSize == -1 {
+		e.Orm.Model(&models.RsHost{}).Select("idc,status").Find(&hostList)
+	} else {
+		e.Orm.Model(&models.RsHost{}).Select("idc,status").Where("idc in ?", idcList).Find(&hostList)
+	}
 
 	for _, host := range hostList {
 		RsIdcCount, ok := idcMap[host.Idc]

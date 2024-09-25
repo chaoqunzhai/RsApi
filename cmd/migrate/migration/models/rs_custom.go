@@ -1,5 +1,6 @@
 package models
 
+// 客户
 type Custom struct {
 	RichGlobal
 	Name        string `json:"name" gorm:"type:varchar(120);comment:客户名称"`

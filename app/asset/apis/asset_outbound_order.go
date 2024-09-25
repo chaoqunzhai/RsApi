@@ -2,6 +2,7 @@ package apis
 
 import (
 	"fmt"
+	models2 "go-admin/cmd/migrate/migration/models"
 	cDto "go-admin/common/dto"
 	"strconv"
 
@@ -131,6 +132,16 @@ func (e AssetOutboundOrder) Get(c *gin.Context) {
 		cDto.Paginate(pageSizeInt, pageIndexInt),
 	).Find(&bindAsset).Limit(-1).Offset(-1).Count(&count)
 	object.Asset = bindAsset
+
+	//客户信息
+	var CustomModel models2.Custom
+
+	e.Orm.Model(&CustomModel).Where("id = ?", object.CustomId).Limit(1).Find(&CustomModel)
+	object.CustomInfo = CustomModel
+	//位置信息
+	var IdcModel models2.Idc
+	e.Orm.Model(&IdcModel).Where("id = ?", object.IdcId).Limit(1).Find(&IdcModel)
+	object.RegionInfo = IdcModel
 	e.PageOK(object, int(count), pageIndexInt, pageSizeInt, "")
 	return
 }

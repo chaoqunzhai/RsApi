@@ -1,5 +1,6 @@
 package models
 
+// 联系人
 type CustomUser struct {
 	RichGlobal
 	UserName string `json:"username" gorm:"type:varchar(50);comment:姓名"`
