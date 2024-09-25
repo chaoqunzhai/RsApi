@@ -1,7 +1,6 @@
 package dto
 
 import (
-	"fmt"
 	"github.com/go-admin-team/go-admin-core/tools/search"
 	"go-admin/common/global"
 	"gorm.io/gorm"
@@ -76,9 +75,9 @@ func MakeCondition(q interface{}) func(db *gorm.DB) *gorm.DB {
 
 func Paginate(pageSize, pageIndex int) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
-		fmt.Println("pageSize", pageSize)
+
 		if pageSize == 0 {
-			pageSize = 1
+			pageSize = 10
 		}
 		if pageSize == -1 {
 			return db

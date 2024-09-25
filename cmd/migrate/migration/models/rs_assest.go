@@ -42,6 +42,7 @@ func (AdditionsOrder) TableName() string {
 
 type AdditionsWarehousing struct {
 	Model
+	CreateBy      int          `json:"createBy" gorm:"index;comment:创建者"`
 	Code          string       `json:"code"  gorm:"type:varchar(50);comment:资产编码" `
 	CreatedAt     time.Time    `json:"createdAt" gorm:"comment:创建时间"`
 	PurchaseAt    sql.NullTime `json:"purchaseAt" gorm:"comment:采购日期"`
@@ -82,6 +83,7 @@ func (Combination) TableName() string {
 
 type AssetRecording struct {
 	Model
+	CreateBy  int       `json:"createBy" gorm:"index;comment:创建者"`
 	CreatedAt time.Time `json:"createdAt" gorm:"comment:创建时间"`
 	AssetId   int       `json:"assetId"  gorm:"comment:关联资产ID"`
 	User      string    `json:"user" gorm:"index;comment:操作人"`

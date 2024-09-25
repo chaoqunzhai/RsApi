@@ -4,6 +4,7 @@ import (
 	"errors"
 	"go-admin/app/admin/models"
 	"go-admin/app/admin/service/dto"
+	"go-admin/global"
 
 	log "github.com/go-admin-team/go-admin-core/logger"
 	"github.com/go-admin-team/go-admin-core/sdk/pkg"
@@ -110,6 +111,7 @@ func (e *SysUser) Insert(c *dto.SysUserInsertReq) error {
 		e.Log.Errorf("db error: %s", err)
 		return err
 	}
+	global.UserDatMap.Set(data.UserId, &data)
 	return nil
 }
 
@@ -141,6 +143,7 @@ func (e *SysUser) Update(c *dto.SysUserUpdateReq, p *actions.DataPermission) err
 		log.Warnf("db update error")
 		return err
 	}
+	global.UserDatMap.Set(model.UserId, &model)
 	return nil
 }
 

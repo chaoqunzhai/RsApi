@@ -1,37 +1,46 @@
 package global
 
-func GetIsp(v int) string {
-	switch v {
-	case 1:
-		return "移动"
-	case 2:
-		return "电信"
-	case 3:
-		return "联通"
+import (
+	"go-admin/app/admin/models"
+	"gorm.io/gorm"
+	"sync"
+)
 
-	}
-	return "其他"
+type MapEvent struct {
+	sync.RWMutex
+	M map[int]*models.SysUser
 }
 
-func GetBelong(v int) string {
+var (
+	UserDatMap = &MapEvent{M: make(map[int]*models.SysUser)}
+)
 
-	switch v {
-	case 2:
+func (e *MapEvent) MakeAllCacheHost(orm *gorm.DB) {
+	e.RLock()
+	defer e.RUnlock()
+	var sysUserList []*models.SysUser
+	orm.Model(&models.SysUser{}).Find(&sysUserList)
+	for _, sysUser := range sysUserList {
 
-		return "招募"
+		e.M[sysUser.UserId] = sysUser
 	}
-	return "自建"
 }
-func GetLineType(v int) string {
 
-	switch v {
-	case 1:
+func (e *MapEvent) Get(userId int) (*models.SysUser, bool) {
+	e.RLock()
+	defer e.RUnlock()
+	event, exists := e.M[userId]
+	return event, exists
+}
+func (e *MapEvent) Set(userId int, event *models.SysUser) {
+	e.Lock()
+	defer e.Unlock()
+	e.M[userId] = event
+}
 
-		return "IDC"
-	case 2:
-		return "ACDN"
-	case 3:
-		return "PCDN"
-	}
-	return ""
+func (e *MapEvent) Delete(userId int) {
+	e.Lock()
+	defer e.Unlock()
+
+	delete(e.M, userId)
 }

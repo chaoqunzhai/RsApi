@@ -69,12 +69,12 @@ func (e AssetOutboundOrder) GetPage(c *gin.Context) {
 	assetMap := make(map[int64][]models.AdditionsWarehousing, 0)
 	for _, v := range asset {
 
-		assetList, ok := assetMap[v.WId]
+		assetList, ok := assetMap[v.OutId]
 		if !ok {
 			assetList = make([]models.AdditionsWarehousing, 0)
 		}
 		assetList = append(assetList, v)
-		assetMap[v.WId] = assetList
+		assetMap[v.OutId] = assetList
 	}
 	result := make([]interface{}, 0)
 	for _, v := range list {

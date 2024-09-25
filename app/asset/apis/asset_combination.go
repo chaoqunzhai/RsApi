@@ -165,8 +165,20 @@ func (e Combination) GetPage(c *gin.Context) {
 		}
 		row.Price = bindPriceMap[row.Id]
 		if row.HostId > 0 {
-			//主机位置
+			//有被关联到CMDB 那就是CMDB的IDC位置
 			row.RegionInfo = hostBindIdcData[row.HostId]
+		} else {
+			//库房
+			var assetRow models.AdditionsWarehousing
+			e.Orm.Model(&models.AdditionsWarehousing{}).Where("w_id = ? and category_id = 1", row.Id).Limit(1).Find(&assetRow)
+
+			if assetRow.Id > 0 {
+				var storeRoomRow models.AssetWarehouse
+				e.Orm.Model(&models.AssetWarehouse{}).Where("id = ?", assetRow.StoreRoomId).Limit(1).Find(&storeRoomRow)
+				row.RegionInfo = map[string]interface{}{
+					"val": storeRoomRow.WarehouseName,
+				}
+			}
 		}
 
 		if req.Extend == 2 { //展示扩展的信息,例如资产列表
@@ -265,6 +277,29 @@ func (e Combination) Insert(c *gin.Context) {
 		e.Error(500, err, err.Error())
 		return
 	}
+	var bindCount int64
+	e.Orm.Model(&models.AdditionsWarehousing{}).Where("id in ? and combination_id > 0", req.Asset).Count(&bindCount)
+	if bindCount > 0 {
+		e.Error(500, nil, "资产有被关联到其他组合中")
+		return
+	}
+
+	//进行校验 如果主资产没有SN 是不能录入的
+	hostSn := ""
+	for _, assetId := range req.Asset {
+		var row models.AdditionsWarehousing
+		e.Orm.Model(&models.AdditionsWarehousing{}).Where("id = ? and category_id = 1", assetId).Limit(1).Find(&row)
+
+		if row.Id == 0 {
+			continue
+		}
+		if row.Sn == "" {
+			e.Error(500, nil, "主资产SN不能为空")
+			return
+		}
+		hostSn = row.Sn
+
+	}
 	// 设置创建人
 	req.SetCreateBy(user.GetUserId(c))
 
@@ -275,27 +310,20 @@ func (e Combination) Insert(c *gin.Context) {
 		return
 	}
 
-	Code := fmt.Sprintf("RS%08d", uid)
 	e.Orm.Model(&models.Combination{}).Where("id = ?", uid).Updates(map[string]interface{}{
-		"code": Code,
+		"code": hostSn,
 	})
-	var bindCount int64
-	e.Orm.Model(&models.AdditionsWarehousing{}).Where("id in ? and combination_id > 0", req.Asset).Count(&bindCount)
-	if bindCount > 0 {
-		e.Error(500, nil, "资产有被关联到其他组合中")
-		return
-	}
 	e.Orm.Model(&models.AdditionsWarehousing{}).Where("id in ?", req.Asset).Updates(map[string]interface{}{
 		"combination_id": uid,
 	})
 	var userModel models2.SysUser
 	e.Orm.Model(&models2.SysUser{}).Where("user_id = ?", user.GetUserId(c)).Limit(1).Find(&userModel)
 	e.Orm.Create(&models.AssetRecording{
-		User:      userModel.Username,
-		Type:      1,
-		BindOrder: Code,
-		Info:      "组合入库",
-		AssetId:   uid,
+		User:     userModel.Username,
+		Type:     1,
+		Info:     "组合入库",
+		AssetId:  uid,
+		CreateBy: user.GetUserId(c),
 	})
 
 	e.OK(req.GetId(), "创建成功")
@@ -334,6 +362,26 @@ func (e Combination) Update(c *gin.Context) {
 		e.Error(500, err, fmt.Sprintf("修改Combination失败，\r\n失败信息 %s", err.Error()))
 		return
 	}
+
+	hostSn := ""
+	for _, assetId := range req.Asset {
+		var row models.AdditionsWarehousing
+		e.Orm.Model(&models.AdditionsWarehousing{}).Where("id = ? and category_id = 1", assetId).Limit(1).Find(&row)
+
+		if row.Id == 0 {
+			continue
+		}
+		if row.Sn == "" {
+			e.Error(500, nil, "主资产SN不能为空")
+			return
+		}
+		hostSn = row.Sn
+
+	}
+
+	e.Orm.Model(&models.Combination{}).Where("id = ?", uid).Updates(map[string]interface{}{
+		"code": hostSn,
+	})
 	//把旧的清空
 
 	e.Orm.Model(&models.AdditionsWarehousing{}).Where("combination_id =  ?", uid).Updates(map[string]interface{}{

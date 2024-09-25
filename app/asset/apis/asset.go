@@ -4,6 +4,7 @@ import (
 	"fmt"
 	models2 "go-admin/cmd/migrate/migration/models"
 	cDto "go-admin/common/dto"
+	"go-admin/common/utils"
 	"strconv"
 	"time"
 
@@ -54,7 +55,7 @@ func (e AdditionsWarehousing) GetPage(c *gin.Context) {
 	}
 
 	combinationId := c.Query("combinationId")
-	fmt.Println("combinationId", combinationId)
+
 	p := actions.GetPermissionFromContext(c)
 	list := make([]models.AdditionsWarehousing, 0)
 	var count int64
@@ -65,7 +66,28 @@ func (e AdditionsWarehousing) GetPage(c *gin.Context) {
 		return
 	}
 
-	e.PageOK(list, int(count), req.GetPageIndex(), req.GetPageSize(), "查询成功")
+	var result []interface{}
+	CombinationIds := make([]int, 0)
+	for _, id := range list {
+		CombinationIds = append(CombinationIds, id.CombinationId)
+	}
+	CombinationIds = utils.RemoveRepeatInt(CombinationIds)
+	var CombinationList []models.Combination
+	e.Orm.Model(&models.Combination{}).Where("id in ?", CombinationIds).Find(&CombinationList)
+
+	CombinationMap := make(map[int]models.Combination, 0)
+	for _, row := range CombinationList {
+		CombinationMap[row.Id] = row
+	}
+
+	for _, row := range list {
+		combinedModel, ok := CombinationMap[row.CombinationId]
+		if ok {
+			row.CombinationSN = combinedModel.Code
+		}
+		result = append(result, row)
+	}
+	e.PageOK(result, int(count), req.GetPageIndex(), req.GetPageSize(), "查询成功")
 }
 
 func (e AdditionsWarehousing) GetStorePage(c *gin.Context) {
@@ -116,7 +138,7 @@ func (e AdditionsWarehousing) GetStorePage(c *gin.Context) {
 		idS = append(idS, v.Id)
 	}
 	var asset []models.AdditionsWarehousing
-	e.Orm.Model(&models.AdditionsWarehousing{}).Select("name,w_id,id").Where("w_id in ?", idS).Find(&asset)
+	e.Orm.Model(&models.AdditionsWarehousing{}).Select("name,w_id,id,create_by").Where("w_id in ?", idS).Find(&asset)
 	assetMap := make(map[int64][]string, 0)
 	for _, v := range asset {
 
@@ -241,6 +263,7 @@ func (e AdditionsWarehousing) Insert(c *gin.Context) {
 		OrderId:     fmt.Sprintf("%v", time.Now().Unix()),
 		StoreRoomId: req.StoreRoomId,
 	}
+	order.Desc = req.Desc
 	order.CreateBy = user.GetUserId(c)
 
 	e.Orm.Create(&order)
@@ -249,7 +272,7 @@ func (e AdditionsWarehousing) Insert(c *gin.Context) {
 	e.Orm.Model(&models2.SysUser{}).Where("user_id = ?", order.CreateBy).Limit(1).Find(&userModel)
 
 	for _, row := range req.Asset {
-		err = s.Insert(userModel.Username, order.Id, req.StoreRoomId, &row)
+		err = s.Insert(order.CreateBy, userModel.Username, order.Id, req.StoreRoomId, &row)
 		if err != nil {
 			fmt.Println("err!", err)
 			continue

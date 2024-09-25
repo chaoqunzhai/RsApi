@@ -44,7 +44,8 @@ func (e *AdditionsWarehousing) GetPage(combinationId string, c *dto.AdditionsWar
 	}
 	if c.CategoryId > 0 {
 		orm = orm.Where("category_id = ?", c.CategoryId)
-	} else {
+	}
+	if c.CategoryId == -1 {
 		orm = orm.Where("category_id != 1")
 	}
 	err = orm.Scopes(
@@ -83,7 +84,7 @@ func (e *AdditionsWarehousing) Get(d *dto.AdditionsWarehousingGetReq, p *actions
 }
 
 // Insert 创建AdditionsWarehousing对象
-func (e *AdditionsWarehousing) Insert(Username string, orderId, StoreRoomId int, c *dto.AdditionsWarehousingInsertReq) error {
+func (e *AdditionsWarehousing) Insert(CreateBy int, Username string, orderId, StoreRoomId int, c *dto.AdditionsWarehousingInsertReq) error {
 	var err error
 	var data models.AdditionsWarehousing
 	c.Generate(&data)
@@ -112,7 +113,7 @@ func (e *AdditionsWarehousing) Insert(Username string, orderId, StoreRoomId int,
 	} else {
 		data.ExpireAt = sql.NullTime{}
 	}
-
+	data.CreateBy = CreateBy
 	err = e.Orm.Create(&data).Error
 	Code := fmt.Sprintf("ZC%08d", data.Id)
 	e.Orm.Model(&models.AdditionsWarehousing{}).Where("id = ?", data.Id).Updates(map[string]interface{}{
@@ -127,6 +128,7 @@ func (e *AdditionsWarehousing) Insert(Username string, orderId, StoreRoomId int,
 		Type:      1,
 		BindOrder: Code,
 		AssetId:   data.Id,
+		CreateBy:  CreateBy,
 	})
 
 	return nil

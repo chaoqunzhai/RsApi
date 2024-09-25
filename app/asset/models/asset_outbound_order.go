@@ -2,11 +2,13 @@ package models
 
 import (
 	"go-admin/common/models"
+	"go-admin/global"
+	"gorm.io/gorm"
 )
 
 type AssetOutboundOrder struct {
 	models.Model
-
+	CreateUser     string                 `json:"createUser" gorm:"-"`
 	Desc           string                 `json:"desc" gorm:"type:varchar(35);comment:描述信息"`
 	Code           string                 `json:"code" gorm:"type:varchar(50);comment:出库编码"`
 	CustomId       int                    `json:"customId" gorm:"type:bigint;comment:所属客户ID"`
@@ -33,4 +35,12 @@ func (e *AssetOutboundOrder) Generate() models.ActiveRecord {
 
 func (e *AssetOutboundOrder) GetId() interface{} {
 	return e.Id
+}
+
+func (e *AssetOutboundOrder) AfterFind(tx *gorm.DB) (err error) {
+	if row, _ := global.UserDatMap.Get(e.CreateBy); row != nil {
+
+		e.CreateUser = row.Username
+	}
+	return nil
 }

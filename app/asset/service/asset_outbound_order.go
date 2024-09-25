@@ -119,6 +119,7 @@ func (e *AssetOutboundOrder) Insert(c *dto.AssetOutboundOrderInsertReq) error {
 			Type:      2,
 			BindOrder: Code,
 			AssetId:   i,
+			CreateBy:  data.CreateBy,
 		})
 	}
 	return nil

@@ -8,6 +8,7 @@ import (
 	_ "github.com/go-admin-team/go-admin-core/sdk/pkg/response"
 	"github.com/google/uuid"
 	"go-admin/app/admin/models"
+	"go-admin/global"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"time"
@@ -194,6 +195,9 @@ func (e SysUser) Delete(c *gin.Context) {
 	if err != nil {
 		e.Logger.Error(err)
 		return
+	}
+	for _, row := range req.Ids {
+		global.UserDatMap.Delete(row)
 	}
 	e.OK(req.GetId(), "删除成功")
 }

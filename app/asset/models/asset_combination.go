@@ -2,10 +2,13 @@ package models
 
 import (
 	"go-admin/common/models"
+	"go-admin/global"
+	"gorm.io/gorm"
 )
 
 type Combination struct {
 	models.Model
+	CreateUser string                 `json:"createUser" gorm:"-"`
 	CustomId   int                    `json:"customId" gorm:"type:bigint;comment:所属客户ID"`
 	HostId     int                    `json:"hostId" gorm:"type:bigint;comment:关联的上线CMDB ID"`
 	Desc       string                 `json:"desc" gorm:"type:varchar(35);comment:描述信息"`
@@ -31,4 +34,12 @@ func (e *Combination) Generate() models.ActiveRecord {
 
 func (e *Combination) GetId() interface{} {
 	return e.Id
+}
+
+func (e *Combination) AfterFind(tx *gorm.DB) (err error) {
+	if row, _ := global.UserDatMap.Get(e.CreateBy); row != nil {
+
+		e.CreateUser = row.Username
+	}
+	return nil
 }
