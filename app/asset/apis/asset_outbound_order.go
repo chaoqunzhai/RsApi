@@ -142,6 +142,11 @@ func (e AssetOutboundOrder) Get(c *gin.Context) {
 	var IdcModel models2.Idc
 	e.Orm.Model(&IdcModel).Where("id = ?", object.IdcId).Limit(1).Find(&IdcModel)
 	object.RegionInfo = IdcModel
+	//联系人
+
+	var UserModel models2.SysUser
+	e.Orm.Model(&UserModel).Where("user_id = ?", object.UserId).Limit(1).Find(&UserModel)
+	object.UserInfo = UserModel
 	e.PageOK(object, int(count), pageIndexInt, pageSizeInt, "")
 	return
 }

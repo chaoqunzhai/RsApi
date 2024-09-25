@@ -22,6 +22,7 @@ type AssetOutboundOrder struct {
 	Asset          []AdditionsWarehousing `json:"asset" gorm:"-"`
 	RegionInfo     interface{}            `json:"regionInfo" gorm:"-"`
 	CustomInfo     interface{}            `json:"customInfo" gorm:"-"`
+	UserInfo       interface{}            `json:"userInfo" gorm:"-"`
 	models.ModelTime
 	models.ControlBy
 }
