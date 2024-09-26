@@ -484,3 +484,28 @@ func GetLayoutUnix(day, layout string) (start int64, end int64) {
 
 	return startOfDayTimestamp, endOfDayTimestamp
 }
+
+// Contains 检查slice中是否包含某个元素
+func Contains(s []int, e int) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
+}
+
+// FindDifferences 找出两个slice之间的差异
+func FindDifferences(A, B []int) (added []int, removed []int) {
+	for _, elem := range B {
+		if !Contains(A, elem) {
+			added = append(added, elem)
+		}
+	}
+	for _, elem := range A {
+		if !Contains(B, elem) {
+			removed = append(removed, elem)
+		}
+	}
+	return
+}

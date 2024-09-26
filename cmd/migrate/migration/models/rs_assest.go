@@ -84,12 +84,13 @@ func (Combination) TableName() string {
 
 type AssetRecording struct {
 	Model
+	AssetType int       `json:"assetType" gorm:"default:1;comment:资产类型 1:资产 2:组合"`
 	CreateBy  int       `json:"createBy" gorm:"index;comment:创建者"`
 	CreatedAt time.Time `json:"createdAt" gorm:"comment:创建时间"`
 	AssetId   int       `json:"assetId"  gorm:"comment:关联资产ID"`
 	User      string    `json:"user" gorm:"index;comment:操作人"`
 	Type      int       `json:"type" gorm:"comment:操作类型"`
-	Info      string    `json:"info" gorm:"type:varchar(100);comment:处理内容"`
+	Info      string    `json:"info" gorm:"comment:处理内容"`
 	BindOrder string    `json:"bindOrder" gorm:"type:varchar(50);comment:关联单据"`
 }
 

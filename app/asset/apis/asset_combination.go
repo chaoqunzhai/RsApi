@@ -274,7 +274,7 @@ func (e Combination) AutoInsert(c *gin.Context) {
 		Code:          req.Sn,
 		CategoryId:    1,
 		CombinationId: CombinationRow.Id,
-		Name:          req.Sn,
+		Name:          "服务器",
 		Spec:          req.Spec,
 		Brand:         req.Brand,
 	}
@@ -376,11 +376,12 @@ func (e Combination) Insert(c *gin.Context) {
 	var userModel models2.SysUser
 	e.Orm.Model(&models2.SysUser{}).Where("user_id = ?", user.GetUserId(c)).Limit(1).Find(&userModel)
 	e.Orm.Create(&models.AssetRecording{
-		User:     userModel.Username,
-		Type:     1,
-		Info:     "组合入库",
-		AssetId:  uid,
-		CreateBy: user.GetUserId(c),
+		User:      userModel.Username,
+		Type:      1,
+		AssetType: 2,
+		Info:      "组合入库",
+		AssetId:   uid,
+		CreateBy:  user.GetUserId(c),
 	})
 
 	e.OK(req.GetId(), "创建成功")
@@ -413,6 +414,14 @@ func (e Combination) Update(c *gin.Context) {
 	req.SetUpdateBy(user.GetUserId(c))
 	p := actions.GetPermissionFromContext(c)
 
+	//获取更新前原来的数据
+
+	var oldAsset []models.AdditionsWarehousing
+	e.Orm.Model(&models.AdditionsWarehousing{}).Where("combination_id = ?", req.Id).Find(&oldAsset)
+	var oldList []int
+	for _, v := range oldAsset {
+		oldList = append(oldList, v.Id)
+	}
 	var uid int
 	uid, err = s.Update(&req, p)
 	if err != nil {
@@ -421,6 +430,7 @@ func (e Combination) Update(c *gin.Context) {
 	}
 
 	hostSn := ""
+
 	for _, assetId := range req.Asset {
 		var row models.AdditionsWarehousing
 		e.Orm.Model(&models.AdditionsWarehousing{}).Where("id = ? and category_id = 1", assetId).Limit(1).Find(&row)
@@ -433,7 +443,7 @@ func (e Combination) Update(c *gin.Context) {
 			return
 		}
 		hostSn = row.Sn
-
+		//newAssetInfo = append(newAssetInfo, fmt.Sprintf("新增 %v:%v", row.Name, row.Sn))
 	}
 
 	e.Orm.Model(&models.Combination{}).Where("id = ?", uid).Updates(map[string]interface{}{
@@ -445,9 +455,51 @@ func (e Combination) Update(c *gin.Context) {
 		"combination_id": 0,
 	})
 	//关联新的
+	var newAsset []models.AdditionsWarehousing
 	e.Orm.Model(&models.AdditionsWarehousing{}).Where("id in ?", req.Asset).Updates(map[string]interface{}{
 		"combination_id": uid,
+	}).Find(&newAsset)
+	var newList []int
+	for _, v := range newAsset {
+		newList = append(newList, v.Id)
+	}
+	var userModel models2.SysUser
+	e.Orm.Model(&models2.SysUser{}).Where("user_id = ?", user.GetUserId(c)).Limit(1).Find(&userModel)
+
+	added, removed := utils.FindDifferences(oldList, newList)
+
+	info := make([]string, 0)
+	for _, v := range added {
+		var row models.AdditionsWarehousing
+		e.Orm.Model(&models.AdditionsWarehousing{}).Where("id = ?", v).Limit(1).Find(&row)
+		info = append(info, fmt.Sprintf("新增 %v:%v", row.Name, func() string {
+			if len(row.Sn) > 0 {
+				return row.Sn
+			}
+			return "空SN"
+		}()))
+	}
+
+	for _, v := range removed {
+		var row models.AdditionsWarehousing
+		e.Orm.Model(&models.AdditionsWarehousing{}).Where("id = ?", v).Limit(1).Find(&row)
+		info = append(info, fmt.Sprintf("删除 %v:%v", row.Name, func() string {
+			if len(row.Sn) > 0 {
+				return row.Sn
+			}
+			return "空SN"
+		}()))
+	}
+
+	e.Orm.Create(&models.AssetRecording{
+		User:      userModel.Username,
+		Type:      1,
+		Info:      strings.Join(info, "\n"),
+		AssetType: 2,
+		AssetId:   uid,
+		CreateBy:  user.GetUserId(c),
 	})
+
 	e.OK(req.GetId(), "修改成功")
 }
 

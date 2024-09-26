@@ -68,7 +68,8 @@ func (e RsIdc) GetPage(c *gin.Context) {
 	}
 
 	var hostList []models.RsHost
-	if req.PageSize == -1 {
+	fmt.Println("req.PageSize", req.PageSize)
+	if req.PageSize == -1 || req.PageSize >= 1000 {
 		e.Orm.Model(&models.RsHost{}).Select("idc,status").Find(&hostList)
 	} else {
 		e.Orm.Model(&models.RsHost{}).Select("idc,status").Where("idc in ?", idcList).Find(&hostList)
