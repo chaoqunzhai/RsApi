@@ -272,6 +272,7 @@ func (e Combination) AutoInsert(c *gin.Context) {
 
 	hostRow := models.AdditionsWarehousing{
 		Code:          req.Sn,
+		Sn:            req.Sn,
 		CategoryId:    1,
 		CombinationId: CombinationRow.Id,
 		Name:          "服务器",
@@ -279,9 +280,14 @@ func (e Combination) AutoInsert(c *gin.Context) {
 		Brand:         req.Brand,
 	}
 	e.Orm.Create(&hostRow)
+	e.Orm.Model(&models.AdditionsWarehousing{}).Where("id = ?", hostRow.Id).Updates(map[string]interface{}{
+		"code": fmt.Sprintf("ZC%08d", hostRow.Id),
+	})
+
 	//创建对应的磁盘资产
 	for _, row := range req.DiskSn {
 		assetRow := models.AdditionsWarehousing{
+			Sn:            row.Sn,
 			Code:          row.Sn,
 			CategoryId:    3,
 			CombinationId: CombinationRow.Id,
@@ -291,11 +297,15 @@ func (e Combination) AutoInsert(c *gin.Context) {
 			UnitId:        2,
 		}
 		e.Orm.Create(&assetRow)
+		e.Orm.Model(&models.AdditionsWarehousing{}).Where("id = ?", assetRow.Id).Updates(map[string]interface{}{
+			"code": fmt.Sprintf("ZC%08d", assetRow.Id),
+		})
 	}
 	//创建对应的内存条
 	for sn, size := range req.MemorySn {
 		assetRow := models.AdditionsWarehousing{
 			Code:          sn,
+			Sn:            sn,
 			CategoryId:    2,
 			CombinationId: CombinationRow.Id,
 			Name:          "内存条",
@@ -304,6 +314,9 @@ func (e Combination) AutoInsert(c *gin.Context) {
 			UnitId:        2,
 		}
 		e.Orm.Create(&assetRow)
+		e.Orm.Model(&models.AdditionsWarehousing{}).Where("id = ?", assetRow.Id).Updates(map[string]interface{}{
+			"code": fmt.Sprintf("ZC%08d", assetRow.Id),
+		})
 	}
 
 	e.OK("", "successful")
