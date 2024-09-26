@@ -11,7 +11,7 @@ type AssetRecordingGetPageReq struct {
 	AssetId        string `form:"assetId"  search:"type:exact;column:asset_id;table:asset_recording" comment:"关联资产ID"`
 	User           string `form:"user"  search:"type:exact;column:user;table:asset_recording" comment:"操作人"`
 	Type           string `form:"type"  search:"type:exact;column:type;table:asset_recording" comment:"操作类型"`
-	AssetType      string `form:"assetTye"  search:"type:exact;column:asset_type;table:asset_recording" comment:"资产类型"`
+	AssetType      string `form:"assetType"  search:"type:exact;column:asset_type;table:asset_recording" comment:"资产类型"`
 	Info           string `form:"info"  search:"type:contains;column:info;table:asset_recording" comment:"处理内容"`
 	BindOrder      string `form:"bindOrder"  search:"type:exact;column:bind_order;table:asset_recording" comment:"关联单据"`
 	AssetRecordingOrder
