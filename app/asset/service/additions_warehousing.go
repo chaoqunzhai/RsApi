@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	models2 "go-admin/cmd/migrate/migration/models"
 	"go-admin/global"
 	"strconv"
 	"time"
@@ -80,6 +81,47 @@ func (e *AdditionsWarehousing) Get(d *dto.AdditionsWarehousingGetReq, p *actions
 		e.Log.Errorf("db error:%s", err)
 		return err
 	}
+	//采购人
+	var userModel models2.SysUser
+	e.Orm.Model(&userModel).Where("user_id = ? ", model.UserId).Limit(1).Find(&userModel)
+	model.UserName = userModel.Username
+
+	var SupplierModel models.AssetSupplier
+	e.Orm.Model(&SupplierModel).Where("id = ? ", model.SupplierId).Limit(1).Find(&SupplierModel)
+	model.SupplierName = SupplierModel.SupplierName
+	//查询关联的库房
+
+	var StoreRoomModel models.AssetWarehouse
+	e.Orm.Model(&StoreRoomModel).Where("id = ? ", model.StoreRoomId).Limit(1).Find(&StoreRoomModel)
+	StoreRoomInfo := map[string]interface{}{
+		"name": StoreRoomModel.WarehouseName,
+		"manager": func() string {
+			var managerRow models2.SysUser
+			e.Orm.Model(&managerRow).Where("user_id = ? ", StoreRoomModel.AdministratorId).Limit(1).Find(&managerRow)
+			return managerRow.Username
+		}(),
+		"custom_name": "",
+		"date":        "",
+	}
+	//查询关联的客户
+
+	if model.OutId != 0 {
+		var outModel models.AssetOutboundOrder
+		e.Orm.Model(&outModel).Where("id = ? ", model.OutId).Limit(1).Find(&outModel)
+
+		if outModel.Id > 0 {
+			StoreRoomInfo["date"] = outModel.CreatedAt.Format(time.DateTime)
+
+			var customModel models2.Custom
+			e.Orm.Model(&customModel).Where("id = ? ", outModel.CustomId).Limit(1).Find(&customModel)
+			if customModel.Id > 0 {
+				StoreRoomInfo["custom_name"] = customModel.Name
+			}
+
+		}
+
+	}
+	model.StoreRoomInfo = StoreRoomInfo
 	return nil
 }
 

@@ -33,31 +33,34 @@ func (AdditionsOrder) TableName() string {
 
 type AdditionsWarehousing struct {
 	models.Model
-	HostId           int          `json:"hostId"  gorm:"comment:关联的CMDB上线的主机ID"`
-	CreateUser       string       `json:"createUser" gorm:"-"`
-	Code             string       `json:"code"  gorm:"type:varchar(50);comment:资产编码" `
-	StoreRoomId      int          `json:"storeRoomId" gorm:"index;comment:关联库房"`
-	PurchaseAt       sql.NullTime `json:"-" gorm:"type:datetime(3);comment:采购日期"`
-	ExpireAt         sql.NullTime `json:"-" gorm:"type:datetime(3);comment:维保到期日"`
-	CategoryId       int64        `json:"categoryId" gorm:"type:bigint;comment:关联的资产分类ID"`
-	SupplierId       int64        `json:"supplierId" gorm:"type:bigint;comment:供应商ID"`
-	WId              int64        `json:"wId" gorm:"type:bigint;comment:关联的入库单号"`
-	OutId            int64        `json:"outId" gorm:"index;comment:关联的出库ID"`
-	CombinationId    int          `json:"combinationId" gorm:"index;comment:组合ID"`
-	CombinationSN    string       `json:"combinationSn" gorm:"-"`
-	Name             string       `json:"name" gorm:"type:varchar(50);comment:资产名称"`
-	Spec             string       `json:"spec" gorm:"type:varchar(50);comment:规格型号"`
-	Brand            string       `json:"brand" gorm:"type:varchar(50);comment:品牌名称"`
-	Sn               string       `json:"sn" gorm:"type:varchar(100);comment:资产SN"`
-	Status           int          `json:"status" gorm:"type:int(1);default:1;comment:资产状态"`
-	UnitId           int64        `json:"unitId" gorm:"type:bigint;comment:单位"`
-	Price            float64      `json:"price" gorm:"comment:价格"`
-	UserId           int64        `json:"userId" gorm:"type:bigint;comment:采购人员ID"`
-	Desc             string       `json:"desc" gorm:"type:varchar(30);comment:备注"`
-	PurchaseAtFormat string       `json:"purchaseAtFormat" gorm:"-"`
-	ExpireAtFormat   string       `json:"ExpireAtFormat" gorm:"-"`
-	CreatedAt        models.XTime `json:"-" gorm:"comment:创建时间"`
-	CreateBy         int          `json:"createBy" gorm:"index;comment:创建者"`
+	HostId           int                    `json:"hostId"  gorm:"comment:关联的CMDB上线的主机ID"`
+	CreateUser       string                 `json:"createUser" gorm:"-"`
+	Code             string                 `json:"code"  gorm:"type:varchar(50);comment:资产编码" `
+	StoreRoomId      int                    `json:"storeRoomId" gorm:"index;comment:关联库房"`
+	PurchaseAt       sql.NullTime           `json:"-" gorm:"type:datetime(3);comment:采购日期"`
+	ExpireAt         sql.NullTime           `json:"-" gorm:"type:datetime(3);comment:维保到期日"`
+	CategoryId       int64                  `json:"categoryId" gorm:"type:bigint;comment:关联的资产分类ID"`
+	SupplierId       int64                  `json:"supplierId" gorm:"type:bigint;comment:供应商ID"`
+	WId              int64                  `json:"wId" gorm:"type:bigint;comment:关联的入库单号"`
+	OutId            int64                  `json:"outId" gorm:"index;comment:关联的出库ID"`
+	CombinationId    int                    `json:"combinationId" gorm:"index;comment:组合ID"`
+	CombinationSN    string                 `json:"combinationSn" gorm:"-"`
+	Name             string                 `json:"name" gorm:"type:varchar(50);comment:资产名称"`
+	Spec             string                 `json:"spec" gorm:"type:varchar(50);comment:规格型号"`
+	Brand            string                 `json:"brand" gorm:"type:varchar(50);comment:品牌名称"`
+	Sn               string                 `json:"sn" gorm:"type:varchar(100);comment:资产SN"`
+	Status           int                    `json:"status" gorm:"type:int(1);default:1;comment:资产状态"`
+	UnitId           int64                  `json:"unitId" gorm:"type:bigint;comment:单位"`
+	Price            float64                `json:"price" gorm:"comment:价格"`
+	UserId           int64                  `json:"userId" gorm:"type:bigint;comment:采购人员ID"`
+	Desc             string                 `json:"desc" gorm:"type:varchar(30);comment:备注"`
+	PurchaseAtFormat string                 `json:"purchaseAtFormat" gorm:"-"`
+	ExpireAtFormat   string                 `json:"ExpireAtFormat" gorm:"-"`
+	CreatedAt        models.XTime           `json:"-" gorm:"comment:创建时间"`
+	CreateBy         int                    `json:"createBy" gorm:"index;comment:创建者"`
+	StoreRoomInfo    map[string]interface{} `json:"storeRoomInfo" gorm:"-"`
+	UserName         string                 `json:"userName" gorm:"-"`
+	SupplierName     string                 `json:"supplierName" gorm:"-"`
 }
 
 func (AdditionsWarehousing) TableName() string {
