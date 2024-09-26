@@ -11,8 +11,8 @@ type AdditionsOrderGetPageReq struct {
 	StoreRoomId    string `form:"storeRoomId"  search:"type:exact;column:store_room_id;table:asset_additions_order" comment:"关联的库房ID"`
 	OrderId        string `form:"orderId"  search:"type:contains;column:order_id;table:asset_additions_order" comment:"关联的入库单号"`
 	Name           string `form:"name"  search:"-" comment:"资产名称"`
-	StartTimeAt    string `form:"startTimeAt"  search:"type:gte;column:created_at;table:asset_additions_order" comment:"入库开始时间"`
-	EndTimeAt      string `form:"endTimeAt"  search:"type:lte;column:created_at;table:asset_additions_order" comment:"入库结束时间"`
+	StartTime      string `form:"startTime"  search:"type:gte;column:created_at;table:asset_additions_order" comment:"入库开始时间"`
+	EndTime        string `form:"endTime"  search:"type:lte;column:created_at;table:asset_additions_order" comment:"入库结束时间"`
 }
 
 func (m *AdditionsOrderGetPageReq) GetNeedSearch() interface{} {

@@ -18,8 +18,8 @@ type AssetOutboundOrderGetPageReq struct {
 	Address        string `form:"address"  search:"type:exact;column:address;table:asset_outbound_order" comment:"联系地址"`
 	User           string `form:"user"  search:"type:exact;column:user;table:asset_outbound_order" comment:"联系人"`
 	IdcId          string `form:"idcId"  search:"type:exact;column:idc_id;table:asset_outbound_order" comment:"idcId"`
-	StartTimeAt    string `form:"startTimeAt"  search:"type:gte;column:created_at;table:asset_outbound_order" comment:"出库开始时间"`
-	EndTimeAt      string `form:"endTimeAt"  search:"type:lte;column:created_at;table:asset_outbound_order" comment:"出库结束时间"`
+	StartTime      string `form:"startTime"  search:"type:gte;column:created_at;table:asset_outbound_order" comment:"出库开始时间"`
+	EndTime        string `form:"endTime"  search:"type:lte;column:created_at;table:asset_outbound_order" comment:"出库结束时间"`
 	AssetOutboundOrderOrder
 }
 
