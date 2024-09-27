@@ -8,7 +8,7 @@ type Business struct {
 	RichGlobal
 	Status        int    `json:"status" gorm:"type:int(1);default:0;comment:拨号状态,1:正常 非1:异常"`
 	Name          string `json:"name" gorm:"index;type:varchar(50);comment:业务中文名称"`
-	EnName        string `json:"enName" gorm:"index;type:varchar(30);comment:业务英文名字"`
+	EnName        string `json:"enName" gorm:"index;type:varchar(30);index;unique;comment:业务英文名字"`
 	BillingMethod int    `json:"billingMethod" gorm:"type:int(1);default:6;comment:计费方式"`
 	StartUsage    string `json:"startUsage" gorm:"index;type:varchar(30);comment:利用率开始时间"`
 	EndUsage      string `json:"endUsage" gorm:"index;type:varchar(30);comment:利用率结束时间"`

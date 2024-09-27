@@ -4,7 +4,7 @@ package models
 
 type Idc struct {
 	RichGlobal
-	Number        int    `json:"number" gorm:"index;comment:机房编号"`
+	Number        int    `json:"number" gorm:"index;unique;comment:机房编号"`
 	Name          string `json:"name" gorm:"type:varchar(120);default:'';comment:机房名称"`
 	BuId          int    `json:"buId" gorm:"type:bigint;comment:商务人员"`
 	CustomId      int    `json:"customId" gorm:"type:bigint;comment:所属客户ID"`

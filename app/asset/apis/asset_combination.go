@@ -221,7 +221,7 @@ func (e Combination) Get(c *gin.Context) {
 	}
 
 	var assetList []models.AdditionsWarehousing
-	e.Orm.Model(&models.AdditionsWarehousing{}).Where("combination_id = ?", req.Id).Find(&assetList)
+	e.Orm.Model(&models.AdditionsWarehousing{}).Where("combination_id = ? ", req.Id).Find(&assetList)
 	object.Asset = assetList
 
 	if object.HostId > 0 {

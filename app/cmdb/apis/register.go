@@ -249,7 +249,11 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 
 	}
 
-	e.Orm.Save(&hostInstance)
+	if hostInstance.Id > 0 {
+		e.Orm.Save(&hostInstance)
+	} else {
+		e.Orm.Create(&hostInstance)
+	}
 
 	NetDeviceMap := make(map[string]int, 0)
 	if req.NetDevice != "" {
@@ -391,7 +395,12 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 	hostSystem.ReceiveNumber = req.ReceiveNumber
 	hostSystem.HostId = hostInstance.Id
 	hostSystem.MemoryData = MemoryData
-	e.Orm.Save(&hostSystem)
+
+	if hostSystem.Id > 0 {
+		e.Orm.Save(&hostSystem)
+	} else {
+		e.Orm.Create(&hostSystem)
+	}
 
 	if len(req.BusinessSn) > 0 {
 		for key, val := range req.BusinessSn {
@@ -403,10 +412,18 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 			}
 			e.Orm.Model(&models2.HostSoftware{}).Where("host_id = ? and `key` = ?",
 				hostInstance.Id, key).First(&snRow)
-			snRow.HostId = hostInstance.Id
-			snRow.Key = key
-			snRow.Value = val
-			e.Orm.Save(&snRow)
+
+			if snRow.Id == 0 {
+				snRow.HostId = hostInstance.Id
+				snRow.Key = key
+				snRow.Value = val
+				e.Orm.Create(&snRow)
+			} else {
+				e.Orm.Model(&models2.HostSoftware{}).Where("id = ?", snRow.Id).Updates(map[string]interface{}{
+					"value":   val,
+					"host_id": hostInstance.Id,
+				})
+			}
 		}
 	}
 	for _, softWare := range req.ExtendMap {
@@ -416,11 +433,19 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 		e.Orm.Model(&models2.HostSoftware{}).Where("host_id = ? and `key`  = ?",
 			hostInstance.Id, softWare.Key).First(&softRow)
 
-		softRow.HostId = hostInstance.Id
-		softRow.Key = softWare.Key
-		softRow.Value = softWare.Value
-		softRow.Desc = softWare.Desc
-		e.Orm.Save(&softRow)
+		if softRow.Id == 0 {
+			softRow.HostId = hostInstance.Id
+			softRow.Key = softWare.Key
+			softRow.Value = softWare.Value
+			softRow.Desc = softWare.Desc
+			e.Orm.Create(&softRow)
+		} else {
+			e.Orm.Model(&models2.HostSoftware{}).Where("id = ?", softRow.Id).Updates(map[string]interface{}{
+				"value":   softWare.Value,
+				"desc":    softWare.Desc,
+				"host_id": hostInstance.Id,
+			})
+		}
 
 	}
 	c.JSON(200, map[string]interface{}{

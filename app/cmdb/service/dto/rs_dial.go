@@ -18,6 +18,7 @@ type RsDialGetPageReq struct {
 	BroadbandType    int    `form:"broadbandType"  search:"type:exact;column:broadband_type;table:rs_dial" comment:"带宽类型,broadband_type"`
 	IsManager        int    `form:"isManager"  search:"type:exact;column:is_manager;table:rs_dial" comment:"是否管理线"`
 	Ip               string `form:"ip"  search:"type:contains;column:ip;table:rs_dial" comment:"IP地址"`
+	IspId            string `form:"ispId"  search:"type:exact;column:isp_id;table:rs_dial" comment:"运营商"`
 	DialName         string `form:"dialName"  search:"type:contains;column:dial_name;table:rs_dial" comment:"线路名称"`
 	NetworkingStatus string `form:"networkingStatus"  search:"type:exact;column:networking_status;table:rs_dial" comment:"拨号状态,1:已联网 0:未联网 -1:联网异常"`
 	Status           string `form:"status"  search:"type:exact;column:status;table:rs_dial" comment:"拨号状态,1:已拨通 0:待使用 -1:拨号异常"`

@@ -12,7 +12,7 @@ type Host struct {
 	Layer         int          `json:"layer" gorm:"comment:自定义排序"`
 	HealthyAt     sql.NullTime `json:"healthy" gorm:"comment:存活上报时间"`
 	HostName      string       `json:"hostname" gorm:"type:varchar(100);comment:主机名;not null"`
-	Sn            string       `json:"sn" gorm:"type:varchar(100);index;comment:sn"`
+	Sn            string       `json:"sn" gorm:"type:varchar(100);index;unique;comment:sn"`
 	CPU           int          `json:"cpu" gorm:"comment:总核数"`
 	PublicIp      string       `json:"publicIp" gorm:"type:varchar(20);comment:公网IP"`
 	Ip            string       `json:"ip" gorm:"type:varchar(20);comment:ip"`

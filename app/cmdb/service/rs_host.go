@@ -414,6 +414,7 @@ func GetHostBindBusinessMap(orm *gorm.DB, ids []int) map[int][]dto.LabelRow {
 			cache = make([]dto.LabelRow, 0)
 		}
 		cache = append(cache, buDat)
+		fmt.Println("!!!", row.HostId, cache)
 		result[row.HostId] = cache
 
 	}
