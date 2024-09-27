@@ -79,6 +79,8 @@ func (t WatchAssetBindHost) Exec(arg interface{}) error {
 			}
 			updateAssetBindHost[assetId] = v.Id
 		}
+		//需要完善一点就是。如果自动绑定关系,那就是如果这个主机关联了IDC，IDC关联了客户,那这个资产也就是这个客户了。
+		//因为是自动化配比组合，需要自动化关联客户。 因为手动出库的时候 就需要选客户
 		for assetId, hostId := range updateAssetBindHost {
 			d.Model(&models2.AdditionsWarehousing{}).Where("id = ?", assetId).Updates(map[string]interface{}{
 				"host_id": hostId,
