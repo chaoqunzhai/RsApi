@@ -140,6 +140,7 @@ func (e Combination) GetPage(c *gin.Context) {
 		if !assetOk {
 			assetBindList = make([]models.AdditionsWarehousing, 0)
 		}
+		row.CombinationSN = row.Sn
 		assetBindList = append(assetBindList, row)
 		bindAssetMap[row.CombinationId] = assetBindList
 		StoreRoomIdLists = append(StoreRoomIdLists, row.StoreRoomId)

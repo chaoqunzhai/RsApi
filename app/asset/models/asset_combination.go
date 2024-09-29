@@ -12,7 +12,7 @@ type Combination struct {
 	CustomId   int                    `json:"customId" gorm:"type:bigint;comment:所属客户ID"`
 	HostId     int                    `json:"hostId" gorm:"type:bigint;comment:关联的上线CMDB ID"`
 	Desc       string                 `json:"desc" gorm:"type:varchar(35);comment:描述信息"`
-	Code       string                 `json:"code" gorm:"type:varchar(50);comment:组合编号"`
+	Code       string                 `json:"code" gorm:"type:varchar(50);comment:组合编号 也就是主机的SN"`
 	Status     string                 `json:"status" gorm:"type:int;comment:资产状态"`
 	AssetCount int                    `json:"assetCount" gorm:"-"`
 	Asset      []AdditionsWarehousing `json:"asset" gorm:"-"`

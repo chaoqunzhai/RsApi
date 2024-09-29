@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/go-admin-team/go-admin-core/sdk"
 	models2 "go-admin/cmd/migrate/migration/models"
+	"go-admin/common/utils"
 	"time"
 )
 
@@ -66,18 +67,31 @@ func (t WatchAssetBindHost) Exec(arg interface{}) error {
 			return nil
 		}
 		var HostList []models2.Host
-		d.Model(&models2.Host{}).Select("id,sn").Where("sn in ?", snList).Find(&HostList)
+		d.Model(&models2.Host{}).Select("id,sn,idc").Where("sn in ?", snList).Find(&HostList)
 
 		updateAssetBindHost := make(map[int]int, 0)
 		if len(HostList) == 0 {
 			return nil
 		}
+
+		hostBindIdc := make(map[int]int, 0)
+		idcList := make([]int, 0)
 		for _, v := range HostList {
 			assetId, ok := snBindMap[v.Sn]
 			if !ok {
 				continue
 			}
 			updateAssetBindHost[assetId] = v.Id
+			hostBindIdc[v.Id] = v.Idc
+			idcList = append(idcList, v.Idc)
+		}
+		idcList = utils.RemoveRepeatInt(idcList)
+
+		var IdcListHost []models2.Idc
+		d.Model(&models2.Idc{}).Select("id,custom_id").Where("id in ?", idcList).Find(&IdcListHost)
+		idcBindCustom := make(map[int]int, 0)
+		for _, v := range IdcListHost {
+			idcBindCustom[v.Id] = v.CustomId
 		}
 		//需要完善一点就是。如果自动绑定关系,那就是如果这个主机关联了IDC，IDC关联了客户,那这个资产也就是这个客户了。
 		//因为是自动化配比组合，需要自动化关联客户。 因为手动出库的时候 就需要选客户
@@ -87,8 +101,15 @@ func (t WatchAssetBindHost) Exec(arg interface{}) error {
 			})
 
 			if CombinedId, ok := assetBindCombinedMap[assetId]; ok {
+
+				hostIdcId := hostBindIdc[assetId]
+
+				CustomId := idcBindCustom[hostIdcId]
 				d.Model(&models2.Combination{}).Where("id = ?", CombinedId).Updates(map[string]interface{}{
-					"host_id": hostId,
+					"host_id":   hostId,
+					"status":    3,
+					"idc_id":    hostIdcId,
+					"custom_id": CustomId,
 				})
 			}
 		}
