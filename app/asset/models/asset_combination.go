@@ -18,7 +18,7 @@ type Combination struct {
 	Asset      []AdditionsWarehousing `json:"asset" gorm:"-"`
 	Price      float64                `json:"price" gorm:"-"`
 	RegionInfo interface{}            `json:"regionInfo" gorm:"-"`
-	CustomInfo interface{}            `json:"customInfo" gorm:"-"`
+	//CustomInfo interface{}            `json:"customInfo" gorm:"-"`
 	models.ModelTime
 	models.ControlBy
 }

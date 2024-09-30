@@ -21,6 +21,7 @@ func (m *AdditionsOrderGetPageReq) GetNeedSearch() interface{} {
 
 type AdditionsWarehousingGetPageReq struct {
 	dto.Pagination `search:"-"`
+	Id             string `form:"id" search:"type:exact;column:id;table:asset_additions_warehousing"`
 	Search         string `form:"search" search:"-" comment:"搜索SN和编码"`
 	CombinationId  int    `form:"combinationId" search:"type:exact;column:combination_id;table:asset_additions_warehousing" comment:"组合ID"`
 	CategoryId     int64  `form:"categoryId"  search:"-" comment:"关联的资产分类ID"`

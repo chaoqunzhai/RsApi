@@ -88,7 +88,7 @@ func (t WatchAssetBindHost) Exec(arg interface{}) error {
 		idcList = utils.RemoveRepeatInt(idcList)
 
 		var IdcListHost []models2.Idc
-		d.Model(&models2.Idc{}).Select("id,custom_id").Where("id in ?", idcList).Find(&IdcListHost)
+		d.Model(&models2.Idc{}).Where("id in ?", idcList).Find(&IdcListHost)
 		idcBindCustom := make(map[int]int, 0)
 		for _, v := range IdcListHost {
 			idcBindCustom[v.Id] = v.CustomId
@@ -117,6 +117,33 @@ func (t WatchAssetBindHost) Exec(arg interface{}) error {
 				})
 
 			}
+		}
+
+	}
+
+	for _, d := range dbList {
+		var CombinationList []models2.Combination
+		d.Model(&models2.Combination{}).Where("idc_id > 0 and custom_id  = 0 ").Find(&CombinationList)
+
+		idcList := make([]int, 0)
+		CombinationBindIdc := make(map[int]int, 0)
+		for _, row := range CombinationList {
+			idcList = append(idcList, row.IdcId)
+			CombinationBindIdc[row.IdcId] = row.Id
+		}
+		idcList = utils.RemoveRepeatInt(idcList)
+
+		var IdcListHost []models2.Idc
+		d.Model(&models2.Idc{}).Where("id in ?", idcList).Find(&IdcListHost)
+
+		for _, v := range IdcListHost {
+			CombinationId, ok := CombinationBindIdc[v.Id]
+			if !ok {
+				continue
+			}
+			d.Model(&models2.Combination{}).Where("id = ?", CombinationId).Updates(map[string]interface{}{
+				"custom_id": v.CustomId,
+			})
 		}
 
 	}

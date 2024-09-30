@@ -8,6 +8,7 @@ import (
 
 type CombinationGetPageReq struct {
 	dto.Pagination `search:"-"`
+	Id             string `form:"id" search:"type:exact;column:id;table:asset_combination"`
 	CustomId       int    `form:"customId" search:"type:exact;column:custom_id;table:asset_combination"`
 	HostId         int    `form:"hostId" search:"type:exact;column:host_id;table:asset_combination"`
 	IdcId          int    `form:"idcId" search:"type:exact;column:idc_id;table:asset_combination"`
