@@ -224,18 +224,18 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 		Time:  time.Now(),
 		Valid: true,
 	}
+	//
+	NewBindBuList := make([]models.RsBusiness, 0)
 	//Business 如果不为空,进行关联
 	if req.Business != "" {
-		bindBuList := make([]models.RsBusiness, 0)
 		for _, row := range strings.Split(req.Business, "-") {
 
 			var buInstance models.RsBusiness
 			e.Orm.Model(&models.RsBusiness{}).Where("en_name = ?", strings.TrimSpace(row)).Limit(1).Find(&buInstance)
 			if buInstance.Id > 0 {
-				bindBuList = append(bindBuList, buInstance)
+				NewBindBuList = append(NewBindBuList, buInstance)
 			}
 		}
-		hostInstance.Business = bindBuList
 	}
 	// 关联机房 例如解析remark=166陕西延安宜川集义郭东机房电信1-1-10(40*100M)  大概截取前10个字符，考虑到后期可能机房数达上万个
 	// 备注不为空 并且 没有关联IDC,那就主动关联
@@ -248,8 +248,11 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 	}
 
 	if hostInstance.Id > 0 {
+		_ = e.Orm.Model(&hostInstance).Association("Business").Clear()
+		hostInstance.Business = NewBindBuList
 		e.Orm.Save(&hostInstance)
 	} else {
+		hostInstance.Business = NewBindBuList
 		e.Orm.Create(&hostInstance)
 	}
 

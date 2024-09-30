@@ -52,11 +52,11 @@ func (e *RsContract) GetId() interface{} {
 func (e *RsContract) AfterFind(tx *gorm.DB) (err error) {
 
 	if e.StartTime.Valid {
-		e.StartTimeAt = e.StartTime.Time.Format("2006-01-02 15:04:05")
+		e.StartTimeAt = e.StartTime.Time.Format("2006-01-02")
 
 	}
 	if e.EndTime.Valid {
-		e.EndTimeAt = e.EndTime.Time.Format("2006-01-02 15:04:05")
+		e.EndTimeAt = e.EndTime.Time.Format("2006-01-02")
 
 	}
 	var BandwidthFees []RsBandwidthFees

@@ -157,7 +157,7 @@ func (s *RsContractInsertReq) Generate(model *models.RsContract) {
 	model.SettlementType = s.SettlementType
 
 	if s.StartTimeAt != "" {
-		if star, err := time.ParseInLocation(time.DateTime, s.StartTimeAt, global.LOC); err == nil {
+		if star, err := time.ParseInLocation(time.DateOnly, s.StartTimeAt, global.LOC); err == nil {
 			model.StartTime = sql.NullTime{
 				Time:  star,
 				Valid: true,
@@ -169,7 +169,7 @@ func (s *RsContractInsertReq) Generate(model *models.RsContract) {
 	}
 
 	if s.EndTimeAt != "" {
-		if end, err := time.ParseInLocation(time.DateTime, s.EndTimeAt, global.LOC); err == nil {
+		if end, err := time.ParseInLocation(time.DateOnly, s.EndTimeAt, global.LOC); err == nil {
 			model.EndTime = sql.NullTime{
 				Time:  end,
 				Valid: true,
@@ -230,7 +230,7 @@ func (s *RsContractUpdateReq) Generate(model *models.RsContract) {
 	model.SettlementType = s.SettlementType
 
 	if s.StartTimeAt != "" {
-		if star, err := time.ParseInLocation(time.DateTime, s.StartTimeAt, global.LOC); err == nil {
+		if star, err := time.ParseInLocation(time.DateOnly, s.StartTimeAt, global.LOC); err == nil {
 			model.StartTime = sql.NullTime{
 				Time:  star,
 				Valid: true,
@@ -242,7 +242,7 @@ func (s *RsContractUpdateReq) Generate(model *models.RsContract) {
 	}
 
 	if s.EndTimeAt != "" {
-		if end, err := time.ParseInLocation(time.DateTime, s.EndTimeAt, global.LOC); err == nil {
+		if end, err := time.ParseInLocation(time.DateOnly, s.EndTimeAt, global.LOC); err == nil {
 			model.EndTime = sql.NullTime{
 				Time:  end,
 				Valid: true,
