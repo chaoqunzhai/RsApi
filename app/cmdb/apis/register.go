@@ -184,7 +184,7 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 	hostInstance.Belong = req.Belong
 	hostInstance.Sn = SN
 	hostInstance.HostName = HOSTNAME
-	//hostInstance.Ip = req.Ip
+	hostInstance.Ip = req.Ip
 
 	if req.NetType > 0 { //只有非0是才会进行保存
 		hostInstance.NetworkType = req.NetType
@@ -192,7 +192,7 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 	hostInstance.Mac = req.Mac
 	hostInstance.Mask = req.Mask
 	hostInstance.Gateway = req.Gateway
-	//hostInstance.PublicIp = req.PublicIp
+	hostInstance.PublicIp = req.PublicIp
 	hostInstance.Cpu = req.CPU
 	//hostInstance.Kernel = req.Kernel
 	hostInstance.RemotePort = req.RemotePort
@@ -235,9 +235,7 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 				bindBuList = append(bindBuList, buInstance)
 			}
 		}
-		if len(bindBuList) > 0 {
-			hostInstance.Business = bindBuList
-		}
+		hostInstance.Business = bindBuList
 	}
 	// 关联机房 例如解析remark=166陕西延安宜川集义郭东机房电信1-1-10(40*100M)  大概截取前10个字符，考虑到后期可能机房数达上万个
 	// 备注不为空 并且 没有关联IDC,那就主动关联

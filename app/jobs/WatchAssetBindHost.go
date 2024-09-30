@@ -98,19 +98,24 @@ func (t WatchAssetBindHost) Exec(arg interface{}) error {
 		for assetId, hostId := range updateAssetBindHost {
 			d.Model(&models2.AdditionsWarehousing{}).Where("id = ?", assetId).Updates(map[string]interface{}{
 				"host_id": hostId,
+				"status":  3,
 			})
 
 			if CombinedId, ok := assetBindCombinedMap[assetId]; ok {
 
-				hostIdcId := hostBindIdc[assetId]
+				hostIdcId := hostBindIdc[hostId] //拿主机Id获取关联的IDC
 
-				CustomId := idcBindCustom[hostIdcId]
+				CustomId := idcBindCustom[hostIdcId] //idcID 获取关联的客户
 				d.Model(&models2.Combination{}).Where("id = ?", CombinedId).Updates(map[string]interface{}{
 					"host_id":   hostId,
 					"status":    3,
 					"idc_id":    hostIdcId,
 					"custom_id": CustomId,
 				})
+				d.Model(&models2.AdditionsWarehousing{}).Where("combination_id = ?", CombinedId).Updates(map[string]interface{}{
+					"host_id": hostId,
+				})
+
 			}
 		}
 

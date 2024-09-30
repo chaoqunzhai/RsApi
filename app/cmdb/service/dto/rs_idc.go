@@ -130,6 +130,8 @@ func (s *RsIdcUpdateReq) Generate(model *models.RsIdc) {
 	model.WebHookUrl = s.WebHookUrl
 	model.Status = s.Status
 	model.Belong = s.Belong
+	model.TransProvince = s.TransProvince
+	model.MoreDialing = s.MoreDialing
 }
 
 func (s *RsIdcUpdateReq) GetId() interface{} {

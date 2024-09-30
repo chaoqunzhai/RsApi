@@ -266,7 +266,7 @@ func (e Combination) AutoInsert(c *gin.Context) {
 	//主机SN如果 不存在,就创建这么一个组合, 如果存在 不进行操作
 	CombinationRow := models.Combination{
 		Code:   req.Sn,
-		Status: "1",
+		Status: "3",
 	}
 	e.Orm.Create(&CombinationRow)
 	//创建对应的服务器资产
@@ -279,6 +279,7 @@ func (e Combination) AutoInsert(c *gin.Context) {
 		Name:          "服务器",
 		Spec:          req.Spec,
 		Brand:         req.Brand,
+		Status:        3,
 	}
 	e.Orm.Create(&hostRow)
 	e.Orm.Model(&models.AdditionsWarehousing{}).Where("id = ?", hostRow.Id).Updates(map[string]interface{}{
@@ -287,6 +288,13 @@ func (e Combination) AutoInsert(c *gin.Context) {
 
 	//创建对应的磁盘资产
 	for _, row := range req.DiskSn {
+		Status := row.Status
+		if row.Status == 1 { //因为自动注册时,磁盘正常状态就是1,如果异常就是0. 因为是自动注册 在入库逻辑 那默认就是在线的
+			Status = 3
+		}
+		if strings.HasPrefix(row.Size, "0B") {
+			continue
+		}
 		assetRow := models.AdditionsWarehousing{
 			Sn:            row.Sn,
 			Code:          row.Sn,
@@ -294,7 +302,7 @@ func (e Combination) AutoInsert(c *gin.Context) {
 			CombinationId: CombinationRow.Id,
 			Name:          row.Name,
 			Spec:          row.Size,
-			Status:        row.Status,
+			Status:        Status,
 			UnitId:        2,
 		}
 		e.Orm.Create(&assetRow)
@@ -311,7 +319,7 @@ func (e Combination) AutoInsert(c *gin.Context) {
 			CombinationId: CombinationRow.Id,
 			Name:          "内存条",
 			Spec:          size,
-			Status:        1,
+			Status:        3,
 			UnitId:        2,
 		}
 		e.Orm.Create(&assetRow)
