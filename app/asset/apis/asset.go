@@ -194,6 +194,12 @@ func (e AdditionsWarehousing) Get(c *gin.Context) {
 		return
 	}
 
+	object.CombinationSN = func() string {
+
+		var com models.Combination
+		e.Orm.Model(&com).Where("id = ?", object.CombinationId).Limit(1).Find(&com)
+		return com.Code
+	}()
 	e.OK(object, "查询成功")
 }
 
