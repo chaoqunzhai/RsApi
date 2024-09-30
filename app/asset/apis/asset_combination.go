@@ -4,6 +4,7 @@ import (
 	"fmt"
 	models2 "go-admin/cmd/migrate/migration/models"
 	"go-admin/common/utils"
+	"go-admin/global"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -257,22 +258,31 @@ func (e Combination) AutoInsert(c *gin.Context) {
 		return
 	}
 
+	var SearchSn string
+	//SN是否为一个 黑名单.如果是 用主机名做唯一性校验
+	isDirty := global.BlackMap[req.Sn]
+	if isDirty {
+		SearchSn = req.Hostname
+	} else {
+		SearchSn = req.Sn
+	}
+
 	var count int64
-	e.Orm.Model(&models.Combination{}).Where("code = ?", req.Sn).Count(&count)
+	e.Orm.Model(&models.Combination{}).Where("code = ?", SearchSn).Count(&count)
 	if count > 0 {
 		e.OK("", "successful")
 		return
 	}
 	//主机SN如果 不存在,就创建这么一个组合, 如果存在 不进行操作
 	CombinationRow := models.Combination{
-		Code:   req.Sn,
+		Code:   SearchSn,
 		Status: "3",
 	}
 	e.Orm.Create(&CombinationRow)
 	//创建对应的服务器资产
 
 	hostRow := models.AdditionsWarehousing{
-		Code:          req.Sn,
+		Code:          SearchSn,
 		Sn:            req.Sn,
 		CategoryId:    1,
 		CombinationId: CombinationRow.Id,

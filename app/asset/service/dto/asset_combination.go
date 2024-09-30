@@ -36,6 +36,7 @@ func (m *CombinationGetPageReq) GetNeedSearch() interface{} {
 
 type CombinationAutoReq struct {
 	Sn       string            `json:"sn"`
+	Hostname string            `json:"hostname"`
 	Brand    string            `json:"brand"`
 	Spec     string            `json:"spec"`
 	DiskSn   []AutoDisk        `json:"diskSn" comment:"磁盘SN"`

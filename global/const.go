@@ -22,3 +22,9 @@ var (
 		4: "其他",
 	}
 )
+
+// 黑名单的SN， 因为有些SN都是一样的，只能通过主机名来确定唯一性
+var BlackMap = map[string]bool{
+	"01234567890123456789AB": true,
+	"Default string":         true,
+}

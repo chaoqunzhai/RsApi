@@ -64,14 +64,14 @@ func (t WatchAssetBindHost) Exec(arg interface{}) error {
 			}
 		}
 		if len(snList) == 0 {
-			return nil
+			continue
 		}
 		var HostList []models2.Host
 		d.Model(&models2.Host{}).Select("id,sn,idc").Where("sn in ?", snList).Find(&HostList)
 
 		updateAssetBindHost := make(map[int]int, 0)
 		if len(HostList) == 0 {
-			return nil
+			continue
 		}
 
 		hostBindIdc := make(map[int]int, 0)
@@ -139,6 +139,9 @@ func (t WatchAssetBindHost) Exec(arg interface{}) error {
 		for _, v := range IdcListHost {
 			CombinationId, ok := CombinationBindIdc[v.Id]
 			if !ok {
+				continue
+			}
+			if v.CustomId == 0 {
 				continue
 			}
 			d.Model(&models2.Combination{}).Where("id = ?", CombinationId).Updates(map[string]interface{}{

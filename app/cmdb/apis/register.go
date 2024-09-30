@@ -36,12 +36,6 @@ var ispList = []string{
 	"移动",
 }
 
-// 黑名单的SN， 因为有些SN都是一样的，只能通过主机名来确定唯一性
-var blackMap = map[string]bool{
-	"01234567890123456789AB": true,
-	"Default string":         true,
-}
-
 func RemoveBracketContent(s string) string {
 	var builder strings.Builder
 	skip := false
@@ -172,7 +166,7 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 	SN := strings.TrimSpace(req.Sn)
 	HOSTNAME := strings.TrimSpace(req.Hostname)
 	//SN是否为一个 黑名单.如果是 用主机名做唯一性校验
-	isDirty := blackMap[SN]
+	isDirty := global.BlackMap[SN]
 	if isDirty {
 		e.Orm.Model(&hostInstance).Where("host_name = ?", HOSTNAME).First(&hostInstance)
 	} else {
