@@ -2,16 +2,14 @@ package apis
 
 import (
 	"fmt"
-	models2 "go-admin/cmd/migrate/migration/models"
-	cDto "go-admin/common/dto"
-	"go-admin/common/utils"
-	"strconv"
-	"time"
-
 	"github.com/gin-gonic/gin"
 	"github.com/go-admin-team/go-admin-core/sdk/api"
 	"github.com/go-admin-team/go-admin-core/sdk/pkg/jwtauth/user"
 	_ "github.com/go-admin-team/go-admin-core/sdk/pkg/response"
+	models2 "go-admin/cmd/migrate/migration/models"
+	cDto "go-admin/common/dto"
+	"go-admin/common/utils"
+	"strconv"
 
 	"go-admin/app/asset/models"
 	"go-admin/app/asset/service"
@@ -158,6 +156,7 @@ func (e AdditionsWarehousing) GetStorePage(c *gin.Context) {
 		} else {
 			v.Asset = make([]interface{}, 0)
 		}
+
 		result = append(result, v)
 	}
 
@@ -266,14 +265,16 @@ func (e AdditionsWarehousing) Insert(c *gin.Context) {
 		return
 	}
 	order := models.AdditionsOrder{
-		OrderId:     fmt.Sprintf("%v", time.Now().Unix()),
 		StoreRoomId: req.StoreRoomId,
 	}
 	order.Desc = req.Desc
 	order.CreateBy = user.GetUserId(c)
 
 	e.Orm.Create(&order)
-
+	Code := fmt.Sprintf("RK%08d", order.Id)
+	e.Orm.Model(&models.AdditionsOrder{}).Where("id = ?", order.Id).Updates(map[string]interface{}{
+		"order_id": Code,
+	})
 	var userModel models2.SysUser
 	e.Orm.Model(&models2.SysUser{}).Where("user_id = ?", order.CreateBy).Limit(1).Find(&userModel)
 
@@ -391,6 +392,13 @@ func (e AdditionsWarehousing) Delete(c *gin.Context) {
 	// req.SetUpdateBy(user.GetUserId(c))
 	p := actions.GetPermissionFromContext(c)
 
+	var count int64
+	e.Orm.Model(&models.AdditionsWarehousing{}).Where("id in ? and status != 1", req.GetId()).Count(&count)
+
+	if count > 0 {
+		e.Error(500, nil, "资产非再库 不可删除！")
+		return
+	}
 	err = s.Remove(&req, p)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("删除AdditionsWarehousing失败，\r\n失败信息 %s", err.Error()))

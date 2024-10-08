@@ -69,14 +69,17 @@ func (e *AssetOutboundOrder) Insert(c *dto.AssetOutboundOrderInsertReq) error {
 
 	c.Generate(&data)
 
-	Code := fmt.Sprintf("RK%08d", data.Id)
-	data.Code = Code
 	err = e.Orm.Create(&data).Error
+
+	Code := fmt.Sprintf("CK%08d", data.Id)
 	if err != nil {
 		e.Log.Errorf("AssetOutboundOrderService Insert error:%s \r\n", err)
 		return err
 	}
 
+	e.Orm.Model(&models.AssetOutboundOrder{}).Where("id = ?", data.Id).Updates(map[string]interface{}{
+		"code": Code,
+	})
 	//查询关联的值, 以下资产必须是在库的
 	//查询到combination 的组合
 	recordingIds := make([]int, 0)

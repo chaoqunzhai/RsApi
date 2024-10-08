@@ -83,6 +83,19 @@ func (e *RsHost) GetPage(c *dto.RsHostGetPageReq, p *actions.DataPermission, lis
 		orm = orm.Where("idc in (?)", cache)
 
 	}
+
+	if c.BusinessSn != "" {
+
+		var hostSoftware []models2.HostSoftware
+		e.Orm.Model(&models2.HostSoftware{}).Select("host_id").Where(" `key` LIKE 'sn\\_%' AND `value` like ?",
+			fmt.Sprintf("%%%v%%", c.BusinessSn)).Find(&hostSoftware)
+
+		var cache []int
+		for _, host := range hostSoftware {
+			cache = append(cache, host.HostId)
+		}
+		orm = orm.Where("id in (?)", cache)
+	}
 	err = orm.Scopes(
 		cDto.MakeCondition(c.GetNeedSearch()),
 		cDto.Paginate(c.GetPageSize(), c.GetPageIndex()),
@@ -414,7 +427,7 @@ func GetHostBindBusinessMap(orm *gorm.DB, ids []int) map[int][]dto.LabelRow {
 			cache = make([]dto.LabelRow, 0)
 		}
 		cache = append(cache, buDat)
-		fmt.Println("!!!", row.HostId, cache)
+
 		result[row.HostId] = cache
 
 	}

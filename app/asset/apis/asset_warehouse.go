@@ -184,6 +184,12 @@ func (e AssetWarehouse) Delete(c *gin.Context) {
 	// req.SetUpdateBy(user.GetUserId(c))
 	p := actions.GetPermissionFromContext(c)
 
+	var count int64
+	e.Orm.Model(&models.AdditionsWarehousing{}).Where("store_room_id in ?", req.GetId()).Count(&count)
+	if count > 0 {
+		e.Error(500, nil, "已有资产关联 不可删除 ！")
+		return
+	}
 	err = s.Remove(&req, p)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("删除资产库房失败，\r\n失败信息 %s", err.Error()))

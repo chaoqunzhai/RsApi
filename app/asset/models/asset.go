@@ -9,7 +9,7 @@ import (
 
 type AdditionsOrder struct {
 	models.Model
-	models.ModelTime
+	models.ModelDayTime
 	CreateBy    int         `json:"createBy" gorm:"index;comment:创建者"`
 	UpdateBy    int         `json:"updateBy" gorm:"index;comment:更新者"`
 	OrderId     string      `json:"orderId" gorm:"type:varchar(50);index;comment:关联的入库单号"`

@@ -97,7 +97,7 @@ type RsHostGetPageReq struct {
 	Remark         string `form:"remark"  search:"type:contains;column:remark;table:rs_host" comment:"备注"`
 	Isp            string `form:"isp"  search:"type:exact;column:isp;table:rs_host" comment:"运营商"`
 	Status         string `form:"status"  search:"type:exact;column:status;table:rs_host" comment:"主机状态"`
-	BusinessSn     string `form:"businessSn"  search:"type:contains;column:business_sn;table:rs_host" comment:"业务SN"`
+	BusinessSn     string `form:"businessSn"  search:"-" comment:"业务SN"`
 	TransProvince  int    `form:"transProvince" search:"type:exact;column:trans_province;table:rs_host" comment:"是否跨省"`
 	RsHostOrder
 }

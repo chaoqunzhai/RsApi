@@ -8,7 +8,7 @@ import (
 
 type AssetWarehouseGetPageReq struct {
 	dto.Pagination  `search:"-"`
-	WarehouseName   string `form:"warehouseName"  search:"type:exact;column:warehouse_name;table:asset_warehouse" comment:"库房名称"`
+	WarehouseName   string `form:"warehouseName"  search:"type:contains;column:warehouse_name;table:asset_warehouse" comment:"库房名称"`
 	AdministratorId string `form:"administratorId"  search:"type:exact;column:administrator_id;table:asset_warehouse" comment:"管理员编码"`
 	AssetWarehouseOrder
 }

@@ -13,6 +13,7 @@ type AdditionsOrderGetPageReq struct {
 	Name           string `form:"name"  search:"-" comment:"资产名称"`
 	StartTime      string `form:"startTime"  search:"type:gte;column:created_at;table:asset_additions_order" comment:"入库开始时间"`
 	EndTime        string `form:"endTime"  search:"type:lte;column:created_at;table:asset_additions_order" comment:"入库结束时间"`
+	Id             string `form:"idOrder"  search:"type:order;column:id;table:asset_additions_order"`
 }
 
 func (m *AdditionsOrderGetPageReq) GetNeedSearch() interface{} {
@@ -103,20 +104,21 @@ func (s *AdditionsWarehousingInsertReq) Generate(model *models.AdditionsWarehous
 }
 
 type AdditionsWarehousingUpdateReq struct {
-	Id         int     `json:"id" comment:"主键编码"` // 主键编码
-	PurchaseAt string  `json:"purchaseAt" comment:"采购日期"`
-	ExpireAt   string  `json:"expireAt" comment:"维保到期日"`
-	CategoryId int64   `json:"categoryId" comment:"关联的资产分类ID"`
-	SupplierId int64   `json:"supplierId" comment:"供应商ID"`
-	WId        int64   `json:"wId" comment:"关联的入库单号"`
-	Name       string  `json:"name" comment:"资产名称"`
-	Spec       string  `json:"spec" comment:"规格型号"`
-	Brand      string  `json:"brand" comment:"品牌名称"`
-	Sn         string  `json:"sn" comment:"资产SN"`
-	UnitId     int64   `json:"unitId" comment:"单位"`
-	Price      float64 `json:"price" comment:"价格"`
-	UserId     int64   `json:"userId" comment:"采购人员ID"`
-	Desc       string  `json:"desc" comment:"备注"`
+	Id          int     `json:"id" comment:"主键编码"` // 主键编码
+	PurchaseAt  string  `json:"purchaseAt" comment:"采购日期"`
+	ExpireAt    string  `json:"expireAt" comment:"维保到期日"`
+	CategoryId  int64   `json:"categoryId" comment:"关联的资产分类ID"`
+	SupplierId  int64   `json:"supplierId" comment:"供应商ID"`
+	StoreRoomId int     `json:"storeRoomId"`
+	WId         int64   `json:"wId" comment:"关联的入库单号"`
+	Name        string  `json:"name" comment:"资产名称"`
+	Spec        string  `json:"spec" comment:"规格型号"`
+	Brand       string  `json:"brand" comment:"品牌名称"`
+	Sn          string  `json:"sn" comment:"资产SN"`
+	UnitId      int64   `json:"unitId" comment:"单位"`
+	Price       float64 `json:"price" comment:"价格"`
+	UserId      int64   `json:"userId" comment:"采购人员ID"`
+	Desc        string  `json:"desc" comment:"备注"`
 	common.ControlBy
 }
 
@@ -128,6 +130,7 @@ func (s *AdditionsWarehousingUpdateReq) Generate(model *models.AdditionsWarehous
 	model.CategoryId = s.CategoryId
 	model.SupplierId = s.SupplierId
 	model.WId = s.WId
+	model.StoreRoomId = s.StoreRoomId
 	model.Name = s.Name
 	model.Spec = s.Spec
 	model.Brand = s.Brand

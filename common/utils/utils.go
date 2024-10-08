@@ -283,10 +283,13 @@ func Percentile(N []float64, P float64) float64 {
 	return N[i-1]
 }
 
-func RoundDecimal(value interface{}) decimal.Decimal {
+func RoundDecimal(value interface{}) float64 {
 	toStr := fmt.Sprintf("%v", value)
-	amount3, _ := decimal.NewFromString(toStr) //0.8
-	return amount3.Round(2)                    //0.80
+	amount3, _ := decimal.NewFromString(toStr)
+	amount3 = amount3.Round(2) //0.8
+	amountFloat, _ := amount3.Float64()
+
+	return amountFloat //0.80
 }
 
 // 处理精度问题

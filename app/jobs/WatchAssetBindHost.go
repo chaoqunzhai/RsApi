@@ -150,5 +150,34 @@ func (t WatchAssetBindHost) Exec(arg interface{}) error {
 		}
 
 	}
+
+	for _, d := range dbList {
+		var CombinationList []models2.Combination
+		d.Model(&models2.Combination{}).Select("code,id").Where("host_id = 0 OR host_id IS  NULL ").Find(&CombinationList)
+
+		for _, v := range CombinationList {
+
+			//先查hostname,因为有的机器SN一样,那就用hostName来做sn
+			var host models2.Host
+			d.Model(&host).Where("host_name = ?", v.Code).Limit(1).Find(&host)
+			if host.Id > 0 {
+				d.Model(&models2.Combination{}).Where("id = ?", v.Id).Updates(map[string]interface{}{
+					"host_id": host.Id,
+				})
+				continue
+			}
+
+			//sn查一下
+			var snHost models2.Host
+			d.Model(&snHost).Where("sn = ?", v.Code).Limit(1).Find(&snHost)
+			if snHost.Id > 0 {
+				d.Model(&models2.Combination{}).Where("id = ?", v.Id).Updates(map[string]interface{}{
+					"host_id": snHost.Id,
+				})
+				continue
+			}
+
+		}
+	}
 	return nil
 }

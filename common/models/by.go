@@ -39,6 +39,12 @@ type ModelTime struct {
 	DeletedAt gorm.DeletedAt `json:"-" gorm:"index;comment:删除时间"`
 }
 
+type ModelDayTime struct {
+	CreatedAt DayXTime       `json:"createdAt" gorm:"comment:创建时间"`
+	UpdatedAt DayXTime       `json:"updatedAt" gorm:"comment:最后更新时间"`
+	DeletedAt gorm.DeletedAt `json:"-" gorm:"index;comment:删除时间"`
+}
+
 type XTime struct {
 	time.Time
 }
@@ -61,6 +67,33 @@ func (t *XTime) Scan(v interface{}) error {
 	value, ok := v.(time.Time)
 	if ok {
 		*t = XTime{Time: value}
+		return nil
+	}
+	return fmt.Errorf("can not convert %v to timestamp", v)
+}
+
+type DayXTime struct {
+	time.Time
+}
+
+func (t DayXTime) MarshalJSON() ([]byte, error) {
+	output := fmt.Sprintf("\"%s\"", t.Format("2006-01-02"))
+	return []byte(output), nil
+
+}
+
+func (t DayXTime) Value() (driver.Value, error) {
+	var zeroTime time.Time
+	if t.Time.UnixNano() == zeroTime.UnixNano() {
+		return nil, nil
+	}
+	return t.Time, nil
+}
+
+func (t *DayXTime) Scan(v interface{}) error {
+	value, ok := v.(time.Time)
+	if ok {
+		*t = DayXTime{Time: value}
 		return nil
 	}
 	return fmt.Errorf("can not convert %v to timestamp", v)

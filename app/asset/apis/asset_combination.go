@@ -153,7 +153,8 @@ func (e Combination) GetPage(c *gin.Context) {
 		}
 		bindCount += 1
 		bindPrice += row.Price
-		bindPriceMap[row.CombinationId] = bindPrice
+		bindPriceMap[row.CombinationId] = utils.RoundDecimal(bindPrice)
+
 		bindMap[row.CombinationId] = bindCount
 	}
 
@@ -571,6 +572,10 @@ func (e Combination) Delete(c *gin.Context) {
 		}
 	}
 
+	if len(newIds) == 0 {
+		e.Error(500, nil, "在线状态不可删除")
+		return
+	}
 	err = s.Remove(newIds, p)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("删除Combination失败，\r\n失败信息 %s", err.Error()))
