@@ -26,13 +26,19 @@ func (e *RsHost) GetPage(c *dto.RsHostGetPageReq, p *actions.DataPermission, lis
 
 	orm := e.Orm.Model(&data)
 	if c.IdcName != "" {
-		var idcList []models.RsIdc
-		e.Orm.Model(&models.RsIdc{}).Select("id").Where("name like ?", fmt.Sprintf("%%%v%%", c.IdcName)).Find(&idcList)
-		var cache []int
-		for _, idc := range idcList {
-			cache = append(cache, idc.Id)
+
+		if c.IdcName == "empty" {
+			orm = orm.Where("idc = 0 OR idc IS  NULL")
+		} else {
+			var idcList []models.RsIdc
+			e.Orm.Model(&models.RsIdc{}).Select("id").Where("name like ?", fmt.Sprintf("%%%v%%", c.IdcName)).Find(&idcList)
+			var cache []int
+			for _, idc := range idcList {
+				cache = append(cache, idc.Id)
+			}
+			orm = orm.Where("idc in (?)", cache)
 		}
-		orm = orm.Where("idc in (?)", cache)
+
 	}
 
 	if c.IdcNumber != "" {
