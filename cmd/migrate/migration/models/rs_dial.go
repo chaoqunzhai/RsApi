@@ -21,7 +21,7 @@ type Dial struct {
 	NetworkingStatus int          `json:"networkingStatus" gorm:"default:2;type:int;comment:拨号状态,1:已联网 2:待使用 -1:联网异常"`
 	Status           int          `json:"status" gorm:"default:2;type:int;comment:拨号状态,1:已拨通 2:待使用 -1:拨号异常"`
 	Source           int          `json:"source" gorm:"type:int(1);default:0;comment:拨号状态,0:录入 1:自动上报"`
-	IspId            int          `json:"ispId"  gorm:"type:int(1);default:0;comment:关联合同下的账号的运营商ID"`
+	IspId            int          `json:"ispId"  gorm:"type:int(1);default:0;comment:运营商"`
 	IdcId            int          `json:"idcId" gorm:"index;comment:关联的IDC"`
 	HostId           int          `json:"hostId" gorm:"index;comment:关联主机ID"`
 	DeviceId         int          `json:"deviceId" gorm:"index;comment:关联网卡ID"`

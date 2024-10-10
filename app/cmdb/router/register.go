@@ -18,6 +18,9 @@ func registerHostApiRouter(v1 *gin.RouterGroup) {
 	api := apis.RegisterApi{}
 	r := v1.Group("/register")
 	{
+		//node_exporter注册的
 		r.POST("/healthy", api.Healthy)
+		//七牛api获取的
+		r.POST("/niulink", api.NiuLink)
 	}
 }

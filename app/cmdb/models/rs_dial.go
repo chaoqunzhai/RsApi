@@ -31,7 +31,7 @@ type RsDial struct {
 	DeviceId         int                    `json:"deviceId" gorm:"type:bigint;comment:关联网卡ID"`
 	RunTime          sql.NullTime           `json:"-" gorm:"type:datetime(3);comment:RunTime"`
 	RunTimeAt        string                 `json:"runTimeAt" gorm:"-"`
-	IspId            int                    `json:"ispId"  gorm:"type:int(1);default:0;comment:关联合同下的账号的运营商ID"`
+	IspId            int                    `json:"ispId"  gorm:"type:int(1);default:0;comment:运营商"`
 	IspName          string                 `json:"ispName" gorm:"-"`
 	IdcInfo          interface{}            `json:"idcInfo" gorm:"-"`
 	HostInfo         map[string]interface{} `json:"hostInfo" gorm:"-"`

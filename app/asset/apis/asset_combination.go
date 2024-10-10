@@ -317,9 +317,9 @@ func (e Combination) AutoInsert(c *gin.Context) {
 			UnitId:        2,
 		}
 		e.Orm.Create(&assetRow)
-		e.Orm.Model(&models.AdditionsWarehousing{}).Where("id = ?", assetRow.Id).Updates(map[string]interface{}{
-			"code": fmt.Sprintf("ZC%08d", assetRow.Id),
-		})
+		//e.Orm.Model(&models.AdditionsWarehousing{}).Where("id = ?", assetRow.Id).Updates(map[string]interface{}{
+		//	"code": fmt.Sprintf("ZC%08d", assetRow.Id),
+		//})
 	}
 	//创建对应的内存条
 	for sn, size := range req.MemorySn {

@@ -50,6 +50,8 @@ type HostNetDevice struct {
 	UpdatedAt models.XTime `json:"updatedAt" gorm:"comment:更新时间"`
 	Name      string       `json:"name" gorm:"type:varchar(20);comment:网卡名称"`
 	Status    int          `json:"status" gorm:"type:int(1);default:0;comment:网卡状态,1:正常 非1:异常"`
+	Ip        string       `json:"ip" gorm:"type:varchar(50);comment:ip"`
+	Mac       string       `json:"mac" gorm:"type:varchar(50);comment:mac"`
 }
 
 func (HostNetDevice) TableName() string {

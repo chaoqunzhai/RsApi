@@ -5,6 +5,7 @@ import (
 	"github.com/go-admin-team/go-admin-core/sdk"
 	models2 "go-admin/cmd/migrate/migration/models"
 	"go-admin/common/utils"
+	"go-admin/global"
 	"time"
 )
 
@@ -57,6 +58,11 @@ func (t WatchAssetBindHost) Exec(arg interface{}) error {
 		snBindMap := make(map[string]int, 0)
 		assetBindCombinedMap := make(map[int]int, 0)
 		for _, v := range Warehousing {
+
+			if isDirty := global.BlackMap[v.Sn]; isDirty { //对于有问题的SN直接跳出
+				continue
+			}
+
 			snList = append(snList, v.Sn)
 			snBindMap[v.Sn] = v.Id
 			if v.CombinationId > 0 {
@@ -160,22 +166,35 @@ func (t WatchAssetBindHost) Exec(arg interface{}) error {
 			//先查hostname,因为有的机器SN一样,那就用hostName来做sn
 			var host models2.Host
 			d.Model(&host).Where("host_name = ?", v.Code).Limit(1).Find(&host)
+			updateHostId := 0
 			if host.Id > 0 {
 				d.Model(&models2.Combination{}).Where("id = ?", v.Id).Updates(map[string]interface{}{
 					"host_id": host.Id,
 				})
-				continue
-			}
+				updateHostId = host.Id
 
-			//sn查一下
-			var snHost models2.Host
-			d.Model(&snHost).Where("sn = ?", v.Code).Limit(1).Find(&snHost)
-			if snHost.Id > 0 {
-				d.Model(&models2.Combination{}).Where("id = ?", v.Id).Updates(map[string]interface{}{
-					"host_id": snHost.Id,
-				})
+			} else {
+				//sn查一下
+				var snHost models2.Host
+				d.Model(&snHost).Where("sn = ?", v.Code).Limit(1).Find(&snHost)
+				if snHost.Id > 0 {
+					d.Model(&models2.Combination{}).Where("id = ?", v.Id).Updates(map[string]interface{}{
+						"host_id": snHost.Id,
+					})
+					updateHostId = snHost.Id
+				}
+
+			}
+			if updateHostId == 0 {
 				continue
 			}
+			d.Model(&models2.Combination{}).Where("id = ?", v.Id).Updates(map[string]interface{}{
+				"host_id": updateHostId,
+			})
+
+			d.Model(&models2.AdditionsWarehousing{}).Where("combination_id = ?", v.Id).Updates(map[string]interface{}{
+				"host_id": updateHostId,
+			})
 
 		}
 	}

@@ -310,6 +310,19 @@ func DecimalAdd(n1, n2 float32) float32 {
 
 }
 
+func BytesToG(v int64) string {
+	bytes := uint64(v)
+
+	// 定义每吉字节的字节数
+	const bytesPerGB = uint64(1024 * 1024 * 1024)
+
+	// 执行转换，注意这里我们使用了浮点数除法来得到精确的结果
+	gb := float64(bytes) / float64(bytesPerGB)
+
+	// 打印结果，保留两位小数
+
+	return fmt.Sprintf("%.2f GB\n", gb)
+}
 func ReplacePhone(phone string) (err error, phoneText string) {
 	//str := `13734351278`ReplacePhone
 	pattern := `^(\d{3})(\d{4})(\d{4})$`

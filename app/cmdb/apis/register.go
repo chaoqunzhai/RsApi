@@ -17,6 +17,7 @@ import (
 	models2 "go-admin/cmd/migrate/migration/models"
 	_ "go-admin/common/dial"
 	models3 "go-admin/common/models"
+	"go-admin/common/utils"
 	"go-admin/global"
 	"io/ioutil"
 	"net/http"
@@ -51,7 +52,7 @@ func RemoveBracketContent(s string) string {
 	return builder.String()
 }
 func (e *RegisterApi) InitIdc(req dto.RegisterMetrics) int {
-
+	req.Remark = strings.Replace(req.Remark, ".", "", -1)
 	re := regexp.MustCompile(`\d+`)
 
 	matches := re.FindStringSubmatch(req.Remark[0:8])
@@ -292,6 +293,7 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 				continue
 			}
 			inDbDeviceName := DeviceNameList[0]
+			inDbDeviceName = strings.TrimSpace(inDbDeviceName)
 			e.Orm.Model(&models2.HostNetDevice{}).Where("host_id = ? and `name` = ?",
 				hostInstance.Id, inDbDeviceName).First(&DeviceRow)
 			//如果 DeviceName 有 @ 那就需要特殊处理
@@ -302,7 +304,11 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 				Time: time.Now(),
 			}
 			DeviceRow.Status = status
-			e.Orm.Save(&DeviceRow)
+			if DeviceRow.Id > 0 {
+				e.Orm.Save(&DeviceRow)
+			} else {
+				e.Orm.Create(&DeviceRow)
+			}
 			NetDeviceMap[inDbDeviceName] = DeviceRow.Id
 		}
 
@@ -447,6 +453,319 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 		"code":   200,
 		"hostId": hostInstance.Id,
 		"msg":    "successful",
+	})
+	return
+}
+
+// 七牛的主机上报
+func (e *RegisterApi) NiuLink(c *gin.Context) {
+	req := dto.NiuLinkMetrics{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
+	if ShouldBindBodyWithErr := c.ShouldBindBodyWith(&req, binding.JSON); ShouldBindBodyWithErr != nil {
+		e.Logger.Error(ShouldBindBodyWithErr)
+		body, readErr := ioutil.ReadAll(c.Request.Body)
+		if readErr != nil {
+			e.Error(500, ShouldBindBodyWithErr, ShouldBindBodyWithErr.Error())
+			return
+		}
+		defer func() {
+			_ = c.Request.Body.Close()
+		}()
+		e.Logger.Error(fmt.Sprintf("post Body: %v", string(body)))
+		e.Error(500, ShouldBindBodyWithErr, ShouldBindBodyWithErr.Error())
+		return
+	}
+	registerHeaderKey := c.GetHeader("RsRole")
+
+	if strings.TrimSpace(registerHeaderKey) != "rs-sre" {
+
+		e.Error(http.StatusUnauthorized, nil, "you set Header")
+		return
+	}
+
+	NewBindBuList := make([]models.RsBusiness, 0)
+	//Business 如果不为空,进行关联
+	if req.Business != "" {
+
+		var buInstance models.RsBusiness
+		e.Orm.Model(&models.RsBusiness{}).Where("en_name = ?", strings.TrimSpace(req.Business)).Limit(1).Find(&buInstance)
+		if buInstance.Id > 0 {
+			NewBindBuList = append(NewBindBuList, buInstance)
+		}
+
+	}
+
+	//1:sn为唯一的标识,如果在DB中有数据,并且是在线状态,跳出即可
+	//2:如果在DB中有数据,并且是离线状态,只需要更新状态=在线, 业务=七牛,其他一些拨号的信息
+	//3:如果没有数据,那就创建即可
+	//4:创建或者进行数据更新时,需要增加主机操作记录
+
+	for _, node := range req.Data {
+		var hostInstance models.RsHost
+
+		isDirty := global.BlackMap[node.Sn]
+		if isDirty {
+			e.Orm.Model(&hostInstance).Where("host_name = ?", node.Node).First(&hostInstance)
+		} else {
+			e.Orm.Model(&hostInstance).Where("sn = ?", node.Sn).First(&hostInstance)
+		}
+
+		if hostInstance.Status == 1 {
+			continue //在线不处理
+		}
+
+		var ispNumber int
+		switch strings.TrimSpace(node.Isp) {
+		case "移动":
+			ispNumber = 1
+		case "电信":
+			ispNumber = 2
+		case "联通":
+			ispNumber = 3
+		default:
+			ispNumber = 4
+		}
+		hostInstance.Isp = ispNumber
+		hostInstance.TransProvince = 0
+		hostInstance.HostName = node.Node
+		hostInstance.Status = 1
+		hostInstance.Ip = node.Ip
+		hostInstance.Remark = node.Remark
+		hostInstance.Auth = 0
+		hostInstance.Balance = float64(node.Bandwidth)
+		hostInstance.LineBandwidth = float64(node.Usbw)
+		hostInstance.Sn = node.Sn
+		if node.Remark != "" && len(node.Remark) >= 8 {
+			if idcId := e.InitIdc(node); idcId > 0 {
+				hostInstance.Idc = idcId
+			}
+
+		}
+
+		if hostInstance.Id > 0 {
+			//不在线 就进行数据更新
+			_ = e.Orm.Model(&hostInstance).Association("Business").Clear()
+			hostInstance.Business = NewBindBuList
+			hostInstance.Status = 1
+			e.Orm.Save(&hostInstance)
+		} else {
+			//没有数据 就创建数据
+			hostInstance.Business = NewBindBuList
+			e.Orm.Create(&hostInstance)
+		}
+
+		NetDeviceMap := make(map[string]int, 0)
+		//网卡信息
+		if len(node.QnInterfaces) > 0 {
+
+			for _, NetDevice := range node.QnInterfaces {
+				var (
+					DeviceRow models2.HostNetDevice
+				)
+
+				e.Orm.Model(&models2.HostNetDevice{}).Where("host_id = ? and `name` = ?",
+					hostInstance.Id, NetDevice.NetDevName).First(&DeviceRow)
+				//如果 DeviceName 有 @ 那就需要特殊处理
+
+				DeviceRow.HostId = hostInstance.Id
+				DeviceRow.Name = NetDevice.NetDevName
+				DeviceRow.Ip = NetDevice.Ip
+				DeviceRow.Mac = NetDevice.Mac
+				DeviceRow.UpdatedAt = models3.XTime{
+					Time: time.Now(),
+				}
+				DeviceRow.Status = 1
+				e.Orm.Save(&DeviceRow)
+				NetDeviceMap[NetDevice.NetDevName] = DeviceRow.Id
+			}
+		}
+		//拨号信息
+		for _, dial := range node.QnDial {
+			var bindNetDeviceId int
+			NetDeviceId, NetDeviceOk := NetDeviceMap[dial.NetDevName]
+			if NetDeviceOk {
+				bindNetDeviceId = NetDeviceId
+			} else {
+				//没有那就创建一个
+				HostNetDevice := models2.HostNetDevice{
+					HostId: hostInstance.Id,
+					Name:   dial.NetDevName,
+					Status: 1,
+				}
+				e.Orm.Create(&HostNetDevice)
+				bindNetDeviceId = HostNetDevice.Id
+			}
+
+			for _, dialNode := range dial.DialStatusInfo {
+
+				if dialNode.Account == "" {
+					continue
+				}
+				var (
+					DialRowModel     models.RsDial
+					DialCount        int64
+					networkingStatus int
+					status           int
+					isManager        int
+				)
+				//对于自动上报数据的数据,做一个特定创建,防止 已经创建了这个账号，被自动创建也冲掉
+				e.Orm.Model(&models.RsDial{}).Where("account = ? and source = 1", dialNode.Account).Count(&DialCount)
+				// DialRow.S === 1 已经拨通了,但是是否可以上网 还需要进行检测
+				// DialRow.S === 1 拨号失败了,那联网也是失败的
+
+				if dialNode.DialStatus == "succeed" {
+					networkingStatus = 1
+				}
+				if dialNode.ConnectStatus == "succeed" {
+					status = 1
+				}
+				if dial.Type == "manager" {
+					isManager = 1
+				} else {
+					isManager = 2
+				}
+
+				if DialCount > 0 {
+					updateMap := map[string]interface{}{
+						"host_id":           hostInstance.Id,
+						"idc_id":            hostInstance.Idc,
+						"account":           dialNode.Account,
+						"pass":              dialNode.Password,
+						"status":            status,
+						"is_manager":        isManager,
+						"ip":                dialNode.Ip,
+						"mac":               dialNode.Mac,
+						"source":            1,
+						"dial_name":         fmt.Sprintf("ppp%v", dialNode.AdslNum),
+						"ip_v6":             dialNode.Ipv6,
+						"vlan_id":           dialNode.VlanId,
+						"device_id":         bindNetDeviceId,
+						"networking_status": networkingStatus,
+					}
+
+					e.Orm.Model(&models.RsDial{}).Where("account = ? and source = 1", dialNode.Account).Updates(updateMap)
+				} else {
+
+					DialRowModel.HostId = hostInstance.Id
+					DialRowModel.IdcId = hostInstance.Idc
+					DialRowModel.Account = dialNode.Account
+					DialRowModel.Pass = dialNode.Password
+					DialRowModel.Ip = dialNode.Ip
+					DialRowModel.IspId = 4
+					DialRowModel.IpV6 = dialNode.Ipv6
+					DialRowModel.VlanId = fmt.Sprintf("%v", dialNode.VlanId)
+					DialRowModel.Mac = dialNode.Mac
+					DialRowModel.DialName = fmt.Sprintf("ppp%v", dialNode.AdslNum)
+					DialRowModel.Source = 1
+					DialRowModel.DeviceId = bindNetDeviceId
+					DialRowModel.Status = status
+					DialRowModel.NetworkingStatus = networkingStatus
+
+					e.Orm.Save(&DialRowModel)
+				}
+			}
+
+		}
+
+		//磁盘信息
+		//1:需要放一份在 HostSystem
+		var hostSystem models2.HostSystem
+
+		e.Orm.Model(&models2.HostSystem{}).Where("host_id = ?", hostInstance.Id).First(&hostSystem)
+		var HDDevList []dto.DiskFields
+		for _, diskTodo := range node.QnAssetDisk {
+			//diskTodo.Size = diskTodo.Size * 10
+			fields := dto.DiskFields{
+				Dev:  diskTodo.DiskName,
+				Type: diskTodo.Type,
+				T:    utils.BytesToG(diskTodo.Size),
+				UP:   fmt.Sprintf("%v%%", diskTodo.Usage),
+				U: func() string {
+					nn := (diskTodo.Usage / 100) * float64(diskTodo.Size)
+					return utils.BytesToG(int64(nn))
+				}(),
+			}
+			HDDevList = append(HDDevList, fields)
+		}
+
+		hostSystem.Disk = func() string {
+
+			dat, _ := json.Marshal(HDDevList)
+
+			return string(dat)
+		}()
+		hostSystem.HostId = hostInstance.Id
+
+		if hostSystem.Id > 0 {
+			e.Orm.Save(&hostSystem)
+		} else {
+			e.Orm.Create(&hostSystem)
+		}
+		//2:在资产中 在放一份 需要做一个资产组合
+
+		//制造资产组合
+
+		var SearchSn string
+		//SN是否为一个 黑名单.如果是 用主机名做唯一性校验
+		if isDirty {
+			SearchSn = node.Node
+		} else {
+			SearchSn = node.Sn
+		}
+		var count int64
+		e.Orm.Model(&models2.Combination{}).Where("code = ?", SearchSn).Count(&count)
+		if count > 0 {
+			continue
+		}
+		//主机SN如果 不存在,就创建这么一个组合, 如果存在 不进行操作
+		CombinationRow := models2.Combination{
+			Code:   SearchSn,
+			Status: 3,
+		}
+		e.Orm.Create(&CombinationRow)
+		//创建对应的服务器资产
+
+		hostRow := models2.AdditionsWarehousing{
+			Code:          SearchSn,
+			Sn:            node.Sn,
+			CategoryId:    1,
+			CombinationId: CombinationRow.Id,
+			Name:          "服务器",
+			Status:        3,
+		}
+		e.Orm.Create(&hostRow)
+		e.Orm.Model(&models2.AdditionsWarehousing{}).Where("id = ?", hostRow.Id).Updates(map[string]interface{}{
+			"code": fmt.Sprintf("ZC%08d", hostRow.Id),
+		})
+
+		//创建对应的磁盘资产
+		for _, diskTodo := range node.QnAssetDisk {
+
+			assetRow := models2.AdditionsWarehousing{
+				Sn:            diskTodo.Sn,
+				Code:          diskTodo.Sn,
+				CategoryId:    3,
+				CombinationId: CombinationRow.Id,
+				Name:          diskTodo.DiskName,
+				Spec:          utils.BytesToG(diskTodo.Size), //七牛采集的数据 硬盘的大小这里需要*10
+				Status:        3,
+				UnitId:        2,
+			}
+			e.Orm.Create(&assetRow)
+		}
+
+	}
+
+	c.JSON(200, map[string]interface{}{
+		"code": 200,
+		"msg":  "successful",
 	})
 	return
 }
