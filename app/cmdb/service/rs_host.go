@@ -53,11 +53,19 @@ func (e *RsHost) GetPage(c *dto.RsHostGetPageReq, p *actions.DataPermission, lis
 
 	if c.BusinessId != "" {
 
-		var bindHostId []int
+		if c.BusinessId == "empty" {
+			emptySql := "SELECT id FROM rs_host WHERE NOT EXISTS " +
+				"( SELECT id FROM host_bind_business WHERE host_bind_business.host_id = rs_host.id ) and deleted_at is NULL;"
+			var hostIds []int
+			e.Orm.Raw(emptySql).Scan(&hostIds)
+			orm = orm.Where("id in (?)", hostIds)
+		} else {
+			var bindHostId []int
 
-		e.Orm.Raw(fmt.Sprintf("select host_id from host_bind_business where business_id in (%v)", c.BusinessId)).Scan(&bindHostId)
+			e.Orm.Raw(fmt.Sprintf("select host_id from host_bind_business where business_id in (%v)", c.BusinessId)).Scan(&bindHostId)
 
-		orm = orm.Where("id in (?)", bindHostId)
+			orm = orm.Where("id in (?)", bindHostId)
+		}
 
 		//fmt.Println("查询业务", bindHostId, len(bindHostId))
 	}
