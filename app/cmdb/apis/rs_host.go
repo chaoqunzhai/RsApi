@@ -293,7 +293,7 @@ func (e RsHost) Count(c *gin.Context) {
 	var offlineCount int64
 
 	e.Orm.Model(&models.RsHost{}).Where("healthy_at <= DATE_SUB(NOW(), INTERVAL 30 MINUTE) OR healthy_at IS NULL").Updates(map[string]interface{}{
-		"status": global.HostOffline,
+		"status": global.HostOffline, //30分钟没有上报的就是掉线的
 	}).Count(&offlineCount)
 
 	//自建机房数量
@@ -314,7 +314,7 @@ func (e RsHost) Count(c *gin.Context) {
 
 	var onlineCount int64
 	e.Orm.Model(&models.RsHost{}).Where(" healthy_at >= DATE_SUB(NOW(), INTERVAL 30 MINUTE)").Updates(map[string]interface{}{
-		"status": global.HostSuccess,
+		"status": global.HostSuccess, //30分钟内有上报数据的就是在线的
 	}).Count(&onlineCount)
 
 	var ZjLineCount int64
@@ -458,7 +458,7 @@ func (e RsHost) GetPage(c *gin.Context) {
 			if row.Status == global.HostSuccess {
 
 				if row.HealthyAt.Valid {
-					if int(nowTime.Sub(row.HealthyAt.Time).Minutes()) > 6 { //如果上报的时间大于5分钟 那就删掉线了
+					if int(nowTime.Sub(row.HealthyAt.Time).Minutes()) > 30 { //如果上报的时间大于30分钟 那就删掉线了
 						updateOfflineIds = append(updateOfflineIds, row.Id)
 
 					} else { //在5分钟内

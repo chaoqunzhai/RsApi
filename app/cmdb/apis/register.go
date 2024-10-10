@@ -532,6 +532,10 @@ func (e *RegisterApi) NiuLink(c *gin.Context) {
 		default:
 			ispNumber = 4
 		}
+		hostInstance.HealthyAt = sql.NullTime{
+			Time:  time.Now(),
+			Valid: true,
+		}
 		hostInstance.Isp = ispNumber
 		hostInstance.TransProvince = 0
 		hostInstance.HostName = node.Node
