@@ -6,6 +6,7 @@ import (
 	"go-admin/common/utils"
 	"go-admin/global"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-admin-team/go-admin-core/sdk/api"
@@ -268,34 +269,39 @@ func (e Combination) AutoInsert(c *gin.Context) {
 		SearchSn = req.Sn
 	}
 
-	var count int64
-	e.Orm.Model(&models.Combination{}).Where("code = ?", SearchSn).Count(&count)
-	if count > 0 {
-		e.OK("", "successful")
-		return
-	}
-	//主机SN如果 不存在,就创建这么一个组合, 如果存在 不进行操作
-	CombinationRow := models.Combination{
-		Code:   SearchSn,
-		Status: "3",
-	}
-	e.Orm.Create(&CombinationRow)
-	//创建对应的服务器资产
+	var CombinationModel models.Combination
+	e.Orm.Model(&models.Combination{}).Select("id").Where("code = ?", SearchSn).Limit(1).Find(&CombinationModel)
 
-	hostRow := models.AdditionsWarehousing{
-		Code:          SearchSn,
-		Sn:            req.Sn,
-		CategoryId:    1,
-		CombinationId: CombinationRow.Id,
-		Name:          "服务器",
-		Spec:          req.Spec,
-		Brand:         req.Brand,
-		Status:        3,
+	//主机SN如果 不存在,就创建这么一个组合, 如果存在 不进行操作
+	if CombinationModel.Id == 0 {
+		CombinationModel.Code = SearchSn
+		CombinationModel.Status = "3"
+		e.Orm.Create(&CombinationModel)
 	}
-	e.Orm.Create(&hostRow)
-	e.Orm.Model(&models.AdditionsWarehousing{}).Where("id = ?", hostRow.Id).Updates(map[string]interface{}{
-		"code": fmt.Sprintf("ZC%08d", hostRow.Id),
-	})
+
+	//创建对应的服务器资产
+	var AdditionsWarehousingModel models.AdditionsWarehousing
+	e.Orm.Model(&models.AdditionsWarehousing{}).Where("combination_id = ? and category_id = 1",
+		CombinationModel.Id).Limit(1).Find(&AdditionsWarehousingModel)
+	AdditionsWarehousingModel.Sn = req.Sn
+	AdditionsWarehousingModel.CategoryId = 1
+	AdditionsWarehousingModel.CombinationId = CombinationModel.Id
+	AdditionsWarehousingModel.Spec = req.Spec
+	AdditionsWarehousingModel.Name = "服务器"
+	AdditionsWarehousingModel.Brand = req.Brand
+	AdditionsWarehousingModel.Status = 3
+	if AdditionsWarehousingModel.Id == 0 {
+		e.Orm.Create(&AdditionsWarehousingModel)
+		e.Orm.Model(&models.AdditionsWarehousing{}).Where("id = ?", AdditionsWarehousingModel.Id).Updates(map[string]interface{}{
+			"code": fmt.Sprintf("ZC%08d", AdditionsWarehousingModel.Id),
+		})
+	} else {
+		//设置最新的更新时间
+		e.Orm.Model(&models.Combination{}).Where("id = ?", CombinationModel.Id).Updates(map[string]interface{}{
+			"updated_at": time.Now(),
+		})
+		e.Orm.Save(&AdditionsWarehousingModel)
+	}
 
 	//创建对应的磁盘资产
 	for _, row := range req.DiskSn {
@@ -306,37 +312,48 @@ func (e Combination) AutoInsert(c *gin.Context) {
 		if strings.HasPrefix(row.Size, "0B") {
 			continue
 		}
-		assetRow := models.AdditionsWarehousing{
-			Sn:            row.Sn,
-			Code:          row.Sn,
-			CategoryId:    3,
-			CombinationId: CombinationRow.Id,
-			Name:          row.Name,
-			Spec:          row.Size,
-			Status:        Status,
-			UnitId:        2,
+		var diskRow models.AdditionsWarehousing
+		e.Orm.Model(&models.AdditionsWarehousing{}).Select("id").Where("sn = ?", row.Sn).Limit(1).Find(&diskRow)
+
+		if diskRow.Id == 0 {
+			assetRow := models.AdditionsWarehousing{
+				Sn:            row.Sn,
+				Code:          row.Sn,
+				CategoryId:    3,
+				CombinationId: CombinationModel.Id,
+				Name:          row.Name,
+				Spec:          row.Size,
+				Status:        Status,
+				UnitId:        2,
+			}
+			e.Orm.Create(&assetRow)
+			e.Orm.Model(&models.AdditionsWarehousing{}).Where("id = ?", assetRow.Id).Updates(map[string]interface{}{
+				"code": fmt.Sprintf("ZC%08d", assetRow.Id),
+			})
 		}
-		e.Orm.Create(&assetRow)
-		//e.Orm.Model(&models.AdditionsWarehousing{}).Where("id = ?", assetRow.Id).Updates(map[string]interface{}{
-		//	"code": fmt.Sprintf("ZC%08d", assetRow.Id),
-		//})
+
 	}
 	//创建对应的内存条
 	for sn, size := range req.MemorySn {
-		assetRow := models.AdditionsWarehousing{
-			Code:          sn,
-			Sn:            sn,
-			CategoryId:    2,
-			CombinationId: CombinationRow.Id,
-			Name:          "内存条",
-			Spec:          size,
-			Status:        3,
-			UnitId:        2,
+		var memRow models.AdditionsWarehousing
+		e.Orm.Model(&models.AdditionsWarehousing{}).Select("id").Where("sn = ?", sn).Limit(1).Find(&memRow)
+
+		if memRow.Id == 0 {
+			assetRow := models.AdditionsWarehousing{
+				Code:          sn,
+				Sn:            sn,
+				CategoryId:    2,
+				CombinationId: CombinationModel.Id,
+				Name:          "内存条",
+				Spec:          size,
+				Status:        3,
+				UnitId:        2,
+			}
+			e.Orm.Create(&assetRow)
+			e.Orm.Model(&models.AdditionsWarehousing{}).Where("id = ?", assetRow.Id).Updates(map[string]interface{}{
+				"code": fmt.Sprintf("ZC%08d", assetRow.Id),
+			})
 		}
-		e.Orm.Create(&assetRow)
-		e.Orm.Model(&models.AdditionsWarehousing{}).Where("id = ?", assetRow.Id).Updates(map[string]interface{}{
-			"code": fmt.Sprintf("ZC%08d", assetRow.Id),
-		})
 	}
 
 	e.OK("", "successful")

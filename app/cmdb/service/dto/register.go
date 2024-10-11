@@ -118,3 +118,56 @@ type DiskFields struct {
 	UP   string `json:"up"`
 	Type string `json:"type"`
 }
+
+type DianXinMetrics struct {
+	Business string               `json:"business"`
+	Data     []*DianXinMetricsRow `json:"data"`
+}
+type DianXinMetricsRow struct {
+	Sn         string        `json:"sn"`
+	Remark     string        `json:"remark"`
+	SystemRoot DxSystemRoot  `json:"system_root"`
+	MountDisk  []DxDisk      `json:"mount_disk"`
+	Memory     *DxMemory     `json:"memory"`
+	IspName    string        `json:"ispName"`
+	Province   string        `json:"province"`
+	City       string        `json:"city"`
+	IsProvince string        `json:"isProvince"`
+	Price      *DxPrice      `json:"price"`
+	DialList   []*DxDialList `json:"dial_list"`
+}
+type DxDialList struct {
+	Account  string `json:"account"`
+	Password string `json:"password"`
+	VlanId   string `json:"vlanId"`
+	Name     string `json:"name"`
+	NicMac   string `json:"nicMac"`
+	IfName   string `json:"ifName"`
+	Status   string `json:"status"`
+}
+type DxMemory struct {
+	CpuUsedRate float64 `json:"cpu_used_rate"`
+	MemUsedRate float64 `json:"mem_used_rate"`
+}
+type DxDisk struct {
+	Name  string  `json:"name"`
+	Sn    string  `json:"sn"`
+	Type  string  `json:"type"`
+	Total float64 `json:"total"`
+	Used  float64 `json:"used"`
+	Ug    string  `json:"ug"`
+}
+type DxSystemRoot struct {
+	Total float64 `json:"total"`
+	Used  float64 `json:"used"`
+	Ug    string  `json:"ug"`
+}
+type DxPrice struct {
+	Price           int     `json:"price"`
+	Amount          float64 `json:"amount"`
+	TotalBandwidth  float64 `json:"totalBandwidth"`
+	ResendBandwidth float64 `json:"resendBandwidth"`
+	Bandwidth       float64 `json:"bandwidth"`
+	WorkDate        string  `json:"workDate"`
+	SettleStatus    string  `json:"settleStatus"`
+}

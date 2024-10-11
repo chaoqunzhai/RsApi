@@ -113,9 +113,9 @@ func (t WatchAssetBindHost) Exec(arg interface{}) error {
 
 				CustomId := idcBindCustom[hostIdcId] //idcID 获取关联的客户
 				d.Model(&models2.Combination{}).Where("id = ?", CombinedId).Updates(map[string]interface{}{
-					"host_id":   hostId,
-					"status":    3,
-					"idc_id":    hostIdcId,
+					"host_id": hostId,
+					"status":  3,
+					//"idc_id":    hostIdcId, 因为资产的数据 只是一周上报一次, 但是IDC是随着CMDB资产数据一直在变化 所以是由着下面的
 					"custom_id": CustomId,
 				})
 				d.Model(&models2.AdditionsWarehousing{}).Where("combination_id = ?", CombinedId).Updates(map[string]interface{}{
@@ -129,16 +129,37 @@ func (t WatchAssetBindHost) Exec(arg interface{}) error {
 
 	for _, d := range dbList {
 		var CombinationList []models2.Combination
-		d.Model(&models2.Combination{}).Where("idc_id > 0 and custom_id  = 0 ").Find(&CombinationList)
+		d.Model(&models2.Combination{}).Find(&CombinationList)
 
-		idcList := make([]int, 0)
+		hostIds := make([]int, 0)
+		CombinationBindHost := make(map[int]int, 0)
 		CombinationBindIdc := make(map[int]int, 0)
 		for _, row := range CombinationList {
-			idcList = append(idcList, row.IdcId)
-			CombinationBindIdc[row.IdcId] = row.Id
+			hostIds = append(hostIds, row.HostId)
+			CombinationBindHost[row.HostId] = row.Id
 		}
-		idcList = utils.RemoveRepeatInt(idcList)
+		hostIds = utils.RemoveRepeatInt(hostIds)
 
+		var hostListModel []models2.Host
+		d.Model(&models2.Host{}).Where("id in ?", hostIds).Find(&hostListModel)
+		//先进行资产组合关联的主机 查询到对应的IDC
+		idcList := make([]int, 0)
+
+		for _, v := range hostListModel {
+			CombinationId, ok := CombinationBindHost[v.Id]
+			if !ok {
+				continue
+			}
+			d.Model(&models2.Combination{}).Where("id = ?", CombinationId).Updates(map[string]interface{}{
+				"idc_id": v.Idc,
+			})
+			idcList = append(idcList, v.Idc)
+			//资产和组合对应起来
+			CombinationBindIdc[v.Idc] = CombinationId
+
+		}
+
+		idcList = utils.RemoveRepeatInt(idcList)
 		var IdcListHost []models2.Idc
 		d.Model(&models2.Idc{}).Where("id in ?", idcList).Find(&IdcListHost)
 

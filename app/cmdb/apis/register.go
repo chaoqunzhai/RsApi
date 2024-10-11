@@ -517,10 +517,6 @@ func (e *RegisterApi) NiuLink(c *gin.Context) {
 			e.Orm.Model(&hostInstance).Where("sn = ?", node.Sn).First(&hostInstance)
 		}
 
-		if hostInstance.Status == 1 {
-			continue //在线不处理
-		}
-
 		var ispNumber int
 		switch strings.TrimSpace(node.Isp) {
 		case "移动":
@@ -537,7 +533,7 @@ func (e *RegisterApi) NiuLink(c *gin.Context) {
 			Valid: true,
 		}
 		hostInstance.Isp = ispNumber
-		hostInstance.TransProvince = 0
+		hostInstance.TransProvince = 2
 		hostInstance.HostName = node.Node
 		hostInstance.Status = 1
 		hostInstance.Ip = node.Ip
@@ -559,10 +555,34 @@ func (e *RegisterApi) NiuLink(c *gin.Context) {
 			hostInstance.Business = NewBindBuList
 			hostInstance.Status = 1
 			e.Orm.Save(&hostInstance)
+
 		} else {
 			//没有数据 就创建数据
 			hostInstance.Business = NewBindBuList
 			e.Orm.Create(&hostInstance)
+
+		}
+		var snRow models2.HostSoftware
+		snKey := fmt.Sprintf("sn_%v", req.Business)
+		e.Orm.Model(&models2.HostSoftware{}).Where("host_id = ? and `key` = ?",
+			hostInstance.Id, snKey).First(&snRow)
+
+		if snRow.Id == 0 {
+			snRow.HostId = hostInstance.Id
+			snRow.Key = snKey
+			snRow.Value = node.Node
+			e.Orm.Create(&snRow)
+		}
+		var OperationLog models2.OperationLog
+		e.Orm.Model(&models2.OperationLog{}).Where("object_id = ?", hostInstance.Id).First(&OperationLog)
+		if OperationLog.Id == 0 {
+			e.Orm.Create(&models2.OperationLog{
+				Action:   "POST",
+				Module:   "rs_host",
+				ObjectId: hostInstance.Id,
+				TargetId: hostInstance.Id,
+				Info:     "脚本getAsset.py采集七牛OpenAPI资产数据录入",
+			})
 		}
 
 		NetDeviceMap := make(map[string]int, 0)
@@ -772,4 +792,60 @@ func (e *RegisterApi) NiuLink(c *gin.Context) {
 		"msg":  "successful",
 	})
 	return
+}
+
+func (e *RegisterApi) DianXin(c *gin.Context) {
+	req := dto.DianXinMetrics{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
+	if ShouldBindBodyWithErr := c.ShouldBindBodyWith(&req, binding.JSON); ShouldBindBodyWithErr != nil {
+		e.Logger.Error(ShouldBindBodyWithErr)
+		body, readErr := ioutil.ReadAll(c.Request.Body)
+		if readErr != nil {
+			e.Error(500, ShouldBindBodyWithErr, ShouldBindBodyWithErr.Error())
+			return
+		}
+		defer func() {
+			_ = c.Request.Body.Close()
+		}()
+		e.Logger.Error(fmt.Sprintf("post Body: %v", string(body)))
+		e.Error(500, ShouldBindBodyWithErr, ShouldBindBodyWithErr.Error())
+		return
+	}
+	registerHeaderKey := c.GetHeader("RsRole")
+
+	if strings.TrimSpace(registerHeaderKey) != "rs-sre" {
+
+		e.Error(http.StatusUnauthorized, nil, "you set Header")
+		return
+	}
+
+	NewBindBuList := make([]models.RsBusiness, 0)
+	//Business 如果不为空,进行关联
+	if req.Business != "" {
+
+		var buInstance models.RsBusiness
+		e.Orm.Model(&models.RsBusiness{}).Where("en_name = ?", strings.TrimSpace(req.Business)).Limit(1).Find(&buInstance)
+		if buInstance.Id > 0 {
+			NewBindBuList = append(NewBindBuList, buInstance)
+		}
+
+	}
+	for _, node := range req.Data {
+		var hostInstance models.RsHost
+
+		isDirty := global.BlackMap[node.Sn]
+		if isDirty { //在点心这边 如果SN为脏的 那就不处理
+			continue
+		} else {
+			e.Orm.Model(&hostInstance).Where("sn = ?", node.Sn).First(&hostInstance)
+		}
+
+	}
 }

@@ -74,7 +74,7 @@ type Combination struct {
 	Code     string `json:"code"  gorm:"type:varchar(50);comment:组合编号" `
 	CustomId int    `json:"customId" gorm:"type:bigint;comment:所属客户ID"`
 	Status   int    `json:"status" gorm:"index;type:int(1);default:1;comment:资产状态"`
-	IdcId    int    `json:"idcId" gorm:"type:bigint;comment:关联IDC"`
+	IdcId    int    `json:"idcId" gorm:"type:bigint;comment:关联IDC,定时更新"`
 	HostId   int    `json:"hostId" gorm:"type:bigint;comment:关联的上线CMDB ID"`
 }
 
