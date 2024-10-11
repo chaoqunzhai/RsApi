@@ -51,7 +51,7 @@ func RemoveBracketContent(s string) string {
 	}
 	return builder.String()
 }
-func (e *RegisterApi) InitIdc(req dto.RegisterMetrics) int {
+func (e *RegisterApi) InitIdc(req dto.IdcMetrics) int {
 	req.Remark = strings.Replace(req.Remark, ".", "", -1)
 	re := regexp.MustCompile(`\d+`)
 
@@ -236,7 +236,12 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 	// 备注不为空 并且 没有关联IDC,那就主动关联
 
 	if req.Remark != "" && len(req.Remark) >= 8 {
-		if idcId := e.InitIdc(req); idcId > 0 {
+		IdcMetrics := dto.IdcMetrics{
+			Remark:   req.Remark,
+			Province: req.Province,
+			City:     req.City,
+		}
+		if idcId := e.InitIdc(IdcMetrics); idcId > 0 {
 			hostInstance.Idc = idcId
 		}
 
@@ -543,7 +548,12 @@ func (e *RegisterApi) NiuLink(c *gin.Context) {
 		hostInstance.LineBandwidth = float64(node.Usbw)
 		hostInstance.Sn = node.Sn
 		if node.Remark != "" && len(node.Remark) >= 8 {
-			if idcId := e.InitIdc(node); idcId > 0 {
+			IdcMetrics := dto.IdcMetrics{
+				Remark:   node.Remark,
+				Province: node.Province,
+				City:     node.City,
+			}
+			if idcId := e.InitIdc(IdcMetrics); idcId > 0 {
 				hostInstance.Idc = idcId
 			}
 
@@ -847,5 +857,279 @@ func (e *RegisterApi) DianXin(c *gin.Context) {
 			e.Orm.Model(&hostInstance).Where("sn = ?", node.Sn).First(&hostInstance)
 		}
 
+		var ispNumber int
+		switch strings.TrimSpace(node.IspName) {
+		case "移动":
+			ispNumber = 1
+		case "电信":
+			ispNumber = 2
+		case "联通":
+			ispNumber = 3
+		default:
+			ispNumber = 4
+		}
+		hostInstance.HealthyAt = sql.NullTime{
+			Time:  time.Now(),
+			Valid: true,
+		}
+		hostInstance.Isp = ispNumber
+		hostInstance.TransProvince = 2
+		hostInstance.HostName = node.Sn
+		hostInstance.Status = 1
+		hostInstance.Ip = ""
+		hostInstance.Remark = node.Remark
+		hostInstance.Auth = 0
+		hostInstance.Balance = node.Balance
+		hostInstance.LineBandwidth = float64(node.LineBandwidth)
+		hostInstance.AllLine = node.AllLine
+		hostInstance.Sn = node.Sn
+		if node.Remark != "" && len(node.Remark) >= 8 {
+			IdcMetrics := dto.IdcMetrics{
+				Remark:   node.Remark,
+				Province: node.Province,
+				City:     node.City,
+			}
+			if idcId := e.InitIdc(IdcMetrics); idcId > 0 {
+				hostInstance.Idc = idcId
+			}
+
+		}
+
+		if hostInstance.Id > 0 {
+			//不在线 就进行数据更新
+			_ = e.Orm.Model(&hostInstance).Association("Business").Clear()
+			hostInstance.Business = NewBindBuList
+			hostInstance.Status = 1
+			e.Orm.Save(&hostInstance)
+
+		} else {
+			//没有数据 就创建数据
+			hostInstance.Business = NewBindBuList
+			e.Orm.Create(&hostInstance)
+
+		}
+		var snRow models2.HostSoftware
+		snKey := fmt.Sprintf("sn_%v", req.Business)
+		e.Orm.Model(&models2.HostSoftware{}).Where("host_id = ? and `key` = ?",
+			hostInstance.Id, snKey).First(&snRow)
+
+		if snRow.Id == 0 {
+			snRow.HostId = hostInstance.Id
+			snRow.Key = snKey
+			snRow.Value = node.Sn
+			e.Orm.Create(&snRow)
+		}
+		var OperationLog models2.OperationLog
+		e.Orm.Model(&models2.OperationLog{}).Where("object_id = ?", hostInstance.Id).First(&OperationLog)
+		if OperationLog.Id == 0 {
+			e.Orm.Create(&models2.OperationLog{
+				Action:   "POST",
+				Module:   "rs_host",
+				ObjectId: hostInstance.Id,
+				TargetId: hostInstance.Id,
+				Info:     "脚本getDx.py采集点心OpenAPI资产数据录入",
+			})
+		}
+
+		NetDeviceMap := make(map[string]int, 0)
+		//网卡信息
+		if len(node.DxInterfaces) > 0 {
+
+			for _, NetDevice := range node.DxInterfaces {
+				var (
+					DeviceRow models2.HostNetDevice
+				)
+
+				e.Orm.Model(&models2.HostNetDevice{}).Where("host_id = ? and `name` = ?",
+					hostInstance.Id, NetDevice.IfName).First(&DeviceRow)
+				//如果 DeviceName 有 @ 那就需要特殊处理
+
+				DeviceRow.HostId = hostInstance.Id
+				DeviceRow.Name = NetDevice.IfName
+				DeviceRow.Ip = ""
+				DeviceRow.Mac = NetDevice.NicMac
+				DeviceRow.UpdatedAt = models3.XTime{
+					Time: time.Now(),
+				}
+				DeviceRow.Status = 1
+				e.Orm.Save(&DeviceRow)
+				NetDeviceMap[NetDevice.IfName] = DeviceRow.Id
+			}
+		}
+
+		//拨号信息
+		for _, dialNode := range node.DialList {
+
+			if dialNode.Account == "" {
+				continue
+			}
+			var bindNetDeviceId int
+			NetDeviceId, NetDeviceOk := NetDeviceMap[dialNode.IfName]
+			if NetDeviceOk {
+				bindNetDeviceId = NetDeviceId
+			} else {
+				//没有那就创建一个
+				HostNetDevice := models2.HostNetDevice{
+					HostId: hostInstance.Id,
+					Name:   dialNode.IfName,
+					Status: 1,
+				}
+				e.Orm.Create(&HostNetDevice)
+				bindNetDeviceId = HostNetDevice.Id
+			}
+
+			var (
+				DialRowModel     models.RsDial
+				DialCount        int64
+				networkingStatus int
+				status           int
+				isManager        int
+			)
+			//对于自动上报数据的数据,做一个特定创建,防止 已经创建了这个账号，被自动创建也冲掉
+			e.Orm.Model(&models.RsDial{}).Where("account = ? and source = 1", dialNode.Account).Count(&DialCount)
+			//（1：拨号成功且已联网，0：联网失败，2：拨号失败， -1：拨号和联网都失败）
+
+			switch dialNode.Status {
+			case "1":
+				networkingStatus = 1
+				status = 1
+			case "0":
+				networkingStatus = -1
+				status = 1
+			default:
+
+				networkingStatus = -1
+				status = -1
+			}
+			isManager = 2
+			if DialCount > 0 {
+				updateMap := map[string]interface{}{
+					"host_id":           hostInstance.Id,
+					"idc_id":            hostInstance.Idc,
+					"account":           dialNode.Account,
+					"pass":              dialNode.Password,
+					"status":            status,
+					"is_manager":        isManager,
+					"ip":                dialNode.VlanIp,
+					"source":            1,
+					"dial_name":         fmt.Sprintf("ppp%v", dialNode.Name),
+					"ip_v6":             "",
+					"vlan_id":           dialNode.VlanId,
+					"device_id":         bindNetDeviceId,
+					"networking_status": networkingStatus,
+				}
+
+				e.Orm.Model(&models.RsDial{}).Where("account = ? and source = 1", dialNode.Account).Updates(updateMap)
+			} else {
+
+				DialRowModel.HostId = hostInstance.Id
+				DialRowModel.IdcId = hostInstance.Idc
+				DialRowModel.Account = dialNode.Account
+				DialRowModel.Pass = dialNode.Password
+				//DialRowModel.Ip = ""
+				DialRowModel.IspId = 4
+				//DialRowModel.IpV6 = ""
+				DialRowModel.VlanId = dialNode.VlanId
+				DialRowModel.DialName = fmt.Sprintf("ppp%v", dialNode.Name)
+				DialRowModel.Source = 1
+				DialRowModel.DeviceId = bindNetDeviceId
+				DialRowModel.Status = status
+				DialRowModel.NetworkingStatus = networkingStatus
+
+				e.Orm.Save(&DialRowModel)
+			}
+
+		}
+
+		//磁盘信息
+		//1:需要放一份在 HostSystem
+		var hostSystem models2.HostSystem
+
+		e.Orm.Model(&models2.HostSystem{}).Where("host_id = ?", hostInstance.Id).First(&hostSystem)
+		var HDDevList []dto.DiskFields
+		for _, diskTodo := range node.MountDisk {
+			fields := dto.DiskFields{
+				Dev:  diskTodo.Name,
+				Type: diskTodo.Type,
+				T:    fmt.Sprintf("%v", diskTodo.Total),
+				UP:   diskTodo.Ug,
+				U:    fmt.Sprintf("%v", diskTodo.Used),
+			}
+			HDDevList = append(HDDevList, fields)
+		}
+		fmt.Println("node.Memory!", node.Memory)
+		if node.Memory != nil {
+			hostSystem.MemoryData = func() string {
+				//{'cpu_used_rate': 37.52, 'mem_used_rate': 93.02}
+				dat, _ := json.Marshal(node.Memory)
+
+				return string(dat)
+			}()
+		}
+		hostSystem.Disk = func() string {
+
+			dat, _ := json.Marshal(HDDevList)
+
+			return string(dat)
+		}()
+		hostSystem.HostId = hostInstance.Id
+
+		if hostSystem.Id > 0 {
+			e.Orm.Save(&hostSystem)
+		} else {
+			e.Orm.Create(&hostSystem)
+		}
+		//2:在资产中 在放一份 需要做一个资产组合
+
+		//制造资产组合
+		var count int64
+		e.Orm.Model(&models2.Combination{}).Where("code = ?", node.Sn).Count(&count)
+		if count > 0 {
+			continue
+		}
+		//主机SN如果 不存在,就创建这么一个组合, 如果存在 不进行操作
+		CombinationRow := models2.Combination{
+			Code:   node.Sn,
+			Status: 3,
+		}
+		e.Orm.Create(&CombinationRow)
+		//创建对应的服务器资产
+
+		hostRow := models2.AdditionsWarehousing{
+			Code:          node.Sn,
+			Sn:            node.Sn,
+			CategoryId:    1,
+			CombinationId: CombinationRow.Id,
+			Name:          "服务器",
+			Status:        3,
+		}
+		e.Orm.Create(&hostRow)
+		e.Orm.Model(&models2.AdditionsWarehousing{}).Where("id = ?", hostRow.Id).Updates(map[string]interface{}{
+			"code": fmt.Sprintf("ZC%08d", hostRow.Id),
+		})
+
+		//创建对应的磁盘资产
+		for _, diskTodo := range node.MountDisk {
+
+			assetRow := models2.AdditionsWarehousing{
+				Sn:            diskTodo.Sn,
+				Code:          diskTodo.Sn,
+				CategoryId:    3,
+				CombinationId: CombinationRow.Id,
+				Name:          diskTodo.Name,
+				Spec:          fmt.Sprintf("%v", diskTodo.Total),
+				Status:        3,
+				UnitId:        2,
+			}
+			e.Orm.Create(&assetRow)
+		}
+
 	}
+
+	c.JSON(200, map[string]interface{}{
+		"code": 200,
+		"msg":  "successful",
+	})
+	return
+
 }

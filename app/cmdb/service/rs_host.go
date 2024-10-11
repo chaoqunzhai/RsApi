@@ -368,7 +368,12 @@ func (e *RsHost) GetMonitorData(ids []int) map[int]map[string]interface{} {
 
 			HostMemory := dto.HostMemory{}
 			if unErr := json.Unmarshal([]byte(row.MemoryData), &HostMemory); unErr == nil {
-				dat["used_percent"] = fmt.Sprintf("%.2f", 100*float64(HostMemory.U)/float64(HostMemory.T))      //已使用百分比
+
+				if HostMemory.MemUsedRate > 0 {
+					dat["used_percent"] = HostMemory.MemUsedRate
+				} else {
+					dat["used_percent"] = fmt.Sprintf("%.2f", 100*float64(HostMemory.U)/float64(HostMemory.T)) //已使用百分比
+				}
 				dat["available_percent"] = fmt.Sprintf("%.2f", 100*float64(HostMemory.A)/float64(HostMemory.T)) //可使用百分比
 			}
 		}

@@ -28,12 +28,14 @@ type RegisterDial struct {
 // 内存使用率的格式化
 
 type HostMemory struct {
-	T  uint64 `json:"t"`   //total
-	A  uint64 `json:"a"`   //available
-	U  uint64 `json:"u"`   //used
-	SC uint64 `json:"s_c"` //swap_cached
-	SF uint64 `json:"s_f"` //swap_free
-	ST uint64 `json:"s_t"` //swap_total
+	T           uint64  `json:"t"`   //total
+	A           uint64  `json:"a"`   //available
+	U           uint64  `json:"u"`   //used
+	SC          uint64  `json:"s_c"` //swap_cached
+	SF          uint64  `json:"s_f"` //swap_free
+	ST          uint64  `json:"s_t"` //swap_total
+	CpuUsedRate float64 `json:"cpu_used_rate"`
+	MemUsedRate float64 `json:"mem_used_rate"`
 }
 
 //磁盘的JSON格式化

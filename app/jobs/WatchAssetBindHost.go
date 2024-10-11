@@ -141,21 +141,21 @@ func (t WatchAssetBindHost) Exec(arg interface{}) error {
 		hostIds = utils.RemoveRepeatInt(hostIds)
 
 		var hostListModel []models2.Host
-		d.Model(&models2.Host{}).Where("id in ?", hostIds).Find(&hostListModel)
+		d.Model(&models2.Host{}).Select("id,idc").Where("id in ?", hostIds).Find(&hostListModel)
 		//先进行资产组合关联的主机 查询到对应的IDC
 		idcList := make([]int, 0)
 
-		for _, v := range hostListModel {
-			CombinationId, ok := CombinationBindHost[v.Id]
+		for _, hostRow := range hostListModel {
+			CombinationId, ok := CombinationBindHost[hostRow.Id]
 			if !ok {
 				continue
 			}
 			d.Model(&models2.Combination{}).Where("id = ?", CombinationId).Updates(map[string]interface{}{
-				"idc_id": v.Idc,
+				"idc_id": hostRow.Idc,
 			})
-			idcList = append(idcList, v.Idc)
+			idcList = append(idcList, hostRow.Idc)
 			//资产和组合对应起来
-			CombinationBindIdc[v.Idc] = CombinationId
+			CombinationBindIdc[hostRow.Idc] = CombinationId
 
 		}
 

@@ -5,6 +5,11 @@
 */
 package dto
 
+type IdcMetrics struct {
+	Remark   string
+	Province string
+	City     string
+}
 type RegisterMetrics struct {
 	Belong         int               `json:"belong"`
 	CPU            int               `json:"CPU"`
@@ -124,24 +129,32 @@ type DianXinMetrics struct {
 	Data     []*DianXinMetricsRow `json:"data"`
 }
 type DianXinMetricsRow struct {
-	Sn         string        `json:"sn"`
-	Remark     string        `json:"remark"`
-	SystemRoot DxSystemRoot  `json:"system_root"`
-	MountDisk  []DxDisk      `json:"mount_disk"`
-	Memory     *DxMemory     `json:"memory"`
-	IspName    string        `json:"ispName"`
-	Province   string        `json:"province"`
-	City       string        `json:"city"`
-	IsProvince string        `json:"isProvince"`
-	Price      *DxPrice      `json:"price"`
-	DialList   []*DxDialList `json:"dial_list"`
+	Sn            string          `json:"sn"`
+	Remark        string          `json:"remark"`
+	SystemRoot    DxSystemRoot    `json:"system_root"`
+	MountDisk     []*DxDisk       `json:"mount_disk"`
+	Memory        *DxMemory       `json:"memory"`
+	IspName       string          `json:"ispName"`
+	Province      string          `json:"province"`
+	City          string          `json:"city"`
+	IsProvince    string          `json:"isProvince"`
+	DxInterfaces  []*DxInterfaces `json:"interfaces"`
+	Price         *DxPrice        `json:"price"`
+	DialList      []*DxDialList   `json:"dial_list"`
+	AllLine       int             `json:"allLine"`
+	Balance       float64         `json:"balance"`
+	LineBandwidth int             `json:"lineBandwidth"`
+}
+type DxInterfaces struct {
+	IfName string `json:"ifName"`
+	NicMac string `json:"nicMac"`
 }
 type DxDialList struct {
 	Account  string `json:"account"`
 	Password string `json:"password"`
 	VlanId   string `json:"vlanId"`
+	VlanIp   string `json:"vlanIp"`
 	Name     string `json:"name"`
-	NicMac   string `json:"nicMac"`
 	IfName   string `json:"ifName"`
 	Status   string `json:"status"`
 }

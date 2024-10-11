@@ -20,7 +20,7 @@ func InitMiddleware(r *gin.Engine) {
 	// 日志处理
 	r.Use(LoggerToFile())
 	// 自定义错误处理
-	r.Use(CustomError)
+	//r.Use(CustomError)
 	// NoCache is a middleware function that appends headers
 	r.Use(NoCache)
 	// 跨域处理
