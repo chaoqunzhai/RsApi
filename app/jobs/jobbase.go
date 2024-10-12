@@ -173,6 +173,7 @@ func (h *HttpJob) addJob(c *cron.Cron) (int, error) {
 
 func (e *ExecJob) addJob(c *cron.Cron) (int, error) {
 	id, err := c.AddJob(e.CronExpression, e)
+	c.Entries()
 	if err != nil {
 		fmt.Println(time.Now().Format(timeFormat), " [ERROR] JobCore AddJob error", err)
 		return 0, err

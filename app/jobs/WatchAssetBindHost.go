@@ -47,6 +47,11 @@ func (t ExamplesOne) Exec(arg interface{}) error {
 type WatchAssetBindHost struct {
 }
 
+// func (t WatchAssetBindHost) Exec(arg interface{}) error {
+//
+//		fmt.Println("WatchAssetBindHost 开始执行!", time.Now().Format(time.DateTime))
+//		return nil
+//	}
 func (t WatchAssetBindHost) Exec(arg interface{}) error {
 	dbList := sdk.Runtime.GetDb()
 
@@ -134,6 +139,7 @@ func (t WatchAssetBindHost) Exec(arg interface{}) error {
 		hostIds := make([]int, 0)
 		CombinationBindHost := make(map[int]int, 0)
 		CombinationBindIdc := make(map[int]int, 0)
+		CombinationHostBindIdc := make(map[int][]int, 0)
 		for _, row := range CombinationList {
 			hostIds = append(hostIds, row.HostId)
 			CombinationBindHost[row.HostId] = row.Id
@@ -157,11 +163,16 @@ func (t WatchAssetBindHost) Exec(arg interface{}) error {
 			//资产和组合对应起来
 			CombinationBindIdc[hostRow.Idc] = CombinationId
 
+			bindHostList, toOk := CombinationHostBindIdc[hostRow.Idc]
+			if !toOk {
+				bindHostList = make([]int, 0)
+			}
+			bindHostList = append(bindHostList, hostRow.Id)
 		}
 
 		idcList = utils.RemoveRepeatInt(idcList)
 		var IdcListHost []models2.Idc
-		d.Model(&models2.Idc{}).Where("id in ?", idcList).Find(&IdcListHost)
+		d.Model(&models2.Idc{}).Select("id,custom_id").Where("id in ?", idcList).Find(&IdcListHost)
 
 		for _, v := range IdcListHost {
 			CombinationId, ok := CombinationBindIdc[v.Id]
@@ -171,7 +182,19 @@ func (t WatchAssetBindHost) Exec(arg interface{}) error {
 			if v.CustomId == 0 {
 				continue
 			}
+			//更新资产组合关联的客户
 			d.Model(&models2.Combination{}).Where("id = ?", CombinationId).Updates(map[string]interface{}{
+				"custom_id": v.CustomId,
+			})
+			//更新拨号关联的客户
+			bindHost, bindOk := CombinationHostBindIdc[v.Id]
+			if !bindOk {
+				continue
+			}
+			if len(bindHost) == 0 {
+				continue
+			}
+			d.Model(&models2.Dial{}).Where("host_id in ?", bindHost).Updates(map[string]interface{}{
 				"custom_id": v.CustomId,
 			})
 		}

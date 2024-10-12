@@ -358,6 +358,7 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 				"bu":        DialRow.BU,
 				"ip_v6":     DialRow.IpV6,
 				"nat_type":  DialRow.NT,
+				"isp_id":    ispNumber,
 				"vlan_id":   DialRow.VlanId,
 				"device_id": bindNetDeviceId,
 			}
@@ -375,6 +376,7 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 			DialRowModel.IpV6 = DialRow.IpV6
 			DialRowModel.VlanId = DialRow.VlanId
 			DialRowModel.Mac = DialRow.Mac
+			DialRowModel.IspId = ispNumber
 			DialRowModel.DialName = DialRow.D
 			DialRowModel.NatType = DialRow.NT
 			DialRowModel.Source = 1
@@ -677,6 +679,7 @@ func (e *RegisterApi) NiuLink(c *gin.Context) {
 						"ip":                dialNode.Ip,
 						"mac":               dialNode.Mac,
 						"source":            1,
+						"isp_id":            ispNumber,
 						"dial_name":         fmt.Sprintf("ppp%v", dialNode.AdslNum),
 						"ip_v6":             dialNode.Ipv6,
 						"vlan_id":           dialNode.VlanId,
@@ -692,7 +695,7 @@ func (e *RegisterApi) NiuLink(c *gin.Context) {
 					DialRowModel.Account = dialNode.Account
 					DialRowModel.Pass = dialNode.Password
 					DialRowModel.Ip = dialNode.Ip
-					DialRowModel.IspId = 4
+					DialRowModel.IspId = ispNumber
 					DialRowModel.IpV6 = dialNode.Ipv6
 					DialRowModel.VlanId = fmt.Sprintf("%v", dialNode.VlanId)
 					DialRowModel.Mac = dialNode.Mac
@@ -1014,6 +1017,7 @@ func (e *RegisterApi) DianXin(c *gin.Context) {
 					"source":            1,
 					"dial_name":         fmt.Sprintf("ppp%v", dialNode.Name),
 					"ip_v6":             "",
+					"isp_id":            ispNumber,
 					"vlan_id":           dialNode.VlanId,
 					"device_id":         bindNetDeviceId,
 					"networking_status": networkingStatus,
@@ -1027,7 +1031,7 @@ func (e *RegisterApi) DianXin(c *gin.Context) {
 				DialRowModel.Account = dialNode.Account
 				DialRowModel.Pass = dialNode.Password
 				//DialRowModel.Ip = ""
-				DialRowModel.IspId = 4
+				DialRowModel.IspId = ispNumber
 				//DialRowModel.IpV6 = ""
 				DialRowModel.VlanId = dialNode.VlanId
 				DialRowModel.DialName = fmt.Sprintf("ppp%v", dialNode.Name)
@@ -1057,7 +1061,7 @@ func (e *RegisterApi) DianXin(c *gin.Context) {
 			}
 			HDDevList = append(HDDevList, fields)
 		}
-		fmt.Println("node.Memory!", node.Memory)
+
 		if node.Memory != nil {
 			hostSystem.MemoryData = func() string {
 				//{'cpu_used_rate': 37.52, 'mem_used_rate': 93.02}

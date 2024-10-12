@@ -3,6 +3,7 @@ package service
 import (
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/go-admin-team/go-admin-core/sdk/service"
 	"gorm.io/gorm"
@@ -24,7 +25,22 @@ func (e *RsIdc) GetPage(c *dto.RsIdcGetPageReq, p *actions.DataPermission, list 
 
 	orm := e.Orm.Model(&data)
 	if c.Search != "" {
+
 		likeQ := fmt.Sprintf("number like '%%%s%%' or name like '%%%s%%' ", c.Search, c.Search)
+		orm = orm.Where(likeQ)
+	}
+	if c.Region != "" {
+		RegionList := strings.Split(c.Region, ",")
+		var likeQ string
+		if len(RegionList) > 1 {
+			orTo := make([]string, 0)
+			for _, v := range RegionList {
+				orTo = append(orTo, fmt.Sprintf(" region like '%%%s%%' ", v))
+			}
+			likeQ = fmt.Sprintf("%v", strings.Join(orTo, " OR "))
+		} else {
+			likeQ = fmt.Sprintf("region like '%%%s%%'", c.Region)
+		}
 		orm = orm.Where(likeQ)
 	}
 	err = orm.Scopes(
