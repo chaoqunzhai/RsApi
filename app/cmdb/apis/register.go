@@ -176,6 +176,7 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 	if req.Belong == 0 { //如果为空,那也算是一个自建的机器
 		req.Belong = 1
 	}
+	hostInstance.Version = req.Version
 	hostInstance.Belong = req.Belong
 	hostInstance.Sn = SN
 	hostInstance.HostName = HOSTNAME

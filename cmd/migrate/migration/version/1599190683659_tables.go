@@ -47,6 +47,9 @@ func _1599190683659Tables(db *gorm.DB, version string) error {
 			new(models.Idc),
 			new(models.Host),
 			new(models.HostSystem),
+			//计费
+			new(models.HostIncome),
+
 			new(models.HostSoftware),
 			new(models.HostSwitchLog),
 			new(models.HostNetDevice),
@@ -67,6 +70,7 @@ func _1599190683659Tables(db *gorm.DB, version string) error {
 			new(models.Combination),
 			new(models.OutboundOrder),
 			new(models.AssetRecording),
+
 		)
 		if err != nil {
 			return err

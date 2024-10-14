@@ -110,11 +110,15 @@ func (e *RsHost) GetPage(c *dto.RsHostGetPageReq, p *actions.DataPermission, lis
 		}
 		orm = orm.Where("id in (?)", cache)
 	}
-	err = orm.Scopes(
+	orm = orm.Scopes(
 		cDto.MakeCondition(c.GetNeedSearch()),
 		cDto.Paginate(c.GetPageSize(), c.GetPageIndex()),
 		actions.Permission(data.TableName(), p),
-	).Order("id desc").
+	)
+	if c.RsHostOrder.Status != "" {
+		orm = orm.Order(fmt.Sprintf("`status` %v,id desc", c.RsHostOrder.Status))
+	}
+	err = orm.
 		Find(list).Limit(-1).Offset(-1).
 		Count(count).Error
 	if err != nil {

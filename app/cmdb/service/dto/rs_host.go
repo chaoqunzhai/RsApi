@@ -125,7 +125,7 @@ type RsHostOrder struct {
 	TransProvince string `form:"transProvinceOrder"  search:"type:order;column:trans_province;table:rs_host"`
 	Remark        string `form:"remarkOrder"  search:"type:order;column:remark;table:rs_host"`
 	Operator      string `form:"operatorOrder"  search:"type:order;column:operator;table:rs_host"`
-	Status        string `form:"statusOrder"  search:"type:order;column:status;table:rs_host;"`
+	Status        string `form:"statusOrder"  search:"-"`
 	NetDevice     string `form:"netDeviceOrder"  search:"type:order;column:net_device;table:rs_host"`
 	Balance       string `form:"balanceOrder"  search:"type:order;column:balance;table:rs_host"`
 	Isp           string `form:"ispOrder"  search:"type:order;column:isp;table:rs_host"`

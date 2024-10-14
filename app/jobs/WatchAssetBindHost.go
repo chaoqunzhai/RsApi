@@ -47,11 +47,11 @@ func (t ExamplesOne) Exec(arg interface{}) error {
 type WatchAssetBindHost struct {
 }
 
-// func (t WatchAssetBindHost) Exec(arg interface{}) error {
-//
-//		fmt.Println("WatchAssetBindHost 开始执行!", time.Now().Format(time.DateTime))
-//		return nil
-//	}
+func (t WatchAssetBindHost) Exec2(arg interface{}) error {
+
+	fmt.Println("WatchAssetBindHost 开始执行!", time.Now().Format(time.DateTime))
+	return nil
+}
 func (t WatchAssetBindHost) Exec(arg interface{}) error {
 	dbList := sdk.Runtime.GetDb()
 

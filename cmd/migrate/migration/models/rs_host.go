@@ -22,6 +22,7 @@ type Host struct {
 	Memory        uint64       `json:"memory" gorm:"comment:总内存"`
 	NetworkType   int          `json:"networkType" gorm:"default:2;comment:网络类型"`
 	Kernel        string       `json:"kernel" gorm:"type:varchar(100);comment:内核版本"`
+	Version       string       `json:"version" gorm:"type:varchar(20);comment:客户端版本"`
 	Balance       float64      `json:"balance" gorm:"type:varchar(50);comment:总带宽"`
 	Belong        int          `json:"belong" gorm:"type:int(1);default:1;comment:机器归属"`
 	RemotePort    string       `json:"remotePort" gorm:"type:varchar(12);comment映射端口号"`
