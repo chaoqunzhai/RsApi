@@ -10,7 +10,7 @@ import (
 
 type ControlBy struct {
 	CreateBy int `json:"createBy" gorm:"index;comment:创建者"`
-	UpdateBy int `json:"-" gorm:"index;comment:更新者"`
+	UpdateBy int `json:"updateBy" gorm:"index;comment:更新者"`
 }
 
 // SetCreateBy 设置创建人id

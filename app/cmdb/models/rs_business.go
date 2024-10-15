@@ -53,14 +53,14 @@ func (e *RsBusiness) GetId() interface{} {
 
 type RsBusinessCostCnf struct {
 	models.Model
-	BuId           int     `json:"buId" gorm:"type:bigint;comment:业务ID"`
-	Isp            int     `json:"isp" gorm:"type:int;comment:运营商"`
-	Minimum        float64 `json:"minimum" gorm:"type:double;comment:Minimum"`
-	DialType       int     `json:"dialType" gorm:"type:int;comment:0:静态拨号 1:动态拨号"`
-	IpType         int     `json:"ipType" gorm:"type:int;comment:0:ipv4 1:ipv6"`
-	BandwidthLower float64 `json:"bandwidthLower" gorm:"type:double;comment:带宽下限(G)"`
-	BandwidthLimit float64 `json:"bandwidthLimit" gorm:"type:double;comment:带宽上限(G)"`
-	Price          float64 `json:"price" gorm:"type:double;comment: 价格(元/G/月)"`
+	BuId       int          `json:"buId" gorm:"type:bigint;comment:业务ID"`
+	Isp        int          `json:"isp" gorm:"type:int;comment:运营商"`
+	DialType   int          `json:"dialType" gorm:"type:int;comment:0:静态拨号 1:动态拨号"`
+	IpType     int          `json:"ipType" gorm:"type:int;comment:0:ipv4 1:ipv6"`
+	Start      models.XTime `json:"start" gorm:"comment:计算开始日期"`
+	End        models.XTime `json:"end" gorm:"comment:计算结束日期"`
+	RangePrice float64      `json:"rangePrice" gorm:"comment:区间日期"`
+	Price      float64      `json:"price" gorm:"type:double;comment: 价格(元/G/月)"`
 }
 
 func (RsBusinessCostCnf) TableName() string {

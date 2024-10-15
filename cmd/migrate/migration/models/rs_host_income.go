@@ -18,6 +18,8 @@ type HostIncome struct {
 	BandwidthIncome   float64      `json:"bandwidthIncome" gorm:"计费带宽,单位是G"`
 	Estimate          float64      `json:"estimate" gorm:"预估收益"`
 	Actual            float64      `json:"actual" gorm:"实际收益"`
+	RetryId           int          `json:"retryId" gorm:"重算任务ID"`
+	RetryPrice        float64      `json:"retryPrice" gorm:"重算价格"`
 	SlaPrice          float64      `json:"slaPrice" gorm:"SLA扣款费用"`
 	SlaInfo           string       `json:"slaInfo" gorm:"varchar(50);触发SLA原因"`
 	SettleStatus      int          `json:"settleStatus" gorm:"default:1;是否已经结算 1:未结算 2:已结算"`

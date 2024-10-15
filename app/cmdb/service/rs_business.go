@@ -2,14 +2,16 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	"github.com/go-admin-team/go-admin-core/sdk/service"
-	"go-admin/common/utils"
-	"gorm.io/gorm"
-
 	"go-admin/app/cmdb/models"
 	"go-admin/app/cmdb/service/dto"
+	models2 "go-admin/cmd/migrate/migration/models"
 	"go-admin/common/actions"
 	cDto "go-admin/common/dto"
+	"go-admin/common/utils"
+	"gorm.io/gorm"
+	"strings"
 )
 
 type RsBusiness struct {
@@ -89,6 +91,7 @@ func (e *RsBusiness) Get(d *dto.RsBusinessGetReq, p *actions.DataPermission, mod
 	e.Orm.Model(&models.RsBusiness{}).Where("parent_id = ?", d.GetId()).Find(&Children)
 	model.Children = Children
 	model.CostCnf = costList
+
 	return nil
 }
 
@@ -113,7 +116,7 @@ func (e *RsBusiness) Insert(c *dto.RsBusinessInsertReq) (id int, err error) {
 }
 
 // Update 修改RsBusiness对象
-func (e *RsBusiness) Update(c *dto.RsBusinessUpdateReq, p *actions.DataPermission) error {
+func (e *RsBusiness) Update(CreateUser string, c *dto.RsBusinessUpdateReq, p *actions.DataPermission) error {
 	var err error
 	var data = models.RsBusiness{}
 	e.Orm.Scopes(
@@ -144,18 +147,54 @@ func (e *RsBusiness) Update(c *dto.RsBusinessUpdateReq, p *actions.DataPermissio
 		diffIds = hasIds
 	} else {
 		for _, row := range c.CostCnf {
+			var infoList []string
+
 			var bandRow models.RsBusinessCostCnf
 			if row.Id > 0 { //更新
 				e.Orm.Model(&bandRow).First(&bandRow, row.GetId())
+
+				fmt.Println("价格比较", bandRow.Price, row.Price)
+				if bandRow.Price != row.Price {
+					infoList = append(infoList, fmt.Sprintf("计算价格变更 %v->%v", row.Price, bandRow.Price))
+				}
 				row.Generate(&bandRow)
 				bandRow.BuId = data.Id
 				updateId = append(updateId, row.Id)
+
+				//if bandRow.Start.Format(time.DateTime) != row.Start {
+				//	infoList = append(infoList, fmt.Sprintf("开始区间变更 %v->%v", row.Start))
+				//}
+				//if bandRow.End.Format(time.DateTime) != row.End {
+				//	infoList = append(infoList, fmt.Sprintf("结束区间变更  %v->%v", row.End))
+				//}
+				if bandRow.RangePrice != row.RangePrice {
+					infoList = append(infoList, fmt.Sprintf("区间价格变更  %v->%v", row.Price, row.RangePrice))
+				}
+
 				e.Orm.Save(&bandRow)
 			} else { //创建
 				row.Generate(&bandRow)
 				bandRow.BuId = data.Id
 				err = e.Orm.Create(&bandRow).Error
+				//if row.Start != "" {
+				//	infoList = append(infoList, fmt.Sprintf("设置开始区间 %v", row.Start))
+				//}
+				//if row.End != "" {
+				//	infoList = append(infoList, fmt.Sprintf("设置结束区间 %v", row.End))
+				//}
+				if row.RangePrice > 0 {
+					infoList = append(infoList, fmt.Sprintf("设置区间价格 %v", row.RangePrice))
+				}
 			}
+
+			e.Orm.Create(&models2.OperationLog{
+				CreateUser: CreateUser,
+				Module:     "rs_business",
+				Action:     "PUT",
+				ObjectId:   data.Id,
+				TargetId:   data.Id,
+				Info:       strings.Join(infoList, " "),
+			})
 		}
 		diffIds = utils.DifferenceInt(hasIds, updateId)
 	}

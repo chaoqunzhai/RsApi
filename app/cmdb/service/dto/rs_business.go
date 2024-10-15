@@ -5,7 +5,9 @@ import (
 	"go-admin/app/cmdb/models"
 	"go-admin/common/dto"
 	common "go-admin/common/models"
+	"go-admin/global"
 	"strings"
+	"time"
 )
 
 type RsBusinessGetPageReq struct {
@@ -58,6 +60,9 @@ type RsCostCnfInsertReq struct {
 	BandwidthLower float64 `json:"bandwidthLower"`
 	BandwidthLimit float64 `json:"bandwidthLimit"`
 	Price          float64 `json:"price"`
+	Start          string  `json:"start"`
+	End            string  `json:"end"`
+	RangePrice     float64 `json:"rangePrice"`
 }
 
 func (s *RsCostCnfInsertReq) Generate(model *models.RsBusinessCostCnf) {
@@ -67,11 +72,27 @@ func (s *RsCostCnfInsertReq) Generate(model *models.RsBusinessCostCnf) {
 
 	model.Isp = s.Isp
 	model.BuId = s.BuId
-	model.Minimum = s.Minimum
 	model.DialType = s.DialType
 	model.IpType = s.IpType
-	model.BandwidthLower = s.BandwidthLower
-	model.BandwidthLimit = s.BandwidthLimit
+	if s.Start != "" {
+		if star, err := time.ParseInLocation(time.DateOnly, s.Start, global.LOC); err == nil {
+
+			model.Start = common.XTime{
+				Time: star,
+			}
+		}
+
+	}
+
+	if s.End != "" {
+		if end, err := time.ParseInLocation(time.DateOnly, s.End, global.LOC); err == nil {
+			model.End = common.XTime{
+				Time: end,
+			}
+		}
+
+	}
+	model.RangePrice = s.RangePrice
 	model.Price = s.Price
 }
 func (s *RsCostCnfInsertReq) GetId() interface{} {

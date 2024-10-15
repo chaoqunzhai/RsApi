@@ -190,19 +190,12 @@ func (e RsBusiness) Update(c *gin.Context) {
 		e.Error(500, nil, "已经存在")
 		return
 	}
-	err = s.Update(&req, p)
+	userName := user.GetUserName(c)
+	err = s.Update(userName, &req, p)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("修改RsBusiness失败，\r\n失败信息 %s", err.Error()))
 		return
 	}
-	e.Orm.Create(&models2.OperationLog{
-		CreateUser: user.GetUserName(c),
-		Module:     "rs_business",
-		Action:     "PUT",
-		ObjectId:   req.Id,
-		TargetId:   req.Id,
-		Info:       "更新业务信息",
-	})
 	e.OK(req.GetId(), "修改成功")
 }
 
