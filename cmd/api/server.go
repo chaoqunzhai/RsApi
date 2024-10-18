@@ -90,13 +90,11 @@ func run() error {
 		Addr:    fmt.Sprintf("%s:%d", config.ApplicationConfig.Host, config.ApplicationConfig.Port),
 		Handler: sdk.Runtime.GetEngine(),
 	}
+	jobs.RunCrontab()
 
-	go func() {
-		jobs.InitJob()
-		jobs.Setup(sdk.Runtime.GetDb())
-
-	}()
-
+	//costAlgorithm := costAlg.CostAlgorithm{}
+	//costAlgorithm.SetupDb(sdk.Runtime.GetDb())
+	//costAlgorithm.StartHostCompute()
 	if apiCheck {
 		var routers = sdk.Runtime.GetRouter()
 		q := sdk.Runtime.GetMemoryQueue("")

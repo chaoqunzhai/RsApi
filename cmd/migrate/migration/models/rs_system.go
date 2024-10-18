@@ -31,14 +31,14 @@ func (Tag) TableName() string {
 
 type BusinessCostCnf struct {
 	Model
-	BuId       int          `json:"buId"  gorm:"index;comment:业务ID"`
-	Isp        int          `json:"isp" gorm:"type:int(1);default:1;comment:运营商"`
-	RangePrice float64      `json:"rangePrice" gorm:"comment:区间日期"`
-	DialType   int          `json:"dialType" gorm:"type:int(1);default:0;comment:0:静态拨号 1:动态拨号"`
-	IpType     int          `json:"ipType" gorm:"type:int(1);default:0;comment:0:ipv4 1:ipv6"`
-	Start      models.XTime `json:"start" gorm:"comment:计算开始日期"`
-	End        models.XTime `json:"end" gorm:"comment:计算结束日期"`
-	Price      float64      `json:"price" gorm:"comment: 价格(元/G/月)"`
+	BuId int `json:"buId"  gorm:"index;comment:业务ID"`
+	Isp  int `json:"isp" gorm:"type:int(1);default:1;comment:运营商"`
+	//RangePrice float64 `json:"rangePrice" gorm:"comment:区间日期"`
+	DialType int `json:"dialType" gorm:"type:int(1);default:0;comment:0:静态拨号 1:动态拨号"`
+	IpType   int `json:"ipType" gorm:"type:int(1);default:0;comment:0:ipv4 1:ipv6"`
+	//Start      models.XTime `json:"start" gorm:"comment:计算开始日期"`
+	//End        models.XTime `json:"end" gorm:"comment:计算结束日期"`
+	Price float64 `json:"price" gorm:"comment: 价格(元/G/月)"`
 }
 
 func (BusinessCostCnf) TableName() string {

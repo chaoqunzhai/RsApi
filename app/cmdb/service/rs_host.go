@@ -70,6 +70,9 @@ func (e *RsHost) GetPage(c *dto.RsHostGetPageReq, p *actions.DataPermission, lis
 		//fmt.Println("查询业务", bindHostId, len(bindHostId))
 	}
 
+	if c.HostId != "" {
+		orm = orm.Where("id = ?", c.HostId)
+	}
 	if c.HostName != "" {
 		//批量把\n换成逗号
 		newHostName := strings.Replace(c.HostName, "\n", ",", -1)
@@ -135,7 +138,7 @@ func (e *RsHost) Get(d *dto.RsHostGetReq, p *actions.DataPermission, model *mode
 	err := e.Orm.Model(&data).
 		Scopes(
 			actions.Permission(data.TableName(), p),
-		).Preload("Business").Preload("Tag").First(model, d.GetId()).Error
+		).Preload("Business").First(model, d.GetId()).Error
 	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
 		err = errors.New("查看对象不存在或无权查看")
 		e.Log.Errorf("Service GetRsHost error:%s \r\n", err)

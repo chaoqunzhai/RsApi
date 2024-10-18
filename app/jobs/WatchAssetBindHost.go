@@ -3,6 +3,7 @@ package jobs
 import (
 	"fmt"
 	"github.com/go-admin-team/go-admin-core/sdk"
+	"github.com/jakecoffman/cron"
 	models2 "go-admin/cmd/migrate/migration/models"
 	"go-admin/common/utils"
 	"go-admin/global"
@@ -14,8 +15,8 @@ import (
 // 字典 key 可以配置到 自动任务 调用目标 中；
 func InitJob() {
 	jobList = map[string]JobExec{
-		"ExamplesOne":        ExamplesOne{},
-		"WatchAssetBindHost": WatchAssetBindHost{},
+		"ExamplesOne": ExamplesOne{},
+
 		// ...
 	}
 }
@@ -44,15 +45,7 @@ func (t ExamplesOne) Exec(arg interface{}) error {
 	return nil
 }
 
-type WatchAssetBindHost struct {
-}
-
-func (t WatchAssetBindHost) Exec2(arg interface{}) error {
-
-	fmt.Println("WatchAssetBindHost 开始执行!", time.Now().Format(time.DateTime))
-	return nil
-}
-func (t WatchAssetBindHost) Exec(arg interface{}) error {
+func WatchAssetBindHost() {
 	dbList := sdk.Runtime.GetDb()
 
 	for _, d := range dbList {
@@ -242,5 +235,13 @@ func (t WatchAssetBindHost) Exec(arg interface{}) error {
 
 		}
 	}
-	return nil
+
+}
+
+func RunCrontab() {
+	c := cron.New()
+
+	c.AddFunc("@every 6m", WatchAssetBindHost, "巡检资产列表和CMDB关联关系")
+	c.Start()
+	fmt.Println("增加cron成功")
 }

@@ -29,6 +29,7 @@ func (e *RsIdc) GetPage(c *dto.RsIdcGetPageReq, p *actions.DataPermission, list 
 		likeQ := fmt.Sprintf("number like '%%%s%%' or name like '%%%s%%' ", c.Search, c.Search)
 		orm = orm.Where(likeQ)
 	}
+	fmt.Println("cutom", c.CustomId)
 	if c.Region != "" {
 		RegionList := strings.Split(c.Region, ",")
 		var likeQ string

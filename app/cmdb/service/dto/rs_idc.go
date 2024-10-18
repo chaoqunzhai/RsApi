@@ -13,6 +13,7 @@ type RsIdcGetPageReq struct {
 	Search         string `form:"search" search:"-"`
 	CustomUser     int    `form:"customUser"  search:"type:exact;column:custom_user;table:rs_idc" comment:"所属客户"`
 	Region         string `form:"region"  search:"-" comment:"所在区域"`
+	CustomId       int    `form:"customId" search:"type:exact;column:custom_id;table:rs_idc" comment:"所属客户"`
 	TypeId         int    `form:"typeId"  search:"type:exact;column:type_id;table:rs_idc" comment:"机房类型"`
 	BuId           int    `form:"buId"  search:"type:exact;column:bu_id;table:rs_idc" comment:"商务人员"`
 	Status         int    `form:"status"  search:"type:exact;column:status;table:rs_idc" comment:"机房状态"`

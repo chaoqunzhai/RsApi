@@ -11,7 +11,7 @@ type HostIncome struct {
 	HostId            int          `json:"hostId" gorm:"index;comment:主机ID"`
 	Isp               int          `json:"isp" gorm:"index;comment:运营商ID"`
 	IdcId             int          `json:"idcId" gorm:"index;comment:IDC ID"`
-	BuId              int          `json:"buId" gorm:"index;comment:业务ID"`
+	BusinessName      string       `json:"businessName" gorm:"index;comment:业务名称"`
 	Income            float64      `json:"income" gorm:"收益"`
 	Usage             float64      `json:"usage" gorm:"利用率,单位是%"`
 	Bandwidth95       float64      `json:"bandwidth95" gorm:"95带宽,单位是G"`
@@ -25,6 +25,7 @@ type HostIncome struct {
 	SettleStatus      int          `json:"settleStatus" gorm:"default:1;是否已经结算 1:未结算 2:已结算"`
 	SettleTime        models.XTime `json:"settleTime" gorm:"结算时间"`
 	SettleBandwidth   float64      `json:"settleBandwidth" gorm:"结算带宽"`
+	SettlePrice       float64      `json:"settlePrice" gorm:"结算收益"`
 	TotalBandwidth    float64      `json:"totalBandwidth" gorm:"总跑量"`
 	HeartbeatNum      int          `json:"heartbeatNum" gorm:"总打点数,通常来说是288个点,5分钟一个点"`
 	NightHeartbeatNum int          `json:"nightHeartbeatNum" gorm:"晚高峰打点"`

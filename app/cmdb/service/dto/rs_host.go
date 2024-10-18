@@ -89,7 +89,8 @@ type RsHostGetPageReq struct {
 	BusinessId     string `form:"businessId" search:"-"`
 	Region         string `form:"region"  search:"-" comment:"所在区域"`
 	LineType       int    `form:"lineType" search:"type:exact;column:line_type;table:rs_host" comment:"线路类型"`
-	HostName       string `form:"hostname"  search:"-" comment:"主机名"`
+	HostName       string `form:"hostname"  search:"type:contains;column:host_name;table:rs_host"`
+	HostId         string `form:"hostId"  search:"-" comment:"主机名"`
 	Sn             string `form:"sn"  search:"type:contains;column:sn;table:rs_host" comment:"sn"`
 	Ip             string `form:"ip"  search:"type:contains;column:ip;table:rs_host" comment:"ip"`
 	NetworkType    int    `form:"networkType" search:"type:exact;column:network_type;table:rs_host" comment:"网络类型"`
@@ -101,6 +102,7 @@ type RsHostGetPageReq struct {
 	Status         string `form:"status"  search:"type:exact;column:status;table:rs_host" comment:"主机状态"`
 	BusinessSn     string `form:"businessSn"  search:"-" comment:"业务SN"`
 	TransProvince  int    `form:"transProvince" search:"type:exact;column:trans_province;table:rs_host" comment:"是否跨省"`
+
 	RsHostOrder
 }
 
@@ -114,7 +116,7 @@ type RsHostOrder struct {
 	Layer         string `form:"layerOrder"  search:"type:order;column:layer;table:rs_host"`
 	Enable        string `form:"enableOrder"  search:"type:order;column:enable;table:rs_host"`
 	Desc          string `form:"descOrder"  search:"type:order;column:desc;table:rs_host"`
-	HostName      string `form:"hostNameOrder"  search:"type:order;column:host_name;table:rs_host"`
+	HostNameOrder string `form:"hostNameOrder"  search:"type:order;column:host_name;table:rs_host"`
 	Sn            string `form:"snOrder"  search:"type:order;column:sn;table:rs_host"`
 	Cpu           string `form:"cpuOrder"  search:"type:order;column:cpu;table:rs_host"`
 	Ip            string `form:"ipOrder"  search:"type:order;column:ip;table:rs_host"`

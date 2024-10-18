@@ -167,9 +167,9 @@ func (e *RsBusiness) Update(CreateUser string, c *dto.RsBusinessUpdateReq, p *ac
 				//if bandRow.End.Format(time.DateTime) != row.End {
 				//	infoList = append(infoList, fmt.Sprintf("结束区间变更  %v->%v", row.End))
 				//}
-				if bandRow.RangePrice != row.RangePrice {
-					infoList = append(infoList, fmt.Sprintf("区间价格变更  %v->%v", row.Price, row.RangePrice))
-				}
+				//if bandRow.RangePrice != row.RangePrice {
+				//	infoList = append(infoList, fmt.Sprintf("区间价格变更  %v->%v", row.Price, row.RangePrice))
+				//}
 
 				e.Orm.Save(&bandRow)
 			} else { //创建

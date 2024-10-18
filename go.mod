@@ -14,6 +14,7 @@ require (
 	github.com/go-admin-team/go-admin-core/sdk v1.5.2-0.20231103105356-84418ed9252c
 	github.com/google/uuid v1.4.0
 	github.com/huaweicloud/huaweicloud-sdk-go-obs v3.23.9+incompatible
+	github.com/jakecoffman/cron v0.0.0-20190106200828-7e2009c226a5
 	github.com/mssola/user_agent v0.6.0
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/pkg/errors v0.9.1

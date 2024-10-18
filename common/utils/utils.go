@@ -20,6 +20,12 @@ import (
 	"time"
 )
 
+// 定义一个整数切片类型，并实现 sort.Interface 接口
+type ByReverse []float64
+
+func (a ByReverse) Len() int           { return len(a) }
+func (a ByReverse) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a ByReverse) Less(i, j int) bool { return a[i] > a[j] }
 func DirNotCreate(dir string) {
 
 	if _, err := os.Stat(dir); os.IsNotExist(err) {
@@ -115,10 +121,10 @@ func StringToFloat64(v interface{}) float64 {
 	return n
 }
 
-func RoundDecimalFlot64(value interface{}) float64 {
+func RoundDecimalFlot64(Round int, value interface{}) float64 {
 	toStr := fmt.Sprintf("%v", value)
 	amount3, _ := decimal.NewFromString(toStr)
-	f, _ := amount3.Round(2).Float64()
+	f, _ := amount3.Round(int32(Round)).Float64()
 
 	return f
 }
@@ -278,6 +284,7 @@ func Max(a []float64) float64 {
 	return ParInt(maxV)
 }
 func Percentile(N []float64, P float64) float64 {
+
 	i := int(P * float64(len(N)))
 
 	return N[i-1]

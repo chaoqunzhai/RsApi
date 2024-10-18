@@ -517,7 +517,7 @@ func (e RsHost) GetPage(c *gin.Context) {
 		} else {
 			customRow["dialStatus"] = map[string]interface{}{
 				"allLine": 0,
-				"info":    "暂无拨号配置",
+				"info":    "暂无",
 			}
 		}
 		customRow["remotePort"] = row.RemotePort
