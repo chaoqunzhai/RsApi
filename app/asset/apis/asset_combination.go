@@ -217,7 +217,7 @@ func (e Combination) CountOnline(c *gin.Context) {
 	orm.Where("status = 3").Count(&Count)
 
 	result := map[string]interface{}{
-		"online": Count,
+		"count": Count,
 	}
 
 	e.OK(result, "successful")
@@ -246,7 +246,7 @@ func (e Combination) CountOffline(c *gin.Context) {
 	orm.Where("status = 6").Count(&Count)
 
 	result := map[string]interface{}{
-		"online": Count,
+		"count": Count,
 	}
 
 	e.OK(result, "successful")
