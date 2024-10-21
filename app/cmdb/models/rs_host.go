@@ -34,6 +34,7 @@ type RsHost struct {
 	LineType      int          `json:"lineType" gorm:"type:int(1);default:0;comment:线路类型"`
 	AllLine       int          `json:"allLine" gorm:"type:int(1);default:0;comment:机器总线路"`
 	LineBandwidth float64      `json:"lineBandwidth"  gorm:"default:0;comment:单条线路带宽"`
+	Usage         float64      `json:"usage"  gorm:"comment:利用率"`
 	Auth          int          `json:"auth" gorm:"type:int(1);default:1;comment:是否有主机权限"`
 	ProbeShell    string       `json:"probeShell" gorm:"type:varchar(100);comment:主动探测主机命令"`
 	Idc           int          `json:"idc" gorm:"type:int(11);comment:idc"`

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/pkg/errors"
+	"go-admin/app/jobs/watch"
 	"log"
 	"net/http"
 	"os"
@@ -19,7 +20,6 @@ import (
 	"github.com/spf13/cobra"
 
 	"go-admin/app/admin/router"
-	"go-admin/app/jobs"
 	"go-admin/common/database"
 	"go-admin/common/global"
 	common "go-admin/common/middleware"
@@ -90,7 +90,7 @@ func run() error {
 		Addr:    fmt.Sprintf("%s:%d", config.ApplicationConfig.Host, config.ApplicationConfig.Port),
 		Handler: sdk.Runtime.GetEngine(),
 	}
-	jobs.RunCrontab()
+	watch.RunCrontab()
 
 	//costAlgorithm := costAlg.CostAlgorithm{}
 	//costAlgorithm.SetupDb(sdk.Runtime.GetDb())

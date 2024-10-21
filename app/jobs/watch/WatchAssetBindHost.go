@@ -1,50 +1,11 @@
-package jobs
+package watch
 
 import (
-	"fmt"
 	"github.com/go-admin-team/go-admin-core/sdk"
-	"github.com/go-admin-team/go-admin-core/sdk/config"
-	"github.com/jakecoffman/cron"
 	models2 "go-admin/cmd/migrate/migration/models"
 	"go-admin/common/utils"
 	"go-admin/global"
-	"time"
 )
-
-// InitJob
-// 需要将定义的struct 添加到字典中；
-// 字典 key 可以配置到 自动任务 调用目标 中；
-func InitJob() {
-	jobList = map[string]JobExec{
-		"ExamplesOne": ExamplesOne{},
-
-		// ...
-	}
-}
-
-// ExamplesOne
-// 新添加的job 必须按照以下格式定义，并实现Exec函数
-type ExamplesOne struct {
-}
-
-func (t ExamplesOne) Exec(arg interface{}) error {
-	str := time.Now().Format(timeFormat) + " [INFO] JobCore ExamplesOne exec success"
-	// TODO: 这里需要注意 Examples 传入参数是 string 所以 arg.(string)；请根据对应的类型进行转化；
-	switch arg.(type) {
-
-	case string:
-		if arg.(string) != "" {
-			fmt.Println("string", arg.(string))
-			fmt.Println(str, arg.(string))
-		} else {
-			fmt.Println("arg is nil")
-			fmt.Println(str, "arg is nil")
-		}
-		break
-	}
-
-	return nil
-}
 
 func WatchAssetBindHost() {
 	dbList := sdk.Runtime.GetDb()
@@ -237,14 +198,4 @@ func WatchAssetBindHost() {
 		}
 	}
 
-}
-
-func RunCrontab() {
-
-	if config.ApplicationConfig.Mode == "prod" {
-		c := cron.New()
-		c.AddFunc("@every 6m", WatchAssetBindHost, "巡检资产列表和CMDB关联关系")
-		c.Start()
-		fmt.Println("增加cron成功")
-	}
 }

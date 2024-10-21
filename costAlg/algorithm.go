@@ -47,7 +47,7 @@ func (c *CostAlgorithm) StartHostCompute() {
 		hostBindBusiness := fmt.Sprintf("SELECT host_id  FROM `host_bind_business` WHERE `host_bind_business`.`business_id` = %v", bu.Id)
 		c.Orm.Raw(hostBindBusiness).Scan(&bindHostIds)
 		var hostList []models.Host
-		bindHostIdsDemo := []int{344}
+		bindHostIdsDemo := []int{54, 222, 802, 1008}
 		c.Orm.Model(&models.Host{}).Select("id,host_name,sn,status,balance").Where("id in ?", bindHostIdsDemo).Find(&hostList)
 		buValue, ok := c.BusinessMap[bu.Id]
 		if !ok {
@@ -197,7 +197,10 @@ func (c *CostAlgorithm) ComputeMixedAlg() {
 			host.PriceCompute = data
 
 			jsonBytes, _ := json.Marshal(host)
-			fmt.Printf("业务:%v 计算机器: %+v\n", bu.Name, string(jsonBytes))
+			if bu.Name == "白山云" {
+
+				fmt.Printf("业务:%v 计算机器: %+v\n", bu.Name, string(jsonBytes))
+			}
 		}
 		c.BusinessMap[bu.Id] = bu
 	}
@@ -216,7 +219,7 @@ func (c *CostAlgorithm) GetHostPrometheusData(host *Host, SlaConf map[int]*SlaCo
 
 		compute := c.requestPromResult(transmitQuery, SlaConf, isp)
 		//利用率 =  95 / 总带宽
-		compute.Usage = utils.RoundDecimalFlot64(2, compute.PercentG/host.BandwidthIncome)
+		compute.Usage = utils.RoundDecimalFlot64(3, compute.PercentG/host.BandwidthIncome)
 		algMap[isp.Name] = compute
 	}
 

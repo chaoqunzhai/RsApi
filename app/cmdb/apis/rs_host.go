@@ -328,6 +328,7 @@ func MakeSelectOrm(req dto.RsHostGetPageReq, orm *gorm.DB, eOrm *gorm.DB) *gorm.
 	if req.HostId != "" {
 		orm = orm.Where("id = ?", req.HostId)
 	}
+	req.HostName = strings.TrimSpace(req.HostName)
 	if req.HostName != "" {
 		//批量把\n换成逗号
 		newHostName := strings.Replace(req.HostName, "\n", ",", -1)
@@ -405,11 +406,9 @@ func (e RsHost) CountOnline(c *gin.Context) {
 	//在线
 	onlineOrm.Where(onlineHealthySql).Count(&onlineCount)
 	fmt.Println("查询在线总数量", onlineCount)
-	onlineMap := map[string]int64{
-		"all": onlineCount,
-	}
+
 	result := map[string]interface{}{
-		"online":         onlineMap,
+		"online":         onlineCount,
 		"totalBandwidth": utils.RoundDecimalFlot64(3, totalBandwidthG),
 	}
 
@@ -606,6 +605,7 @@ func (e RsHost) GetPage(c *gin.Context) {
 				}
 			}
 		}
+		customRow["usage"] = row.Usage
 		customRow["auth"] = row.Auth
 		customRow["sn"] = snList
 		customRow["system"] = map[string]interface{}{
