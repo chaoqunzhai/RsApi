@@ -246,6 +246,8 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 			hostInstance.Idc = idcId
 		}
 
+	} else {
+		//没有备注的机器
 	}
 
 	if hostInstance.Id > 0 {

@@ -3,6 +3,7 @@ package jobs
 import (
 	"fmt"
 	"github.com/go-admin-team/go-admin-core/sdk"
+	"github.com/go-admin-team/go-admin-core/sdk/config"
 	"github.com/jakecoffman/cron"
 	models2 "go-admin/cmd/migrate/migration/models"
 	"go-admin/common/utils"
@@ -239,9 +240,11 @@ func WatchAssetBindHost() {
 }
 
 func RunCrontab() {
-	c := cron.New()
 
-	c.AddFunc("@every 6m", WatchAssetBindHost, "巡检资产列表和CMDB关联关系")
-	c.Start()
-	fmt.Println("增加cron成功")
+	if config.ApplicationConfig.Mode == "prod" {
+		c := cron.New()
+		c.AddFunc("@every 6m", WatchAssetBindHost, "巡检资产列表和CMDB关联关系")
+		c.Start()
+		fmt.Println("增加cron成功")
+	}
 }

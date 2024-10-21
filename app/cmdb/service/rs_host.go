@@ -73,6 +73,8 @@ func (e *RsHost) GetPage(c *dto.RsHostGetPageReq, p *actions.DataPermission, lis
 	if c.HostId != "" {
 		orm = orm.Where("id = ?", c.HostId)
 	}
+
+	c.HostName = strings.TrimSpace(c.HostName)
 	if c.HostName != "" {
 		//批量把\n换成逗号
 		newHostName := strings.Replace(c.HostName, "\n", ",", -1)

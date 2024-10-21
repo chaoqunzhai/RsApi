@@ -6,7 +6,9 @@ import (
 	models2 "go-admin/cmd/migrate/migration/models"
 	"go-admin/common/prometheus"
 	"go-admin/common/remoteCommand"
+	"go-admin/common/utils"
 	"go-admin/global"
+	"gorm.io/gorm"
 	"strings"
 	"time"
 
@@ -277,66 +279,181 @@ func (e RsHost) Driver(c *gin.Context) {
 // @Success 200 {object} response.Response "{"code": 200, "data": "","msg":"successful"}"
 // @Router /api/v1/register/healthy [post]
 
-func (e RsHost) Count(c *gin.Context) {
+func MakeSelectOrm(req dto.RsHostGetPageReq, orm *gorm.DB) *gorm.DB {
+	if req.IdcName != "" {
+
+		if req.IdcName == "empty" {
+			orm = orm.Where("idc = 0 OR idc IS  NULL")
+		} else {
+			var idcList []models.RsIdc
+			orm.Model(&models.RsIdc{}).Select("id").Where("name like ?", fmt.Sprintf("%%%v%%", req.IdcName)).Find(&idcList)
+			var cache []int
+			for _, idc := range idcList {
+				cache = append(cache, idc.Id)
+			}
+			orm = orm.Where("idc in (?)", cache)
+		}
+
+	}
+
+	if req.IdcNumber != "" {
+		var idcList []models.RsIdc
+		orm.Model(&models.RsIdc{}).Select("id").Where("number like ?", fmt.Sprintf("%%%v%%", req.IdcNumber)).Find(&idcList)
+		var cache []int
+		for _, idc := range idcList {
+			cache = append(cache, idc.Id)
+		}
+		orm = orm.Where("idc in (?)", cache)
+	}
+
+	if req.BusinessId != "" {
+
+		if req.BusinessId == "empty" {
+			emptySql := "SELECT id FROM rs_host WHERE NOT EXISTS " +
+				"( SELECT id FROM host_bind_business WHERE host_bind_business.host_id = rs_host.id ) and deleted_at is NULL;"
+			var hostIds []int
+			orm.Raw(emptySql).Scan(&hostIds)
+			orm = orm.Where("id in (?)", hostIds)
+		} else {
+			var bindHostId []int
+
+			orm.Raw(fmt.Sprintf("select host_id from host_bind_business where business_id in (%v)", req.BusinessId)).Scan(&bindHostId)
+
+			orm = orm.Where("id in (?)", bindHostId)
+		}
+
+		//fmt.Println("查询业务", bindHostId, len(bindHostId))
+	}
+
+	if req.HostId != "" {
+		orm = orm.Where("id = ?", req.HostId)
+	}
+	if req.HostName != "" {
+		//批量把\n换成逗号
+		newHostName := strings.Replace(req.HostName, "\n", ",", -1)
+		// 批量把空格换成逗号
+		newHostName = strings.Replace(newHostName, " ", ",", -1)
+
+		//一个元素 是模糊搜索
+		newHostList := strings.Split(newHostName, ",")
+		if len(newHostList) == 1 {
+			likeKey := fmt.Sprintf("%%%v%%", newHostName)
+			orm = orm.Where("host_name like ? OR sn like ?", likeKey, likeKey)
+		} else {
+			//多个元素 就是精确搜索了
+			orm = orm.Where("host_name in ? OR sn in ?", newHostList, newHostList)
+		}
+
+	}
+	if req.Region != "" {
+		var idcList []models.RsIdc
+		orm.Model(&models.RsIdc{}).Select("id").Where("region like ?", fmt.Sprintf("%%%v%%", req.Region)).Find(&idcList)
+		var cache []int
+		for _, idc := range idcList {
+			cache = append(cache, idc.Id)
+		}
+		orm = orm.Where("idc in (?)", cache)
+
+	}
+
+	if req.BusinessSn != "" {
+
+		var hostSoftware []models2.HostSoftware
+		orm.Model(&models2.HostSoftware{}).Select("host_id").Where(" `key` LIKE 'sn\\_%' AND `value` like ?",
+			fmt.Sprintf("%%%v%%", req.BusinessSn)).Find(&hostSoftware)
+
+		var cache []int
+		for _, host := range hostSoftware {
+			cache = append(cache, host.HostId)
+		}
+		orm = orm.Where("id in (?)", cache)
+	}
+	return orm
+}
+func (e RsHost) CountOnline(c *gin.Context) {
+	req := dto.RsHostGetPageReq{}
 	err := e.MakeContext(c).
 		MakeOrm().
+		Bind(&req).
 		Errors
 	if err != nil {
 		e.Logger.Error(err)
 		e.Error(500, err, err.Error())
 		return
 	}
+	var data models.RsHost
+	orm := e.Orm.Model(&data)
 
-	var allHost int64
-	e.Orm.Model(&models.RsHost{}).Count(&allHost)
+	//在线-----
+	var (
+		onlineCount    int64
+		totalBandwidth int64
+	)
+	onlineHealthySql := "healthy_at >= DATE_SUB(NOW(), INTERVAL 30 MINUTE)"
 
-	var offlineCount int64
-
-	e.Orm.Model(&models.RsHost{}).Where("healthy_at <= DATE_SUB(NOW(), INTERVAL 30 MINUTE) OR healthy_at IS NULL").Updates(map[string]interface{}{
-		"status": global.HostOffline, //30分钟没有上报的就是掉线的
-	}).Count(&offlineCount)
-
-	//自建机房数量
-	var ZjCount int64
-
-	e.Orm.Model(&models.RsHost{}).Where("belong IN (0,1) and (healthy_at <= DATE_SUB(NOW(), INTERVAL 30 MINUTE) OR healthy_at IS NULL )").Count(&ZjCount)
-
-	var ZMCount int64
-	e.Orm.Model(&models.RsHost{}).Where("belong = 2 and (healthy_at <= DATE_SUB(NOW(), INTERVAL 30 MINUTE) OR healthy_at IS NULL )").Count(&ZMCount)
-
-	offlineMap := map[string]int64{
-		"zj":  ZjCount,
-		"zm":  ZMCount,
-		"all": offlineCount,
-	}
-
-	//在线
-
-	var onlineCount int64
-	e.Orm.Model(&models.RsHost{}).Where(" healthy_at >= DATE_SUB(NOW(), INTERVAL 30 MINUTE)").Updates(map[string]interface{}{
+	e.Orm.Model(&models.RsHost{}).Where(onlineHealthySql).Updates(map[string]interface{}{
 		"status": global.HostSuccess, //30分钟内有上报数据的就是在线的
-	}).Count(&onlineCount)
-
-	var ZjLineCount int64
-	e.Orm.Model(&models.RsHost{}).Where("belong IN (0,1) and healthy_at >= DATE_SUB(NOW(), INTERVAL 30 MINUTE)").Count(&ZjLineCount)
-
-	var ZMLineCount int64
-	e.Orm.Model(&models.RsHost{}).Where("belong = 2 and healthy_at >= DATE_SUB(NOW(), INTERVAL 30 MINUTE)").Count(&ZMLineCount)
+	})
+	//总带宽
+	onlineOrm := MakeSelectOrm(req, orm)
+	onlineOrm.Select("IFNULL(SUM(balance), 0) as totalBandwidth").Scan(&totalBandwidth)
+	fmt.Println("查询在线总带宽", totalBandwidth)
+	totalBandwidthG := totalBandwidth
+	if totalBandwidth > 0 {
+		totalBandwidthG = totalBandwidth / 1000
+	}
+	//在线
+	onlineOrm.Where(onlineHealthySql).Count(&onlineCount)
+	fmt.Println("查询在线总数量", onlineCount)
 	onlineMap := map[string]int64{
-		"zj":  ZjLineCount,
-		"zm":  ZMLineCount,
 		"all": onlineCount,
 	}
 	result := map[string]interface{}{
-		"all":     allHost,
-		"offline": offlineMap,
-		"online":  onlineMap,
+		"online":         onlineMap,
+		"totalBandwidth": utils.RoundDecimalFlot64(3, totalBandwidthG),
 	}
 
 	e.OK(result, "successful")
 	return
 }
 
+func (e RsHost) CountOffline(c *gin.Context) {
+	req := dto.RsHostGetPageReq{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
+	var data models.RsHost
+	orm := e.Orm.Model(&data)
+
+	////掉线的数据
+	var offlineCount int64
+	offlineHealthySql := "healthy_at <= DATE_SUB(NOW(), INTERVAL 30 MINUTE) OR healthy_at IS NULL"
+	//更新掉线的数据
+	e.Orm.Model(&models.RsHost{}).Where(offlineHealthySql).Updates(map[string]interface{}{
+		"status": global.HostOffline, //30分钟没有上报的就是掉线的
+	})
+	//查询对应的掉线主机数量
+	offlineOr := MakeSelectOrm(req, orm)
+	offlineOr.Where(offlineHealthySql).Count(&offlineCount)
+
+	fmt.Println("查询离线数据", offlineCount)
+	offlineMap := map[string]int64{
+		"all": offlineCount,
+	}
+
+	result := map[string]interface{}{
+		"offline": offlineMap,
+	}
+
+	e.OK(result, "successful")
+	return
+}
 func (e RsHost) MonitorFlow(c *gin.Context) {
 	req := dto.RsHostMonitorFlow{}
 
