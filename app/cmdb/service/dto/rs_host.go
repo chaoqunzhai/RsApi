@@ -85,6 +85,7 @@ type RsHostGetPageReq struct {
 	Enable         string `form:"enable"  search:"type:exact;column:enable;table:rs_host" comment:"开关"`
 	Idc            string `form:"idc"  search:"type:exact;column:idc;table:rs_host" comment:"关联机房"`
 	IdcName        string `form:"idcName" search:"-"`
+	IdcId          string `form:"idcId"  search:"type:exact;column:idc;table:rs_host" comment:"关联IDC"`
 	IdcNumber      string `form:"idcNumber" search:"-"`
 	BusinessId     string `form:"businessId" search:"-"`
 	Region         string `form:"region"  search:"-" comment:"所在区域"`

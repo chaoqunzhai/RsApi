@@ -279,14 +279,14 @@ func (e RsHost) Driver(c *gin.Context) {
 // @Success 200 {object} response.Response "{"code": 200, "data": "","msg":"successful"}"
 // @Router /api/v1/register/healthy [post]
 
-func MakeSelectOrm(req dto.RsHostGetPageReq, orm *gorm.DB) *gorm.DB {
+func MakeSelectOrm(req dto.RsHostGetPageReq, orm *gorm.DB, eOrm *gorm.DB) *gorm.DB {
 	if req.IdcName != "" {
 
 		if req.IdcName == "empty" {
 			orm = orm.Where("idc = 0 OR idc IS  NULL")
 		} else {
 			var idcList []models.RsIdc
-			orm.Model(&models.RsIdc{}).Select("id").Where("name like ?", fmt.Sprintf("%%%v%%", req.IdcName)).Find(&idcList)
+			eOrm.Model(&models.RsIdc{}).Select("id").Where("name like ?", fmt.Sprintf("%%%v%%", req.IdcName)).Find(&idcList)
 			var cache []int
 			for _, idc := range idcList {
 				cache = append(cache, idc.Id)
@@ -298,7 +298,7 @@ func MakeSelectOrm(req dto.RsHostGetPageReq, orm *gorm.DB) *gorm.DB {
 
 	if req.IdcNumber != "" {
 		var idcList []models.RsIdc
-		orm.Model(&models.RsIdc{}).Select("id").Where("number like ?", fmt.Sprintf("%%%v%%", req.IdcNumber)).Find(&idcList)
+		eOrm.Model(&models.RsIdc{}).Select("id").Where("number like ?", fmt.Sprintf("%%%v%%", req.IdcNumber)).Find(&idcList)
 		var cache []int
 		for _, idc := range idcList {
 			cache = append(cache, idc.Id)
@@ -347,7 +347,7 @@ func MakeSelectOrm(req dto.RsHostGetPageReq, orm *gorm.DB) *gorm.DB {
 	}
 	if req.Region != "" {
 		var idcList []models.RsIdc
-		orm.Model(&models.RsIdc{}).Select("id").Where("region like ?", fmt.Sprintf("%%%v%%", req.Region)).Find(&idcList)
+		eOrm.Model(&models.RsIdc{}).Select("id").Where("region like ?", fmt.Sprintf("%%%v%%", req.Region)).Find(&idcList)
 		var cache []int
 		for _, idc := range idcList {
 			cache = append(cache, idc.Id)
@@ -359,7 +359,7 @@ func MakeSelectOrm(req dto.RsHostGetPageReq, orm *gorm.DB) *gorm.DB {
 	if req.BusinessSn != "" {
 
 		var hostSoftware []models2.HostSoftware
-		orm.Model(&models2.HostSoftware{}).Select("host_id").Where(" `key` LIKE 'sn\\_%' AND `value` like ?",
+		eOrm.Model(&models2.HostSoftware{}).Select("host_id").Where(" `key` LIKE 'sn\\_%' AND `value` like ?",
 			fmt.Sprintf("%%%v%%", req.BusinessSn)).Find(&hostSoftware)
 
 		var cache []int
@@ -395,7 +395,7 @@ func (e RsHost) CountOnline(c *gin.Context) {
 		"status": global.HostSuccess, //30分钟内有上报数据的就是在线的
 	})
 	//总带宽
-	onlineOrm := MakeSelectOrm(req, orm)
+	onlineOrm := MakeSelectOrm(req, orm, e.Orm)
 	onlineOrm.Select("IFNULL(SUM(balance), 0) as totalBandwidth").Scan(&totalBandwidth)
 	fmt.Println("查询在线总带宽", totalBandwidth)
 	totalBandwidthG := totalBandwidth
@@ -439,7 +439,7 @@ func (e RsHost) CountOffline(c *gin.Context) {
 		"status": global.HostOffline, //30分钟没有上报的就是掉线的
 	})
 	//查询对应的掉线主机数量
-	offlineOr := MakeSelectOrm(req, orm)
+	offlineOr := MakeSelectOrm(req, orm, e.Orm)
 	offlineOr.Where(offlineHealthySql).Count(&offlineCount)
 
 	fmt.Println("查询离线数据", offlineCount)
