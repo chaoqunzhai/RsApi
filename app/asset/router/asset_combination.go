@@ -20,6 +20,9 @@ func registerCombinationRouter(v1 *gin.RouterGroup, authMiddleware *jwt.GinJWTMi
 	{
 		r.GET("", actions.PermissionAction(), api.GetPage)
 		r.GET("/:id", actions.PermissionAction(), api.Get)
+
+		r.GET("/count/online", actions.PermissionAction(), api.CountOnline)
+		r.GET("/count/offline", actions.PermissionAction(), api.CountOffline)
 		r.POST("", api.Insert)
 		r.PUT("/:id", actions.PermissionAction(), api.Update)
 		r.DELETE("", api.Delete)

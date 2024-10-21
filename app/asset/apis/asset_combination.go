@@ -3,6 +3,7 @@ package apis
 import (
 	"fmt"
 	models2 "go-admin/cmd/migrate/migration/models"
+	cDto "go-admin/common/dto"
 	"go-admin/common/utils"
 	"go-admin/global"
 	"strings"
@@ -192,6 +193,71 @@ func (e Combination) GetPage(c *gin.Context) {
 		result = append(result, row)
 	}
 	e.PageOK(result, int(count), req.GetPageIndex(), req.GetPageSize(), "查询成功")
+}
+
+func (e Combination) CountOnline(c *gin.Context) {
+	req := dto.CombinationGetPageReq{}
+	s := service.Combination{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
+	var data models.Combination
+
+	orm := e.Orm.Model(&data).Scopes(
+		cDto.MakeCondition(req.GetNeedSearch()))
+
+	var Count int64
+	orm.Where("status = 3").Count(&Count)
+
+	onlineMap := map[string]int64{
+		"all": Count,
+	}
+	result := map[string]interface{}{
+		"online": onlineMap,
+	}
+
+	e.OK(result, "successful")
+	return
+
+}
+func (e Combination) CountOffline(c *gin.Context) {
+	req := dto.CombinationGetPageReq{}
+	s := service.Combination{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
+	var data models.Combination
+
+	orm := e.Orm.Model(&data).Scopes(
+		cDto.MakeCondition(req.GetNeedSearch()))
+
+	var Count int64
+	orm.Where("status = 6").Count(&Count)
+
+	onlineMap := map[string]int64{
+		"all": Count,
+	}
+	result := map[string]interface{}{
+		"online": onlineMap,
+	}
+
+	e.OK(result, "successful")
+	return
+
 }
 
 // Get 获取Combination

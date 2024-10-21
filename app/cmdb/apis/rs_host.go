@@ -443,15 +443,8 @@ func (e RsHost) CountOffline(c *gin.Context) {
 	offlineOr.Where(offlineHealthySql).Count(&offlineCount)
 
 	fmt.Println("查询离线数据", offlineCount)
-	offlineMap := map[string]int64{
-		"all": offlineCount,
-	}
 
-	result := map[string]interface{}{
-		"offline": offlineMap,
-	}
-
-	e.OK(result, "successful")
+	e.OK(offlineCount, "successful")
 	return
 }
 func (e RsHost) MonitorFlow(c *gin.Context) {
