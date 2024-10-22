@@ -55,7 +55,7 @@ func (e *RegisterApi) InitIdc(req dto.IdcMetrics) int {
 	req.Remark = strings.Replace(req.Remark, ".", "", -1)
 	re := regexp.MustCompile(`\d+`)
 
-	matches := re.FindStringSubmatch(req.Remark[0:8])
+	matches := re.FindStringSubmatch(req.Remark)
 	var err error
 	var idcStrNumberIndex int
 	var idcNumber int
@@ -236,6 +236,7 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 	// 关联机房 例如解析remark=166陕西延安宜川集义郭东机房电信1-1-10(40*100M)  大概截取前10个字符，考虑到后期可能机房数达上万个
 	// 备注不为空 并且 没有关联IDC,那就主动关联
 
+	fmt.Println("remark", req.Remark)
 	if req.Remark != "" && len(req.Remark) >= 8 {
 		IdcMetrics := dto.IdcMetrics{
 			Remark:   req.Remark,

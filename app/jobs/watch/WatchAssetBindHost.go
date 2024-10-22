@@ -64,7 +64,6 @@ func WatchAssetBindHost() {
 		for assetId, hostId := range updateAssetBindHost {
 			d.Model(&models2.AdditionsWarehousing{}).Where("id = ?", assetId).Updates(map[string]interface{}{
 				"host_id": hostId,
-				"status":  3,
 			})
 
 			if CombinedId, ok := assetBindCombinedMap[assetId]; ok {
@@ -74,7 +73,6 @@ func WatchAssetBindHost() {
 				CustomId := idcBindCustom[hostIdcId] //idcID 获取关联的客户
 				d.Model(&models2.Combination{}).Where("id = ?", CombinedId).Updates(map[string]interface{}{
 					"host_id": hostId,
-					"status":  3,
 					//"idc_id":    hostIdcId, 因为资产的数据 只是一周上报一次, 但是IDC是随着CMDB资产数据一直在变化 所以是由着下面的
 					"custom_id": CustomId,
 				})

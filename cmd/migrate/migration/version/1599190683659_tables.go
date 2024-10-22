@@ -6,8 +6,6 @@ import (
 
 	"go-admin/cmd/migrate/migration"
 	"go-admin/cmd/migrate/migration/models"
-	common "go-admin/common/models"
-
 	"gorm.io/gorm"
 )
 
@@ -70,7 +68,6 @@ func _1599190683659Tables(db *gorm.DB, version string) error {
 			new(models.Combination),
 			new(models.OutboundOrder),
 			new(models.AssetRecording),
-
 		)
 		if err != nil {
 			return err
@@ -78,8 +75,6 @@ func _1599190683659Tables(db *gorm.DB, version string) error {
 		if err := models.InitDb(tx); err != nil {
 			return err
 		}
-		return tx.Create(&common.Migration{
-			Version: version,
-		}).Error
+		return nil
 	})
 }

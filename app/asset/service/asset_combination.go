@@ -61,7 +61,7 @@ func (e *Combination) Get(d *dto.CombinationGetReq, p *actions.DataPermission, m
 func (e *Combination) Insert(c *dto.CombinationInsertReq) (uid int, err error) {
 	var data models.Combination
 	c.Generate(&data)
-	data.Status = "1"
+	data.Status = 1
 	err = e.Orm.Create(&data).Error
 	if err != nil {
 		e.Log.Errorf("CombinationService Insert error:%s \r\n", err)
@@ -78,7 +78,7 @@ func (e *Combination) Update(c *dto.CombinationUpdateReq, p *actions.DataPermiss
 		actions.Permission(data.TableName(), p),
 	).First(&data, c.GetId())
 	c.Generate(&data)
-	data.Status = "1"
+	data.Status = 1
 	db := e.Orm.Save(&data)
 	if err = db.Error; err != nil {
 		e.Log.Errorf("CombinationService Save error:%s \r\n", err)

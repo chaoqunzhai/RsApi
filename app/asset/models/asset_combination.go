@@ -10,10 +10,11 @@ type Combination struct {
 	models.Model
 	CreateUser string                 `json:"createUser" gorm:"-"`
 	CustomId   int                    `json:"customId" gorm:"type:bigint;comment:所属客户ID"`
+	IdcId      int                    `json:"idcId" gorm:"type:bigint;comment:关联IDC,定时更新"`
 	HostId     int                    `json:"hostId" gorm:"type:bigint;comment:关联的上线CMDB ID"`
 	Desc       string                 `json:"desc" gorm:"type:varchar(35);comment:描述信息"`
 	Code       string                 `json:"code" gorm:"type:varchar(50);comment:组合编号 也就是主机的SN"`
-	Status     string                 `json:"status" gorm:"type:int;comment:资产状态"`
+	Status     int                    `json:"status" gorm:"type:int;comment:资产状态"`
 	AssetCount int                    `json:"assetCount" gorm:"-"`
 	Asset      []AdditionsWarehousing `json:"asset" gorm:"-"`
 	Price      float64                `json:"price" gorm:"-"`

@@ -307,11 +307,10 @@ func (e Combination) AutoInsert(c *gin.Context) {
 	}
 	req.Sn = strings.TrimSpace(req.Sn)
 	req.Sn = strings.Replace(req.Sn, "\n", "", -1)
-	if len(req.Sn) == 0 {
-		e.OK("", "successful")
-		return
-	}
 
+	if req.Sn == "" { //如果有空的SN 那就是以hostname为主
+		req.Sn = req.Hostname
+	}
 	var SearchSn string
 	//SN是否为一个 黑名单.如果是 用主机名做唯一性校验
 	isDirty := global.BlackMap[req.Sn]
@@ -325,9 +324,18 @@ func (e Combination) AutoInsert(c *gin.Context) {
 	e.Orm.Model(&models.Combination{}).Select("id").Where("code = ?", SearchSn).Limit(1).Find(&CombinationModel)
 
 	//主机SN如果 不存在,就创建这么一个组合, 如果存在 不进行操作
+
+	var Status int
+	fmt.Println("资产注册", req.Remark)
+	if strings.HasPrefix(req.Remark, "20000") { //那就是在 公司机房进行组装
+		Status = 1 //在库
+	} else {
+		Status = 3 //在线
+	}
+
 	if CombinationModel.Id == 0 {
 		CombinationModel.Code = SearchSn
-		CombinationModel.Status = "3"
+		CombinationModel.Status = Status
 		e.Orm.Create(&CombinationModel)
 	}
 
@@ -341,7 +349,7 @@ func (e Combination) AutoInsert(c *gin.Context) {
 	AdditionsWarehousingModel.Spec = req.Spec
 	AdditionsWarehousingModel.Name = "服务器"
 	AdditionsWarehousingModel.Brand = req.Brand
-	AdditionsWarehousingModel.Status = 3
+	AdditionsWarehousingModel.Status = Status
 	if AdditionsWarehousingModel.Id == 0 {
 		e.Orm.Create(&AdditionsWarehousingModel)
 		e.Orm.Model(&models.AdditionsWarehousing{}).Where("id = ?", AdditionsWarehousingModel.Id).Updates(map[string]interface{}{
@@ -351,15 +359,16 @@ func (e Combination) AutoInsert(c *gin.Context) {
 		//设置最新的更新时间
 		e.Orm.Model(&models.Combination{}).Where("id = ?", CombinationModel.Id).Updates(map[string]interface{}{
 			"updated_at": time.Now(),
+			"status":     Status,
 		})
 		e.Orm.Save(&AdditionsWarehousingModel)
 	}
 
 	//创建对应的磁盘资产
 	for _, row := range req.DiskSn {
-		Status := row.Status
+		DiskStatus := row.Status
 		if row.Status == 1 { //因为自动注册时,磁盘正常状态就是1,如果异常就是0. 因为是自动注册 在入库逻辑 那默认就是在线的
-			Status = 3
+			DiskStatus = 3
 		}
 		if strings.HasPrefix(row.Size, "0B") {
 			continue
@@ -375,7 +384,7 @@ func (e Combination) AutoInsert(c *gin.Context) {
 				CombinationId: CombinationModel.Id,
 				Name:          row.Name,
 				Spec:          row.Size,
-				Status:        Status,
+				Status:        DiskStatus,
 				UnitId:        2,
 			}
 			e.Orm.Create(&assetRow)

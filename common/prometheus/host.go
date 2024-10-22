@@ -38,7 +38,7 @@ type MonitorCompute struct {
 //			unit = fmt.Sprintf("%.2f",value)
 //		}
 //	}
-func requestPromResult(title, query string, req *dto.RsHostMonitorFlow) interface{} {
+func requestPromResult(title, query string, req *dto.RsHostMonitorFlow, isMb bool) interface{} {
 
 	result := MonitorResult{}
 	//查询普罗米修斯数据
@@ -106,7 +106,10 @@ func requestPromResult(title, query string, req *dto.RsHostMonitorFlow) interfac
 
 			unixTime := time.Unix(int64(unixFloat), 0)
 
-			XData = append(XData, []interface{}{unixTime.Format(time.DateTime), valueStr})
+			if isMb {
+				valueFloat = valueFloat * 1000000
+			}
+			XData = append(XData, []interface{}{unixTime.Format(time.DateTime), valueFloat})
 			//进行计算
 			XValue = append(XValue, valueFloat)
 
@@ -136,22 +139,41 @@ func Transmit(hostname string, req *dto.RsHostMonitorFlow) map[string]interface{
 
 	transmitQuery := fmt.Sprintf("sum(rate(phy_nic_network_transmit_bytes_total{instance=\"%v\"}[5m]))*8", hostname)
 
-	transmitData := requestPromResult("上行", transmitQuery, req)
+	transmitData := requestPromResult("上行", transmitQuery, req, false)
 
 	receiveQuery := fmt.Sprintf("sum(rate(phy_nic_network_receive_bytes_total{instance=\"%v\"}[5m]))*8", hostname)
 
-	receiveData := requestPromResult("下行", receiveQuery, req)
+	receiveData := requestPromResult("下行", receiveQuery, req, false)
 
 	provinceOutQuery := fmt.Sprintf("avg(province_out_percent{instance=\"%v\"}) by (instance) * sum(rate(phy_nic_network_transmit_bytes_total{instance=\"%v\"}[5m]))by(instance)*8",
 		hostname, hostname,
 	)
 
-	provinceOutData := requestPromResult("出省流量", provinceOutQuery, req)
+	provinceOutData := requestPromResult("出省流量", provinceOutQuery, req, false)
 
 	response := map[string]interface{}{
 		"transmit":     transmitData,
 		"receive":      receiveData,
 		"province_out": provinceOutData,
+	}
+
+	return response
+}
+
+func DianXinTransmit(hostname string, req *dto.RsHostMonitorFlow) map[string]interface{} {
+	//主机监控内容
+
+	transmitQuery := fmt.Sprintf("sum(flow_bandwidth_by_minute{instance=\"%v\"})", hostname)
+
+	fmt.Println("transmitQuery", transmitQuery)
+	transmitData := requestPromResult("上行", transmitQuery, req, true)
+	receiveQuery := fmt.Sprintf("sum(flow_download_bandwidth_by_minute{instance=\"%v\"})", hostname)
+	fmt.Println("receiveQuery", receiveQuery)
+	receiveData := requestPromResult("下行", receiveQuery, req, true)
+
+	response := map[string]interface{}{
+		"transmit": transmitData,
+		"receive":  receiveData,
 	}
 
 	return response

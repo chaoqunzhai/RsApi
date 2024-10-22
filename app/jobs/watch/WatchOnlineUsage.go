@@ -7,7 +7,6 @@ import (
 	"go-admin/common/prometheus"
 	"go-admin/common/utils"
 	"go-admin/config"
-	"go-admin/global"
 	"net/url"
 	"sort"
 	"strconv"
@@ -20,7 +19,7 @@ type MonitorCompute struct {
 	Min          float64 `json:"min"`
 	Avg          float64 `json:"avg"`
 	PercentBytes float64 `json:"percentBytes"` //今天计算的95带宽(bytes)
-	PercentG     float64 `json:"percentG"`     //日95带宽G 今天计算的日95带宽(G)
+	PercentValue float64 `json:"percentG"`     //日95带宽G 今天计算的日95带宽(G)
 	IspDayPrice  float64 `json:"ispPrice"`     //计算今天 运营商的收益
 	Usage        float64 `json:"usage"`        //利用率
 }
@@ -30,7 +29,7 @@ func WatchOnlineUsage() {
 
 	for _, d := range dbList {
 		var hostList []models.Host
-		d.Model(&models.Host{}).Select("host_name,balance").Where("healthy_at >= DATE_SUB(NOW(), INTERVAL 30 MINUTE)").Find(&hostList)
+		d.Model(&models.Host{}).Select("host_name,balance,id").Where("healthy_at >= DATE_SUB(NOW(), INTERVAL 30 MINUTE)").Find(&hostList)
 
 		nowTime := time.Now()
 		tenMinutesAgo := fmt.Sprintf("%v", nowTime.Add(-10*time.Minute).Unix())
@@ -39,23 +38,44 @@ func WatchOnlineUsage() {
 
 			transmitQuery := fmt.Sprintf("sum(rate(phy_nic_network_transmit_bytes_total{instance=\"%v\"}[5m]))*8", host.HostName)
 
-			BandwidthIncome := host.Balance / 1000 //换算成G
+			BandwidthIncome := host.Balance / 1000 //MB换算成G
 
-			compute := RequestPromResult(tenMinutesAgo, endTime, "60", transmitQuery)
+			compute := RequestPromResult(tenMinutesAgo, endTime, "60", transmitQuery, false)
 			updateMap := make(map[string]interface{})
-			if compute.Empty {
-				updateMap["status"] = global.HostOffline
-			} else {
-				updateMap["status"] = global.HostSuccess
-				updateMap["usage"] = utils.RoundDecimalFlot64(3, compute.PercentG/BandwidthIncome)
+			updateTag := false
+			if !compute.Empty { //有数据
+				updateTag = true
+				updateMap["usage"] = utils.RoundDecimalFlot64(3, compute.PercentValue/BandwidthIncome)
+
+			} else { //空的监控数据,那就尝试在 另外一个指标中请求
+
+				computeTwo := WatchFlowDownloadBandwidth(tenMinutesAgo, endTime, host)
+				//fmt.Printf("在其他的参数中请求 %v,%+v,%v\n", host.HostName, computeTwo, BandwidthIncome)
+				if !computeTwo.Empty { //有数据
+					updateTag = true
+					updateMap["usage"] = utils.RoundDecimalFlot64(3, computeTwo.PercentValue/BandwidthIncome)
+				}
 			}
-			d.Model(&models.Host{}).Where("id = ?", host.Id).Updates(updateMap)
+
+			if updateTag {
+				d.Model(&models.Host{}).Where("id = ?", host.Id).Updates(updateMap)
+			}
 
 		}
 	}
 }
 
-func RequestPromResult(start, end, setup, query string) *MonitorCompute {
+// 点心的接口定义是 flow_download_bandwidth_by_minute
+func WatchFlowDownloadBandwidth(tenMinutesAgo, endTime string, host models.Host) *MonitorCompute {
+	//这里面的单位是MB
+	transmitQuery := fmt.Sprintf("sum(flow_download_bandwidth_by_minute{instance=\"%v\"})", host.HostName)
+
+	compute := RequestPromResult(tenMinutesAgo, endTime, "60", transmitQuery, true)
+
+	return compute
+}
+
+func RequestPromResult(start, end, setup, query string, isMb bool) *MonitorCompute {
 
 	result := &MonitorCompute{}
 	//查询普罗米修斯数据
@@ -127,8 +147,13 @@ func RequestPromResult(start, end, setup, query string) *MonitorCompute {
 	if len(XValue) > 1 {
 
 		Percent := utils.Percentile(XValue, 0.95)
+		//fmt.Println("Percent", Percent)
 		result.PercentBytes = Percent
-		result.PercentG = utils.RoundDecimalFlot64(3, Percent/(1024*1024*1024))
+		if isMb { //是MB的单位
+			result.PercentValue = utils.RoundDecimalFlot64(3, Percent/1000)
+		} else {
+			result.PercentValue = utils.RoundDecimalFlot64(3, Percent/(1024*1024*1024))
+		}
 
 	} else {
 		result.Empty = true

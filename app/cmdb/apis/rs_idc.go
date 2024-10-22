@@ -169,6 +169,12 @@ func (e RsIdc) Insert(c *gin.Context) {
 		e.Error(500, nil, "机房名称已存在")
 		return
 	}
+	var numberCount int64
+	e.Orm.Model(&models.RsIdc{}).Where("number = ?", req.Number).Count(&numberCount)
+	if numberCount > 0 {
+		e.Error(500, nil, "机房编号名称已存在")
+		return
+	}
 	modelId, err := s.Insert(&req)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("创建RsIdc失败，\r\n失败信息 %s", err.Error()))

@@ -397,7 +397,7 @@ func (e RsHost) CountOnline(c *gin.Context) {
 	})
 	//总带宽
 	onlineOrm := MakeSelectOrm(req, orm, e.Orm)
-	onlineOrm.Select("IFNULL(SUM(balance), 0) as totalBandwidth").Scan(&totalBandwidth)
+	onlineOrm.Select("IFNULL(SUM(balance), 0) as totalBandwidth").Where(onlineHealthySql).Scan(&totalBandwidth)
 	fmt.Println("查询在线总带宽", totalBandwidth)
 	totalBandwidthG := totalBandwidth
 	if totalBandwidth > 0 {
@@ -461,7 +461,7 @@ func (e RsHost) MonitorFlow(c *gin.Context) {
 	//获取这个主机的主机名
 
 	var hostInstance models.RsHost
-	e.Orm.Model(&hostInstance).Select("host_name,id").Where("id = ?", req.Id).Limit(1).Find(&hostInstance)
+	e.Orm.Model(&hostInstance).Select("host_name,id").Preload("Business").Where("id = ?", req.Id).Limit(1).Find(&hostInstance)
 
 	if hostInstance.Id == 0 {
 		e.Error(500, nil, "主机不存在")
@@ -478,7 +478,24 @@ func (e RsHost) MonitorFlow(c *gin.Context) {
 		req.Setup = 60
 	}
 	HostName := hostInstance.HostName
-	result := prometheus.Transmit(HostName, &req)
+
+	otherTag := false
+	fmt.Println("hostInstance.Business", hostInstance.Business)
+	if len(hostInstance.Business) > 0 {
+
+		for _, row := range hostInstance.Business {
+			if row.Name == "点心" {
+				otherTag = true
+			}
+		}
+	}
+
+	var result interface{}
+	if otherTag {
+		result = prometheus.DianXinTransmit(HostName, &req)
+	} else {
+		result = prometheus.Transmit(HostName, &req)
+	}
 	e.OK(result, "successful")
 	return
 }
@@ -605,9 +622,9 @@ func (e RsHost) GetPage(c *gin.Context) {
 				}
 			}
 		}
-		customRow["usage"] = row.Usage
+		customRow["usage"] = fmt.Sprintf("%v%%", utils.RoundDecimalFlot64(2, row.Usage*100))
 		customRow["auth"] = row.Auth
-		customRow["sn"] = snList
+
 		customRow["system"] = map[string]interface{}{
 			"cpu": row.Cpu,
 			"ip":  row.Ip,
@@ -656,7 +673,21 @@ func (e RsHost) GetPage(c *gin.Context) {
 		customRow["region"] = row.Region
 
 		if BusinessDat, ok := BusinessMapData[row.Id]; ok {
+
+			buSnList := make([]interface{}, 0)
+			for _, buRow := range BusinessDat {
+
+				for _, softBu := range snList {
+					if buRow.Label == softBu.Label {
+						buSnList = append(buSnList, softBu)
+					}
+				}
+			}
+			customRow["sn"] = buSnList
 			customRow["business"] = BusinessDat
+
+			//因为考虑到可能切了业务,这个SN也必须一一匹配
+
 		}
 		result = append(result, customRow)
 	}

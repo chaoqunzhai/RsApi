@@ -35,6 +35,7 @@ func (m *CombinationGetPageReq) GetNeedSearch() interface{} {
 }
 
 type CombinationAutoReq struct {
+	Remark   string            `json:"remark"`
 	Sn       string            `json:"sn"`
 	Hostname string            `json:"hostname"`
 	Brand    string            `json:"brand"`
@@ -52,8 +53,8 @@ type CombinationInsertReq struct {
 	Id   int    `json:"-" comment:"主键编码"` // 主键编码
 	Desc string `json:"desc" comment:"描述信息"`
 
-	Status string `json:"status" comment:"资产状态"`
-	Asset  []int  `json:"asset"`
+	Status int   `json:"status" comment:"资产状态"`
+	Asset  []int `json:"asset"`
 	common.ControlBy
 }
 
@@ -75,8 +76,8 @@ type CombinationUpdateReq struct {
 	Id   int    `uri:"id" comment:"主键编码"` // 主键编码
 	Desc string `json:"desc" comment:"描述信息"`
 
-	Status string `json:"status" comment:"资产状态"`
-	Asset  []int  `json:"asset"`
+	Status int   `json:"status" comment:"资产状态"`
+	Asset  []int `json:"asset"`
 	common.ControlBy
 }
 
