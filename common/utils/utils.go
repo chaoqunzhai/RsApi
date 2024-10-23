@@ -15,10 +15,16 @@ import (
 	"path/filepath"
 	"reflect"
 	"regexp"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
 )
+
+type KeyValue struct {
+	Key   int
+	Value int
+}
 
 // 定义一个整数切片类型，并实现 sort.Interface 接口
 type ByReverse []float64
@@ -80,6 +86,24 @@ func GetWeekdayTimestamps(weekdayNumber int) (weekTime time.Time, err error) {
 	startOfWeek := now.AddDate(0, 0, int(-now.Weekday()+weekday))
 
 	return startOfWeek, nil
+}
+
+func SortMap(obj map[int]int, orderVal string) []KeyValue {
+	// 将 map 的键值对存储到一个切片中
+	var kvSlice []KeyValue
+	for k, v := range obj {
+		kvSlice = append(kvSlice, KeyValue{k, v})
+	}
+
+	// 对切片进行排序（基于值）
+	sort.Slice(kvSlice, func(i, j int) bool {
+		if orderVal == "asc" {
+			return kvSlice[i].Value < kvSlice[j].Value
+		}
+		return kvSlice[i].Value > kvSlice[j].Value
+	})
+
+	return kvSlice
 }
 func StructToMap(obj interface{}) map[string]interface{} {
 

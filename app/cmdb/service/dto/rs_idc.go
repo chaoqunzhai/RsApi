@@ -18,6 +18,7 @@ type RsIdcGetPageReq struct {
 	BuId           int    `form:"buId"  search:"type:exact;column:bu_id;table:rs_idc" comment:"商务人员"`
 	Status         int    `form:"status"  search:"type:exact;column:status;table:rs_idc" comment:"机房状态"`
 	Belong         int    `form:"belong"  search:"type:exact;column:belong;table:rs_idc" comment:"机房归属"`
+	OffLineOrder   string `form:"offLineOrder"  search:"-"`
 	RsIdcOrder
 }
 

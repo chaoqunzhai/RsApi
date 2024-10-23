@@ -54,14 +54,16 @@ func WatchOnlineUsage() {
 			if !compute.Empty { //有数据
 				updateTag = true
 				updateMap["usage"] = utils.RoundDecimalFlot64(3, compute.PercentValue/BandwidthIncome)
+				updateMap["percent_value"] = compute.PercentValue
 
 			} else { //空的监控数据,那就尝试在 另外一个指标中请求
 
 				computeTwo := WatchFlowDownloadBandwidth(tenMinutesAgo, endTime, host)
-				//fmt.Printf("在其他的参数中请求 %v,%+v,%v\n", host.HostName, computeTwo, BandwidthIncome)
+				fmt.Printf("在其他的参数中请求 %v,%+v,%v\n", host.HostName, computeTwo, BandwidthIncome)
 				if !computeTwo.Empty { //有数据
 					updateTag = true
 					updateMap["usage"] = utils.RoundDecimalFlot64(3, computeTwo.PercentValue/BandwidthIncome)
+					updateMap["percent_value"] = computeTwo.PercentValue
 				}
 			}
 

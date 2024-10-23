@@ -3,6 +3,8 @@ package service
 import (
 	"errors"
 	"fmt"
+	"go-admin/common/utils"
+	"go-admin/global"
 	"strings"
 
 	"github.com/go-admin-team/go-admin-core/sdk/service"
@@ -48,6 +50,39 @@ func (e *RsIdc) GetPage(c *dto.RsIdcGetPageReq, p *actions.DataPermission, list 
 		}
 		likeQ := fmt.Sprintf("region like '%%%s%%'", searchRegion)
 		orm = orm.Where(likeQ)
+	}
+
+	if c.OffLineOrder != "asc" {
+		//离线数量排序
+
+		var hostList []models.RsHost
+		//1.查询所有的主机
+		e.Orm.Model(&models.RsHost{}).Select("idc,status").Where("status = ?", global.HostOffline).Find(&hostList)
+		idcMap := make(map[int]int, 0)
+
+		for _, host := range hostList {
+			RsIdcCount, ok := idcMap[host.Idc]
+			if !ok {
+				RsIdcCount = 0
+			}
+
+			RsIdcCount += 1
+			idcMap[host.Idc] = RsIdcCount
+		}
+
+		kvSlice := utils.SortMap(idcMap, c.OffLineOrder)
+
+		idcS := func() []int {
+			var idcList []int
+			for _, v := range kvSlice {
+				idcList = append(idcList, v.Key)
+			}
+			return idcList
+		}()
+
+		if len(idcS) > 0 {
+			orm = orm.Where("id in (?)", idcS)
+		}
 	}
 	err = orm.Scopes(
 		cDto.MakeCondition(c.GetNeedSearch()),

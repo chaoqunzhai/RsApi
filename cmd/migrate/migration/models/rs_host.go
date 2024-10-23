@@ -35,6 +35,7 @@ type Host struct {
 	AllLine       int          `json:"allLine" gorm:"type:int(1);default:0;comment:机器总线路"`
 	LineBandwidth float64      `json:"lineBandwidth"  gorm:"default:0;comment:单条线路带宽"`
 	Usage         float64      `json:"usage"  gorm:"comment:利用率"`
+	PercentValue  float64      `json:"percentValue" gorm:"comment:计算昨天95带宽值"`
 	Idc           int          `json:"idc" gorm:"index;type:int(11);comment:关联的IDC"`
 	Auth          int          `json:"auth" gorm:"type:int(1);default:1;comment:是否有主机权限"`
 	ProbeShell    string       `json:"probeShell" gorm:"type:varchar(200);comment:主动探测主机命令"`
