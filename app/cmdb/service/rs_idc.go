@@ -38,16 +38,15 @@ func (e *RsIdc) GetPage(c *dto.RsIdcGetPageReq, p *actions.DataPermission, list 
 	}
 	if c.Region != "" {
 		RegionList := strings.Split(c.Region, ",")
-		var likeQ string
+		var searchRegion string
+
 		if len(RegionList) > 1 {
-			orTo := make([]string, 0)
-			for _, v := range RegionList {
-				orTo = append(orTo, fmt.Sprintf(" region like '%%%s%%' ", v))
-			}
-			likeQ = fmt.Sprintf("%v", strings.Join(orTo, " OR "))
+
+			searchRegion = RegionList[len(RegionList)-1]
 		} else {
-			likeQ = fmt.Sprintf("region like '%%%s%%'", c.Region)
+			searchRegion = c.Region
 		}
+		likeQ := fmt.Sprintf("region like '%%%s%%'", searchRegion)
 		orm = orm.Where(likeQ)
 	}
 	err = orm.Scopes(

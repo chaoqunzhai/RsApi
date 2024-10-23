@@ -26,14 +26,22 @@ type MonitorCompute struct {
 
 func WatchOnlineUsage() {
 	dbList := sdk.Runtime.GetDb()
+	now := time.Now()
+	// 计算昨天的日期
+	yesterday := now.AddDate(0, 0, -1)
+
+	// 计算昨天的 0 点
+	startOfYesterday := time.Date(yesterday.Year(), yesterday.Month(), yesterday.Day(), 0, 0, 0, 0, yesterday.Location())
+
+	// 计算昨天的 23:59:59
+	endOfYesterday := startOfYesterday.Add(24*time.Hour - time.Second)
 
 	for _, d := range dbList {
 		var hostList []models.Host
 		d.Model(&models.Host{}).Select("host_name,balance,id").Where("healthy_at >= DATE_SUB(NOW(), INTERVAL 30 MINUTE)").Find(&hostList)
 
-		nowTime := time.Now()
-		tenMinutesAgo := fmt.Sprintf("%v", nowTime.Add(-10*time.Minute).Unix())
-		endTime := fmt.Sprintf("%v", nowTime.Unix())
+		tenMinutesAgo := fmt.Sprintf("%v", startOfYesterday.Unix())
+		endTime := fmt.Sprintf("%v", endOfYesterday.Unix())
 		for _, host := range hostList {
 
 			transmitQuery := fmt.Sprintf("sum(rate(phy_nic_network_transmit_bytes_total{instance=\"%v\"}[5m]))*8", host.HostName)

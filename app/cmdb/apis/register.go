@@ -54,8 +54,13 @@ func RemoveBracketContent(s string) string {
 func (e *RegisterApi) InitIdc(req dto.IdcMetrics) int {
 	req.Remark = strings.Replace(req.Remark, ".", "", -1)
 	re := regexp.MustCompile(`\d+`)
+	var matches []string
+	if len(req.Remark) > 7 {
+		matches = re.FindStringSubmatch(req.Remark[0:8])
+	} else {
+		matches = re.FindStringSubmatch(req.Remark)
+	}
 
-	matches := re.FindStringSubmatch(req.Remark)
 	var err error
 	var idcStrNumberIndex int
 	var idcNumber int

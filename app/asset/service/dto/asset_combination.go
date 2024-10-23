@@ -11,7 +11,8 @@ type CombinationGetPageReq struct {
 	Id             string `form:"id" search:"type:exact;column:id;table:asset_combination"`
 	CustomId       int    `form:"customId" search:"type:exact;column:custom_id;table:asset_combination"`
 	HostId         int    `form:"hostId" search:"type:exact;column:host_id;table:asset_combination"`
-	IdcId          int    `form:"idcId" search:"type:exact;column:idc_id;table:asset_combination"`
+	IdcId          int    `form:"idcId" search:"-"`
+	MakeHostIds    []int  `search:"-"`
 	Code           string `form:"code"  search:"type:contains;column:code;table:asset_combination" comment:"组合编号"`
 	Status         string `form:"status"  search:"type:exact;column:status;table:asset_combination" comment:"资产状态"`
 	Extend         int    `form:"extend" search:"-"`

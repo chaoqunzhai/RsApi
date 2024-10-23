@@ -622,7 +622,19 @@ func (e RsHost) GetPage(c *gin.Context) {
 				}
 			}
 		}
-		customRow["usage"] = fmt.Sprintf("%v%%", utils.RoundDecimalFlot64(2, row.Usage*100))
+
+		var usageStr string
+		usageNumber := utils.RoundDecimalFlot64(2, row.Usage*100)
+		if usageNumber > 100 {
+			usageStr = "100%"
+		} else {
+			usageStr = fmt.Sprintf("%v%%", usageNumber)
+		}
+
+		if row.Status == -1 { //如果是离线的主机 实际上
+			usageStr = "0%"
+		}
+		customRow["usage"] = usageStr
 		customRow["auth"] = row.Auth
 
 		customRow["system"] = map[string]interface{}{

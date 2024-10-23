@@ -115,6 +115,13 @@ func (e Combination) GetPage(c *gin.Context) {
 	list := make([]models.Combination, 0)
 	var count int64
 
+	var hostIds []int
+	if req.IdcId != 0 { //先过滤 IDC的主机
+		e.Orm.Model(&models2.Host{}).Select("id").Where("idc = ?", req.IdcId).Scan(&hostIds)
+
+		req.MakeHostIds = hostIds
+	}
+	//可能会有重复的数据
 	err = s.GetPage(&req, p, &list, &count)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("获取Combination失败，\r\n失败信息 %s", err.Error()))
@@ -365,11 +372,9 @@ func (e Combination) AutoInsert(c *gin.Context) {
 	}
 
 	//创建对应的磁盘资产
+
 	for _, row := range req.DiskSn {
-		DiskStatus := row.Status
-		if row.Status == 1 { //因为自动注册时,磁盘正常状态就是1,如果异常就是0. 因为是自动注册 在入库逻辑 那默认就是在线的
-			DiskStatus = 3
-		}
+
 		if strings.HasPrefix(row.Size, "0B") {
 			continue
 		}
@@ -384,17 +389,26 @@ func (e Combination) AutoInsert(c *gin.Context) {
 				CombinationId: CombinationModel.Id,
 				Name:          row.Name,
 				Spec:          row.Size,
-				Status:        DiskStatus,
+				Status:        Status,
 				UnitId:        2,
 			}
 			e.Orm.Create(&assetRow)
 			e.Orm.Model(&models.AdditionsWarehousing{}).Where("id = ?", assetRow.Id).Updates(map[string]interface{}{
-				"code": fmt.Sprintf("ZC%08d", assetRow.Id),
+				"code":   fmt.Sprintf("ZC%08d", assetRow.Id),
+				"status": Status,
 			})
+		} else {
+			if diskRow.CombinationId == 0 {
+				e.Orm.Model(&models.AdditionsWarehousing{}).Where("id = ?", diskRow.Id).Updates(map[string]interface{}{
+					"combination_id": CombinationModel.Id,
+					"status":         Status,
+				})
+			}
 		}
 
 	}
 	//创建对应的内存条
+
 	for sn, size := range req.MemorySn {
 		var memRow models.AdditionsWarehousing
 		e.Orm.Model(&models.AdditionsWarehousing{}).Select("id").Where("sn = ?", sn).Limit(1).Find(&memRow)
@@ -407,13 +421,21 @@ func (e Combination) AutoInsert(c *gin.Context) {
 				CombinationId: CombinationModel.Id,
 				Name:          "内存条",
 				Spec:          size,
-				Status:        3,
+				Status:        Status,
 				UnitId:        2,
 			}
 			e.Orm.Create(&assetRow)
 			e.Orm.Model(&models.AdditionsWarehousing{}).Where("id = ?", assetRow.Id).Updates(map[string]interface{}{
-				"code": fmt.Sprintf("ZC%08d", assetRow.Id),
+				"code":   fmt.Sprintf("ZC%08d", assetRow.Id),
+				"status": Status,
 			})
+		} else {
+			if memRow.CombinationId == 0 {
+				e.Orm.Model(&models.AdditionsWarehousing{}).Where("id = ?", memRow.Id).Updates(map[string]interface{}{
+					"combination_id": CombinationModel.Id,
+					"status":         Status,
+				})
+			}
 		}
 	}
 

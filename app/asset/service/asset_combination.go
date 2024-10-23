@@ -21,12 +21,15 @@ func (e *Combination) GetPage(c *dto.CombinationGetPageReq, p *actions.DataPermi
 	var err error
 	var data models.Combination
 
-	err = e.Orm.Model(&data).
-		Scopes(
-			cDto.MakeCondition(c.GetNeedSearch()),
-			cDto.Paginate(c.GetPageSize(), c.GetPageIndex()),
-			actions.Permission(data.TableName(), p),
-		).
+	orm := e.Orm.Model(&data)
+	if len(c.MakeHostIds) > 0 {
+		orm = orm.Where("host_id in (?)", c.MakeHostIds)
+	}
+	err = orm.Scopes(
+		cDto.MakeCondition(c.GetNeedSearch()),
+		cDto.Paginate(c.GetPageSize(), c.GetPageIndex()),
+		actions.Permission(data.TableName(), p),
+	).
 		Find(list).Limit(-1).Offset(-1).
 		Count(count).Error
 	if err != nil {

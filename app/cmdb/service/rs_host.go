@@ -121,7 +121,7 @@ func (e *RsHost) GetPage(c *dto.RsHostGetPageReq, p *actions.DataPermission, lis
 		actions.Permission(data.TableName(), p),
 	)
 	if c.RsHostOrder.Status != "" {
-		orm = orm.Order(fmt.Sprintf("`status` %v,id desc", c.RsHostOrder.Status))
+		orm = orm.Order(fmt.Sprintf("`status` %v,`usage` asc", c.RsHostOrder.Status))
 	}
 	err = orm.
 		Find(list).Limit(-1).Offset(-1).
