@@ -92,9 +92,6 @@ func run() error {
 	}
 	watch.RunCrontab()
 
-	//costAlgorithm := costAlg.CostAlgorithm{}
-	//costAlgorithm.SetupDb(sdk.Runtime.GetDb())
-	//costAlgorithm.StartHostCompute()
 	if apiCheck {
 		var routers = sdk.Runtime.GetRouter()
 		q := sdk.Runtime.GetMemoryQueue("")

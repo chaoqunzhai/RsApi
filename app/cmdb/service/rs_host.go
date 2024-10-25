@@ -83,6 +83,7 @@ func (e *RsHost) GetPage(c *dto.RsHostGetPageReq, p *actions.DataPermission, lis
 
 		//一个元素 是模糊搜索
 		newHostList := strings.Split(newHostName, ",")
+		fmt.Println("newHostList", newHostList)
 		if len(newHostList) == 1 {
 			likeKey := fmt.Sprintf("%%%v%%", newHostName)
 			orm = orm.Where("host_name like ? OR sn like ?", likeKey, likeKey)
@@ -234,26 +235,33 @@ func (e *RsHost) Update(c *dto.RsHostUpdateReq, p *actions.DataPermission) error
 func (e *RsHost) Remove(d *dto.RsHostDeleteReq, p *actions.DataPermission) error {
 	var data models.RsHost
 
-	db := e.Orm.Model(&data).
-		Scopes(
-			actions.Permission(data.TableName(), p),
-		).Delete(&data, d.GetId())
-	if err := db.Error; err != nil {
-		e.Log.Errorf("Service RemoveRsHost error:%s \r\n", err)
-		return err
+	var CombinationList []models2.Combination
+	e.Orm.Model(&models2.Combination{}).Where("host_id in ?", d.GetId()).Find(&CombinationList)
+
+	var combinationIds []int
+	for _, combination := range CombinationList {
+		combinationIds = append(combinationIds, combination.Id)
 	}
-	if db.RowsAffected == 0 {
-		return errors.New("无权删除该数据")
-	}
-	e.Orm.Model(models2.HostSystem{}).Where("host_id in ?", d.GetId()).Unscoped().Delete(&models2.HostSystem{})
-	e.Orm.Model(models2.HostSwitchLog{}).Where("host_id in ?", d.GetId()).Unscoped().Delete(&models2.HostSwitchLog{})
-	e.Orm.Model(models2.HostSoftware{}).Where("host_id in ?", d.GetId()).Unscoped().Delete(&models2.HostSoftware{})
-	e.Orm.Model(models2.HostNetDevice{}).Where("host_id in ?", d.GetId()).Unscoped().Delete(&models2.HostNetDevice{})
+	//资产组合删除
+	e.Orm.Model(&models2.AdditionsWarehousing{}).Unscoped().Where("combination_id in ?", combinationIds).Delete(&models2.AdditionsWarehousing{})
+	//组合删除
+	e.Orm.Model(&models2.Combination{}).Unscoped().Where("host_id in ?", d.GetId()).Delete(&models2.Combination{})
+	e.Orm.Model(models2.HostSystem{}).Unscoped().Where("host_id in ?", d.GetId()).Unscoped().Delete(&models2.HostSystem{})
+	e.Orm.Model(models2.HostSwitchLog{}).Unscoped().Where("host_id in ?", d.GetId()).Unscoped().Delete(&models2.HostSwitchLog{})
+	e.Orm.Model(models2.HostSoftware{}).Unscoped().Where("host_id in ?", d.GetId()).Unscoped().Delete(&models2.HostSoftware{})
+	e.Orm.Model(models2.HostNetDevice{}).Unscoped().Where("host_id in ?", d.GetId()).Unscoped().Delete(&models2.HostNetDevice{})
+	e.Orm.Model(models2.Dial{}).Unscoped().Where("host_id in ?", d.GetId()).Unscoped().Delete(&models2.Dial{})
 
 	idsStr := d.GetIdStr()
 	e.Orm.Exec(fmt.Sprintf("update rs_dial  set deleted_at = NULL where host_id in (%v)", idsStr))
 
 	e.Orm.Exec(fmt.Sprintf("DELETE from host_bind_business where host_id in (%v)", idsStr))
+
+	//最后清空资产
+	e.Orm.Model(&data).
+		Scopes(
+			actions.Permission(data.TableName(), p),
+		).Unscoped().Delete(&data, d.GetId())
 	return nil
 }
 func (e *RsHost) GetIdcList(ids []int) map[int][]interface{} {

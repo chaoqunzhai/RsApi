@@ -219,18 +219,55 @@ func (e RsIdc) Update(c *gin.Context) {
 	req.SetUpdateBy(user.GetUserId(c))
 	p := actions.GetPermissionFromContext(c)
 
-	err = s.Update(&req, p)
-	if err != nil {
-		e.Error(500, err, fmt.Sprintf("修改RsIdc失败，\r\n失败信息 %s", err.Error()))
-		return
+	result := s.Update(&req, p)
+
+	var info string
+	hostStatus := 1
+	assetStatus := 3
+
+	switch req.Status {
+	case 1:
+		info += " 上架"
+	case 2:
+		info += " 待交付"
+	case 3:
+		info += " 待测试"
+	case 4:
+		hostStatus = -1
+		assetStatus = 4
+		info += " 下架"
 	}
+	e.Orm.Model(&models.RsIdc{}).Where("id = ?", req.Id).Updates(map[string]interface{}{
+		"status": req.Status,
+	})
+	e.Orm.Model(&models.RsHost{}).Where("idc = ?", req.Id).Updates(map[string]interface{}{
+		"status": hostStatus,
+	})
+
+	var CombinationList []models2.Combination
+	e.Orm.Model(&models2.Combination{}).Where("idc_id = ?", req.Id).Updates(map[string]interface{}{
+		"status": assetStatus,
+	}).Find(&CombinationList)
+	var combinationIds []int
+	for _, combination := range CombinationList {
+		combinationIds = append(combinationIds, combination.Id)
+	}
+
+	e.Orm.Model(&models2.AdditionsWarehousing{}).Where("combination_id in ?", combinationIds).Updates(map[string]interface{}{
+		"status": assetStatus,
+	})
+
+	if desc, ok := result["desc"]; ok {
+		info += fmt.Sprintf("备注: %v", desc)
+	}
+
 	e.Orm.Create(&models2.OperationLog{
 		CreateUser: user.GetUserName(c),
 		Action:     "PUT",
 		Module:     "rs_idc",
 		ObjectId:   req.Id,
 		TargetId:   req.Id,
-		Info:       "更新IDC",
+		Info:       info,
 	})
 	e.OK(req.GetId(), "修改成功")
 }

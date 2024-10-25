@@ -7,16 +7,17 @@ import (
 
 type HostIncome struct {
 	Model
+	AlgDay            string       `json:"algDay"  gorm:"index;comment:计算时间"`
 	CreatedAt         time.Time    `json:"createdAt" gorm:"comment:计算时间"`
 	HostId            int          `json:"hostId" gorm:"index;comment:主机ID"`
 	Isp               int          `json:"isp" gorm:"index;comment:运营商ID"`
 	IdcId             int          `json:"idcId" gorm:"index;comment:IDC ID"`
-	BusinessName      string       `json:"businessName" gorm:"index;comment:业务名称"`
+	BuId              int          `json:"buId" gorm:"index;comment:业务名称"`
 	Income            float64      `json:"income" gorm:"收益"`
 	Usage             float64      `json:"usage" gorm:"利用率,单位是%"`
-	Bandwidth95       float64      `json:"bandwidth95" gorm:"95带宽,单位是G"`
+	Bandwidth95       float64      `json:"bandwidth95" gorm:"95计费带宽"`
 	BandwidthIncome   float64      `json:"bandwidthIncome" gorm:"计费带宽,单位是G"`
-	Estimate          float64      `json:"estimate" gorm:"预估收益"`
+	AvgDayPrice       float64      `json:"avgDayPrice" gorm:"计算每天的价格=运营商费用/当月天数"`
 	Actual            float64      `json:"actual" gorm:"实际收益"`
 	RetryId           int          `json:"retryId" gorm:"重算任务ID"`
 	RetryPrice        float64      `json:"retryPrice" gorm:"重算价格"`

@@ -44,3 +44,39 @@ func (e *MapEvent) Delete(userId int) {
 
 	delete(e.M, userId)
 }
+
+// 资产和主机状态相互置换
+func AssetToHostStatus(v int) int {
+	var updateHost int
+	switch v {
+	case 1: //在库
+		updateHost = 0
+	case 2: //出库 - 主机离线
+		updateHost = -1
+	case 3: //在线 - 主机在线
+		updateHost = 1
+	case 4: //下架 - 主机下架
+		updateHost = 2
+	case 5: //闲置 - 主机连接中
+		updateHost = 0
+	case 6: //离线 - 主机离线
+		updateHost = -1
+	}
+	return updateHost
+}
+
+// 主机状态和资产 相互置换
+func HostToAssetStatus(v int) int {
+	var updateHost int
+	switch v {
+	case 0: //链接中
+		updateHost = 3
+	case 1: //在线 - 资产在线
+		updateHost = 3
+	case -1: //离线 - 资产离线
+		updateHost = 6
+	case 2: //下架 - 资产下架
+		updateHost = 4
+	}
+	return updateHost
+}

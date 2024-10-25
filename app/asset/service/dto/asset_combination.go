@@ -50,6 +50,16 @@ type AutoDisk struct {
 	Sn     string `json:"sn"`
 	Status int    `json:"status"`
 }
+
+type CombinationUpdateStatus struct {
+	Ids  []int       `json:"ids" comment:"主键编码"` // 主键编码
+	Desc interface{} `json:"desc" comment:"描述信息"`
+
+	Status   int         `json:"status" comment:"资产状态"`
+	IdcId    interface{} `json:"idcId"`
+	CustomId interface{} `json:"customId"`
+	common.ControlBy
+}
 type CombinationInsertReq struct {
 	Id   int    `json:"-" comment:"主键编码"` // 主键编码
 	Desc string `json:"desc" comment:"描述信息"`

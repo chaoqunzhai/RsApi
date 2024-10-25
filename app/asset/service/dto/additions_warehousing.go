@@ -24,6 +24,7 @@ type AdditionsWarehousingGetPageReq struct {
 	dto.Pagination `search:"-"`
 	Id             string `form:"id" search:"type:exact;column:id;table:asset_additions_warehousing"`
 	Search         string `form:"search" search:"-" comment:"搜索SN和编码"`
+	Status         int    `form:"status" search:"type:exact;column:status;table:asset_additions_warehousing" `
 	CombinationId  int    `form:"combinationId" search:"type:exact;column:combination_id;table:asset_additions_warehousing" comment:"组合ID"`
 	CategoryId     int64  `form:"categoryId"  search:"-" comment:"关联的资产分类ID"`
 	StoreRoomId    int64  `form:"storeRoomId"  search:"type:exact;column:store_room_id;table:asset_additions_warehousing" comment:"关联的库房ID"`

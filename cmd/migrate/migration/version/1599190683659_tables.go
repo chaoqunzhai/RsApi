@@ -53,7 +53,7 @@ func _1599190683659Tables(db *gorm.DB, version string) error {
 			new(models.HostNetDevice),
 			new(models.Dial),
 			new(models.Contract),
-			new(models.HostChargingDay),
+			//new(models.HostChargingDay),
 			new(models.Custom),
 			new(models.CustomUser),
 			new(models.BandwidthFees),

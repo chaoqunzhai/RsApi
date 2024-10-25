@@ -1,7 +1,6 @@
 package costAlg
 
 import (
-	"encoding/json"
 	"fmt"
 	"go-admin/cmd/migrate/migration/models"
 	"go-admin/common/prometheus"
@@ -47,8 +46,8 @@ func (c *CostAlgorithm) StartHostCompute() {
 		hostBindBusiness := fmt.Sprintf("SELECT host_id  FROM `host_bind_business` WHERE `host_bind_business`.`business_id` = %v", bu.Id)
 		c.Orm.Raw(hostBindBusiness).Scan(&bindHostIds)
 		var hostList []models.Host
-		bindHostIdsDemo := []int{54, 222, 802, 1008}
-		c.Orm.Model(&models.Host{}).Select("id,host_name,sn,status,balance").Where("id in ?", bindHostIdsDemo).Find(&hostList)
+		//bindHostIdsDemo := []int{325, 981, 840, 821, 818}
+		c.Orm.Model(&models.Host{}).Select("id,host_name,sn,status,balance").Where("id in ?", bindHostIds).Find(&hostList)
 		buValue, ok := c.BusinessMap[bu.Id]
 		if !ok {
 			buValue.Host = make([]*Host, 0)
@@ -72,6 +71,7 @@ func (c *CostAlgorithm) StartHostCompute() {
 				HostId:          host.Id,
 				HostName:        host.HostName,
 				HostSn:          host.Sn,
+				IdcId:           host.Idc,
 				BandwidthIncome: host.Balance / 1000, //换算成G
 			})
 			hostIds = append(hostIds, host.Id)
@@ -196,11 +196,9 @@ func (c *CostAlgorithm) ComputeMixedAlg() {
 
 			host.PriceCompute = data
 
-			jsonBytes, _ := json.Marshal(host)
-			if bu.Name == "白山云" {
+			host.BuId = bu.Id
 
-				fmt.Printf("业务:%v 计算机器: %+v\n", bu.Name, string(jsonBytes))
-			}
+			c.InsertDb(host)
 		}
 		c.BusinessMap[bu.Id] = bu
 	}
@@ -208,6 +206,7 @@ func (c *CostAlgorithm) ComputeMixedAlg() {
 	c.RunTime["2.RichBu"] = fmt.Sprintf("计算所有主机PrometheusData数据耗时:%v", endTime.Sub(now))
 
 }
+
 func (c *CostAlgorithm) GetHostPrometheusData(host *Host, SlaConf map[int]*SlaConf, IspCnf map[string]*IspCnf) map[string]*MonitorCompute {
 	//获取昨天日期的 开始和结束
 
@@ -218,6 +217,10 @@ func (c *CostAlgorithm) GetHostPrometheusData(host *Host, SlaConf map[int]*SlaCo
 		transmitQuery := fmt.Sprintf("sum(rate(phy_nic_network_transmit_bytes_total{instance=\"%v\",device_isp=\"%v\"}[5m]))*8", host.HostName, isp.Name)
 
 		compute := c.requestPromResult(transmitQuery, SlaConf, isp)
+
+		if compute.Empty { //如果是空数据直接跳出
+			continue
+		}
 		//利用率 =  95 / 总带宽
 		compute.Usage = utils.RoundDecimalFlot64(3, compute.PercentG/host.BandwidthIncome)
 		algMap[isp.Name] = compute
@@ -305,13 +308,18 @@ func (c *CostAlgorithm) requestPromResult(query string, SlaConf map[int]*SlaConf
 		//计算最小
 		result.Min = utils.Min(XValue)
 
+		//
+
+		result.HeartbeatNum = len(XValue)
+
+		result.TotalBandwidth = utils.SumFloats(XValue)
 		//计算平均
 		result.Avg = utils.Avg(XValue)
 		//SLA计算
 		result.SLA = c.AlgSla(XData, SlaConf)
 
 		result.IspDayPrice = utils.RoundDecimalFlot64(3, IspCnf.AvgDayPrice*result.PercentG)
-
+		result.IspCnf = IspCnf
 	} else {
 		result.Empty = true
 	}
@@ -405,4 +413,48 @@ func (c *CostAlgorithm) GetMonthDay() int {
 	daysInMonth := int(nextMonthFirst.Sub(firstDay).Hours() / 24)
 
 	return daysInMonth
+}
+
+func (c *CostAlgorithm) InsertDb(host *Host) {
+
+	//需要拆分字段
+	for _, row := range host.PriceCompute { //不同的运营商的计费
+
+		var HostIncome models.HostIncome
+		var count int64
+		c.Orm.Model(&HostIncome).Where("host_id = ? and alg_day = ?", host.HostId, host.AlgDay).Limit(1).Count(&count)
+
+		if count > 0 {
+
+			HostIncome.Isp = row.IspCnf.Id
+			HostIncome.IdcId = host.IdcId
+			HostIncome.BuId = host.BuId
+			HostIncome.Income = row.IspDayPrice
+			HostIncome.Usage = row.Usage
+			HostIncome.Bandwidth95 = row.PercentG
+			HostIncome.SlaInfo = row.SLA.Info
+			HostIncome.SlaPrice = row.SLA.Price
+			HostIncome.HeartbeatNum = row.HeartbeatNum
+			HostIncome.TotalBandwidth = row.TotalBandwidth
+			HostIncome.AvgDayPrice = row.IspCnf.AvgDayPrice
+			c.Orm.Save(&HostIncome)
+			continue
+		}
+		RsHostIncome := models.HostIncome{
+			AlgDay:         host.AlgDay,
+			HostId:         host.HostId,
+			Isp:            row.IspCnf.Id,
+			IdcId:          host.IdcId,
+			BuId:           host.BuId,
+			Income:         row.IspDayPrice,
+			Usage:          row.Usage,
+			Bandwidth95:    row.PercentG,
+			SlaInfo:        row.SLA.Info,
+			SlaPrice:       row.SLA.Price,
+			HeartbeatNum:   row.HeartbeatNum,
+			TotalBandwidth: row.TotalBandwidth,
+			AvgDayPrice:    row.IspCnf.AvgDayPrice,
+		}
+		c.Orm.Create(&RsHostIncome)
+	}
 }

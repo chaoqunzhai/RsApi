@@ -6,6 +6,7 @@ import (
 	cDto "go-admin/common/dto"
 	"go-admin/common/utils"
 	"go-admin/global"
+	"strconv"
 	"strings"
 	"time"
 
@@ -120,6 +121,9 @@ func (e Combination) GetPage(c *gin.Context) {
 		e.Orm.Model(&models2.Host{}).Select("id").Where("idc = ?", req.IdcId).Scan(&hostIds)
 
 		req.MakeHostIds = hostIds
+	}
+	if req.Code != "" {
+		req.Code = strings.TrimSpace(req.Code)
 	}
 	//可能会有重复的数据
 	err = s.GetPage(&req, p, &list, &count)
@@ -443,6 +447,51 @@ func (e Combination) AutoInsert(c *gin.Context) {
 	return
 
 }
+func (e Combination) UpdateStatus(c *gin.Context) {
+	req := dto.CombinationUpdateStatus{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
+
+	var objectList []models.Combination
+	e.Orm.Model(&models.Combination{}).Where("id in ?", req.Ids).Find(&objectList)
+	if len(objectList) == 0 {
+		e.Error(500, nil, "数据不存在")
+		return
+	}
+	for _, row := range objectList {
+		row.CustomId = func() int {
+			val, _ := strconv.Atoi(fmt.Sprintf("%v", req.CustomId))
+			return val
+		}()
+		row.IdcId = func() int {
+			val, _ := strconv.Atoi(fmt.Sprintf("%v", req.IdcId))
+			return val
+		}()
+		row.Status = req.Status
+		row.Desc = fmt.Sprintf("%v", req.Desc)
+
+		e.Orm.Save(&row)
+
+		e.Orm.Model(&models.AdditionsWarehousing{}).Where("combination_id = ?", row.Id).Updates(map[string]interface{}{
+			"status": req.Status,
+		})
+		if row.HostId > 0 { //更新主机的在线 或者离线状态
+			updateHost := global.AssetToHostStatus(req.Status)
+			e.Orm.Model(&models2.Host{}).Where("id = ?", row.HostId).Updates(map[string]interface{}{
+				"status": updateHost,
+			})
+		}
+	}
+	e.OK("", "successful")
+	return
+}
 
 // Insert 创建Combination
 // @Summary 创建Combination
@@ -661,29 +710,32 @@ func (e Combination) Delete(c *gin.Context) {
 	// req.SetUpdateBy(user.GetUserId(c))
 	p := actions.GetPermissionFromContext(c)
 
-	newIds := make([]int, 0)
-
+	checkIds := make([]int, 0)
+	removeIds := make([]int, 0)
 	for _, row := range req.Ids {
 		var count int64
 		//只有在库的时候 才能删除
 		e.Orm.Model(&models.Combination{}).Where("id = ? and status = 1", row).Count(&count)
 		if count > 0 {
-			newIds = append(newIds, row)
+			checkIds = append(checkIds, row)
+		} else {
+			removeIds = append(removeIds, row)
 		}
 	}
 
-	if len(newIds) == 0 {
+	if len(checkIds) > 0 {
 		e.Error(500, nil, "在线状态不可删除")
 		return
 	}
-	err = s.Remove(newIds, p)
+	err = s.Remove(removeIds, p)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("删除Combination失败，\r\n失败信息 %s", err.Error()))
 		return
 	}
 
-	e.Orm.Model(&models.AdditionsWarehousing{}).Where("combination_id in ?", newIds).Updates(map[string]interface{}{
+	e.Orm.Model(&models.AdditionsWarehousing{}).Where("combination_id in ?", removeIds).Updates(map[string]interface{}{
 		"combination_id": 0,
+		"status":         5, //那就闲置了
 	})
 	e.OK(req.GetId(), "删除成功")
 }

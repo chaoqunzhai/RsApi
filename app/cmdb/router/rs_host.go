@@ -27,6 +27,7 @@ func registerRsHostRouter(v1 *gin.RouterGroup, authMiddleware *jwt.GinJWTMiddlew
 		r.POST("/switch", actions.PermissionAction(), api.Switch)
 		r.POST("/bindIdc", actions.PermissionAction(), api.BindIdc)
 		r.POST("/bindDial", actions.PermissionAction(), api.BindDial)
+		r.POST("/status", actions.PermissionAction(), api.UpdateStatus)
 		r.GET("/:id", actions.PermissionAction(), api.Get)
 		r.POST("", api.Insert)
 		r.PUT("/:id", actions.PermissionAction(), api.Update)

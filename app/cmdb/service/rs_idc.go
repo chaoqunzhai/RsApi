@@ -52,7 +52,7 @@ func (e *RsIdc) GetPage(c *dto.RsIdcGetPageReq, p *actions.DataPermission, list 
 		orm = orm.Where(likeQ)
 	}
 
-	if c.OffLineOrder != "asc" {
+	if c.OffLineOrder != "asc" && c.OffLineOrder != "" {
 		//离线数量排序
 
 		var hostList []models.RsHost
@@ -133,23 +133,27 @@ func (e *RsIdc) Insert(c *dto.RsIdcInsertReq) (id int, err error) {
 }
 
 // Update 修改RsIdc对象
-func (e *RsIdc) Update(c *dto.RsIdcUpdateReq, p *actions.DataPermission) error {
+func (e *RsIdc) Update(c *dto.RsIdcUpdateReq, p *actions.DataPermission) map[string]string {
 	var err error
+	result := make(map[string]string)
 	var data = models.RsIdc{}
 	e.Orm.Scopes(
 		actions.Permission(data.TableName(), p),
 	).First(&data, c.GetId())
+	if data.Desc != c.Desc {
+		result["desc"] = c.Desc
+	}
 	c.Generate(&data)
 
 	db := e.Orm.Save(&data)
 	if err = db.Error; err != nil {
 		e.Log.Errorf("RsIdcService Save error:%s \r\n", err)
-		return err
+		return result
 	}
 	if db.RowsAffected == 0 {
-		return errors.New("无权更新该数据")
+		return result
 	}
-	return nil
+	return result
 }
 
 // Remove 删除RsIdc
@@ -167,5 +171,6 @@ func (e *RsIdc) Remove(d *dto.RsIdcDeleteReq, p *actions.DataPermission) error {
 	if db.RowsAffected == 0 {
 		return errors.New("无权删除该数据")
 	}
+
 	return nil
 }

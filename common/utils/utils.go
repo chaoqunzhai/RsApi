@@ -286,6 +286,14 @@ func Avg(a []float64) float64 {
 	}
 	return ParInt(sum / float64(len(a)))
 }
+func SumFloats(numbers []float64) float64 {
+	total := 0.0
+	for _, number := range numbers {
+		total += number
+	}
+	return total
+}
+
 func Min(a []float64) float64 {
 	minV := a[0]
 	for i := 0; i < len(a); i++ {

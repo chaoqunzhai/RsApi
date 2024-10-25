@@ -57,6 +57,11 @@ type BusinessSwitch struct {
 	Desc     string         `json:"desc"  form:"desc"`
 }
 
+type UpdateStatus struct {
+	Ids    []int  `json:"ids"`
+	Status int    `json:"status"`
+	Desc   string `json:"desc"`
+}
 type HostBindDial struct {
 	HostId   int `json:"hostId" form:"hostId" `
 	DriverId int `json:"driverId" form:"driverId" `
@@ -90,7 +95,7 @@ type RsHostGetPageReq struct {
 	BusinessId     string `form:"businessId" search:"-"`
 	Region         string `form:"region"  search:"-" comment:"所在区域"`
 	LineType       int    `form:"lineType" search:"type:exact;column:line_type;table:rs_host" comment:"线路类型"`
-	HostName       string `form:"hostname"  search:"type:contains;column:host_name;table:rs_host"`
+	HostName       string `form:"hostname"  search:"-"`
 	HostId         string `form:"hostId"  search:"-" comment:"主机名"`
 	Sn             string `form:"sn"  search:"type:contains;column:sn;table:rs_host" comment:"sn"`
 	Ip             string `form:"ip"  search:"type:contains;column:ip;table:rs_host" comment:"ip"`

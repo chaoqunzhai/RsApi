@@ -45,6 +45,8 @@ type Host struct {
 	HostId       int                        `json:"hostId"`
 	HostName     string                     `json:"hostName"`
 	HostSn       string                     `json:"hostSn"`
+	IdcId        int                        `json:"idcId"`
+	BuId         int                        `json:"buId"`
 	AlgDay       string                     `json:"algDay"`       //计算天数
 	PriceCompute map[string]*MonitorCompute `json:"priceCompute"` //今天的收益 运营商:收益
 
@@ -53,21 +55,24 @@ type Host struct {
 	BuSn []*LabelRow `json:"buSn"`
 }
 type MonitorCompute struct {
-	Empty        bool    `json:"empty"`
-	Max          float64 `json:"max"`
-	Min          float64 `json:"min"`
-	Avg          float64 `json:"avg"`
-	SLA          *SlaRow `json:"sla"`
-	PercentBytes float64 `json:"percentBytes"` //今天计算的95带宽(bytes)
-	PercentG     float64 `json:"percentG"`     //日95带宽G 今天计算的日95带宽(G)
-	IspDayPrice  float64 `json:"ispPrice"`     //计算今天 运营商的收益
-	Usage        float64 `json:"usage"`        //利用率
+	Empty          bool    `json:"empty"`
+	Max            float64 `json:"max"`
+	Min            float64 `json:"min"`
+	Avg            float64 `json:"avg"`
+	TotalBandwidth float64 `json:"total"`
+	HeartbeatNum   int     `json:"heartbeatNum"`
+	SLA            *SlaRow `json:"sla"`
+	PercentBytes   float64 `json:"percentBytes"` //今天计算的95带宽(bytes)
+	PercentG       float64 `json:"percentG"`     //日95带宽G 今天计算的日95带宽(G)
+	IspDayPrice    float64 `json:"ispDayPrice"`  //计算今天 运营商的收益真实收益
+	IspCnf         *IspCnf `json:"ispCnf"`       //运营商的计费配置
+	Usage          float64 `json:"usage"`        //利用率
 }
 
 type SlaRow struct {
-	Info     string  `json:"info"`
-	Trigger  bool    `json:"trigger"`
-	Charging float64 `json:"charging"`
+	Info    string  `json:"info"`
+	Trigger bool    `json:"trigger"`
+	Price   float64 `json:"price"`
 }
 type RsHostMonitorFlow struct {
 	Start string `form:"start"`

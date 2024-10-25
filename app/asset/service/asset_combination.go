@@ -100,7 +100,7 @@ func (e *Combination) Remove(newIds []int, p *actions.DataPermission) error {
 	db := e.Orm.Model(&data).
 		Scopes(
 			actions.Permission(data.TableName(), p),
-		).Delete(&data, newIds)
+		).Unscoped().Delete(&data, newIds)
 	if err := db.Error; err != nil {
 		e.Log.Errorf("Service RemoveCombination error:%s \r\n", err)
 		return err

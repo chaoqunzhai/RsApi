@@ -79,7 +79,66 @@ func (e RsHost) BindIdc(c *gin.Context) {
 	e.OK("", "绑定IDC成功")
 	return
 }
+func (e RsHost) UpdateStatus(c *gin.Context) {
+	req := dto.UpdateStatus{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
 
+	e.Orm.Model(&models.RsHost{}).Where("id in ?", req.Ids).Updates(map[string]interface{}{
+		"status": req.Status,
+	})
+	var statusStr string
+
+	switch req.Status {
+	case 1:
+		statusStr = "在线"
+	case -1:
+		statusStr = "离线"
+	case 2:
+		statusStr = "下架"
+	default:
+
+		statusStr = "离线"
+
+	}
+
+	for _, hostId := range req.Ids {
+		//创建记录
+		e.Orm.Create(&models2.OperationLog{
+			CreateUser: user.GetUserName(c),
+			Action:     "POST",
+			Module:     "rs_host",
+			ObjectId:   hostId,
+			TargetId:   hostId,
+			Info:       fmt.Sprintf("更改状态:%v,描述:%v", statusStr, req.Desc),
+		})
+		var CombinationList []models2.Combination
+		e.Orm.Model(&models2.Combination{}).Where("host_id in ?", req.Ids).Find(&CombinationList)
+
+		var combinationIds []int
+		for _, combination := range CombinationList {
+			combinationIds = append(combinationIds, combination.Id)
+		}
+
+		updateAssetStatus := global.HostToAssetStatus(req.Status)
+		e.Orm.Model(&models2.Combination{}).Unscoped().Where("id in ?", combinationIds).Updates(map[string]interface{}{
+			"status": updateAssetStatus,
+		})
+		e.Orm.Model(&models2.AdditionsWarehousing{}).Where("combination_id in ?", combinationIds).Updates(map[string]interface{}{
+			"status": updateAssetStatus,
+		})
+	}
+
+	e.OK("", "successful")
+	return
+}
 func (e RsHost) BindDial(c *gin.Context) {
 	req := dto.HostBindDial{}
 	s := service.RsHost{}
@@ -430,9 +489,9 @@ func (e RsHost) CountOffline(c *gin.Context) {
 	var data models.RsHost
 	orm := e.Orm.Model(&data)
 
-	////掉线的数据
+	//掉线的数据
 	var offlineCount int64
-	offlineHealthySql := "healthy_at <= DATE_SUB(NOW(), INTERVAL 30 MINUTE) OR healthy_at IS NULL"
+	offlineHealthySql := "healthy_at <= DATE_SUB(NOW(), INTERVAL 30 MINUTE) OR healthy_at IS NULL and status != 2"
 	//更新掉线的数据
 	e.Orm.Model(&models.RsHost{}).Where(offlineHealthySql).Updates(map[string]interface{}{
 		"status": global.HostOffline, //30分钟没有上报的就是掉线的

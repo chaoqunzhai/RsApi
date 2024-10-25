@@ -107,24 +107,6 @@ func (HostSwitchLog) TableName() string {
 	return "rs_host_switch_log"
 }
 
-//主机计费 计算表
-
-type HostChargingDay struct {
-	Model
-	CreatedAt  time.Time `json:"createdAt" gorm:"comment:创建时间"`
-	CreateBy   int       `json:"createBy" gorm:"index;comment:创建者"`
-	BusinessId int       `json:"business_id" gorm:"index;comment:切换的业务ID"`
-	HostId     int       `json:"host_id" gorm:"index;comment:关联的主机ID"`
-	Cost       float64   `json:"cost" gorm:"index;comment:计算的费用"`
-	Banlance95 float64   `json:"banlance95" gorm:"index;comment:95带宽值"`
-	Sla        string    `json:"sla" gorm:"type:varchar(200);comment:触发SLA原因"`
-	Desc       string    `json:"desc" gorm:"type:varchar(120);comment:计费备注" `
-}
-
-func (HostChargingDay) TableName() string {
-	return "rs_host_charging_day"
-}
-
 //主机命令操作记录
 
 type HostExecLog struct {
