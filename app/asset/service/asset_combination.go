@@ -74,23 +74,23 @@ func (e *Combination) Insert(c *dto.CombinationInsertReq) (uid int, err error) {
 }
 
 // Update 修改Combination对象
-func (e *Combination) Update(c *dto.CombinationUpdateReq, p *actions.DataPermission) (uid int, err error) {
+func (e *Combination) Update(c *dto.CombinationUpdateReq, p *actions.DataPermission) (uid, status int, err error) {
 
 	var data = models.Combination{}
 	e.Orm.Scopes(
 		actions.Permission(data.TableName(), p),
 	).First(&data, c.GetId())
 	c.Generate(&data)
-	data.Status = 1
+
 	db := e.Orm.Save(&data)
 	if err = db.Error; err != nil {
 		e.Log.Errorf("CombinationService Save error:%s \r\n", err)
-		return 0, err
+		return 0, 0, err
 	}
 	if db.RowsAffected == 0 {
-		return 0, errors.New("无权更新该数据")
+		return 0, 0, errors.New("无权更新该数据")
 	}
-	return data.Id, nil
+	return data.Id, data.Status, nil
 }
 
 // Remove 删除Combination

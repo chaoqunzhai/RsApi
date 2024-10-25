@@ -15,5 +15,6 @@ func registerCrontabRouter(v1 *gin.RouterGroup) {
 	r := v1.Group("/crontab")
 	{
 		r.GET("algorithm", api.Algorithm)
+		r.GET("watchOnlineUsage", api.WatchOnlineUsage)
 	}
 }

@@ -5,8 +5,7 @@ import (
 	"github.com/go-admin-team/go-admin-core/sdk"
 	"github.com/go-admin-team/go-admin-core/sdk/api"
 	_ "github.com/go-admin-team/go-admin-core/sdk/pkg/response"
-	"go-admin/app/cmdb/service"
-	"go-admin/app/cmdb/service/dto"
+	"go-admin/app/jobs/watch"
 	"go-admin/costAlg"
 	"time"
 )
@@ -15,13 +14,26 @@ type Crontab struct {
 	api.Api
 }
 
-func (e Crontab) Algorithm(c *gin.Context) {
-	req := dto.RsContractGetPageReq{}
-	s := service.RsContract{}
+func (e Crontab) WatchOnlineUsage(c *gin.Context) {
 	err := e.MakeContext(c).
 		MakeOrm().
-		Bind(&req).
-		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
+	startTime := time.Now()
+	watch.WatchOnlineUsage()
+	result := map[string]interface{}{
+		"runTime": time.Now().Sub(startTime).Seconds(),
+	}
+	e.OK(result, "successful")
+	return
+}
+func (e Crontab) Algorithm(c *gin.Context) {
+	err := e.MakeContext(c).
+		MakeOrm().
 		Errors
 	if err != nil {
 		e.Logger.Error(err)
@@ -34,9 +46,8 @@ func (e Crontab) Algorithm(c *gin.Context) {
 	costAlgorithm.SetupDb(sdk.Runtime.GetDb())
 	costAlgorithm.StartHostCompute()
 
-	endTime := time.Now()
 	result := map[string]interface{}{
-		"runTime": endTime.Sub(startTime),
+		"runTime": time.Now().Sub(startTime).Seconds(),
 	}
 	e.OK(result, "successful")
 	return

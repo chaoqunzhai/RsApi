@@ -605,7 +605,8 @@ func (e Combination) Update(c *gin.Context) {
 		oldList = append(oldList, v.Id)
 	}
 	var uid int
-	uid, err = s.Update(&req, p)
+	var status int
+	uid, status, err = s.Update(&req, p)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("修改Combination失败，\r\n失败信息 %s", err.Error()))
 		return
@@ -640,6 +641,7 @@ func (e Combination) Update(c *gin.Context) {
 	var newAsset []models.AdditionsWarehousing
 	e.Orm.Model(&models.AdditionsWarehousing{}).Where("id in ?", req.Asset).Updates(map[string]interface{}{
 		"combination_id": uid,
+		"status":         status,
 	}).Find(&newAsset)
 	var newList []int
 	for _, v := range newAsset {

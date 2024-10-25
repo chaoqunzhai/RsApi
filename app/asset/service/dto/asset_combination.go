@@ -99,7 +99,6 @@ func (s *CombinationUpdateReq) Generate(model *models.Combination) {
 	model.UpdateBy = s.UpdateBy // 添加这而，需要记录是被谁更新的
 	model.Desc = s.Desc
 
-	model.Status = s.Status
 }
 
 func (s *CombinationUpdateReq) GetId() interface{} {
