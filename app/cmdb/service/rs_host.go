@@ -70,10 +70,6 @@ func (e *RsHost) GetPage(c *dto.RsHostGetPageReq, p *actions.DataPermission, lis
 		//fmt.Println("查询业务", bindHostId, len(bindHostId))
 	}
 
-	if c.HostId != "" {
-		orm = orm.Where("id = ?", c.HostId)
-	}
-
 	c.HostName = strings.TrimSpace(c.HostName)
 	if c.HostName != "" {
 		//批量把\n换成逗号
@@ -116,6 +112,11 @@ func (e *RsHost) GetPage(c *dto.RsHostGetPageReq, p *actions.DataPermission, lis
 		}
 		orm = orm.Where("id in (?)", cache)
 	}
+
+	if c.HostId != "" { //直接查询机器
+		orm = orm.Where("id = ?", c.HostId)
+	}
+
 	orm = orm.Scopes(
 		cDto.MakeCondition(c.GetNeedSearch()),
 		cDto.Paginate(c.GetPageSize(), c.GetPageIndex()),

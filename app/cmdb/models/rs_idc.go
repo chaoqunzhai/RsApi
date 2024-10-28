@@ -31,6 +31,9 @@ type RsIdc struct {
 type RsIdcCount struct {
 	OnLine      int `json:"onLine"`
 	Offline     int `json:"offLine"`
+	Wait        int `json:"wait"`
+	Outbound    int `json:"outbound"`
+	Remove      int `json:"remove"`
 	AllHost     int `json:"allHost"`
 	BuLine      int `json:"buLine"`
 	ManagerLine int `json:"managerLine"`

@@ -51,8 +51,8 @@ func AssetToHostStatus(v int) int {
 	switch v {
 	case 1: //在库
 		updateHost = 0
-	case 2: //出库 - 主机离线
-		updateHost = -1
+	case 2: //出库 - 主机待上线
+		updateHost = 3
 	case 3: //在线 - 主机在线
 		updateHost = 1
 	case 4: //下架 - 主机下架
@@ -77,6 +77,9 @@ func HostToAssetStatus(v int) int {
 		updateHost = 6
 	case 2: //下架 - 资产下架
 		updateHost = 4
+	case 3:
+		updateHost = 2
+
 	}
 	return updateHost
 }

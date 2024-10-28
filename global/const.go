@@ -8,8 +8,10 @@ const (
 	RoleUser  = 82 //用户
 
 	HostLoading = 0
-	HostSuccess = 1
-	HostOffline = -1
+	HostSuccess = 1  //在线
+	HostOffline = -1 //离线
+	HostRemove  = 2
+	HostWait    = 3 //待上架
 )
 
 var (

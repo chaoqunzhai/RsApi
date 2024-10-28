@@ -87,6 +87,15 @@ func (e RsIdc) GetPage(c *gin.Context) {
 		if host.Status == global.HostOffline {
 			RsIdcCount.Offline += 1
 		}
+		if host.Status == global.HostWait {
+			RsIdcCount.Wait += 1
+		}
+		if host.Status == global.HostRemove {
+			RsIdcCount.Remove += 1
+		}
+		if host.Status == global.HostWait {
+			RsIdcCount.Outbound += 1
+		}
 		RsIdcCount.AllHost += 1
 
 		idcMap[host.Idc] = RsIdcCount

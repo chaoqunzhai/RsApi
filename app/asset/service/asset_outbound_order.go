@@ -98,7 +98,6 @@ func (e *AssetOutboundOrder) Insert(c *dto.AssetOutboundOrderInsertReq) error {
 			"out_id": data.Id,
 			"status": 2,
 		})
-
 		for _, i := range CombinationIds {
 			e.Orm.Create(&models.AssetRecording{
 				User:      userModel.Username,
@@ -108,6 +107,14 @@ func (e *AssetOutboundOrder) Insert(c *dto.AssetOutboundOrderInsertReq) error {
 				Info:      "组合出库",
 				AssetId:   i,
 			})
+			var CombinationModel models.Combination
+			e.Orm.Model(&models.Combination{}).Where("id = ?", i).First(&CombinationModel)
+			if CombinationModel.Id > 0 {
+				//把对应的资产改为待上架
+				e.Orm.Model(&models2.Host{}).Where("id = ?", CombinationModel.HostId).Updates(map[string]interface{}{
+					"status": 3,
+				})
+			}
 		}
 
 	}

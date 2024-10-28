@@ -103,6 +103,8 @@ func (e RsHost) UpdateStatus(c *gin.Context) {
 		statusStr = "离线"
 	case 2:
 		statusStr = "下架"
+	case 3:
+		statusStr = "待上架"
 	default:
 
 		statusStr = "离线"
@@ -475,6 +477,27 @@ func (e RsHost) CountOnline(c *gin.Context) {
 	return
 }
 
+func (e RsHost) CountWait(c *gin.Context) {
+	req := dto.RsHostGetPageReq{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
+	var data models.RsHost
+	orm := e.Orm.Model(&data)
+	//掉线的数据
+	var Count int64
+
+	offlineOr := MakeSelectOrm(req, orm, e.Orm)
+	offlineOr.Where("status = 3").Count(&Count)
+	e.OK(Count, "successful")
+	return
+}
 func (e RsHost) CountOffline(c *gin.Context) {
 	req := dto.RsHostGetPageReq{}
 	err := e.MakeContext(c).
@@ -491,16 +514,17 @@ func (e RsHost) CountOffline(c *gin.Context) {
 
 	//掉线的数据
 	var offlineCount int64
-	offlineHealthySql := "healthy_at <= DATE_SUB(NOW(), INTERVAL 30 MINUTE) OR healthy_at IS NULL and status != 2"
+	offlineHealthySql := "healthy_at <= DATE_SUB(NOW(), INTERVAL 30 MINUTE) OR healthy_at IS NULL"
 	//更新掉线的数据
-	e.Orm.Model(&models.RsHost{}).Where(offlineHealthySql).Updates(map[string]interface{}{
+	e.Orm.Model(&models.RsHost{}).Where("status != 3").Where(offlineHealthySql).Updates(map[string]interface{}{
 		"status": global.HostOffline, //30分钟没有上报的就是掉线的
 	})
 	//查询对应的掉线主机数量
 	offlineOr := MakeSelectOrm(req, orm, e.Orm)
-	offlineOr.Where(offlineHealthySql).Count(&offlineCount)
+	outIds := []int{3}
+	offlineOr.Where("status not in ?", outIds).Where(offlineHealthySql).Count(&offlineCount)
 
-	fmt.Println("查询离线数据", offlineCount)
+	fmt.Println("查询离线数据!!!!", offlineCount)
 
 	e.OK(offlineCount, "successful")
 	return
