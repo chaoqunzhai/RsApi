@@ -263,6 +263,17 @@ func RemoveRepeatStr(list []string) (result []string) {
 	return result
 }
 
+func IntToStringArray(data []int) []string {
+
+	return func() []string {
+		cache := make([]string, 0)
+		for _, v := range data {
+			cache = append(cache, fmt.Sprintf("%v", v))
+		}
+		return cache
+	}()
+}
+
 // 数值去重
 func RemoveRepeatInt(list []int) (result []int) {
 	// 创建一个临时map用来存储数组元素

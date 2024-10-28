@@ -12,6 +12,7 @@ type AssetOutboundOrder struct {
 	Desc           string                 `json:"desc" gorm:"type:varchar(35);comment:描述信息"`
 	Code           string                 `json:"code" gorm:"type:varchar(50);comment:出库编码"`
 	CustomId       int                    `json:"customId" gorm:"type:bigint;comment:所属客户ID"`
+	CombinationId  string                 `json:"combinationId" gorm:"type:varchar(100);comment:关联组合ID"`
 	PhoneNumber    string                 `json:"phoneNumber" gorm:"type:varchar(20);comment:PhoneNumber"`
 	Region         string                 `json:"region" gorm:"type:varchar(100);comment:省份城市多ID"`
 	Ems            string                 `json:"ems" gorm:"type:varchar(20);comment:物流公司"`

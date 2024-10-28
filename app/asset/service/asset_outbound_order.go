@@ -3,16 +3,15 @@ package service
 import (
 	"errors"
 	"fmt"
-	models2 "go-admin/cmd/migrate/migration/models"
-	"go-admin/common/utils"
-
 	"github.com/go-admin-team/go-admin-core/sdk/service"
-	"gorm.io/gorm"
-
 	"go-admin/app/asset/models"
 	"go-admin/app/asset/service/dto"
+	models2 "go-admin/cmd/migrate/migration/models"
 	"go-admin/common/actions"
 	cDto "go-admin/common/dto"
+	"go-admin/common/utils"
+	"gorm.io/gorm"
+	"strings"
 )
 
 type AssetOutboundOrder struct {
@@ -68,7 +67,11 @@ func (e *AssetOutboundOrder) Insert(c *dto.AssetOutboundOrderInsertReq) error {
 	e.Orm.Model(&models2.SysUser{}).Where("user_id = ?", c.CreateBy).Limit(1).Find(&userModel)
 
 	c.Generate(&data)
+	if len(c.Combination) > 0 {
+		CombinationIds := utils.RemoveRepeatInt(c.Combination)
 
+		data.CombinationId = strings.Join(utils.IntToStringArray(CombinationIds), ",")
+	}
 	err = e.Orm.Create(&data).Error
 
 	Code := fmt.Sprintf("CK%08d", data.Id)
@@ -86,7 +89,13 @@ func (e *AssetOutboundOrder) Insert(c *dto.AssetOutboundOrderInsertReq) error {
 
 	if len(c.Combination) > 0 {
 		CombinationIds := utils.RemoveRepeatInt(c.Combination)
+
 		e.Orm.Model(&models.Combination{}).Where("id in ?", CombinationIds).Updates(map[string]interface{}{
+			"status": 2,
+		})
+
+		e.Orm.Model(&models.AdditionsWarehousing{}).Where("combination_id in ?", CombinationIds).Updates(map[string]interface{}{
+			"out_id": data.Id,
 			"status": 2,
 		})
 
@@ -94,6 +103,7 @@ func (e *AssetOutboundOrder) Insert(c *dto.AssetOutboundOrderInsertReq) error {
 			e.Orm.Create(&models.AssetRecording{
 				User:      userModel.Username,
 				Type:      2,
+				AssetType: 2,
 				BindOrder: Code,
 				Info:      "组合出库",
 				AssetId:   i,
@@ -120,6 +130,7 @@ func (e *AssetOutboundOrder) Insert(c *dto.AssetOutboundOrderInsertReq) error {
 		e.Orm.Create(&models.AssetRecording{
 			User:      userModel.Username,
 			Type:      2,
+			AssetType: 1,
 			BindOrder: Code,
 			AssetId:   i,
 			CreateBy:  data.CreateBy,
@@ -146,23 +157,5 @@ func (e *AssetOutboundOrder) Update(c *dto.AssetOutboundOrderUpdateReq, p *actio
 		return errors.New("无权更新该数据")
 	}
 
-	return nil
-}
-
-// Remove 删除AssetOutboundOrder
-func (e *AssetOutboundOrder) Remove(d *dto.AssetOutboundOrderDeleteReq, p *actions.DataPermission) error {
-	var data models.AssetOutboundOrder
-
-	db := e.Orm.Model(&data).
-		Scopes(
-			actions.Permission(data.TableName(), p),
-		).Delete(&data, d.GetId())
-	if err := db.Error; err != nil {
-		e.Log.Errorf("Service RemoveAssetOutboundOrder error:%s \r\n", err)
-		return err
-	}
-	if db.RowsAffected == 0 {
-		return errors.New("无权删除该数据")
-	}
 	return nil
 }

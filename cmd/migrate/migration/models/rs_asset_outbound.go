@@ -6,6 +6,7 @@ type OutboundOrder struct {
 	CustomId       int    `json:"customId" gorm:"type:bigint;comment:所属客户ID"`
 	PhoneNumber    string `json:"phoneNumber" gorm:"type:varchar(20)"`
 	Ems            string `json:"ems" gorm:"type:varchar(20);comment:物流公司"`
+	CombinationId  string `json:"combinationId" gorm:"type:varchar(100);comment:关联组合ID"`
 	TrackingNumber string `json:"trackingNumber" gorm:"type:varchar(30);comment:物流单号"`
 	Address        string `json:"address" gorm:"type:varchar(255);comment:联系地址"`
 	Region         string `json:"region" gorm:"type:varchar(100);comment:省份城市多ID"`

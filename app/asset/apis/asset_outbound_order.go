@@ -5,6 +5,7 @@ import (
 	models2 "go-admin/cmd/migrate/migration/models"
 	cDto "go-admin/common/dto"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-admin-team/go-admin-core/sdk/api"
@@ -67,7 +68,7 @@ func (e AssetOutboundOrder) GetPage(c *gin.Context) {
 	}
 	var asset []models.AdditionsWarehousing
 	e.Orm.Model(&models.AdditionsWarehousing{}).Where("out_id in ?", idS).Find(&asset)
-	assetMap := make(map[int64][]models.AdditionsWarehousing, 0)
+	assetMap := make(map[int64][]models.AdditionsWarehousing)
 	for _, v := range asset {
 
 		assetList, ok := assetMap[v.OutId]
@@ -144,8 +145,8 @@ func (e AssetOutboundOrder) Get(c *gin.Context) {
 	object.RegionInfo = IdcModel
 	//联系人
 
-	var UserModel models2.SysUser
-	e.Orm.Model(&UserModel).Where("user_id = ?", object.UserId).Limit(1).Find(&UserModel)
+	var UserModel models2.CustomUser
+	e.Orm.Model(&UserModel).Where("id = ?", object.UserId).Limit(1).Find(&UserModel)
 	object.UserInfo = UserModel
 	e.PageOK(object, int(count), pageIndexInt, pageSizeInt, "")
 	return
@@ -242,19 +243,25 @@ func (e AssetOutboundOrder) Delete(c *gin.Context) {
 		e.Error(500, err, err.Error())
 		return
 	}
-
-	// req.SetUpdateBy(user.GetUserId(c))
-	p := actions.GetPermissionFromContext(c)
-
-	err = s.Remove(&req, p)
-	if err != nil {
-		e.Error(500, err, fmt.Sprintf("删除AssetOutboundOrder失败，\r\n失败信息 %s", err.Error()))
-		return
+	for _, rowId := range req.Ids {
+		var model models.AssetOutboundOrder
+		e.Orm.Model(&models.AssetOutboundOrder{}).Where("id = ?", rowId).First(&model)
+		if model.Id == 0 {
+			continue
+		}
+		//更新对应出库的资产 状态为在库 和 out_id = 0
+		comIds := model.CombinationId
+		if comIds != "" {
+			e.Orm.Model(&models.Combination{}).Where("id in ?", strings.Split(comIds, ",")).Updates(map[string]interface{}{
+				"status": 1,
+			})
+		}
+		e.Orm.Model(&models.AdditionsWarehousing{}).Where("out_id = ?", model.Id).Updates(map[string]interface{}{
+			"status": 1,
+			"out_id": 0,
+		})
+		e.Orm.Model(&model).Unscoped().Delete(&model)
 	}
-	//更新对应出库的资产 状态为在库 和 out_id = 0
-	e.Orm.Model(&models.AdditionsWarehousing{}).Where("out_id in ?", req.GetId()).Updates(map[string]interface{}{
-		"status": 1,
-		"out_id": 0,
-	})
+
 	e.OK(req.GetId(), "删除成功")
 }
