@@ -19,19 +19,25 @@ type RsHost struct {
 	service.Service
 }
 
-// GetPage 获取RsHost列表
-func (e *RsHost) GetPage(c *dto.RsHostGetPageReq, p *actions.DataPermission, list *[]models.RsHost, count *int64) error {
-	var err error
-	var data models.RsHost
+func (e *RsHost) GetCustomIdc(customId int) []int {
 
-	orm := e.Orm.Model(&data)
-	if c.IdcName != "" {
+	var idcList []int
 
-		if c.IdcName == "empty" {
+	e.Orm.Model(&models.RsIdc{}).Select("id").Where("custom_id = ?", customId).Find(&idcList).Scan(&idcList)
+
+	var hostList []int
+	e.Orm.Model(&models.RsHost{}).Select("id").Where("idc in ?", idcList).Find(&hostList).Scan(&hostList)
+
+	return hostList
+}
+func (e *RsHost) MakeSelectOrm(req *dto.RsHostGetPageReq, orm *gorm.DB, eOrm *gorm.DB) *gorm.DB {
+	if req.IdcName != "" {
+
+		if req.IdcName == "empty" {
 			orm = orm.Where("idc = 0 OR idc IS  NULL")
 		} else {
 			var idcList []models.RsIdc
-			e.Orm.Model(&models.RsIdc{}).Select("id").Where("name like ?", fmt.Sprintf("%%%v%%", c.IdcName)).Find(&idcList)
+			eOrm.Model(&models.RsIdc{}).Select("id").Where("name like ?", fmt.Sprintf("%%%v%%", req.IdcName)).Find(&idcList)
 			var cache []int
 			for _, idc := range idcList {
 				cache = append(cache, idc.Id)
@@ -41,9 +47,9 @@ func (e *RsHost) GetPage(c *dto.RsHostGetPageReq, p *actions.DataPermission, lis
 
 	}
 
-	if c.IdcNumber != "" {
+	if req.IdcNumber != "" {
 		var idcList []models.RsIdc
-		e.Orm.Model(&models.RsIdc{}).Select("id").Where("number like ?", fmt.Sprintf("%%%v%%", c.IdcNumber)).Find(&idcList)
+		eOrm.Model(&models.RsIdc{}).Select("id").Where("number like ?", fmt.Sprintf("%%%v%%", req.IdcNumber)).Find(&idcList)
 		var cache []int
 		for _, idc := range idcList {
 			cache = append(cache, idc.Id)
@@ -51,18 +57,18 @@ func (e *RsHost) GetPage(c *dto.RsHostGetPageReq, p *actions.DataPermission, lis
 		orm = orm.Where("idc in (?)", cache)
 	}
 
-	if c.BusinessId != "" {
+	if req.BusinessId != "" {
 
-		if c.BusinessId == "empty" {
+		if req.BusinessId == "empty" {
 			emptySql := "SELECT id FROM rs_host WHERE NOT EXISTS " +
 				"( SELECT id FROM host_bind_business WHERE host_bind_business.host_id = rs_host.id ) and deleted_at is NULL;"
 			var hostIds []int
-			e.Orm.Raw(emptySql).Scan(&hostIds)
+			orm.Raw(emptySql).Scan(&hostIds)
 			orm = orm.Where("id in (?)", hostIds)
 		} else {
 			var bindHostId []int
 
-			e.Orm.Raw(fmt.Sprintf("select host_id from host_bind_business where business_id in (%v)", c.BusinessId)).Scan(&bindHostId)
+			orm.Raw(fmt.Sprintf("select host_id from host_bind_business where business_id in (%v)", req.BusinessId)).Scan(&bindHostId)
 
 			orm = orm.Where("id in (?)", bindHostId)
 		}
@@ -70,16 +76,18 @@ func (e *RsHost) GetPage(c *dto.RsHostGetPageReq, p *actions.DataPermission, lis
 		//fmt.Println("查询业务", bindHostId, len(bindHostId))
 	}
 
-	c.HostName = strings.TrimSpace(c.HostName)
-	if c.HostName != "" {
+	if req.HostId != "" {
+		orm = orm.Where("id = ?", req.HostId)
+	}
+	req.HostName = strings.TrimSpace(req.HostName)
+	if req.HostName != "" {
 		//批量把\n换成逗号
-		newHostName := strings.Replace(c.HostName, "\n", ",", -1)
+		newHostName := strings.Replace(req.HostName, "\n", ",", -1)
 		// 批量把空格换成逗号
 		newHostName = strings.Replace(newHostName, " ", ",", -1)
 
 		//一个元素 是模糊搜索
 		newHostList := strings.Split(newHostName, ",")
-		fmt.Println("newHostList", newHostList)
 		if len(newHostList) == 1 {
 			likeKey := fmt.Sprintf("%%%v%%", newHostName)
 			orm = orm.Where("host_name like ? OR sn like ?", likeKey, likeKey)
@@ -89,9 +97,9 @@ func (e *RsHost) GetPage(c *dto.RsHostGetPageReq, p *actions.DataPermission, lis
 		}
 
 	}
-	if c.Region != "" {
+	if req.Region != "" {
 		var idcList []models.RsIdc
-		e.Orm.Model(&models.RsIdc{}).Select("id").Where("region like ?", fmt.Sprintf("%%%v%%", c.Region)).Find(&idcList)
+		eOrm.Model(&models.RsIdc{}).Select("id").Where("region like ?", fmt.Sprintf("%%%v%%", req.Region)).Find(&idcList)
 		var cache []int
 		for _, idc := range idcList {
 			cache = append(cache, idc.Id)
@@ -100,11 +108,11 @@ func (e *RsHost) GetPage(c *dto.RsHostGetPageReq, p *actions.DataPermission, lis
 
 	}
 
-	if c.BusinessSn != "" {
+	if req.BusinessSn != "" {
 
 		var hostSoftware []models2.HostSoftware
-		e.Orm.Model(&models2.HostSoftware{}).Select("host_id").Where(" `key` LIKE 'sn\\_%' AND `value` like ?",
-			fmt.Sprintf("%%%v%%", c.BusinessSn)).Find(&hostSoftware)
+		eOrm.Model(&models2.HostSoftware{}).Select("host_id").Where(" `key` LIKE 'sn\\_%' AND `value` like ?",
+			fmt.Sprintf("%%%v%%", req.BusinessSn)).Find(&hostSoftware)
 
 		var cache []int
 		for _, host := range hostSoftware {
@@ -113,9 +121,22 @@ func (e *RsHost) GetPage(c *dto.RsHostGetPageReq, p *actions.DataPermission, lis
 		orm = orm.Where("id in (?)", cache)
 	}
 
-	if c.HostId != "" { //直接查询机器
-		orm = orm.Where("id = ?", c.HostId)
+	if req.CustomId > 0 {
+		//1.查询哪些机房关联了客户
+		//2.查询这个机房关联
+		orm = orm.Where("id in ?", e.GetCustomIdc(req.CustomId))
 	}
+	return orm
+}
+
+// GetPage 获取RsHost列表
+func (e *RsHost) GetPage(c *dto.RsHostGetPageReq, p *actions.DataPermission, list *[]models.RsHost, count *int64) error {
+	var err error
+	var data models.RsHost
+
+	orm := e.Orm.Model(&data)
+
+	orm = e.MakeSelectOrm(c, orm, e.Orm)
 
 	orm = orm.Scopes(
 		cDto.MakeCondition(c.GetNeedSearch()),

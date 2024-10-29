@@ -78,7 +78,7 @@ func HostToAssetStatus(v int) int {
 	case 2: //下架 - 资产下架
 		updateHost = 4
 	case 3:
-		updateHost = 2
+		updateHost = 2 //出库
 
 	}
 	return updateHost

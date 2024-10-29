@@ -91,7 +91,8 @@ func (e *AssetOutboundOrder) Insert(c *dto.AssetOutboundOrderInsertReq) error {
 		CombinationIds := utils.RemoveRepeatInt(c.Combination)
 
 		e.Orm.Model(&models.Combination{}).Where("id in ?", CombinationIds).Updates(map[string]interface{}{
-			"status": 2,
+			"status":    2,
+			"custom_id": data.CustomId,
 		})
 
 		e.Orm.Model(&models.AdditionsWarehousing{}).Where("combination_id in ?", CombinationIds).Updates(map[string]interface{}{

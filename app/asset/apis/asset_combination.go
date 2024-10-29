@@ -231,6 +231,31 @@ func (e Combination) CountOnline(c *gin.Context) {
 	return
 
 }
+func (e Combination) CountWait(c *gin.Context) {
+	req := dto.CombinationGetPageReq{}
+	s := service.Combination{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
+	var data models.Combination
+
+	orm := e.Orm.Model(&data).Scopes(
+		cDto.MakeCondition(req.GetNeedSearch()))
+
+	var Count int64
+	orm.Where("status = 2").Count(&Count)
+
+	e.OK(Count, "successful")
+	return
+
+}
 func (e Combination) CountOffline(c *gin.Context) {
 	req := dto.CombinationGetPageReq{}
 	s := service.Combination{}

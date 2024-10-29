@@ -108,7 +108,7 @@ type RsHostGetPageReq struct {
 	Status         string `form:"status"  search:"type:exact;column:status;table:rs_host" comment:"主机状态"`
 	BusinessSn     string `form:"businessSn"  search:"-" comment:"业务SN"`
 	TransProvince  int    `form:"transProvince" search:"type:exact;column:trans_province;table:rs_host" comment:"是否跨省"`
-
+	CustomId       int    `form:"customId"  search:"-" comment:"客户ID"`
 	RsHostOrder
 }
 
