@@ -15,7 +15,8 @@ func WatchCombinationCustom() {
 	fmt.Println("巡检资产组合的客户匹配")
 	for _, d := range dbList {
 		var CombinationList []models2.Combination
-		d.Model(&models2.Combination{}).Select("id,idc_id,host_id,custom_id").Find(&CombinationList)
+		//只自动化检索 在线的
+		d.Model(&models2.Combination{}).Select("id,idc_id,host_id,custom_id").Where("status = 3").Find(&CombinationList)
 		count := 0
 		hostIds := make([]int, 0)
 		idcList := make([]int, 0)
@@ -43,7 +44,8 @@ func WatchCombinationCustom() {
 		hostIds = utils.RemoveRepeatInt(hostIds)
 
 		var hostListModel []models2.Host
-		d.Model(&models2.Host{}).Select("id,idc,sn").Where("id in ?", hostIds).Find(&hostListModel)
+		//只查询在线的机器
+		d.Model(&models2.Host{}).Select("id,idc,sn").Where("id in ? and status = 1", hostIds).Find(&hostListModel)
 		//先进行资产组合关联的主机 查询到对应的IDC
 
 		for _, hostRow := range hostListModel {

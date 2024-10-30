@@ -124,7 +124,17 @@ func (e *RsHost) MakeSelectOrm(req *dto.RsHostGetPageReq, orm *gorm.DB, eOrm *go
 	if req.CustomId > 0 {
 		//1.查询哪些机房关联了客户
 		//2.查询这个机房关联
-		orm = orm.Where("id in ?", e.GetCustomIdc(req.CustomId))
+		GetHostIds := e.GetCustomIdc(req.CustomId)
+
+		//顺便在 资产组合中也查询一次
+
+		var CombinationBindHost []int
+		e.Orm.Model(&models2.Combination{}).Select("host_id").Where("custom_id = ?", req.CustomId).Find(&CombinationBindHost).Scan(&CombinationBindHost)
+		GetHostIds = append(GetHostIds, CombinationBindHost...)
+
+		GetHostIds = utils.RemoveRepeatInt(GetHostIds)
+		orm = orm.Where("id in ?", GetHostIds)
+
 	}
 	return orm
 }

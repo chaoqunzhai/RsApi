@@ -78,7 +78,7 @@ func WatchOnlineUsage() {
 // 点心的接口定义是 flow_download_bandwidth_by_minute
 func WatchFlowDownloadBandwidth(tenMinutesAgo, endTime string, host models.Host) *MonitorCompute {
 	//这里面的单位是MB
-	transmitQuery := fmt.Sprintf("sum(flow_download_bandwidth_by_minute{instance=\"%v\"})", host.HostName)
+	transmitQuery := fmt.Sprintf("sum(flow_bandwidth_by_minute{instance=\"%v\"})", host.HostName)
 
 	compute := RequestPromResult(tenMinutesAgo, endTime, "60", transmitQuery, true)
 

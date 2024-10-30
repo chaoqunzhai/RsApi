@@ -13,11 +13,11 @@ type RsHostIncomeGetPageReq struct {
 	HostId         string `form:"hostId"  search:"type:exact;column:host_id;table:rs_host_income" comment:"主机ID"`
 	Isp            string `form:"isp"  search:"type:exact;column:isp;table:rs_host_income" comment:"运营商ID"`
 	IdcId          string `form:"idcId"  search:"type:exact;column:idc_id;table:rs_host_income" comment:"IDC ID"`
-	BuId           string `form:"buId"  search:"type:exact;column:bu_id;table:rs_host_income" comment:"业务ID"`
+	BusinessId     string `form:"businessId"  search:"-" comment:"业务ID"`
 	Usage          string `form:"usage"  search:"type:exact;column:usage;table:rs_host_income" comment:""`
 	SettleStatus   string `form:"settleStatus"  search:"type:exact;column:settle_status;table:rs_host_income" comment:""`
-	StartTimeAt    string `form:"startTimeAt"  search:"type:gte;column:created_at;table:rs_contract" comment:"开始时间"`
-	EndTimeAt      string `form:"endTimeAt"  search:"type:lte;column:created_at;table:rs_contract" comment:"结束时间"`
+	StartTimeAt    string `form:"startTime"  search:"type:gte;column:created_at;table:rs_host_income" comment:"开始时间"`
+	EndTimeAt      string `form:"endTime"  search:"type:lte;column:created_at;table:rs_host_income" comment:"结束时间"`
 	RsHostIncomeOrder
 }
 

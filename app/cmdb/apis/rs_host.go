@@ -642,7 +642,6 @@ func (e RsHost) GetPage(c *gin.Context) {
 				}
 				return int(row.Memory / 1024 / 1024 / 1024)
 			}(),
-			"kernel": row.Kernel,
 		}
 		if row.HealthyAt.Valid {
 			customRow["healthyAt"] = row.HealthyAt.Time.Format("2006-01-02 15:04:05")

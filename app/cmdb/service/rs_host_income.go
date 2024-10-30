@@ -2,8 +2,9 @@ package service
 
 import (
 	"errors"
+	"strings"
 
-    "github.com/go-admin-team/go-admin-core/sdk/service"
+	"github.com/go-admin-team/go-admin-core/sdk/service"
 	"gorm.io/gorm"
 
 	"go-admin/app/cmdb/models"
@@ -21,12 +22,16 @@ func (e *RsHostIncome) GetPage(c *dto.RsHostIncomeGetPageReq, p *actions.DataPer
 	var err error
 	var data models.RsHostIncome
 
-	err = e.Orm.Model(&data).
-		Scopes(
-			cDto.MakeCondition(c.GetNeedSearch()),
-			cDto.Paginate(c.GetPageSize(), c.GetPageIndex()),
-			actions.Permission(data.TableName(), p),
-		).
+	orm := e.Orm.Model(&data)
+
+	if c.BusinessId != "" {
+		orm = orm.Where("bu_id in ?", strings.Split(c.BusinessId, ","))
+	}
+	err = orm.Scopes(
+		cDto.MakeCondition(c.GetNeedSearch()),
+		cDto.Paginate(c.GetPageSize(), c.GetPageIndex()),
+		actions.Permission(data.TableName(), p),
+	).
 		Find(list).Limit(-1).Offset(-1).
 		Count(count).Error
 	if err != nil {
@@ -59,9 +64,9 @@ func (e *RsHostIncome) Get(d *dto.RsHostIncomeGetReq, p *actions.DataPermission,
 
 // Insert 创建RsHostIncome对象
 func (e *RsHostIncome) Insert(c *dto.RsHostIncomeInsertReq) error {
-    var err error
-    var data models.RsHostIncome
-    c.Generate(&data)
+	var err error
+	var data models.RsHostIncome
+	c.Generate(&data)
 	err = e.Orm.Create(&data).Error
 	if err != nil {
 		e.Log.Errorf("RsHostIncomeService Insert error:%s \r\n", err)
@@ -72,22 +77,22 @@ func (e *RsHostIncome) Insert(c *dto.RsHostIncomeInsertReq) error {
 
 // Update 修改RsHostIncome对象
 func (e *RsHostIncome) Update(c *dto.RsHostIncomeUpdateReq, p *actions.DataPermission) error {
-    var err error
-    var data = models.RsHostIncome{}
-    e.Orm.Scopes(
-            actions.Permission(data.TableName(), p),
-        ).First(&data, c.GetId())
-    c.Generate(&data)
+	var err error
+	var data = models.RsHostIncome{}
+	e.Orm.Scopes(
+		actions.Permission(data.TableName(), p),
+	).First(&data, c.GetId())
+	c.Generate(&data)
 
-    db := e.Orm.Save(&data)
-    if err = db.Error; err != nil {
-        e.Log.Errorf("RsHostIncomeService Save error:%s \r\n", err)
-        return err
-    }
-    if db.RowsAffected == 0 {
-        return errors.New("无权更新该数据")
-    }
-    return nil
+	db := e.Orm.Save(&data)
+	if err = db.Error; err != nil {
+		e.Log.Errorf("RsHostIncomeService Save error:%s \r\n", err)
+		return err
+	}
+	if db.RowsAffected == 0 {
+		return errors.New("无权更新该数据")
+	}
+	return nil
 }
 
 // Remove 删除RsHostIncome
@@ -99,11 +104,11 @@ func (e *RsHostIncome) Remove(d *dto.RsHostIncomeDeleteReq, p *actions.DataPermi
 			actions.Permission(data.TableName(), p),
 		).Delete(&data, d.GetId())
 	if err := db.Error; err != nil {
-        e.Log.Errorf("Service RemoveRsHostIncome error:%s \r\n", err)
-        return err
-    }
-    if db.RowsAffected == 0 {
-        return errors.New("无权删除该数据")
-    }
+		e.Log.Errorf("Service RemoveRsHostIncome error:%s \r\n", err)
+		return err
+	}
+	if db.RowsAffected == 0 {
+		return errors.New("无权删除该数据")
+	}
 	return nil
 }

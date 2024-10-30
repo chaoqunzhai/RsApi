@@ -143,8 +143,13 @@ type DianXinMetricsRow struct {
 	Price         *DxPrice        `json:"price"`
 	DialList      []*DxDialList   `json:"dial_list"`
 	AllLine       int             `json:"allLine"`
+	DeviceInfo    DeviceInfo      `json:"deviceInfo"`
 	Balance       float64         `json:"balance"`
 	LineBandwidth int             `json:"lineBandwidth"`
+}
+type DeviceInfo struct {
+	MemTotal interface{} `json:"memTotal"`
+	CpuCore  int         `json:"cpuCore"`
 }
 type DxInterfaces struct {
 	IfName string `json:"ifName"`
