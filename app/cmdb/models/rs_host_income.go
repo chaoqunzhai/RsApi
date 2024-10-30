@@ -23,6 +23,7 @@ type RsHostIncome struct {
 	SettleStatus      string          `json:"settleStatus" gorm:"type:bigint;comment:SettleStatus"`
 	SettleTime        time.Time       `json:"settleTime" gorm:"type:datetime(3);comment:SettleTime"`
 	SettleBandwidth   string          `json:"settleBandwidth" gorm:"type:double;comment:SettleBandwidth"`
+	SettlePrice       float64         `json:"settlePrice" gorm:"结算收益"`
 	TotalBandwidth    string          `json:"totalBandwidth" gorm:"type:double;comment:TotalBandwidth"`
 	HeartbeatNum      string          `json:"heartbeatNum" gorm:"type:bigint;comment:HeartbeatNum"`
 	NightHeartbeatNum string          `json:"nightHeartbeatNum" gorm:"type:bigint;comment:NightHeartbeatNum"`
