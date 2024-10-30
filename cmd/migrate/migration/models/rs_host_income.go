@@ -13,12 +13,11 @@ type HostIncome struct {
 	Isp               int          `json:"isp" gorm:"index;comment:运营商ID"`
 	IdcId             int          `json:"idcId" gorm:"index;comment:IDC ID"`
 	BuId              int          `json:"buId" gorm:"index;comment:业务名称"`
-	Income            float64      `json:"income" gorm:"收益"`
+	Income            float64      `json:"income" gorm:"预估收益"`
 	Usage             float64      `json:"usage" gorm:"利用率,单位是%"`
 	Bandwidth95       float64      `json:"bandwidth95" gorm:"95计费带宽"`
 	BandwidthIncome   float64      `json:"bandwidthIncome" gorm:"计费带宽,单位是G"`
 	AvgDayPrice       float64      `json:"avgDayPrice" gorm:"计算每天的价格=运营商费用/当月天数"`
-	Actual            float64      `json:"actual" gorm:"实际收益"`
 	RetryId           int          `json:"retryId" gorm:"重算任务ID"`
 	RetryPrice        float64      `json:"retryPrice" gorm:"重算价格"`
 	SlaPrice          float64      `json:"slaPrice" gorm:"SLA扣款费用"`

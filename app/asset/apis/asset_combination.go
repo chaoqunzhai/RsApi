@@ -359,11 +359,13 @@ func (e Combination) AutoInsert(c *gin.Context) {
 	var CombinationModel models.Combination
 	e.Orm.Model(&models.Combination{}).Select("id").Where("code = ?", SearchSn).Limit(1).Find(&CombinationModel)
 
-	//主机SN如果 不存在,就创建这么一个组合, 如果存在 不进行操作
+	var hostModel models2.Host
+	e.Orm.Model(&models2.Host{}).Select("id").Where("sn = ?", SearchSn).Limit(1).Find(&hostModel)
 
+	//主机SN如果 不存在,就创建这么一个组合, 如果存在 不进行操作
 	var Status int
 	fmt.Println("资产注册", req.Remark)
-	if strings.HasPrefix(req.Remark, "20000") { //那就是在 公司机房进行组装
+	if utils.IsArray(req.Remark, global.RsRemark) { //那就是在 公司机房进行组装
 		Status = 1 //在库
 	} else {
 		Status = 3 //在线
@@ -372,7 +374,15 @@ func (e Combination) AutoInsert(c *gin.Context) {
 	if CombinationModel.Id == 0 {
 		CombinationModel.Code = SearchSn
 		CombinationModel.Status = Status
+
 		e.Orm.Create(&CombinationModel)
+	} else {
+
+		if hostModel.Id > 0 {
+			e.Orm.Model(&models.Combination{}).Where("id = ?", CombinationModel.Id).Updates(map[string]interface{}{
+				"host_id": hostModel.Id,
+			})
+		}
 	}
 
 	//创建对应的服务器资产

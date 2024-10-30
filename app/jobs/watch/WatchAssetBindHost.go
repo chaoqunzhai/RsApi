@@ -1,15 +1,206 @@
 package watch
 
 import (
+	"fmt"
 	"github.com/go-admin-team/go-admin-core/sdk"
 	models2 "go-admin/cmd/migrate/migration/models"
 	"go-admin/common/utils"
 	"go-admin/global"
+	"regexp"
+	"strconv"
 )
 
+func WatchCombinationCustom() {
+	dbList := sdk.Runtime.GetDb()
+	fmt.Println("巡检资产组合的客户匹配")
+	for _, d := range dbList {
+		var CombinationList []models2.Combination
+		d.Model(&models2.Combination{}).Select("id,idc_id,host_id,custom_id").Find(&CombinationList)
+		count := 0
+		hostIds := make([]int, 0)
+		idcList := make([]int, 0)
+		CombinationBindHost := make(map[int]int)
+		CombinationBindIdc := make(map[int][]int)
+		CombinationHostBindIdc := make(map[int][]int)
+		for _, row := range CombinationList {
+
+			if row.HostId > 0 {
+				hostIds = append(hostIds, row.Id)
+				CombinationBindHost[row.HostId] = row.Id
+			}
+			if row.IdcId > 0 {
+				idcList = append(idcList, row.IdcId)
+
+				bindIdc, bindOk := CombinationBindIdc[row.IdcId]
+				if !bindOk {
+					bindIdc = make([]int, 0)
+				}
+				bindIdc = append(bindIdc, row.Id)
+				CombinationBindIdc[row.IdcId] = bindIdc
+			}
+		}
+
+		hostIds = utils.RemoveRepeatInt(hostIds)
+
+		var hostListModel []models2.Host
+		d.Model(&models2.Host{}).Select("id,idc,sn").Where("id in ?", hostIds).Find(&hostListModel)
+		//先进行资产组合关联的主机 查询到对应的IDC
+
+		for _, hostRow := range hostListModel {
+			CombinationId, ok := CombinationBindHost[hostRow.Id]
+			if !ok {
+				continue
+			}
+			fmt.Printf("更新组合 Combination:%v 新IDC-ID:%v\n", CombinationId, hostRow.Idc)
+			d.Model(&models2.Combination{}).Where("id = ?", CombinationId).Updates(map[string]interface{}{
+				"idc_id": hostRow.Idc,
+			})
+			if hostRow.Idc == 0 {
+				continue
+			}
+			bindIdc, bindOk := CombinationBindIdc[hostRow.Idc]
+			if !bindOk {
+				bindIdc = make([]int, 0)
+			}
+			bindIdc = append(bindIdc, CombinationId)
+			CombinationBindIdc[hostRow.Idc] = bindIdc
+			idcList = append(idcList, hostRow.Idc)
+		}
+
+		idcList = utils.RemoveRepeatInt(idcList)
+		fmt.Println("查询IDC列表", idcList)
+		var IdcListHost []models2.Idc
+		d.Model(&models2.Idc{}).Select("id,custom_id").Where("id in ?", idcList).Find(&IdcListHost)
+		fmt.Printf("CombinationBindIdc 关联:%+v\n", CombinationBindIdc)
+		for _, v := range IdcListHost {
+			CombinationIds, ok := CombinationBindIdc[v.Id]
+			if !ok {
+				continue
+			}
+			if v.CustomId == 0 {
+				continue
+			}
+			count += 1
+			//更新资产组合关联的客户
+			fmt.Printf("更新组合 Combination:%v 新客户ID:%v\n", CombinationIds, v.CustomId)
+			d.Model(&models2.Combination{}).Where("id in ?", CombinationIds).Updates(map[string]interface{}{
+				"custom_id": v.CustomId,
+			})
+
+			//更新拨号关联的客户
+			bindHost, bindOk := CombinationHostBindIdc[v.Id]
+			if !bindOk {
+				continue
+			}
+			if len(bindHost) == 0 {
+				continue
+			}
+			d.Model(&models2.Dial{}).Where("host_id in ?", bindHost).Updates(map[string]interface{}{
+				"custom_id": v.CustomId,
+			})
+		}
+		fmt.Printf("巡检资产组合的客户匹配,总更新了%v条数据", count)
+
+	}
+
+}
+
+func ReRemark(remark string) float64 {
+	compile, _ := regexp.Compile("\\((\\d{1,3})\\*(\\d{1,5})M\\)")
+	ttt := compile.FindStringSubmatch(remark)
+	if len(ttt) < 2 {
+		return 0
+	}
+	line, err1 := strconv.ParseInt(ttt[1], 10, 64)
+	width, err2 := strconv.ParseInt(ttt[2], 10, 64)
+	if err1 == nil && err2 == nil {
+		Value := float64(line) * float64(width)
+		return Value
+	}
+	return 0
+}
+func WatchHostBandwidth() {
+	fmt.Println("重算总带宽任务开始")
+	dbList := sdk.Runtime.GetDb()
+	for _, d := range dbList {
+		var HostList []models2.Host
+		count := 0
+		d.Model(&models2.Host{}).Select("remark,id,balance").Find(&HostList)
+
+		for _, host := range HostList {
+			if host.Remark == "" {
+				continue
+			}
+			algBalance := ReRemark(host.Remark)
+
+			if algBalance == 0 {
+				continue
+			}
+			if algBalance == host.Balance {
+				continue
+			}
+			d.Model(&models2.Host{}).Where("id = ?", host.Id).Updates(map[string]interface{}{
+				"balance": algBalance,
+			})
+			count += 1
+		}
+		fmt.Printf("重算总带宽任务结束,总更新了%v条数据", count)
+
+	}
+
+}
+func WatchCombinationHost() {
+	fmt.Println("巡检资产组合空主机数据 任务开始")
+	dbList := sdk.Runtime.GetDb()
+	for _, d := range dbList {
+		var CombinationList []models2.Combination
+		d.Model(&models2.Combination{}).Select("code,id").Where("host_id = 0 OR host_id IS  NULL ").Find(&CombinationList)
+
+		for _, v := range CombinationList {
+			count := 0
+			//先查hostname,因为有的机器SN一样,那就用hostName来做sn
+			var host models2.Host
+			d.Model(&host).Where("host_name = ?", v.Code).Limit(1).Find(&host)
+			updateHostId := 0
+			if host.Id > 0 {
+				d.Model(&models2.Combination{}).Where("id = ?", v.Id).Updates(map[string]interface{}{
+					"host_id": host.Id,
+				})
+				updateHostId = host.Id
+
+			} else {
+				//sn查一下
+				var snHost models2.Host
+				d.Model(&snHost).Where("sn = ?", v.Code).Limit(1).Find(&snHost)
+				if snHost.Id > 0 {
+					d.Model(&models2.Combination{}).Where("id = ?", v.Id).Updates(map[string]interface{}{
+						"host_id": snHost.Id,
+					})
+					updateHostId = snHost.Id
+				}
+
+			}
+			if updateHostId == 0 {
+				continue
+			}
+			d.Model(&models2.Combination{}).Where("id = ?", v.Id).Updates(map[string]interface{}{
+				"host_id": updateHostId,
+			})
+
+			d.Model(&models2.AdditionsWarehousing{}).Where("combination_id = ?", v.Id).Updates(map[string]interface{}{
+				"host_id": updateHostId,
+			})
+			count += 1
+
+			fmt.Printf("巡检资产组合空主机数据,总更新了%v条数据", count)
+
+		}
+	}
+}
 func WatchAssetBindHost() {
 	dbList := sdk.Runtime.GetDb()
 
+	fmt.Println("巡检资产列表和CMDB关联关系")
 	for _, d := range dbList {
 		//只查询 资产分类为主机 + host_id = 0 的数据
 		var Warehousing []models2.AdditionsWarehousing
@@ -72,8 +263,8 @@ func WatchAssetBindHost() {
 
 				CustomId := idcBindCustom[hostIdcId] //idcID 获取关联的客户
 				d.Model(&models2.Combination{}).Where("id = ?", CombinedId).Updates(map[string]interface{}{
-					"host_id": hostId,
-					//"idc_id":    hostIdcId, 因为资产的数据 只是一周上报一次, 但是IDC是随着CMDB资产数据一直在变化 所以是由着下面的
+					"host_id":   hostId,
+					"idc_id":    hostIdcId,
 					"custom_id": CustomId,
 				})
 				d.Model(&models2.AdditionsWarehousing{}).Where("combination_id = ?", CombinedId).Updates(map[string]interface{}{
@@ -83,117 +274,6 @@ func WatchAssetBindHost() {
 			}
 		}
 
-	}
-
-	for _, d := range dbList {
-		var CombinationList []models2.Combination
-		d.Model(&models2.Combination{}).Find(&CombinationList)
-
-		hostIds := make([]int, 0)
-		CombinationBindHost := make(map[int]int, 0)
-		CombinationBindIdc := make(map[int]int, 0)
-		CombinationHostBindIdc := make(map[int][]int, 0)
-		for _, row := range CombinationList {
-			hostIds = append(hostIds, row.HostId)
-			CombinationBindHost[row.HostId] = row.Id
-		}
-		hostIds = utils.RemoveRepeatInt(hostIds)
-
-		var hostListModel []models2.Host
-		d.Model(&models2.Host{}).Select("id,idc").Where("id in ?", hostIds).Find(&hostListModel)
-		//先进行资产组合关联的主机 查询到对应的IDC
-		idcList := make([]int, 0)
-
-		for _, hostRow := range hostListModel {
-			CombinationId, ok := CombinationBindHost[hostRow.Id]
-			if !ok {
-				continue
-			}
-			d.Model(&models2.Combination{}).Where("id = ?", CombinationId).Updates(map[string]interface{}{
-				"idc_id": hostRow.Idc,
-			})
-			idcList = append(idcList, hostRow.Idc)
-			//资产和组合对应起来
-			CombinationBindIdc[hostRow.Idc] = CombinationId
-
-			bindHostList, toOk := CombinationHostBindIdc[hostRow.Idc]
-			if !toOk {
-				bindHostList = make([]int, 0)
-			}
-			bindHostList = append(bindHostList, hostRow.Id)
-		}
-
-		idcList = utils.RemoveRepeatInt(idcList)
-		var IdcListHost []models2.Idc
-		d.Model(&models2.Idc{}).Select("id,custom_id").Where("id in ?", idcList).Find(&IdcListHost)
-
-		for _, v := range IdcListHost {
-			CombinationId, ok := CombinationBindIdc[v.Id]
-			if !ok {
-				continue
-			}
-			if v.CustomId == 0 {
-				continue
-			}
-			//更新资产组合关联的客户
-			d.Model(&models2.Combination{}).Where("id = ?", CombinationId).Updates(map[string]interface{}{
-				"custom_id": v.CustomId,
-			})
-			//更新拨号关联的客户
-			bindHost, bindOk := CombinationHostBindIdc[v.Id]
-			if !bindOk {
-				continue
-			}
-			if len(bindHost) == 0 {
-				continue
-			}
-			d.Model(&models2.Dial{}).Where("host_id in ?", bindHost).Updates(map[string]interface{}{
-				"custom_id": v.CustomId,
-			})
-		}
-
-	}
-
-	for _, d := range dbList {
-		var CombinationList []models2.Combination
-		d.Model(&models2.Combination{}).Select("code,id").Where("host_id = 0 OR host_id IS  NULL ").Find(&CombinationList)
-
-		for _, v := range CombinationList {
-
-			//先查hostname,因为有的机器SN一样,那就用hostName来做sn
-			var host models2.Host
-			d.Model(&host).Where("host_name = ?", v.Code).Limit(1).Find(&host)
-			updateHostId := 0
-			if host.Id > 0 {
-				d.Model(&models2.Combination{}).Where("id = ?", v.Id).Updates(map[string]interface{}{
-					"host_id": host.Id,
-				})
-				updateHostId = host.Id
-
-			} else {
-				//sn查一下
-				var snHost models2.Host
-				d.Model(&snHost).Where("sn = ?", v.Code).Limit(1).Find(&snHost)
-				if snHost.Id > 0 {
-					d.Model(&models2.Combination{}).Where("id = ?", v.Id).Updates(map[string]interface{}{
-						"host_id": snHost.Id,
-					})
-					updateHostId = snHost.Id
-				}
-
-			}
-			if updateHostId == 0 {
-				continue
-			}
-			d.Model(&models2.Combination{}).Where("id = ?", v.Id).Updates(map[string]interface{}{
-				"host_id": updateHostId,
-			})
-
-			d.Model(&models2.AdditionsWarehousing{}).Where("combination_id = ?", v.Id).Updates(map[string]interface{}{
-				"host_id": updateHostId,
-			})
-
-		}
 	}
 
 }

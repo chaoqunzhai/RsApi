@@ -47,7 +47,7 @@ func (c *CostAlgorithm) StartHostCompute() {
 		c.Orm.Raw(hostBindBusiness).Scan(&bindHostIds)
 		var hostList []models.Host
 		//bindHostIdsDemo := []int{325, 981, 840, 821, 818}
-		c.Orm.Model(&models.Host{}).Select("id,host_name,sn,status,balance").Where("id in ?", bindHostIds).Find(&hostList)
+		c.Orm.Model(&models.Host{}).Select("id,host_name,sn,status,balance,idc").Where("id in ?", bindHostIds).Find(&hostList)
 		buValue, ok := c.BusinessMap[bu.Id]
 		if !ok {
 			buValue.Host = make([]*Host, 0)
