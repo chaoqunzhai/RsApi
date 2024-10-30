@@ -13,6 +13,7 @@ type RsHostIncome struct {
 	IdcId             string          `json:"idcId" gorm:"type:bigint;comment:IDC ID"`
 	BuId              string          `json:"buId" gorm:"type:bigint;comment:业务ID"`
 	Income            string          `json:"income" gorm:"type:double;comment:Income"`
+	AvgDayPrice       float64         `json:"avgDayPrice" gorm:"计算每天的价格=运营商费用/当月天数"`
 	Usage             string          `json:"usage" gorm:"type:double;comment:Usage"`
 	Bandwidth95       string          `json:"bandwidth95" gorm:"type:double;comment:Bandwidth95"`
 	BandwidthIncome   string          `json:"bandwidthIncome" gorm:"type:double;comment:BandwidthIncome"`
