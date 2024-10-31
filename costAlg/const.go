@@ -8,6 +8,7 @@ import (
 
 type Business struct {
 	Name    string             `json:"name"`
+	EnName  string             `json:"enName"`
 	Id      int                `json:"id"`
 	AlgId   int                `json:"algId"`
 	AlgName string             `json:"algName"`
@@ -26,7 +27,7 @@ type SlaConf struct {
 	Limit int    `json:"limit"` //超过多少分钟
 }
 type IspCnf struct {
-	Id          int     //常规ID
+	ConstId     int     //常量Id
 	Name        string  //运营商名字
 	Price       float64 //当月总价(3000)
 	Day         int     //当月天数
@@ -42,15 +43,15 @@ type PromReq struct {
 	End   string
 }
 type Host struct {
-	HostId       int                        `json:"hostId"`
-	HostName     string                     `json:"hostName"`
-	HostSn       string                     `json:"hostSn"`
-	IdcId        int                        `json:"idcId"`
-	BuId         int                        `json:"buId"`
-	AlgDay       string                     `json:"algDay"`       //计算天数
-	PriceCompute map[string]*MonitorCompute `json:"priceCompute"` //今天的收益 运营商:收益
-
-	BandwidthIncome float64 `json:"bandwidthIncome"` //计费带宽 就是多少条线 * 单条线路带宽
+	HostId          int                        `json:"hostId"`
+	HostName        string                     `json:"hostName"`
+	HostSn          string                     `json:"hostSn"`
+	IdcId           int                        `json:"idcId"`
+	BuId            int                        `json:"buId"`
+	AlgDay          string                     `json:"algDay"`       //计算天数
+	PriceCompute    map[string]*MonitorCompute `json:"priceCompute"` //今天的收益 运营商:收益
+	IspId           int                        `json:"ispId"`
+	BandwidthIncome float64                    `json:"bandwidthIncome"` //计费带宽 就是多少条线 * 单条线路带宽
 
 	BuSn []*LabelRow `json:"buSn"`
 }

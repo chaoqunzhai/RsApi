@@ -148,8 +148,8 @@ type DianXinMetricsRow struct {
 	LineBandwidth int             `json:"lineBandwidth"`
 }
 type DeviceInfo struct {
-	MemTotal interface{} `json:"memTotal"`
-	CpuCore  int         `json:"cpuCore"`
+	MemTotal uint64 `json:"memTotal"`
+	CpuCore  int    `json:"cpuCore"`
 }
 type DxInterfaces struct {
 	IfName string `json:"ifName"`

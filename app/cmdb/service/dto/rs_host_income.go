@@ -10,10 +10,12 @@ import (
 
 type RsHostIncomeGetPageReq struct {
 	dto.Pagination `search:"-"`
+	HostSearch     string `form:"hostSearch "  search:"-" comment:"主机ID"`
 	HostId         string `form:"hostId"  search:"type:exact;column:host_id;table:rs_host_income" comment:"主机ID"`
 	Isp            string `form:"isp"  search:"type:exact;column:isp;table:rs_host_income" comment:"运营商ID"`
 	IdcId          string `form:"idcId"  search:"type:exact;column:idc_id;table:rs_host_income" comment:"IDC ID"`
 	BusinessId     string `form:"businessId"  search:"-" comment:"业务ID"`
+	CustomId       string `form:"customId"  search:"-" comment:"客户ID"`
 	Usage          string `form:"usage"  search:"type:exact;column:usage;table:rs_host_income" comment:""`
 	SettleStatus   string `form:"settleStatus"  search:"type:exact;column:settle_status;table:rs_host_income" comment:""`
 	StartTimeAt    string `form:"startTime"  search:"type:gte;column:created_at;table:rs_host_income" comment:"开始时间"`
@@ -50,10 +52,10 @@ func (m *RsHostIncomeGetPageReq) GetNeedSearch() interface{} {
 
 type RsHostIncomeInsertReq struct {
 	Id                int       `json:"-" comment:"主键编码"` // 主键编码
-	HostId            string    `json:"hostId" comment:"主机ID"`
+	HostId            int       `json:"hostId" comment:"主机ID"`
 	Isp               string    `json:"isp" comment:"运营商ID"`
 	IdcId             string    `json:"idcId" comment:"IDC ID"`
-	BuId              string    `json:"buId" comment:"业务ID"`
+	BuId              int       `json:"buId" comment:"业务ID"`
 	Income            string    `json:"income" comment:""`
 	Usage             string    `json:"usage" comment:""`
 	Bandwidth95       string    `json:"bandwidth95" comment:""`
@@ -101,10 +103,10 @@ func (s *RsHostIncomeInsertReq) GetId() interface{} {
 
 type RsHostIncomeUpdateReq struct {
 	Id                int       `uri:"id" comment:"主键编码"` // 主键编码
-	HostId            string    `json:"hostId" comment:"主机ID"`
+	HostId            int       `json:"hostId" comment:"主机ID"`
 	Isp               string    `json:"isp" comment:"运营商ID"`
 	IdcId             string    `json:"idcId" comment:"IDC ID"`
-	BuId              string    `json:"buId" comment:"业务ID"`
+	BuId              int       `json:"buId" comment:"业务ID"`
 	Income            string    `json:"income" comment:""`
 	Usage             string    `json:"usage" comment:""`
 	Bandwidth95       string    `json:"bandwidth95" comment:""`

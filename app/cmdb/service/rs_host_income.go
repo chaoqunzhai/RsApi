@@ -27,6 +27,17 @@ func (e *RsHostIncome) GetPage(c *dto.RsHostIncomeGetPageReq, p *actions.DataPer
 	if c.BusinessId != "" {
 		orm = orm.Where("bu_id in ?", strings.Split(c.BusinessId, ","))
 	}
+	if c.HostSearch != "" {
+
+		e.Orm.Model(&models.RsHost{}).Where("host_name like ? or sn like ?", "%"+c.HostSearch+"%", "%"+c.HostSearch+"%")
+	}
+	if c.CustomId != "" {
+		//先通过客户搜索机房
+		//搜索到的机房 在收益中查询
+		var idcList []string
+		e.Orm.Model(&models.RsIdc{}).Where("custom_id = ?", c.CustomId).Find(&idcList).Scan(&idcList)
+		orm = orm.Where("idc_id in ?", idcList)
+	}
 	err = orm.Scopes(
 		cDto.MakeCondition(c.GetNeedSearch()),
 		cDto.Paginate(c.GetPageSize(), c.GetPageIndex()),

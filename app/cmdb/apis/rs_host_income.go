@@ -1,7 +1,7 @@
 package apis
 
 import (
-    "fmt"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-admin-team/go-admin-core/sdk/api"
@@ -34,30 +34,44 @@ type RsHostIncome struct {
 // @Router /api/v1/rs-host-income [get]
 // @Security Bearer
 func (e RsHostIncome) GetPage(c *gin.Context) {
-    req := dto.RsHostIncomeGetPageReq{}
-    s := service.RsHostIncome{}
-    err := e.MakeContext(c).
-        MakeOrm().
-        Bind(&req).
-        MakeService(&s.Service).
-        Errors
-   	if err != nil {
-   		e.Logger.Error(err)
-   		e.Error(500, err, err.Error())
-   		return
-   	}
+	req := dto.RsHostIncomeGetPageReq{}
+	s := service.RsHostIncome{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
 
 	p := actions.GetPermissionFromContext(c)
 	list := make([]models.RsHostIncome, 0)
 	var count int64
 
+	var buList []models.RsBusiness
+	e.Orm.Model(&models.RsBusiness{}).Select("id,name").Find(&buList)
+
+	buMap := make(map[int]string)
+	for _, b := range buList {
+		buMap[b.Id] = b.Name
+	}
 	err = s.GetPage(&req, p, &list, &count)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("获取RsHostIncome失败，\r\n失败信息 %s", err.Error()))
-        return
+		return
 	}
 
-	e.PageOK(list, int(count), req.GetPageIndex(), req.GetPageSize(), "查询成功")
+	result := make([]interface{}, 0)
+
+	for _, row := range list {
+
+		row.BuName = buMap[row.BuId]
+		result = append(result, row)
+	}
+	e.PageOK(result, int(count), req.GetPageIndex(), req.GetPageSize(), "查询成功")
 }
 
 // Get 获取RsHostIncome
@@ -71,7 +85,7 @@ func (e RsHostIncome) GetPage(c *gin.Context) {
 func (e RsHostIncome) Get(c *gin.Context) {
 	req := dto.RsHostIncomeGetReq{}
 	s := service.RsHostIncome{}
-    err := e.MakeContext(c).
+	err := e.MakeContext(c).
 		MakeOrm().
 		Bind(&req).
 		MakeService(&s.Service).
@@ -87,10 +101,10 @@ func (e RsHostIncome) Get(c *gin.Context) {
 	err = s.Get(&req, p, &object)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("获取RsHostIncome失败，\r\n失败信息 %s", err.Error()))
-        return
+		return
 	}
 
-	e.OK( object, "查询成功")
+	e.OK(object, "查询成功")
 }
 
 // Insert 创建RsHostIncome
@@ -104,25 +118,25 @@ func (e RsHostIncome) Get(c *gin.Context) {
 // @Router /api/v1/rs-host-income [post]
 // @Security Bearer
 func (e RsHostIncome) Insert(c *gin.Context) {
-    req := dto.RsHostIncomeInsertReq{}
-    s := service.RsHostIncome{}
-    err := e.MakeContext(c).
-        MakeOrm().
-        Bind(&req).
-        MakeService(&s.Service).
-        Errors
-    if err != nil {
-        e.Logger.Error(err)
-        e.Error(500, err, err.Error())
-        return
-    }
+	req := dto.RsHostIncomeInsertReq{}
+	s := service.RsHostIncome{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
 	// 设置创建人
 	req.SetCreateBy(user.GetUserId(c))
 
 	err = s.Insert(&req)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("创建RsHostIncome失败，\r\n失败信息 %s", err.Error()))
-        return
+		return
 	}
 
 	e.OK(req.GetId(), "创建成功")
@@ -140,27 +154,27 @@ func (e RsHostIncome) Insert(c *gin.Context) {
 // @Router /api/v1/rs-host-income/{id} [put]
 // @Security Bearer
 func (e RsHostIncome) Update(c *gin.Context) {
-    req := dto.RsHostIncomeUpdateReq{}
-    s := service.RsHostIncome{}
-    err := e.MakeContext(c).
-        MakeOrm().
-        Bind(&req).
-        MakeService(&s.Service).
-        Errors
-    if err != nil {
-        e.Logger.Error(err)
-        e.Error(500, err, err.Error())
-        return
-    }
+	req := dto.RsHostIncomeUpdateReq{}
+	s := service.RsHostIncome{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
 	req.SetUpdateBy(user.GetUserId(c))
 	p := actions.GetPermissionFromContext(c)
 
 	err = s.Update(&req, p)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("修改RsHostIncome失败，\r\n失败信息 %s", err.Error()))
-        return
+		return
 	}
-	e.OK( req.GetId(), "修改成功")
+	e.OK(req.GetId(), "修改成功")
 }
 
 // Delete 删除RsHostIncome
@@ -172,18 +186,18 @@ func (e RsHostIncome) Update(c *gin.Context) {
 // @Router /api/v1/rs-host-income [delete]
 // @Security Bearer
 func (e RsHostIncome) Delete(c *gin.Context) {
-    s := service.RsHostIncome{}
-    req := dto.RsHostIncomeDeleteReq{}
-    err := e.MakeContext(c).
-        MakeOrm().
-        Bind(&req).
-        MakeService(&s.Service).
-        Errors
-    if err != nil {
-        e.Logger.Error(err)
-        e.Error(500, err, err.Error())
-        return
-    }
+	s := service.RsHostIncome{}
+	req := dto.RsHostIncomeDeleteReq{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
 
 	// req.SetUpdateBy(user.GetUserId(c))
 	p := actions.GetPermissionFromContext(c)
@@ -191,7 +205,7 @@ func (e RsHostIncome) Delete(c *gin.Context) {
 	err = s.Remove(&req, p)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("删除RsHostIncome失败，\r\n失败信息 %s", err.Error()))
-        return
+		return
 	}
-	e.OK( req.GetId(), "删除成功")
+	e.OK(req.GetId(), "删除成功")
 }

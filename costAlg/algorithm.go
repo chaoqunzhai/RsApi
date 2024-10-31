@@ -46,8 +46,8 @@ func (c *CostAlgorithm) StartHostCompute() {
 		hostBindBusiness := fmt.Sprintf("SELECT host_id  FROM `host_bind_business` WHERE `host_bind_business`.`business_id` = %v", bu.Id)
 		c.Orm.Raw(hostBindBusiness).Scan(&bindHostIds)
 		var hostList []models.Host
-		//bindHostIdsDemo := []int{325, 981, 840, 821, 818}
-		c.Orm.Model(&models.Host{}).Select("id,host_name,sn,status,balance,idc").Where("id in ?", bindHostIds).Find(&hostList)
+		//bindHostIdsDemo := []int{1187}
+		c.Orm.Model(&models.Host{}).Select("id,host_name,sn,status,balance,idc,isp").Where("id in ?", bindHostIds).Find(&hostList)
 		buValue, ok := c.BusinessMap[bu.Id]
 		if !ok {
 			buValue.Host = make([]*Host, 0)
@@ -55,6 +55,7 @@ func (c *CostAlgorithm) StartHostCompute() {
 		buValue.AlgId = bu.BillingMethod
 		buValue.Id = bu.Id
 		buValue.Name = bu.Name
+		buValue.EnName = bu.EnName
 		buValue.IspCnf = make(map[string]*IspCnf)
 		buValue.SlaConf = map[int]*SlaConf{
 			1: {
@@ -69,6 +70,7 @@ func (c *CostAlgorithm) StartHostCompute() {
 		for _, host := range hostList {
 			buValue.Host = append(buValue.Host, &Host{
 				HostId:          host.Id,
+				IspId:           host.Isp,
 				HostName:        host.HostName,
 				HostSn:          host.Sn,
 				IdcId:           host.Idc,
@@ -154,7 +156,7 @@ func (c *CostAlgorithm) BuPrice() {
 			}
 
 			bu.IspCnf[ispStr] = &IspCnf{
-				Id:          cnf.Isp,
+				ConstId:     cnf.Isp,
 				Name:        ispStr,
 				Price:       cnf.Price,
 				Day:         thiMonthDay,
@@ -191,13 +193,14 @@ func (c *CostAlgorithm) ComputeMixedAlg() {
 
 		for _, host := range bu.Host {
 
-			data := c.GetHostPrometheusData(host, bu.SlaConf, bu.IspCnf)
+			data := c.GetHostPrometheusData(host, &bu)
 			host.AlgDay = startOfYesterday.Format(time.DateOnly)
 
 			host.PriceCompute = data
 
 			host.BuId = bu.Id
 
+			//fmt.Printf("host:%+v,GetHostPrometheusData:%+v\n", host, data)
 			c.InsertDb(host)
 		}
 		c.BusinessMap[bu.Id] = bu
@@ -207,18 +210,30 @@ func (c *CostAlgorithm) ComputeMixedAlg() {
 
 }
 
-func (c *CostAlgorithm) GetHostPrometheusData(host *Host, SlaConf map[int]*SlaConf, IspCnf map[string]*IspCnf) map[string]*MonitorCompute {
+func (c *CostAlgorithm) GetHostPrometheusData(host *Host, bu *Business) map[string]*MonitorCompute {
 	//获取昨天日期的 开始和结束
 
 	//请求Prometheus进行日95计算数据
 
-	algMap := make(map[string]*MonitorCompute, 0)
-	for _, isp := range IspCnf {
-		transmitQuery := fmt.Sprintf("sum(rate(phy_nic_network_transmit_bytes_total{instance=\"%v\",device_isp=\"%v\"}[5m]))*8", host.HostName, isp.Name)
+	algMap := make(map[string]*MonitorCompute)
+	for _, isp := range bu.IspCnf {
+		if host.IspId != isp.ConstId {
+			continue
+		}
+		var transmitQuery string
+		isMb := false
+		switch bu.EnName {
+		case "dianxin":
+			isMb = true
+			transmitQuery = fmt.Sprintf("sum(flow_bandwidth_by_minute{instance=\"%v\"})", host.HostName)
+		default:
+			transmitQuery = fmt.Sprintf("sum(rate(phy_nic_network_transmit_bytes_total{instance=\"%v\",device_isp=\"%v\"}[5m]))*8", host.HostName, isp.Name)
 
-		compute := c.requestPromResult(transmitQuery, SlaConf, isp)
+		}
 
-		if compute.Empty { //如果是空数据直接跳出
+		compute := c.requestPromResult(isMb, transmitQuery, bu.SlaConf, isp)
+
+		if compute.Empty { //如果是空数据 在其他指标中进行请求
 			continue
 		}
 		//利用率 =  95 / 总带宽
@@ -229,7 +244,7 @@ func (c *CostAlgorithm) GetHostPrometheusData(host *Host, SlaConf map[int]*SlaCo
 	return algMap
 }
 
-func (c *CostAlgorithm) requestPromResult(query string, SlaConf map[int]*SlaConf, IspCnf *IspCnf) *MonitorCompute {
+func (c *CostAlgorithm) requestPromResult(isMb bool, query string, SlaConf map[int]*SlaConf, IspCnf *IspCnf) *MonitorCompute {
 
 	result := &MonitorCompute{}
 	//查询普罗米修斯数据
@@ -298,11 +313,18 @@ func (c *CostAlgorithm) requestPromResult(query string, SlaConf map[int]*SlaConf
 	sort.Float64s(XValue)
 
 	//计算95值
+
 	if len(XValue) > 1 {
 
 		Percent := utils.Percentile(XValue, 0.95)
 		result.PercentBytes = Percent
-		result.PercentG = utils.RoundDecimalFlot64(3, Percent/(1024*1024*1024))
+
+		if isMb { //是MB的单位
+			result.PercentG = utils.RoundDecimalFlot64(3, Percent/1000)
+		} else {
+			result.PercentG = utils.RoundDecimalFlot64(3, Percent/(1024*1024*1024))
+		}
+
 		//计算max
 		result.Max = utils.Max(XValue)
 		//计算最小
@@ -318,6 +340,7 @@ func (c *CostAlgorithm) requestPromResult(query string, SlaConf map[int]*SlaConf
 		//SLA计算
 		result.SLA = c.AlgSla(XData, SlaConf)
 
+		fmt.Println("result.PercentG!", result.PercentG)
 		result.IspDayPrice = utils.RoundDecimalFlot64(3, IspCnf.AvgDayPrice*result.PercentG)
 		result.IspCnf = IspCnf
 	} else {
@@ -421,12 +444,13 @@ func (c *CostAlgorithm) InsertDb(host *Host) {
 	for _, row := range host.PriceCompute { //不同的运营商的计费
 
 		var HostIncome models.HostIncome
-		var count int64
-		c.Orm.Model(&HostIncome).Where("host_id = ? and alg_day = ?", host.HostId, host.AlgDay).Limit(1).Count(&count)
 
-		if count > 0 {
+		c.Orm.Model(&HostIncome).Where("host_id = ? and alg_day = ?", host.HostId, host.AlgDay).Limit(1).Find(&HostIncome)
 
-			HostIncome.Isp = row.IspCnf.Id
+		if HostIncome.Id > 0 {
+
+			fmt.Println("有数据了 更新", host.HostId)
+			HostIncome.Isp = row.IspCnf.ConstId
 			HostIncome.IdcId = host.IdcId
 			HostIncome.BuId = host.BuId
 			HostIncome.Income = row.IspDayPrice
@@ -437,13 +461,15 @@ func (c *CostAlgorithm) InsertDb(host *Host) {
 			HostIncome.HeartbeatNum = row.HeartbeatNum
 			HostIncome.TotalBandwidth = row.TotalBandwidth
 			HostIncome.AvgDayPrice = row.IspCnf.AvgDayPrice
+			HostIncome.HostId = host.HostId
+			HostIncome.AlgDay = host.AlgDay
 			c.Orm.Save(&HostIncome)
 			continue
 		}
 		RsHostIncome := models.HostIncome{
 			AlgDay:         host.AlgDay,
 			HostId:         host.HostId,
-			Isp:            row.IspCnf.Id,
+			Isp:            row.IspCnf.ConstId,
 			IdcId:          host.IdcId,
 			BuId:           host.BuId,
 			Income:         row.IspDayPrice,

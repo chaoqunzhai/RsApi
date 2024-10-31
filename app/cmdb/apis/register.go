@@ -862,7 +862,6 @@ func (e *RegisterApi) DianXin(c *gin.Context) {
 	for _, node := range req.Data {
 		var hostInstance models.RsHost
 
-		fmt.Println("node", node.DeviceInfo)
 		isDirty := global.BlackMap[node.Sn]
 		if isDirty { //在点心这边 如果SN为脏的 那就不处理
 			continue
@@ -896,12 +895,7 @@ func (e *RegisterApi) DianXin(c *gin.Context) {
 		hostInstance.LineBandwidth = float64(node.LineBandwidth)
 		hostInstance.AllLine = node.AllLine
 		hostInstance.Cpu = node.DeviceInfo.CpuCore
-		hostInstance.Memory = func() uint64 {
-			MemTotal := fmt.Sprintf("%v", node.DeviceInfo.MemTotal)
-			vv, _ := strconv.Atoi(MemTotal)
-
-			return uint64(vv)
-		}()
+		hostInstance.Memory = node.DeviceInfo.MemTotal
 		hostInstance.Sn = node.Sn
 		if node.Remark != "" && len(node.Remark) >= 8 {
 			IdcMetrics := dto.IdcMetrics{
@@ -928,6 +922,7 @@ func (e *RegisterApi) DianXin(c *gin.Context) {
 			e.Orm.Create(&hostInstance)
 
 		}
+
 		var snRow models2.HostSoftware
 		snKey := fmt.Sprintf("sn_%v", req.Business)
 		e.Orm.Model(&models2.HostSoftware{}).Where("host_id = ? and `key` = ?",

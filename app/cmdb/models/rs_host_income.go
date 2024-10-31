@@ -1,6 +1,8 @@
 package models
 
 import (
+	models2 "go-admin/cmd/migrate/migration/models"
+	"gorm.io/gorm"
 	"time"
 
 	"go-admin/common/models"
@@ -8,10 +10,10 @@ import (
 
 type RsHostIncome struct {
 	models.Model
-	HostId            string          `json:"hostId" gorm:"type:bigint;comment:主机ID"`
+	HostId            int             `json:"hostId" gorm:"type:bigint;comment:主机ID"`
 	Isp               string          `json:"isp" gorm:"type:bigint;comment:运营商ID"`
 	IdcId             string          `json:"idcId" gorm:"type:bigint;comment:IDC ID"`
-	BuId              string          `json:"buId" gorm:"type:bigint;comment:业务ID"`
+	BuId              int             `json:"buId" gorm:"type:bigint;comment:业务ID"`
 	Income            string          `json:"income" gorm:"type:double;comment:Income"`
 	AvgDayPrice       float64         `json:"avgDayPrice" gorm:"计算每天的价格=运营商费用/当月天数"`
 	Usage             string          `json:"usage" gorm:"type:double;comment:Usage"`
@@ -28,12 +30,28 @@ type RsHostIncome struct {
 	HeartbeatNum      string          `json:"heartbeatNum" gorm:"type:bigint;comment:HeartbeatNum"`
 	NightHeartbeatNum string          `json:"nightHeartbeatNum" gorm:"type:bigint;comment:NightHeartbeatNum"`
 	CreatedAt         models.DayXTime `json:"createdAt" gorm:"comment:创建时间"`
+	HostName          string          `json:"hostName" gorm:"-"`
+	Status            int             `json:"status" gorm:"-"`
+	BuName            string          `json:"buName" gorm:"-"`
 }
 
 func (RsHostIncome) TableName() string {
 	return "rs_host_income"
 }
+func (e *RsHostIncome) AfterFind(tx *gorm.DB) (err error) {
+	var hostModel models2.Host
 
+	if e.HostId == 0 {
+		return
+	}
+	tx.Model(&hostModel).Select("host_name,id,status").Where("id = ?", e.HostId).Limit(1).Find(&hostModel)
+
+	if hostModel.Id > 0 {
+		e.HostName = hostModel.HostName
+		e.Status = hostModel.Status
+	}
+	return
+}
 func (e *RsHostIncome) GetId() interface{} {
 	return e.Id
 }
