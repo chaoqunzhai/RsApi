@@ -85,7 +85,7 @@ func (e Graph) Income(c *gin.Context) {
 	}
 
 	var list []models.RsHostIncome
-	orm.Find(list)
+	orm.Find(&list)
 	//[
 	//	{ 访问时间: '2024-1-12', 业务1: 320, 业务2: 120, 业务3: 220, 业务4: 1500 },
 	//	{ 访问时间: '2024-1-13', 业务1: 320, 业务2: 120, 业务3: 220, 业务4: 1500 },
