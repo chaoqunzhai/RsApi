@@ -237,7 +237,11 @@ func (c *CostAlgorithm) GetHostPrometheusData(host *Host, bu *Business) map[stri
 			continue
 		}
 		//利用率 =  95 / 总带宽
-		compute.Usage = utils.RoundDecimalFlot64(3, compute.PercentG/host.BandwidthIncome)
+		usage := utils.RoundDecimalFlot64(3, compute.PercentG/host.BandwidthIncome)
+		if usage > 1 {
+			usage = 1
+		}
+		compute.Usage = usage
 		algMap[isp.Name] = compute
 	}
 
@@ -340,7 +344,6 @@ func (c *CostAlgorithm) requestPromResult(isMb bool, query string, SlaConf map[i
 		//SLA计算
 		result.SLA = c.AlgSla(XData, SlaConf)
 
-		fmt.Println("result.PercentG!", result.PercentG)
 		result.IspDayPrice = utils.RoundDecimalFlot64(3, IspCnf.AvgDayPrice*result.PercentG)
 		result.IspCnf = IspCnf
 	} else {

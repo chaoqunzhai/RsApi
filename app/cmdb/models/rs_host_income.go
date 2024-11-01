@@ -10,11 +10,12 @@ import (
 
 type RsHostIncome struct {
 	models.Model
+	AlgDay            string          `json:"algDay"  gorm:"index;comment:计算时间"`
 	HostId            int             `json:"hostId" gorm:"type:bigint;comment:主机ID"`
 	Isp               string          `json:"isp" gorm:"type:bigint;comment:运营商ID"`
 	IdcId             string          `json:"idcId" gorm:"type:bigint;comment:IDC ID"`
 	BuId              int             `json:"buId" gorm:"type:bigint;comment:业务ID"`
-	Income            string          `json:"income" gorm:"type:double;comment:Income"`
+	Income            float64         `json:"income" gorm:"type:double;comment:Income"`
 	AvgDayPrice       float64         `json:"avgDayPrice" gorm:"计算每天的价格=运营商费用/当月天数"`
 	Usage             string          `json:"usage" gorm:"type:double;comment:Usage"`
 	Bandwidth95       string          `json:"bandwidth95" gorm:"type:double;comment:Bandwidth95"`

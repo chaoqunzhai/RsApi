@@ -56,7 +56,7 @@ type RsHostIncomeInsertReq struct {
 	Isp               string    `json:"isp" comment:"运营商ID"`
 	IdcId             string    `json:"idcId" comment:"IDC ID"`
 	BuId              int       `json:"buId" comment:"业务ID"`
-	Income            string    `json:"income" comment:""`
+	Income            float64   `json:"income" comment:""`
 	Usage             string    `json:"usage" comment:""`
 	Bandwidth95       string    `json:"bandwidth95" comment:""`
 	BandwidthIncome   string    `json:"bandwidthIncome" comment:""`
@@ -107,7 +107,7 @@ type RsHostIncomeUpdateReq struct {
 	Isp               string    `json:"isp" comment:"运营商ID"`
 	IdcId             string    `json:"idcId" comment:"IDC ID"`
 	BuId              int       `json:"buId" comment:"业务ID"`
-	Income            string    `json:"income" comment:""`
+	Income            float64   `json:"income" comment:""`
 	Usage             string    `json:"usage" comment:""`
 	Bandwidth95       string    `json:"bandwidth95" comment:""`
 	BandwidthIncome   string    `json:"bandwidthIncome" comment:""`

@@ -29,8 +29,8 @@ settings:
     timeout: 180000
   database:
     driver: mysql
-#    source: xarscloud:xarscloud;123@tcp(60.205.112.51:13306)/rs_store?charset=utf8&parseTime=True&loc=Local&timeout=8000ms
     source: xarscloud:xarscloud;123@tcp(60.205.112.51:13306)/rs_devops?charset=utf8&parseTime=True&loc=Local&timeout=8000ms
+#    source: xarscloud:xarscloud;123@tcp(60.205.112.51:13306)/rs_devops?charset=utf8&parseTime=True&loc=Local&timeout=8000ms
 
   gen:
     # 代码生成读取的数据库名称
