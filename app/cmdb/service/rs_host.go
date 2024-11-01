@@ -98,13 +98,20 @@ func (e *RsHost) MakeSelectOrm(req *dto.RsHostGetPageReq, orm *gorm.DB, eOrm *go
 
 	}
 	if req.Region != "" {
-		var idcList []models.RsIdc
-		eOrm.Model(&models.RsIdc{}).Select("id").Where("region like ?", fmt.Sprintf("%%%v%%", req.Region)).Find(&idcList)
-		var cache []int
-		for _, idc := range idcList {
-			cache = append(cache, idc.Id)
+		RegionList := strings.Split(req.Region, ",")
+		var searchRegion string
+
+		if len(RegionList) > 1 {
+
+			searchRegion = RegionList[len(RegionList)-1]
+		} else {
+			searchRegion = req.Region
 		}
-		orm = orm.Where("idc in (?)", cache)
+		likeQ := fmt.Sprintf("region like '%%%s%%'", searchRegion)
+
+		var idcList []int
+		eOrm.Model(&models.RsIdc{}).Select("id").Where(likeQ).Find(&idcList).Scan(&idcList)
+		orm = orm.Where("idc in ?", idcList)
 
 	}
 

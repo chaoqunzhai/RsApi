@@ -8,4 +8,5 @@ type GraphPageReq struct {
 	HostId    string `json:"hostId"`
 	CustomId  string `json:"customId"`
 	IdcId     string `json:"idcId"`
+	Region    string `json:"region"`
 }

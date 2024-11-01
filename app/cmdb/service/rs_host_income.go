@@ -31,6 +31,9 @@ func (e *RsHostIncome) GetPage(c *dto.RsHostIncomeGetPageReq, p *actions.DataPer
 
 		e.Orm.Model(&models.RsHost{}).Where("host_name like ? or sn like ?", "%"+c.HostSearch+"%", "%"+c.HostSearch+"%")
 	}
+	if c.Region != "" {
+
+	}
 	if c.CustomId != "" {
 		//先通过客户搜索机房
 		//搜索到的机房 在收益中查询

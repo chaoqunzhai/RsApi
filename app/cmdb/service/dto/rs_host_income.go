@@ -20,6 +20,7 @@ type RsHostIncomeGetPageReq struct {
 	SettleStatus   string `form:"settleStatus"  search:"type:exact;column:settle_status;table:rs_host_income" comment:""`
 	StartTimeAt    string `form:"startTime"  search:"type:gte;column:created_at;table:rs_host_income" comment:"开始时间"`
 	EndTimeAt      string `form:"endTime"  search:"type:lte;column:created_at;table:rs_host_income" comment:"结束时间"`
+	Region         string `form:"region" search:"-"`
 	RsHostIncomeOrder
 }
 

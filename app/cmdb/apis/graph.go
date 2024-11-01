@@ -1,6 +1,7 @@
 package apis
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-admin-team/go-admin-core/sdk/api"
 	_ "github.com/go-admin-team/go-admin-core/sdk/pkg/response"
@@ -39,6 +40,22 @@ func (e Graph) MakeOrm(req *dto.GraphPageReq, orm *gorm.DB) *gorm.DB {
 		//搜索到的机房 在收益中查询
 		var idcList []string
 		e.Orm.Model(&models.RsIdc{}).Where("custom_id = ?", req.CustomId).Find(&idcList).Scan(&idcList)
+		orm = orm.Where("idc_id in ?", idcList)
+	}
+	if req.Region != "" {
+		RegionList := strings.Split(req.Region, ",")
+		var searchRegion string
+
+		if len(RegionList) > 1 {
+
+			searchRegion = RegionList[len(RegionList)-1]
+		} else {
+			searchRegion = req.Region
+		}
+		likeQ := fmt.Sprintf("region like '%%%s%%'", searchRegion)
+
+		var idcList []int
+		e.Orm.Model(&models.RsIdc{}).Select("id").Where(likeQ).Find(&idcList).Scan(&idcList)
 		orm = orm.Where("idc_id in ?", idcList)
 	}
 	return orm
