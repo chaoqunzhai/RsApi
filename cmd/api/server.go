@@ -90,9 +90,7 @@ func run() error {
 		Addr:    fmt.Sprintf("%s:%d", config.ApplicationConfig.Host, config.ApplicationConfig.Port),
 		Handler: sdk.Runtime.GetEngine(),
 	}
-	go func() {
-		watch.RunCrontab()
-	}()
+	watch.RunCrontab()
 
 	if apiCheck {
 		var routers = sdk.Runtime.GetRouter()

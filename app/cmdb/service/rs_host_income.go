@@ -37,8 +37,8 @@ func (e *RsHostIncome) GetPage(c *dto.RsHostIncomeGetPageReq, p *actions.DataPer
 	if c.CustomId != "" {
 		//先通过客户搜索机房
 		//搜索到的机房 在收益中查询
-		var idcList []string
-		e.Orm.Model(&models.RsIdc{}).Where("custom_id = ?", c.CustomId).Find(&idcList).Scan(&idcList)
+		idcList := make([]string, 0)
+		e.Orm.Model(&models.RsIdc{}).Select("id").Where("custom_id = ?", c.CustomId).Find(&idcList).Scan(&idcList)
 		orm = orm.Where("idc_id in ?", idcList)
 	}
 	err = orm.Scopes(

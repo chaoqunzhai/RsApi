@@ -8,6 +8,7 @@ import (
 	"go-admin/global"
 	"regexp"
 	"strconv"
+	"strings"
 )
 
 func WatchCombinationCustom() {
@@ -194,6 +195,14 @@ func WatchCombinationHost() {
 			})
 			count += 1
 
+			//如果资产是一个待出库 并且资产 状态不是一个待上架  那就更改为待上架
+			if v.Status == 2 && host.Status != 3 {
+
+				d.Model(&models2.Host{}).Where("id = ?", updateHostId).Updates(map[string]interface{}{
+					"status": 3,
+				})
+
+			}
 			fmt.Printf("巡检资产组合空主机数据,总更新了%v条数据", count)
 
 		}
@@ -204,6 +213,12 @@ func WatchAssetBindHost() {
 
 	fmt.Println("巡检资产列表和CMDB关联关系")
 	for _, d := range dbList {
+		var hostIds []string
+		d.Raw("SELECT ac.host_id FROM asset_combination ac JOIN rs_host rh ON ac.host_id = rh.id WHERE ac.status = 2   AND rh.status != 3;").Scan(&hostIds)
+
+		if len(hostIds) > 0 {
+			d.Exec(fmt.Sprintf("update rs_host set status =3 where id in  (%s)", strings.Join(hostIds, ",")))
+		}
 		//只查询 资产分类为主机 + host_id = 0 的数据
 		var Warehousing []models2.AdditionsWarehousing
 		d.Model(&models2.AdditionsWarehousing{}).Select("sn,id,combination_id").Where("sn IS NOT NULL AND (host_id = 0 OR host_id IS  NULL)  AND category_id = 1").Find(&Warehousing)
