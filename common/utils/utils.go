@@ -25,6 +25,22 @@ type KeyValue struct {
 	Key   int
 	Value int
 }
+type Data struct {
+	Index float64                `json:"index"`
+	Name  string                 `json:"name"`
+	Data  map[string]interface{} `json:"data"`
+}
+type ByMinToMaxMap []Data
+
+func (a ByMinToMaxMap) Len() int           { return len(a) }
+func (a ByMinToMaxMap) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a ByMinToMaxMap) Less(i, j int) bool { return a[i].Index < a[j].Index }
+
+type ByMaxToMinMap []Data
+
+func (a ByMaxToMinMap) Len() int           { return len(a) }
+func (a ByMaxToMinMap) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a ByMaxToMinMap) Less(i, j int) bool { return a[i].Index > a[j].Index }
 
 // 定义一个整数切片类型，并实现 sort.Interface 接口
 type ByReverse []float64

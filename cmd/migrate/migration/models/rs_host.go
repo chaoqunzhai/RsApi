@@ -30,7 +30,6 @@ type Host struct {
 	Isp           int          `json:"isp" gorm:"type:int(1);default:1;comment:运营商"`
 	Status        int          `json:"status" gorm:"type:int(1);default:0;comment:主机状态"`
 	Region        string       `json:"region" gorm:"type:varchar(100);comment:省份城市多ID"`
-	TransProvince bool         `json:"transProvince" gorm:"default:false;comment:是否跨省"`
 	LineType      int          `json:"lineType" gorm:"type:int(1);default:0;comment:线路类型"`
 	AllLine       int          `json:"allLine" gorm:"type:int(1);default:0;comment:机器总线路"`
 	LineBandwidth float64      `json:"lineBandwidth"  gorm:"default:0;comment:单条线路带宽"`
@@ -39,6 +38,7 @@ type Host struct {
 	Idc           int          `json:"idc" gorm:"index;type:int(11);comment:关联的IDC"`
 	Auth          int          `json:"auth" gorm:"type:int(1);default:1;comment:是否有主机权限"`
 	ProbeShell    string       `json:"probeShell" gorm:"type:varchar(200);comment:主动探测主机命令"`
+	TransProvince int          `form:"transProvince" search:"type:exact;column:trans_province;table:rs_host" comment:"是否跨省"`
 	Business      []Business   `gorm:"many2many:host_bind_business;foreignKey:id;joinForeignKey:host_id;references:id;joinReferences:business_id;"`
 	Tag           []Tag        `gorm:"many2many:host_bind_tag;foreignKey:id;joinForeignKey:host_id;references:id;joinReferences:tag_id;"`
 }

@@ -264,7 +264,7 @@ func (c *CostAlgorithm) requestPromResult(isMb bool, query string, SlaConf map[i
 	parameters.Add("query", query)
 	queryUrl.RawQuery = parameters.Encode()
 
-	ProResult, err := prometheus.GetPromResult(queryUrl)
+	ProResult, err := prometheus.GetPromRangeResult(queryUrl)
 
 	if err != nil {
 		return result

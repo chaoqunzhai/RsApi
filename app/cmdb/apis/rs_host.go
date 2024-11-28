@@ -2,6 +2,7 @@ package apis
 
 import (
 	"fmt"
+	"github.com/go-admin-team/go-admin-core/sdk/config"
 	"github.com/google/uuid"
 	models2 "go-admin/cmd/migrate/migration/models"
 	"go-admin/common/prometheus"
@@ -92,6 +93,7 @@ func (e RsHost) UpdateStatus(c *gin.Context) {
 
 	e.Orm.Model(&models.RsHost{}).Where("id in ?", req.Ids).Updates(map[string]interface{}{
 		"status": req.Status,
+		"desc":   req.Desc,
 	})
 	var statusStr string
 
@@ -409,6 +411,34 @@ func (e RsHost) CountWait(c *gin.Context) {
 	e.OK(Count, "successful")
 	return
 }
+
+func (e RsHost) CountTodo(c *gin.Context) {
+	req := dto.RsHostGetPageReq{}
+	s := service.RsHost{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
+	var data models.RsHost
+	orm := e.Orm.Model(&data)
+
+	//掉线的数据
+	var Count int64
+	e.Orm.Model(&models.RsHost{}).Where("status = 4")
+
+	Orm := s.MakeSelectOrm(&req, orm, e.Orm)
+	Orm.Where("status = 4").Count(&Count)
+
+	e.OK(Count, "successful")
+	return
+}
+
 func (e RsHost) CountOffline(c *gin.Context) {
 	req := dto.RsHostGetPageReq{}
 	s := service.RsHost{}
@@ -427,17 +457,19 @@ func (e RsHost) CountOffline(c *gin.Context) {
 
 	//掉线的数据
 	var offlineCount int64
-	offlineHealthySql := "healthy_at <= DATE_SUB(NOW(), INTERVAL 30 MINUTE) OR healthy_at IS NULL"
-	//更新掉线的数据
-	e.Orm.Model(&models.RsHost{}).Where("status != 3").Where(offlineHealthySql).Updates(map[string]interface{}{
-		"status": global.HostOffline, //30分钟没有上报的就是掉线的
-	})
-	//查询对应的掉线主机数量
-	offlineOr := s.MakeSelectOrm(&req, orm, e.Orm)
-	outIds := []int{3}
-	offlineOr.Where("status not in ?", outIds).Where(offlineHealthySql).Count(&offlineCount)
 
-	fmt.Println("查询离线数据!!!!", offlineCount)
+	if config.ApplicationConfig.Mode != "test" {
+		offlineHealthySql := "healthy_at <= DATE_SUB(NOW(), INTERVAL 30 MINUTE) OR healthy_at IS NULL"
+		//更新掉线的数据
+		notStatus := []int{3, 4}
+		e.Orm.Model(&models.RsHost{}).Where("status not in ?", notStatus).Where(offlineHealthySql).Updates(map[string]interface{}{
+			"status": global.HostOffline, //30分钟没有上报的就是掉线的
+		})
+		//查询对应的掉线主机数量
+		offlineOr := s.MakeSelectOrm(&req, orm, e.Orm)
+		offlineOr.Where("status not in ?", notStatus).Where(offlineHealthySql).Count(&offlineCount)
+		fmt.Println("查询离线数据!!!!", offlineCount)
+	}
 
 	e.OK(offlineCount, "successful")
 	return
@@ -476,7 +508,7 @@ func (e RsHost) MonitorFlow(c *gin.Context) {
 	HostName := hostInstance.HostName
 
 	otherTag := false
-	fmt.Println("hostInstance.Business", hostInstance.Business)
+	//fmt.Println("hostInstance.Business", hostInstance.Business)
 	if len(hostInstance.Business) > 0 {
 
 		for _, row := range hostInstance.Business {
@@ -492,6 +524,7 @@ func (e RsHost) MonitorFlow(c *gin.Context) {
 	} else {
 		result = prometheus.Transmit(HostName, &req)
 	}
+
 	e.OK(result, "successful")
 	return
 }
@@ -658,6 +691,7 @@ func (e RsHost) GetPage(c *gin.Context) {
 		customRow["ip"] = row.Ip
 		customRow["publicIp"] = row.PublicIp
 		customRow["id"] = row.Id
+		customRow["desc"] = row.Desc
 		customRow["transProd"] = row.TransProvince
 		customRow["isp"] = row.Isp
 		customRow["mac"] = row.Mac
@@ -699,7 +733,7 @@ func (e RsHost) GetPage(c *gin.Context) {
 		result = append(result, customRow)
 	}
 	fmt.Println("构造数据结束")
-	if len(updateOfflineIds) > 0 {
+	if len(updateOfflineIds) > 0 && config.ApplicationConfig.Mode != "test" {
 		e.Orm.Model(&models.RsHost{}).Where("id in ?", updateOfflineIds).Updates(map[string]interface{}{
 			"status": global.HostOffline,
 		})

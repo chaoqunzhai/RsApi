@@ -47,6 +47,9 @@ func (e *RsHost) MakeSelectOrm(req *dto.RsHostGetPageReq, orm *gorm.DB, eOrm *go
 
 	}
 
+	if req.IdcId != "" {
+		orm = orm.Where("idc = ? ", req.IdcId)
+	}
 	if req.IdcNumber != "" {
 		var idcList []models.RsIdc
 		eOrm.Model(&models.RsIdc{}).Select("id").Where("number like ?", fmt.Sprintf("%%%v%%", req.IdcNumber)).Find(&idcList)

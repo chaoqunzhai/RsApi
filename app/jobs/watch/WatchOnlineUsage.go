@@ -101,7 +101,7 @@ func RequestPromResult(start, end, setup, query string, isMb bool) *MonitorCompu
 	parameters.Add("query", query)
 	queryUrl.RawQuery = parameters.Encode()
 
-	ProResult, err := prometheus.GetPromResult(queryUrl)
+	ProResult, err := prometheus.GetPromRangeResult(queryUrl)
 
 	if err != nil {
 		return result

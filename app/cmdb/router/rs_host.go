@@ -24,6 +24,7 @@ func registerRsHostRouter(v1 *gin.RouterGroup, authMiddleware *jwt.GinJWTMiddlew
 		r.GET("/count/online", actions.PermissionAction(), api.CountOnline)
 		r.GET("/count/offline", actions.PermissionAction(), api.CountOffline)
 		r.GET("/count/wait", actions.PermissionAction(), api.CountWait)
+		r.GET("/count/todo", actions.PermissionAction(), api.CountTodo)
 		r.GET("/driver/:id", actions.PermissionAction(), api.Driver)
 		r.POST("/switch", actions.PermissionAction(), api.Switch)
 		r.POST("/bindIdc", actions.PermissionAction(), api.BindIdc)

@@ -38,7 +38,36 @@ type MonitorCompute struct {
 //			unit = fmt.Sprintf("%.2f",value)
 //		}
 //	}
-func requestPromResult(title, query string, req *dto.RsHostMonitorFlow, isMb bool) interface{} {
+
+func RequestQueryPromResult(title, query string, req *dto.RsHostMonitorFlow, isMb bool) string {
+
+	//查询普罗米修斯数据
+	queryUrl, err := url.Parse(func() string {
+		vv, _ := url.JoinPath(config.ExtConfig.Prometheus.Endpoint, "/api/v1/query")
+		return vv
+	}())
+
+	parameters := url.Values{}
+	parameters.Add("time", req.Start)
+
+	parameters.Add("query", query)
+	queryUrl.RawQuery = parameters.Encode()
+
+	ProResult, err := GetPromQueryResult(queryUrl)
+
+	if err != nil {
+
+		return ""
+	}
+
+	if len(ProResult.Data.Result) > 0 {
+		if len(ProResult.Data.Result[0].Value) > 1 {
+			return fmt.Sprintf("%v", ProResult.Data.Result[0].Value[1])
+		}
+	}
+	return ""
+}
+func RequestPromResult(title, query string, req *dto.RsHostMonitorFlow, isMb bool) interface{} {
 
 	result := MonitorResult{}
 	//查询普罗米修斯数据
@@ -54,9 +83,10 @@ func requestPromResult(title, query string, req *dto.RsHostMonitorFlow, isMb boo
 	parameters.Add("query", query)
 	queryUrl.RawQuery = parameters.Encode()
 
-	ProResult, err := GetPromResult(queryUrl)
+	ProResult, err := GetPromRangeResult(queryUrl)
 
 	if err != nil {
+
 		return result
 	}
 
@@ -139,17 +169,18 @@ func Transmit(hostname string, req *dto.RsHostMonitorFlow) map[string]interface{
 
 	transmitQuery := fmt.Sprintf("sum(rate(phy_nic_network_transmit_bytes_total{instance=\"%v\"}[5m]))*8", hostname)
 
-	transmitData := requestPromResult("上行", transmitQuery, req, false)
+	//fmt.Println("transmitQuery!", transmitQuery)
+	transmitData := RequestPromResult("上行", transmitQuery, req, false)
 
 	receiveQuery := fmt.Sprintf("sum(rate(phy_nic_network_receive_bytes_total{instance=\"%v\"}[5m]))*8", hostname)
 
-	receiveData := requestPromResult("下行", receiveQuery, req, false)
+	receiveData := RequestPromResult("下行", receiveQuery, req, false)
 
 	provinceOutQuery := fmt.Sprintf("avg(province_out_percent{instance=\"%v\"}) by (instance) * sum(rate(phy_nic_network_transmit_bytes_total{instance=\"%v\"}[5m]))by(instance)*8",
 		hostname, hostname,
 	)
 
-	provinceOutData := requestPromResult("出省流量", provinceOutQuery, req, false)
+	provinceOutData := RequestPromResult("出省流量", provinceOutQuery, req, false)
 
 	response := map[string]interface{}{
 		"transmit":     transmitData,
@@ -165,11 +196,10 @@ func DianXinTransmit(hostname string, req *dto.RsHostMonitorFlow) map[string]int
 
 	transmitQuery := fmt.Sprintf("sum(flow_bandwidth_by_minute{instance=\"%v\"})", hostname)
 
-	fmt.Println("transmitQuery", transmitQuery)
-	transmitData := requestPromResult("上行", transmitQuery, req, true)
+	transmitData := RequestPromResult("上行", transmitQuery, req, true)
 	receiveQuery := fmt.Sprintf("sum(flow_download_bandwidth_by_minute{instance=\"%v\"})", hostname)
-	fmt.Println("receiveQuery", receiveQuery)
-	receiveData := requestPromResult("下行", receiveQuery, req, true)
+
+	receiveData := RequestPromResult("下行", receiveQuery, req, true)
 
 	response := map[string]interface{}{
 		"transmit": transmitData,
