@@ -176,9 +176,7 @@ func Transmit(hostname string, req *dto.RsHostMonitorFlow) map[string]interface{
 
 	receiveData := RequestPromResult("下行", receiveQuery, req, false)
 
-	provinceOutQuery := fmt.Sprintf("avg(province_out_percent{instance=\"%v\"}) by (instance) * sum(rate(phy_nic_network_transmit_bytes_total{instance=\"%v\"}[5m]))by(instance)*8",
-		hostname, hostname,
-	)
+	provinceOutQuery := fmt.Sprintf("v4_province_out{instance=\"%v\"}", hostname)
 
 	provinceOutData := RequestPromResult("出省流量", provinceOutQuery, req, false)
 

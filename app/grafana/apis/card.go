@@ -277,6 +277,52 @@ func (e Card) IspMonitor(c *gin.Context) {
 
 }
 
+func (e Card) Converge(c *gin.Context) {
+	req := MonitorQuery{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
+
+	var buName string
+	if req.BusinessId != "" {
+		var buModel models2.Business
+		e.Orm.Model(&models2.Business{}).Where("id = ?", req.BusinessId).Limit(1).Find(&buModel)
+
+		buName = buModel.EnName
+	}
+	var TransmitQuery string
+	var ReceiveQuery string
+	if buName != "" {
+		TransmitQuery = fmt.Sprintf("sum(rate(phy_nic_network_transmit_bytes_total{business=~\".*%v.*\"}[5m]))*8", buName)
+		ReceiveQuery = fmt.Sprintf("sum(rate(phy_nic_network_receive_bytes_total{business=~\".*%v.*\"}[5m]))*8", buName)
+	} else {
+		TransmitQuery = fmt.Sprintf("sum(rate(phy_nic_network_transmit_bytes_total[5m]))*8")
+		ReceiveQuery = fmt.Sprintf("sum(rate(phy_nic_network_receive_bytes_total[5m]))*8")
+	}
+	promReq := dto.RsHostMonitorFlow{
+		Start: req.Start,
+		End:   req.End,
+		Setup: req.Setup,
+	}
+	TransmitData := prometheus.RequestPromResult("实时汇聚-总下行", TransmitQuery, &promReq, false)
+
+	ReceiveData := prometheus.RequestPromResult("实时汇聚-总上行", ReceiveQuery, &promReq, false)
+	//sum(rate(phy_nic_network_receive_bytes_total{business=~".*fengze.*"}[5m]))*8
+
+	response := map[string]interface{}{
+		"transmit": TransmitData,
+		"receive":  ReceiveData,
+	}
+	e.OK(response, "")
+	return
+
+}
 func (e Card) PlanBandWidth(c *gin.Context) {
 	req := MonitorQuery{}
 	err := e.MakeContext(c).
@@ -317,8 +363,8 @@ func (e Card) PlanBandWidth(c *gin.Context) {
 
 			resultData := prometheus.RequestQueryPromResult("三网规划带宽", Query, &promReq, false)
 
-			floatNum, err2 := strconv.ParseFloat(fmt.Sprintf("%v", resultData), 64)
-			fmt.Println("获取到的数据", floatNum, resultData, err2)
+			floatNum, _ := strconv.ParseFloat(fmt.Sprintf("%v", resultData), 64)
+
 			dataChannel <- utils.Data{
 				Name:  ispName,
 				Index: utils.RoundDecimalFlot64(2, math.Round(floatNum)/1000),

@@ -26,6 +26,8 @@ func CardRouter(v1 *gin.RouterGroup, authMiddleware *jwt.GinJWTMiddleware) {
 
 		r.GET("plan-bandwidth", actions.PermissionAction(), api.PlanBandWidth)
 
+		r.GET("converge", api.Converge)
+
 	}
 
 }
