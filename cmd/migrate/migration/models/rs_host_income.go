@@ -29,6 +29,9 @@ type HostIncome struct {
 	TotalBandwidth    float64      `json:"totalBandwidth" gorm:"总跑量"`
 	HeartbeatNum      int          `json:"heartbeatNum" gorm:"总打点数,通常来说是288个点,5分钟一个点"`
 	NightHeartbeatNum int          `json:"nightHeartbeatNum" gorm:"晚高峰打点"`
+	DayCost float64 `json:"day_cost" gorm:"每天成本"`
+	MonthlyCost float64 `json:"monthly_cost" gorm:"月成本"`
+	CostAlgorithm string `json:"cost_algorithm" gorm:"type:varchar(80);成本算法"`
 }
 
 func (HostIncome) TableName() string {

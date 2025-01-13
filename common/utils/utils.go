@@ -348,6 +348,15 @@ func Percentile(N []float64, P float64) float64 {
 
 	return N[i-1]
 }
+func GetDaysInMonth(year int, month time.Month) int {
+	// 创建一个指定年月的时间对象
+	t := time.Date(year, month, 1, 0, 0, 0, 0, time.UTC)
+	// 获取下个月的第一天
+	nextMonth := t.AddDate(0, 1, 0)
+	// 计算下个月第一天与当前月第一天的时间差，单位为天数
+	days := int(nextMonth.Sub(t).Hours() / 24)
+	return days
+}
 
 func RoundDecimal(value interface{}) float64 {
 	toStr := fmt.Sprintf("%v", value)

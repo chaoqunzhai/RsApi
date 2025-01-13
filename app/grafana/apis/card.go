@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-admin-team/go-admin-core/sdk/api"
 	_ "github.com/go-admin-team/go-admin-core/sdk/pkg/response"
+	"go-admin/app/cmdb/models"
 	"go-admin/app/cmdb/service/dto"
 	models2 "go-admin/cmd/migrate/migration/models"
 	cDto "go-admin/common/dto"
@@ -39,6 +40,7 @@ type HostInfo struct {
 
 type MonitorQuery struct {
 	BusinessId      string `form:"businessId"`
+	CustomerId string `form:"customerId"`
 	Start           string `form:"start"`
 	End             string `form:"end"`
 	Setup           int    `form:"setup"`
@@ -157,6 +159,20 @@ func (e Card) Monitor(c *gin.Context) {
 			}
 		}
 	}
+	if req.CustomerId != ""{
+		//1.查询哪些机房关联了客户
+		//2.查询这个机房关联
+		var idcList []int
+
+		e.Orm.Model(&models.RsIdc{}).Select("id").Where("custom_id = ?", req.CustomerId).Find(&idcList).Scan(&idcList)
+
+		var hostList []int
+		e.Orm.Model(&models.RsHost{}).Select("id").Where("idc in ?", idcList).Find(&hostList).Scan(&hostList)
+
+		fmt.Println("hostList",hostList)
+		orm = orm.Where("id in ?", hostList)
+
+	}
 	hostList := make([]models2.Host, 0)
 
 	var count int64
@@ -185,6 +201,7 @@ func (e Card) Monitor(c *gin.Context) {
 
 		}
 		hostRow := map[string]interface{}{
+			"id":row.Id,
 			"host":        row.HostName,
 			"remark":      row.Remark,
 			"monitorData": monitorData,

@@ -1,6 +1,7 @@
 package apis
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/go-admin-team/go-admin-core/sdk/config"
 	"github.com/google/uuid"
@@ -687,11 +688,22 @@ func (e RsHost) GetPage(c *gin.Context) {
 				"info":    "暂无",
 			}
 		}
+
 		customRow["remotePort"] = row.RemotePort
 		customRow["ip"] = row.Ip
 		customRow["publicIp"] = row.PublicIp
 		customRow["id"] = row.Id
-		customRow["desc"] = row.Desc
+		customRow["desc_json"] = func() *models.HostDesc {
+			descModel :=&models.HostDesc{}
+			if row.Desc != ""{
+				marErr:=json.Unmarshal([]byte(row.Desc),&descModel)
+				if marErr!=nil{
+					descModel.Desc = row.Desc
+				}
+			}
+			return descModel
+
+		}()
 		customRow["transProd"] = row.TransProvince
 		customRow["isp"] = row.Isp
 		customRow["mac"] = row.Mac
@@ -699,7 +711,7 @@ func (e RsHost) GetPage(c *gin.Context) {
 		customRow["mask"] = row.Mask
 		customRow["balance"] = fmt.Sprintf("%vGbps", row.Balance)
 		customRow["remark"] = row.Remark
-
+		customRow["suspend_billing"] = row.SuspendBilling
 		customRow["belong"] = row.Belong
 		customRow["networkType"] = row.NetworkType
 		if monitorDat, ok := HostMapMonitorData[row.Id]; ok {
@@ -786,7 +798,18 @@ func (e RsHost) Get(c *gin.Context) {
 		e.Error(500, err, fmt.Sprintf("获取RsHost失败，\r\n失败信息 %s", err.Error()))
 		return
 	}
+	object.DescJson = func() *models.HostDesc {
+		descModel :=&models.HostDesc{}
+		if object.Desc != ""{
+			marErr:=json.Unmarshal([]byte(object.Desc),&descModel)
+			if marErr!=nil{
+				descModel.Desc = object.Desc
+			}
+		}
+		return descModel
 
+	}()
+	fmt.Println("object.DescJson ",object.DescJson )
 	e.OK(object, "查询成功")
 }
 

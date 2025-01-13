@@ -1,6 +1,7 @@
 package apis
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -23,6 +24,15 @@ type ExecUpHostNameReq struct {
 	HostName   string `json:"hostName"`   //主机名
 	Automation int    `json:"automation"` //1:自动化 2:自定义
 }
+type ExecUpHostDescReq struct {
+	HostId     int    `json:"hostId"`     //多个主机
+	Desc   string `json:"desc"`   //主机名
+}
+type SuspendUpHostDescReq struct {
+	HostId     int    `json:"hostId"`     //多个主机
+	Desc   string `json:"desc"`   //主机名
+	Tag bool `json:"tag"`
+}
 type ExecCommandReq struct {
 	HostIds []int  `json:"hostIds"` //多个主机
 	Shell   string `json:"shell"`   //执行的命令
@@ -43,6 +53,45 @@ type GetHostReq struct {
 
 func (m *GetHostReq) GetNeedSearch() interface{} {
 	return *m
+}
+
+
+func (e RsHost) UpHostDesc(c *gin.Context) {
+	req := ExecUpHostDescReq{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
+
+
+	var hostModel models.RsHost
+	e.Orm.Model(&models.RsHost{}).Where("id = ?", req.HostId).Limit(1).Find(&hostModel)
+
+	if hostModel.Id == 0 {
+		e.Error(500, nil, "主机不存在")
+		return
+	}
+
+	descModel :=&models.HostDesc{
+	}
+
+	if hostModel.Desc != ""{
+		json.Unmarshal([]byte(hostModel.Desc),&descModel)
+
+	}
+	//只赋值设置的字段
+	descModel.Desc = req.Desc
+	descValue,_:=json.Marshal(&descModel)
+	e.Orm.Model(&models.RsHost{}).Where("id = ?", req.HostId).Updates(map[string]interface{}{
+		"desc":string(descValue),
+	})
+	e.OK("successful", "")
+	return
 }
 
 func (e RsHost) ExecUpHostName(c *gin.Context) {
@@ -154,6 +203,54 @@ func (e RsHost) ExecCommand(c *gin.Context) {
 	}
 
 	e.OK(JobId, "")
+	return
+}
+
+
+
+func (e RsHost) SuspendBilling(c *gin.Context) {
+	req := SuspendUpHostDescReq{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
+
+
+	var hostModel models.RsHost
+	e.Orm.Model(&models.RsHost{}).Where("id = ?", req.HostId).Limit(1).Find(&hostModel)
+
+	if hostModel.Id == 0 {
+		e.Error(500, nil, "主机不存在")
+		return
+	}
+
+	descModel :=&models.HostDesc{
+	}
+
+	if hostModel.Desc != ""{
+		marErr:=json.Unmarshal([]byte(hostModel.Desc),&descModel)
+		if marErr!=nil{
+			descModel.Desc = hostModel.Desc
+		}
+	}
+	descModel.SuspendBilling = req.Desc
+	descValue,_:=json.Marshal(&descModel)
+	e.Orm.Model(&models.RsHost{}).Where("id = ?", req.HostId).Updates(map[string]interface{}{
+		"desc":string(descValue),
+		"suspend_billing":req.Tag,
+	})
+	e.Orm.Create(&models.RsHostSuspendLog{
+		HostId: int64(req.HostId),
+		CreateBy: user.GetUserId(c),
+		Desc:  req.Desc,
+		Enable: req.Tag,
+	})
+	e.OK("successful", "")
 	return
 }
 func (e RsHost) ExecReboot(c *gin.Context) {

@@ -7,6 +7,7 @@ import (
 	_ "github.com/go-admin-team/go-admin-core/sdk/pkg/response"
 	"go-admin/app/cmdb/models"
 	"go-admin/app/cmdb/service/dto"
+	models2 "go-admin/cmd/migrate/migration/models"
 	"gorm.io/gorm"
 	"strings"
 )
@@ -117,5 +118,51 @@ func (e Graph) Income(c *gin.Context) {
 		result = append(result, row)
 	}
 	e.OK(result, "successful")
+	return
+}
+
+
+
+func (e Graph) DataBurningList(c *gin.Context) {
+	req := dto.GraphPageReq{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
+
+	result :=make([]models2.DataBurningHost,0)
+	e.Orm.Model(&models2.DataBurningHost{}).Find(&result)
+
+	xTimeList:=make([]string,0)
+	onlineValue:=make([]int64,0)
+	bandwidth:=make([]float64,0)
+	offlineValue :=make([]int64,0)
+	for _,row:=range result{
+		xTime:=row.CreatedAt.Format("2006/01/02 15:00")
+		xTimeList = append(xTimeList,xTime)
+		onlineValue = append(onlineValue,row.Online)
+		offlineValue = append(offlineValue,row.Offline)
+		bandwidth = append(bandwidth,row.TotalBandwidth)
+	}
+	resultMap:= map[string]interface{}{
+		"online":map[string]interface{}{
+			"y":onlineValue,
+			"x":xTimeList,
+		},
+		"total_bandwidth":map[string]interface{}{
+			"y":bandwidth,
+			"x":xTimeList,
+		},
+		"offline":map[string]interface{}{
+			"y":offlineValue,
+			"x":xTimeList,
+		},
+	}
+	e.OK(resultMap,"")
 	return
 }

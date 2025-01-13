@@ -170,14 +170,25 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 	var hostInstance models.RsHost
 
 	SN := strings.TrimSpace(req.Sn)
+	Remark :=strings.TrimSpace(req.Remark)
 	HOSTNAME := strings.TrimSpace(req.Hostname)
+	//旧逻辑
 	//SN是否为一个 黑名单.如果是 用主机名做唯一性校验
-	isDirty := global.BlackMap[SN]
-	if isDirty {
-		e.Orm.Model(&hostInstance).Where("host_name = ?", HOSTNAME).First(&hostInstance)
-	} else {
-		e.Orm.Model(&hostInstance).Where("sn = ?", SN).First(&hostInstance)
+	//isDirty := global.BlackMap[SN]
+	//if isDirty {
+	//	e.Orm.Model(&hostInstance).Where("host_name = ?", HOSTNAME).First(&hostInstance)
+	//} else {
+	//	e.Orm.Model(&hostInstance).Where("sn = ?", SN).First(&hostInstance)
+	//}
+	if req.Remark == "" && len(req.Remark) < 8 {
+		c.JSON(200, map[string]interface{}{
+			"code":   200,
+			"msg":    "remark is empty",
+		})
+		return
 	}
+	//新逻辑 使用remark作为唯一
+	e.Orm.Model(&hostInstance).Where("remark = ?", Remark).First(&hostInstance)
 	if req.Belong == 0 { //如果为空,那也算是一个自建的机器
 		req.Belong = 1
 	}
@@ -199,7 +210,7 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 	hostInstance.RemotePort = req.RemotePort
 	hostInstance.Status = global.HostSuccess
 	hostInstance.Memory = req.Memory
-	hostInstance.Remark = req.Remark
+	hostInstance.Remark = Remark
 
 	var ispNumber int
 	switch strings.TrimSpace(req.Isp) {
@@ -242,19 +253,17 @@ func (e *RegisterApi) Healthy(c *gin.Context) {
 	// 备注不为空 并且 没有关联IDC,那就主动关联
 
 	//fmt.Println("remark", req.Remark)
-	if req.Remark != "" && len(req.Remark) >= 8 {
-		IdcMetrics := dto.IdcMetrics{
-			Remark:   req.Remark,
-			Province: req.Province,
-			City:     req.City,
-		}
-		if idcId := e.InitIdc(IdcMetrics); idcId > 0 {
-			hostInstance.Idc = idcId
-		}
 
-	} else {
-		//没有备注的机器
+	IdcMetrics := dto.IdcMetrics{
+		Remark:   req.Remark,
+		Province: req.Province,
+		City:     req.City,
 	}
+	if idcId := e.InitIdc(IdcMetrics); idcId > 0 {
+		hostInstance.Idc = idcId
+	}
+
+
 
 	if hostInstance.Id > 0 {
 		_ = e.Orm.Model(&hostInstance).Association("Business").Clear()

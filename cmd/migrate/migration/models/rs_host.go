@@ -9,6 +9,7 @@ import (
 
 type Host struct {
 	RichGlobal
+
 	Layer         int          `json:"layer" gorm:"comment:自定义排序"`
 	HealthyAt     sql.NullTime `json:"healthy" gorm:"comment:存活上报时间"`
 	HostName      string       `json:"hostname" gorm:"type:varchar(100);comment:主机名;not null"`
@@ -41,12 +42,24 @@ type Host struct {
 	TransProvince int          `form:"transProvince" search:"type:exact;column:trans_province;table:rs_host" comment:"是否跨省"`
 	Business      []Business   `gorm:"many2many:host_bind_business;foreignKey:id;joinForeignKey:host_id;references:id;joinReferences:business_id;"`
 	Tag           []Tag        `gorm:"many2many:host_bind_tag;foreignKey:id;joinForeignKey:host_id;references:id;joinReferences:tag_id;"`
+	SuspendBilling bool `json:"suspend_billing" gorm:"default:1;comment:是否暂停计费"`
+	Desc string `json:"desc" gorm:"comment:描述信息"` //描述
 }
 
 func (Host) TableName() string {
 	return "rs_host"
 }
-
+type RsHostSuspendLog struct {
+	models.Model
+	CreateBy int `json:"createBy" gorm:"index;comment:创建者"`
+	CreatedAt models.XTime          `json:"createdAt" gorm:"comment:创建时间"`
+	Desc string `json:"desc" gorm:"type:varchar(200);comment:内容"`
+	HostId int64 `json:"host_id" gorm:"comment:主机ID"`
+	Enable bool `json:"enable" gorm:"comment:开启还是关闭"`
+}
+func (RsHostSuspendLog) TableName() string {
+	return "rs_host_suspend_log"
+}
 type HostNetDevice struct {
 	models.Model
 	HostId    int          `json:"host_id" gorm:"index;comment:关联主机ID"`

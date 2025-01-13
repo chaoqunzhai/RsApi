@@ -16,5 +16,7 @@ func registerCrontabRouter(v1 *gin.RouterGroup) {
 	{
 		r.GET("algorithm", api.Algorithm)
 		r.GET("watchOnlineUsage", api.WatchOnlineUsage)
+		//Data burning 数据刻录,保存一些每天在变化的数据
+		r.GET("dataBurning",api.DataBurning)
 	}
 }

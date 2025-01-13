@@ -46,14 +46,24 @@ type Host struct {
 	HostId          int                        `json:"hostId"`
 	HostName        string                     `json:"hostName"`
 	HostSn          string                     `json:"hostSn"`
+	Balance       float64      `json:"balance" gorm:"type:varchar(50);comment:总带宽"`
 	IdcId           int                        `json:"idcId"`
 	BuId            int                        `json:"buId"`
 	AlgDay          string                     `json:"algDay"`       //计算天数
 	PriceCompute    map[string]*MonitorCompute `json:"priceCompute"` //今天的收益 运营商:收益
 	IspId           int                        `json:"ispId"`
 	BandwidthIncome float64                    `json:"bandwidthIncome"` //计费带宽 就是多少条线 * 单条线路带宽
-
+	CustomId int64 `json:"custom_id"` //客户ID
+	ContractId  int64 `json:"contract_id"` //合同ID
+	ContractAlg  *ContractAlg //合同费用配置
+	AlgNote []string
 	BuSn []*LabelRow `json:"buSn"`
+}
+type ContractAlg struct {
+	LinePrice       float64 `json:"LinePrice" gorm:"comment:业务线单价"`
+	ManagerLineCost float64 `json:"managerLineCost" gorm:"comment:管理线价格"`
+	IspId           int                        `json:"ispId"`
+
 }
 type MonitorCompute struct {
 	Empty          bool    `json:"empty"`
@@ -68,6 +78,10 @@ type MonitorCompute struct {
 	IspDayPrice    float64 `json:"ispDayPrice"`  //计算今天 运营商的收益真实收益
 	IspCnf         *IspCnf `json:"ispCnf"`       //运营商的计费配置
 	Usage          float64 `json:"usage"`        //利用率
+	DayCost float64 `json:"day_cost" ` //每天成本
+	MonthlyCost float64 `json:"monthly_cost" ` //月成本
+	CostAlgorithm string `json:"cost_algorithm" ` //成本算法,如果没有配置客户 合同 是展示文本
+
 }
 
 type SlaRow struct {

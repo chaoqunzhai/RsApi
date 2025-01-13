@@ -1,12 +1,19 @@
 package apis
 
 import (
+	"bufio"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-admin-team/go-admin-core/sdk"
 	"github.com/go-admin-team/go-admin-core/sdk/api"
 	_ "github.com/go-admin-team/go-admin-core/sdk/pkg/response"
 	"go-admin/app/jobs/watch"
+	"go-admin/cmd/migrate/migration/models"
+	"go-admin/common/utils"
 	"go-admin/costAlg"
+	"io/ioutil"
+	"os"
+	"strings"
 	"time"
 )
 
@@ -14,6 +21,146 @@ type Crontab struct {
 	api.Api
 }
 
+// 写入数据到文件
+func writeHostsToFile(filename string, hosts []string) error {
+	file, err := os.Create(filename)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	writer := bufio.NewWriter(file)
+	writer.WriteString(strings.Join(hosts,","))
+	return writer.Flush()
+}
+
+// 读取文件内容
+func readHostsFromFile(filename string) ([]string, error) {
+	content, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	hosts := strings.Split(string(content), ",")
+	// 移除空字符串
+	var result []string
+	for _, host := range hosts {
+		if host != "" {
+			result = append(result, strings.TrimSpace(host))
+		}
+	}
+	return result, nil
+}
+
+// 记录不同的数据（这里简单打印，实际应用中可以写入日志或数据库）
+func recordDifferentHosts(currentHosts, yesterdayHosts []string) []string {
+	currentSet := make(map[string]struct{})
+	yesterdaySet := make(map[string]struct{})
+
+	for _, host := range currentHosts {
+		currentSet[host] = struct{}{}
+	}
+	for _, host := range yesterdayHosts {
+		yesterdaySet[host] = struct{}{}
+	}
+
+	differentHosts :=make([]string,0)
+	for host := range currentSet {
+		if _, found := yesterdaySet[host]; !found {
+			differentHosts = append(differentHosts, host)
+		}
+	}
+	for host := range yesterdaySet {
+		if _, found := currentSet[host]; !found {
+			differentHosts = append(differentHosts, host)
+		}
+	}
+
+	if len(differentHosts) > 0 {
+		fmt.Println("Different hosts today compared to yesterday:", differentHosts)
+	} else {
+		fmt.Println("No different hosts today compared to yesterday.")
+	}
+
+	return differentHosts
+}
+
+func (e Crontab) DataBurning(c *gin.Context) {
+	err := e.MakeContext(c).
+		MakeOrm().
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
+
+	//保存今天的主机统计
+	onlineHealthySql := "healthy_at >= DATE_SUB(NOW(), INTERVAL 30 MINUTE)"
+	offlineHealthySql := "healthy_at <= DATE_SUB(NOW(), INTERVAL 30 MINUTE) OR healthy_at IS NULL"
+	//在线-----
+	var (
+		onlineCount    int64
+		offlineCount int64
+		totalBandwidth int64
+		waitCount int64
+		todoCount int64
+	)
+	onlineHostIds:=make([]string,0)
+	e.Orm.Model(&models.Host{}).Select("IFNULL(SUM(balance), 0) as totalBandwidth").Where(onlineHealthySql).Scan(&totalBandwidth)
+	e.Orm.Model(&models.Host{}).Select("id").Where(onlineHealthySql).Find(&onlineHostIds).Count(&onlineCount)
+	notStatus := []int{3, 4}
+	e.Orm.Model(&models.Host{}).Where("status not in ?", notStatus).Where(offlineHealthySql).Count(&offlineCount)
+
+	e.Orm.Model(&models.Host{}).Where("status = 3").Count(&waitCount)
+	e.Orm.Model(&models.Host{}).Where("status = 4").Count(&todoCount)
+
+
+	modelDat:=models.DataBurningHost{
+		Online:onlineCount,
+		Offline: offlineCount,
+		TotalBandwidth: utils.RoundDecimal(totalBandwidth / 1000),
+		Wait: waitCount,
+		Todo: todoCount,
+	}
+
+	//判断当前/tmp/data_burning_host.txt 文件是否存在, 如果不存在 创建 写入当前在线的主机ID,  如果存在 读取文件内容,和当前在线的主机做比对
+
+	filename := "/tmp/data_burning_host.txt"
+
+
+	// 检查文件是否存在
+	if _, err1 := os.Stat(filename); os.IsNotExist(err1) {
+		// 文件不存在，写入当前在线的主机ID
+		err1 := writeHostsToFile(filename, onlineHostIds)
+		if err1 != nil {
+			fmt.Println("Error writing current hosts to file:", err1)
+			return
+		}
+		fmt.Println("File created and current hosts written.")
+	} else {
+		// 文件存在，读取文件内容
+		yesterdayHosts, err1 := readHostsFromFile(filename)
+		if err1 != nil {
+			fmt.Println("Error reading yesterday's hosts from file:", err1)
+			return
+		}
+		// 比对今天和昨天的主机ID
+		differentHosts :=recordDifferentHosts(onlineHostIds, yesterdayHosts)
+		modelDat.DiffHost = strings.Join(differentHosts,",")
+		// 更新文件内容为当前在线的主机ID（这里模拟每天更新）
+		err = writeHostsToFile(filename, onlineHostIds)
+		if err != nil {
+			fmt.Println("Error updating file with current hosts:", err)
+			return
+		}
+		fmt.Println("File updated with current hosts.")
+	}
+
+	e.Orm.Create(&modelDat)
+	e.OK("","记录成功")
+	return
+}
 func (e Crontab) WatchOnlineUsage(c *gin.Context) {
 	err := e.MakeContext(c).
 		MakeOrm().

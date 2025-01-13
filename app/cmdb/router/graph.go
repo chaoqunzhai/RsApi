@@ -18,5 +18,7 @@ func registerGraphRouter(v1 *gin.RouterGroup, authMiddleware *jwt.GinJWTMiddlewa
 	r := v1.Group("/graph").Use(authMiddleware.MiddlewareFunc()).Use(middleware.AuthCheckRole())
 	{
 		r.GET("income", api.Income)
+		r.GET("host/dataBurning", api.DataBurningList)
 	}
+
 }

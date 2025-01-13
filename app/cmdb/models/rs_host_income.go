@@ -1,7 +1,6 @@
 package models
 
 import (
-	models2 "go-admin/cmd/migrate/migration/models"
 	"gorm.io/gorm"
 	"time"
 
@@ -31,6 +30,9 @@ type RsHostIncome struct {
 	HeartbeatNum      string          `json:"heartbeatNum" gorm:"type:bigint;comment:HeartbeatNum"`
 	NightHeartbeatNum string          `json:"nightHeartbeatNum" gorm:"type:bigint;comment:NightHeartbeatNum"`
 	CreatedAt         models.DayXTime `json:"createdAt" gorm:"comment:创建时间"`
+	DayCost float64 `json:"day_cost" gorm:"每天成本"`
+	MonthlyCost float64 `json:"monthly_cost" gorm:"月成本"`
+	CostAlgorithm string `json:"cost_algorithm" gorm:"type:varchar(100);成本算法"`
 	HostName          string          `json:"hostName" gorm:"-"`
 	Status            int             `json:"status" gorm:"-"`
 	BuName            string          `json:"buName" gorm:"-"`
@@ -40,17 +42,17 @@ func (RsHostIncome) TableName() string {
 	return "rs_host_income"
 }
 func (e *RsHostIncome) AfterFind(tx *gorm.DB) (err error) {
-	var hostModel models2.Host
-
-	if e.HostId == 0 {
-		return
-	}
-	tx.Model(&hostModel).Select("host_name,id,status").Where("id = ?", e.HostId).Limit(1).Find(&hostModel)
-
-	if hostModel.Id > 0 {
-		e.HostName = hostModel.HostName
-		e.Status = hostModel.Status
-	}
+	//var hostModel models2.Host
+	//
+	//if e.HostId == 0 {
+	//	return
+	//}
+	//tx.Model(&hostModel).Select("host_name,id,status").Where("id = ?", e.HostId).Limit(1).Find(&hostModel)
+	//
+	//if hostModel.Id > 0 {
+	//	e.HostName = hostModel.HostName
+	//	e.Status = hostModel.Status
+	//}
 	return
 }
 func (e *RsHostIncome) GetId() interface{} {

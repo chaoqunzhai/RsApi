@@ -123,6 +123,7 @@ type RsHostOrder struct {
 	Enable        string `form:"enableOrder"  search:"type:order;column:enable;table:rs_host"`
 	Desc          string `form:"descOrder"  search:"type:order;column:desc;table:rs_host"`
 	HostNameOrder string `form:"hostNameOrder"  search:"type:order;column:host_name;table:rs_host"`
+	HealthyAtOrder string `form:"healthyAtOrder"  search:"type:order;column:healthy_at;table:rs_host"`
 	UsageOrder    string `form:"usageOrder"  search:"type:order;column:usage;table:rs_host"`
 	Sn            string `form:"snOrder"  search:"type:order;column:sn;table:rs_host"`
 	Cpu           string `form:"cpuOrder"  search:"type:order;column:cpu;table:rs_host"`

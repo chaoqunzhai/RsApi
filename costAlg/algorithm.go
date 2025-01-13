@@ -47,7 +47,7 @@ func (c *CostAlgorithm) StartHostCompute() {
 		c.Orm.Raw(hostBindBusiness).Scan(&bindHostIds)
 		var hostList []models.Host
 		//bindHostIdsDemo := []int{1187}
-		c.Orm.Model(&models.Host{}).Select("id,host_name,sn,status,balance,idc,isp").Where("id in ?", bindHostIds).Find(&hostList)
+		c.Orm.Model(&models.Host{}).Select("id,host_name,sn,status,balance,idc,isp").Where("id in ? and suspend_billing = 1", bindHostIds).Find(&hostList)
 		buValue, ok := c.BusinessMap[bu.Id]
 		if !ok {
 			buValue.Host = make([]*Host, 0)
@@ -67,15 +67,67 @@ func (c *CostAlgorithm) StartHostCompute() {
 				Desc:  "当日机器晚高峰期间线路断开超30min，该线路流量当日不计费",
 			},
 		}
+
 		for _, host := range hostList {
-			buValue.Host = append(buValue.Host, &Host{
+			//获取每 host -> IDC  -> 客户 -> 合同 -> 费用
+			HostRow :=&Host{
 				HostId:          host.Id,
 				IspId:           host.Isp,
 				HostName:        host.HostName,
 				HostSn:          host.Sn,
 				IdcId:           host.Idc,
 				BandwidthIncome: host.Balance / 1000, //换算成G
-			})
+			}
+			note:=make([]string,0)
+			if host.Idc > 0 {
+
+				var idcRow models.Idc
+				c.Orm.Model(&models.Idc{}).Select("custom_id,name,id").Where("id = ?",host.Idc).Limit(1).Find(&idcRow)
+
+				if idcRow.CustomId > 0 {
+
+
+					var CustomRow models.Custom
+					c.Orm.Model(&models.Custom{}).Select("name,id").Where("id = ?",idcRow.CustomId).Limit(1).Find(&CustomRow)
+
+					if CustomRow.Id > 0 {
+
+						var ContractRow models.Contract
+						c.Orm.Model(&models.Contract{}).Select("id,name").Where("custom_id = ?", idcRow.CustomId).Limit(1).Find(&ContractRow)
+						if ContractRow.Id > 0 {
+							var BandwidthFeesRow models.BandwidthFees
+							c.Orm.Model(&models.BandwidthFees{}).Select("id").Where("contract_id = ? and isp = ?", ContractRow.Id,host.Isp).Limit(1).Find(&BandwidthFeesRow)
+
+							if BandwidthFeesRow.Id > 0 {
+								//最后匹配到了 才会设置对象
+								HostRow.ContractAlg = &ContractAlg{
+									IspId: BandwidthFeesRow.Isp,
+									LinePrice:BandwidthFeesRow.LinePrice,
+									ManagerLineCost: BandwidthFeesRow.ManagerLineCost,
+								}
+							}else {
+								note  = append(note,fmt.Sprintf("合同:%v-%v未关联费用信息",ContractRow.Id,ContractRow.Name ))
+							}
+
+						}else {
+							note  = append(note,fmt.Sprintf("客户:%v-%v未关联合同",CustomRow.Id,CustomRow.Name ))
+						}
+
+
+					}else {
+						note  = append(note,fmt.Sprintf("IDC:%v-%v未关联客户",idcRow.Id,idcRow.Name))
+					}
+
+				}else {
+					note  = append(note,fmt.Sprintf("IDC:%v-%v未关联客户",idcRow.Id,idcRow.Name))
+				}
+			}else {
+				note  = append(note,"未关联IDC")
+			}
+			if len(note) > 0 {
+				HostRow.AlgNote = note
+			}
+			buValue.Host = append(buValue.Host, HostRow)
 			hostIds = append(hostIds, host.Id)
 		}
 
@@ -450,12 +502,40 @@ func (c *CostAlgorithm) InsertDb(host *Host) {
 
 		c.Orm.Model(&HostIncome).Where("host_id = ? and alg_day = ?", host.HostId, host.AlgDay).Limit(1).Find(&HostIncome)
 
-		if HostIncome.Id > 0 {
 
-			fmt.Println("有数据了 更新", host.HostId)
+		//做一次成本价的计算
+		//合同宽费用 单条多少钱 *  这个机器是几条线 / 自然月  =  机器每天的成本
+
+		//因为可能不同的商务理解的不一样， 如果是>20 那就是写的 价格/30 就是每天每M
+		var (
+			DayCost,MonthlyCost float64
+			CostAlgorithmVal string
+		)
+		//因为还涉及到了 一个停止计费, 那当月成本就是 算的每天的成本 然后叠加起来 才是当月的成本
+		if host.ContractAlg  !=nil{
+			var mbPrice float64
+			if host.ContractAlg.LinePrice > 20 {
+				mbPrice = host.ContractAlg.LinePrice  / float64(utils.GetDaysInMonth(time.Now().Year(),time.Now().Month()))
+			}else {
+				mbPrice = host.ContractAlg.LinePrice
+			}
+
+			DayCost = host.Balance * mbPrice
+			CostAlgorithmVal = fmt.Sprintf("合同单价(%v)*主机总带宽(%v)~=每天成本,月成本~=每天计算成本相加",mbPrice,host.Balance)
+		}else {
+			CostAlgorithmVal = strings.Join(host.AlgNote,",")
+		}
+		//否则就是 业务线单价 元/M/月
+
+
+		DayCost =  utils.RoundDecimalFlot64(4,DayCost)
+		if HostIncome.Id > 0 {
+			MonthlyCost  = HostIncome.DayCost + DayCost //把计算的每一天加起来
 			HostIncome.Isp = row.IspCnf.ConstId
 			HostIncome.IdcId = host.IdcId
 			HostIncome.BuId = host.BuId
+			HostIncome.DayCost = DayCost
+			HostIncome.MonthlyCost = MonthlyCost
 			HostIncome.Income = row.IspDayPrice
 			HostIncome.Usage = row.Usage
 			HostIncome.Bandwidth95 = row.PercentG
@@ -466,12 +546,14 @@ func (c *CostAlgorithm) InsertDb(host *Host) {
 			HostIncome.AvgDayPrice = row.IspCnf.AvgDayPrice
 			HostIncome.HostId = host.HostId
 			HostIncome.AlgDay = host.AlgDay
+			HostIncome.CostAlgorithm  = CostAlgorithmVal
 			c.Orm.Save(&HostIncome)
 			continue
 		}
 		RsHostIncome := models.HostIncome{
 			AlgDay:         host.AlgDay,
 			HostId:         host.HostId,
+			DayCost:DayCost,
 			Isp:            row.IspCnf.ConstId,
 			IdcId:          host.IdcId,
 			BuId:           host.BuId,
@@ -481,8 +563,10 @@ func (c *CostAlgorithm) InsertDb(host *Host) {
 			SlaInfo:        row.SLA.Info,
 			SlaPrice:       row.SLA.Price,
 			HeartbeatNum:   row.HeartbeatNum,
+			CostAlgorithm: CostAlgorithmVal,
 			TotalBandwidth: row.TotalBandwidth,
 			AvgDayPrice:    row.IspCnf.AvgDayPrice,
+			MonthlyCost: MonthlyCost,
 		}
 		c.Orm.Create(&RsHostIncome)
 	}
