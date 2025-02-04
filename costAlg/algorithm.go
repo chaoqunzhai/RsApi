@@ -1,6 +1,7 @@
 package costAlg
 
 import (
+	"errors"
 	"fmt"
 	"go-admin/cmd/migrate/migration/models"
 	"go-admin/common/prometheus"
@@ -20,6 +21,7 @@ type CostAlgorithm struct {
 	BusinessMap map[int]Business
 	RunTime     map[string]string
 	PromReq     PromReq
+	thiMonthDay int
 }
 
 func (c *CostAlgorithm) SetupDb(dbs map[string]*gorm.DB) {
@@ -77,6 +79,7 @@ func (c *CostAlgorithm) StartHostCompute() {
 				HostSn:          host.Sn,
 				IdcId:           host.Idc,
 				BandwidthIncome: host.Balance / 1000, //换算成G
+				Balance: host.Balance,
 			}
 			note:=make([]string,0)
 			if host.Idc > 0 {
@@ -96,7 +99,7 @@ func (c *CostAlgorithm) StartHostCompute() {
 						c.Orm.Model(&models.Contract{}).Select("id,name").Where("custom_id = ?", idcRow.CustomId).Limit(1).Find(&ContractRow)
 						if ContractRow.Id > 0 {
 							var BandwidthFeesRow models.BandwidthFees
-							c.Orm.Model(&models.BandwidthFees{}).Select("id").Where("contract_id = ? and isp = ?", ContractRow.Id,host.Isp).Limit(1).Find(&BandwidthFeesRow)
+							c.Orm.Model(&models.BandwidthFees{}).Where("contract_id = ? and isp = ?", ContractRow.Id,host.Isp).Limit(1).Find(&BandwidthFeesRow)
 
 							if BandwidthFeesRow.Id > 0 {
 								//最后匹配到了 才会设置对象
@@ -187,7 +190,7 @@ func (c *CostAlgorithm) HostBuSn(hostIds []int) {
 func (c *CostAlgorithm) BuPrice() {
 	nowTime := time.Now()
 
-	thiMonthDay := c.GetMonthDay()
+	c.thiMonthDay = c.GetMonthDay()
 	for _, bu := range c.BusinessMap {
 
 		var BusinessCostCnf []models.BusinessCostCnf
@@ -211,8 +214,8 @@ func (c *CostAlgorithm) BuPrice() {
 				ConstId:     cnf.Isp,
 				Name:        ispStr,
 				Price:       cnf.Price,
-				Day:         thiMonthDay,
-				AvgDayPrice: utils.RoundDecimalFlot64(3, cnf.Price/float64(thiMonthDay)),
+				Day:         c.thiMonthDay,
+				AvgBuDayPrice: utils.RoundDecimalFlot64(3, cnf.Price/float64(c.thiMonthDay)),
 			}
 		}
 
@@ -396,7 +399,7 @@ func (c *CostAlgorithm) requestPromResult(isMb bool, query string, SlaConf map[i
 		//SLA计算
 		result.SLA = c.AlgSla(XData, SlaConf)
 
-		result.IspDayPrice = utils.RoundDecimalFlot64(3, IspCnf.AvgDayPrice*result.PercentG)
+		result.IspDayPrice = utils.RoundDecimalFlot64(3, IspCnf.AvgBuDayPrice*result.PercentG)
 		result.IspCnf = IspCnf
 	} else {
 		result.Empty = true
@@ -492,7 +495,21 @@ func (c *CostAlgorithm) GetMonthDay() int {
 
 	return daysInMonth
 }
+func (c *CostAlgorithm)getYesterdayInCurrentMonth() (string, error) {
+	// 获取当前时间
+	now := time.Now()
 
+	// 计算昨天的日期
+	yesterday := now.AddDate(0, 0, -1)
+
+	// 检查昨天是否还在当前月
+	if yesterday.Month() != now.Month() {
+		return "", errors.New("昨天是上个月的日期")
+	}
+
+	// 返回昨天的日期，格式为 YYYY-MM-DD
+	return yesterday.Format("2006-01-02"), nil
+}
 func (c *CostAlgorithm) InsertDb(host *Host) {
 
 	//需要拆分字段
@@ -508,7 +525,7 @@ func (c *CostAlgorithm) InsertDb(host *Host) {
 
 		//因为可能不同的商务理解的不一样， 如果是>20 那就是写的 价格/30 就是每天每M
 		var (
-			DayCost,MonthlyCost float64
+			DayCost float64
 			CostAlgorithmVal string
 		)
 		//因为还涉及到了 一个停止计费, 那当月成本就是 算的每天的成本 然后叠加起来 才是当月的成本
@@ -520,22 +537,28 @@ func (c *CostAlgorithm) InsertDb(host *Host) {
 				mbPrice = host.ContractAlg.LinePrice
 			}
 
-			DayCost = host.Balance * mbPrice
-			CostAlgorithmVal = fmt.Sprintf("合同单价(%v)*主机总带宽(%v)~=每天成本,月成本~=每天计算成本相加",mbPrice,host.Balance)
+			DayCost = (host.Balance * mbPrice) / float64(c.thiMonthDay)
+			CostAlgorithmVal = fmt.Sprintf("(合同单价(%v)*主机总带宽(%v)) / %v = 每天成本,月成本=每天计算成本相加",mbPrice,host.Balance,c.thiMonthDay)
 		}else {
 			CostAlgorithmVal = strings.Join(host.AlgNote,",")
 		}
 		//否则就是 业务线单价 元/M/月
+		var yesterDayFloat float64
+		if yesterDay,err:=c.getYesterdayInCurrentMonth();err!=nil{
+			var oldDayHostIncome models.HostIncome
 
+			c.Orm.Model(&oldDayHostIncome).Select("id,day_cost").Where("host_id = ? and alg_day = ?", host.HostId,yesterDay).Limit(1).Find(&oldDayHostIncome)
+			if oldDayHostIncome.Id > 0 {
+				yesterDayFloat = oldDayHostIncome.DayCost
+			}
 
+		}
 		DayCost =  utils.RoundDecimalFlot64(4,DayCost)
 		if HostIncome.Id > 0 {
-			MonthlyCost  = HostIncome.DayCost + DayCost //把计算的每一天加起来
 			HostIncome.Isp = row.IspCnf.ConstId
 			HostIncome.IdcId = host.IdcId
 			HostIncome.BuId = host.BuId
 			HostIncome.DayCost = DayCost
-			HostIncome.MonthlyCost = MonthlyCost
 			HostIncome.Income = row.IspDayPrice
 			HostIncome.Usage = row.Usage
 			HostIncome.Bandwidth95 = row.PercentG
@@ -543,10 +566,11 @@ func (c *CostAlgorithm) InsertDb(host *Host) {
 			HostIncome.SlaPrice = row.SLA.Price
 			HostIncome.HeartbeatNum = row.HeartbeatNum
 			HostIncome.TotalBandwidth = row.TotalBandwidth
-			HostIncome.AvgDayPrice = row.IspCnf.AvgDayPrice
+			HostIncome.AvgBuDayPrice = row.IspCnf.AvgBuDayPrice
 			HostIncome.HostId = host.HostId
 			HostIncome.AlgDay = host.AlgDay
 			HostIncome.CostAlgorithm  = CostAlgorithmVal
+			HostIncome.MonthlyCost = yesterDayFloat + DayCost
 			c.Orm.Save(&HostIncome)
 			continue
 		}
@@ -554,6 +578,7 @@ func (c *CostAlgorithm) InsertDb(host *Host) {
 			AlgDay:         host.AlgDay,
 			HostId:         host.HostId,
 			DayCost:DayCost,
+			MonthlyCost:yesterDayFloat + DayCost,
 			Isp:            row.IspCnf.ConstId,
 			IdcId:          host.IdcId,
 			BuId:           host.BuId,
@@ -565,8 +590,7 @@ func (c *CostAlgorithm) InsertDb(host *Host) {
 			HeartbeatNum:   row.HeartbeatNum,
 			CostAlgorithm: CostAlgorithmVal,
 			TotalBandwidth: row.TotalBandwidth,
-			AvgDayPrice:    row.IspCnf.AvgDayPrice,
-			MonthlyCost: MonthlyCost,
+			AvgBuDayPrice:    row.IspCnf.AvgBuDayPrice,
 		}
 		c.Orm.Create(&RsHostIncome)
 	}

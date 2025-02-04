@@ -31,7 +31,7 @@ type IspCnf struct {
 	Name        string  //运营商名字
 	Price       float64 //当月总价(3000)
 	Day         int     //当月天数
-	AvgDayPrice float64 //计算的每天价格 = 当月总价(3000) / 自然月(30)
+	AvgBuDayPrice float64 //计算的每天业务价格 = 当月总价(3000) / 自然月(30)
 }
 type LabelRow struct {
 	Label string `json:"label" form:"label" `
@@ -75,7 +75,7 @@ type MonitorCompute struct {
 	SLA            *SlaRow `json:"sla"`
 	PercentBytes   float64 `json:"percentBytes"` //今天计算的95带宽(bytes)
 	PercentG       float64 `json:"percentG"`     //日95带宽G 今天计算的日95带宽(G)
-	IspDayPrice    float64 `json:"ispDayPrice"`  //计算今天 运营商的收益真实收益
+	IspDayPrice    float64 `json:"ispDayPrice"`  //计算今天 运营商下的业务的收益真实收益
 	IspCnf         *IspCnf `json:"ispCnf"`       //运营商的计费配置
 	Usage          float64 `json:"usage"`        //利用率
 	DayCost float64 `json:"day_cost" ` //每天成本

@@ -17,7 +17,7 @@ type HostIncome struct {
 	Usage             float64      `json:"usage" gorm:"利用率,单位是%"`
 	Bandwidth95       float64      `json:"bandwidth95" gorm:"95计费带宽"`
 	BandwidthIncome   float64      `json:"bandwidthIncome" gorm:"计费带宽,单位是G"`
-	AvgDayPrice       float64      `json:"avgDayPrice" gorm:"计算每天的价格=运营商费用/当月天数"`
+	AvgBuDayPrice       float64      `json:"avgBuDayPrice" gorm:"计算每天业务的价格=运营商费用/当月天数"`
 	RetryId           int          `json:"retryId" gorm:"重算任务ID"`
 	RetryPrice        float64      `json:"retryPrice" gorm:"重算价格"`
 	SlaPrice          float64      `json:"slaPrice" gorm:"SLA扣款费用"`
@@ -31,7 +31,7 @@ type HostIncome struct {
 	NightHeartbeatNum int          `json:"nightHeartbeatNum" gorm:"晚高峰打点"`
 	DayCost float64 `json:"day_cost" gorm:"每天成本"`
 	MonthlyCost float64 `json:"monthly_cost" gorm:"月成本"`
-	CostAlgorithm string `json:"cost_algorithm" gorm:"type:varchar(80);成本算法"`
+	CostAlgorithm string `json:"cost_algorithm" gorm:"type:varchar(100);成本算法"`
 }
 
 func (HostIncome) TableName() string {

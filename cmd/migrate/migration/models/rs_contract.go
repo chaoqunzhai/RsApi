@@ -30,15 +30,16 @@ type BandwidthFees struct {
 	Model
 	ModelTime
 	Region          string  `json:"region" gorm:"type:varchar(120);comment:所在地区"`
-	ContractId      int     `json:"contractId" gorm:"index;type:int(11);comment:关联的合同"`
+	ContractId      int     `json:"-" gorm:"index;type:int(11);comment:关联的合同"`
 	Isp             int     `json:"isp" gorm:"type:int(1);default:1;comment:运营商"`
 	Up              float64 `json:"up" gorm:"default:0;comment:上行带宽"`
 	Down            float64 `json:"down" gorm:"default:0;comment:下行带宽"`
-	LinePrice       float64 `json:"LinePrice" gorm:"comment:业务线单价"`
+	LinePrice       float64 `json:"linePrice" gorm:"comment:业务线单价"`
 	ManagerLineCost float64 `json:"managerLineCost" gorm:"comment:管理线价格"`
 	Charging        int     `json:"charging" gorm:"type:int(1);default:0;comment:计费方式"`
-	TransProvince   bool    `json:"transProd" gorm:"default:false;comment:是否跨省"`
-	MoreDialing     bool    `json:"moreDialing" gorm:"default:false;comment:是否支持多拨"`
+	TransProvince   int     `json:"transProd" gorm:"default:0;comment:是否跨省"`
+	MoreDialing     int     `json:"moreDialing" gorm:"default:0;comment:是否支持多拨"`
+
 }
 
 func (BandwidthFees) TableName() string {

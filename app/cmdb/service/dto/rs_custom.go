@@ -8,7 +8,7 @@ import (
 
 type RsCustomGetPageReq struct {
 	dto.Pagination `search:"-"`
-	Name           string `form:"name"  search:"type:exact;column:name;table:rs_custom" comment:"客户名称"`
+	Name           string `form:"name"  search:"type:contains;column:name;table:rs_custom" comment:"客户名称"`
 	Type           int64  `form:"type"  search:"type:exact;column:type;table:rs_custom" comment:"客户类型,customer_type"`
 	Cooperation    int64  `form:"cooperation"  search:"type:exact;column:cooperation;table:rs_custom" comment:"合作状态,work_status"`
 	RsCustomOrder
