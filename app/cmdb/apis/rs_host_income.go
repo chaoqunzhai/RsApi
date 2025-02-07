@@ -2,11 +2,11 @@ package apis
 
 import (
 	"fmt"
-
 	"github.com/gin-gonic/gin"
 	"github.com/go-admin-team/go-admin-core/sdk/api"
 	"github.com/go-admin-team/go-admin-core/sdk/pkg/jwtauth/user"
 	_ "github.com/go-admin-team/go-admin-core/sdk/pkg/response"
+	"time"
 
 	"go-admin/app/cmdb/models"
 	"go-admin/app/cmdb/service"
@@ -16,6 +16,50 @@ import (
 
 type RsHostIncome struct {
 	api.Api
+}
+
+
+
+func (e RsHostIncome) Compute(c *gin.Context) {
+	req := dto.RsHostGetPageReq{}
+	s := service.RsHost{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
+
+	p := actions.GetPermissionFromContext(c)
+	list := make([]models.RsHost, 0)
+	var count int64
+	now := time.Now()
+
+	// 获取当前日期
+	currentDate := now.Format("2006-01-02")
+	fmt.Println("当前日期:", currentDate)
+	err = s.GetPage(&req, p, &list, &count)
+	if err != nil {
+		e.Error(500, err, fmt.Sprintf("获取RsHost失败，\r\n失败信息 %s", err.Error()))
+		return
+	}
+	result:=map[string]interface{}{
+		"month":currentDate,
+		"day":now.Day(),
+	}
+	//实际上是 对主机列表进行分页。 分页的主机 然后在这个列表内查询数据
+	//获取当月
+	for _,row:=range result{
+
+		fmt.Println("row~",row)
+	}
+
+
+	e.PageOK(result, int(count), req.GetPageIndex(), req.GetPageSize(), "查询成功")
 }
 
 // GetPage 获取RsHostIncome列表
