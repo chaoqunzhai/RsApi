@@ -30,10 +30,21 @@ type HostIncome struct {
 	HeartbeatNum      int          `json:"heartbeatNum" gorm:"总打点数,通常来说是288个点,5分钟一个点"`
 	NightHeartbeatNum int          `json:"nightHeartbeatNum" gorm:"晚高峰打点"`
 	DayCost float64 `json:"day_cost" gorm:"每天成本"`
-	MonthlyCost float64 `json:"monthly_cost" gorm:"月成本"`
 	CostAlgorithm string `json:"cost_algorithm" gorm:"type:varchar(100);成本算法"`
+	RecordM bool `json:"record_m"  gorm:"default:0;comment:是否已经记录月记录中"`
 }
 
 func (HostIncome) TableName() string {
 	return "rs_host_income"
+}
+type HostIncomeMonth struct {
+	Model
+	Month string `json:"month"`
+	HostId            int64         `json:"hostId" gorm:"index;comment:主机ID"`
+	Income            float64      `json:"income" gorm:"预估收益"`
+	Cost float64 `json:"cost" gorm:"成本"`
+	GrossProfit interface{} `json:"gross_profit" gorm:"-"`
+}
+func (HostIncomeMonth) TableName() string {
+	return "rs_host_income_month"
 }

@@ -85,6 +85,51 @@ func recordDifferentHosts(currentHosts, yesterdayHosts []string) []string {
 	return differentHosts
 }
 
+func (e Crontab) ComputeMonth(c *gin.Context) {
+	err := e.MakeContext(c).
+		MakeOrm().
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
+	currentTime := time.Now()
+	month := currentTime.Format("2006-01")
+	//day :=currentTime.Format(time.DateOnly)
+	var hostIds []int64
+	e.Orm.Model(&models.Host{}).Select("id").Scan(&hostIds)
+
+
+	for _,row:=range hostIds{
+		var hostRow []models.HostIncome
+		e.Orm.Model(&models.HostIncome{}).Where("host_id = ? and alg_day like ? and record_m = 0",row,month+"%").Find(&hostRow)
+
+		monthIncome :=0.0
+		monthCost :=0.0
+		for _,incomeRow:=range hostRow{
+			monthCost +=incomeRow.DayCost
+			monthIncome+=incomeRow.Income
+
+			e.Orm.Model(&models.HostIncome{}).Where("id = ?",incomeRow.Id).Updates(map[string]interface{}{
+				"record_m":1,
+			})
+		}
+		var HostIncomeMonth models.HostIncomeMonth
+		e.Orm.Model(&models.HostIncomeMonth{}).Where("host_id = ? and month = ?",row,month).Limit(1).Find(&HostIncomeMonth)
+		HostIncomeMonth.HostId = row
+		HostIncomeMonth.Month = month
+		HostIncomeMonth.Income +=utils.RoundDecimal(monthIncome)
+		HostIncomeMonth.Cost +=utils.RoundDecimal(monthCost)
+		if HostIncomeMonth.Id == 0 {
+			e.Orm.Create(&HostIncomeMonth)
+		}else {
+			e.Orm.Save(&HostIncomeMonth)
+		}
+	}
+	e.OK("","记录成功")
+	return
+}
 func (e Crontab) DataBurning(c *gin.Context) {
 	err := e.MakeContext(c).
 		MakeOrm().

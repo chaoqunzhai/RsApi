@@ -543,16 +543,16 @@ func (c *CostAlgorithm) InsertDb(host *Host) {
 			CostAlgorithmVal = strings.Join(host.AlgNote,",")
 		}
 		//否则就是 业务线单价 元/M/月
-		var yesterDayFloat float64
-		if yesterDay,err:=c.getYesterdayInCurrentMonth();err!=nil{
-			var oldDayHostIncome models.HostIncome
-
-			c.Orm.Model(&oldDayHostIncome).Select("id,day_cost").Where("host_id = ? and alg_day = ?", host.HostId,yesterDay).Limit(1).Find(&oldDayHostIncome)
-			if oldDayHostIncome.Id > 0 {
-				yesterDayFloat = oldDayHostIncome.DayCost
-			}
-
-		}
+		//var yesterDayFloat float64
+		//if yesterDay,err:=c.getYesterdayInCurrentMonth();err!=nil{
+		//	var oldDayHostIncome models.HostIncome
+		//
+		//	c.Orm.Model(&oldDayHostIncome).Select("id,day_cost").Where("host_id = ? and alg_day = ?", host.HostId,yesterDay).Limit(1).Find(&oldDayHostIncome)
+		//	if oldDayHostIncome.Id > 0 {
+		//		yesterDayFloat = oldDayHostIncome.DayCost
+		//	}
+		//
+		//}
 		DayCost =  utils.RoundDecimalFlot64(4,DayCost)
 		if HostIncome.Id > 0 {
 			HostIncome.Isp = row.IspCnf.ConstId
@@ -570,7 +570,6 @@ func (c *CostAlgorithm) InsertDb(host *Host) {
 			HostIncome.HostId = host.HostId
 			HostIncome.AlgDay = host.AlgDay
 			HostIncome.CostAlgorithm  = CostAlgorithmVal
-			HostIncome.MonthlyCost = yesterDayFloat + DayCost
 			c.Orm.Save(&HostIncome)
 			continue
 		}
@@ -578,7 +577,6 @@ func (c *CostAlgorithm) InsertDb(host *Host) {
 			AlgDay:         host.AlgDay,
 			HostId:         host.HostId,
 			DayCost:DayCost,
-			MonthlyCost:yesterDayFloat + DayCost,
 			Isp:            row.IspCnf.ConstId,
 			IdcId:          host.IdcId,
 			BuId:           host.BuId,

@@ -47,6 +47,7 @@ func _1599190683659Tables(db *gorm.DB, version string) error {
 			new(models.HostSystem),
 			//计费
 			new(models.HostIncome),
+			new(models.HostIncomeMonth),
 
 			new(models.HostSoftware),
 			new(models.HostSwitchLog),

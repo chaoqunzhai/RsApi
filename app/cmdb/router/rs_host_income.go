@@ -24,6 +24,6 @@ func registerRsHostIncomeRouter(v1 *gin.RouterGroup, authMiddleware *jwt.GinJWTM
 		r.PUT("/:id", actions.PermissionAction(), api.Update)
 		r.DELETE("", api.Delete)
 
-		r.GET("/compute",actions.PermissionAction(), api.Compute)
+		r.GET("/monthCompute",actions.PermissionAction(), api.Compute)
 	}
 }

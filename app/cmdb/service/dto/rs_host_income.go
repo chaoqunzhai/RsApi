@@ -21,8 +21,11 @@ type RsHostIncomeGetPageReq struct {
 	StartTimeAt    string `form:"startTime"  search:"type:gte;column:created_at;table:rs_host_income" comment:"开始时间"`
 	EndTimeAt      string `form:"endTime"  search:"type:lte;column:created_at;table:rs_host_income" comment:"结束时间"`
 	Region         string `form:"region" search:"-"`
+	//给计费的请求设置的
+	IncomeMonth string `form:"incomeMonth" search:"-" `
 	RsHostIncomeOrder
 }
+
 
 type RsHostIncomeOrder struct {
 	Id                string `form:"idOrder"  search:"type:order;column:id;table:rs_host_income"`

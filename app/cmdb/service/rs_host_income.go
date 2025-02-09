@@ -34,6 +34,9 @@ func (e *RsHostIncome) GetPage(c *dto.RsHostIncomeGetPageReq, p *actions.DataPer
 	if c.Region != "" {
 
 	}
+	if c.IncomeMonth != "" {
+		orm = orm.Where("alg_day like ? ",c.IncomeMonth+"%" )
+	}
 	if c.CustomId != "" {
 		//先通过客户搜索机房
 		//搜索到的机房 在收益中查询

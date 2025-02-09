@@ -109,6 +109,10 @@ type RsHostGetPageReq struct {
 	BusinessSn     string `form:"businessSn"  search:"-" comment:"业务SN"`
 	TransProvince  int    `form:"transProvince" search:"type:exact;column:trans_province;table:rs_host" comment:"是否跨省"`
 	CustomId       int    `form:"customId"  search:"-" comment:"客户ID"`
+
+	//给计费的请求设置的
+	IncomeMonth string `form:"incomeMonth" search:"-" `
+
 	RsHostOrder
 }
 

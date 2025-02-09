@@ -36,6 +36,7 @@ type RsHostIncome struct {
 	HostName          string          `json:"hostName" gorm:"-"`
 	Status            int             `json:"status" gorm:"-"`
 	BuName            string          `json:"buName" gorm:"-"`
+	HostRow interface{} `json:"host_row" gorm:"-"`
 }
 
 func (RsHostIncome) TableName() string {

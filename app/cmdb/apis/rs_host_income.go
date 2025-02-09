@@ -6,6 +6,8 @@ import (
 	"github.com/go-admin-team/go-admin-core/sdk/api"
 	"github.com/go-admin-team/go-admin-core/sdk/pkg/jwtauth/user"
 	_ "github.com/go-admin-team/go-admin-core/sdk/pkg/response"
+	models2 "go-admin/cmd/migrate/migration/models"
+	"go-admin/common/utils"
 	"time"
 
 	"go-admin/app/cmdb/models"
@@ -34,32 +36,58 @@ func (e RsHostIncome) Compute(c *gin.Context) {
 		return
 	}
 
+	//先请求rsHost主机列表
+	hostList := make([]models.RsHost, 0)
+	var hostCount int64
 	p := actions.GetPermissionFromContext(c)
-	list := make([]models.RsHost, 0)
-	var count int64
+	_=s.GetPage(&req, p, &hostList, &hostCount)
+	//查询的话 实际上是 先查询rsHost数据获取到hostId
+	hostIds:=make([]int64,0)
+	for _,row:=range hostList {
+		hostIds = append(hostIds,int64(row.Id))
+	}
+
 	now := time.Now()
 
 	// 获取当前日期
-	currentDate := now.Format("2006-01-02")
-	fmt.Println("当前日期:", currentDate)
-	err = s.GetPage(&req, p, &list, &count)
-	if err != nil {
-		e.Error(500, err, fmt.Sprintf("获取RsHost失败，\r\n失败信息 %s", err.Error()))
-		return
+
+	var currentDate string
+	orm :=e.Orm.Model(&models2.HostIncomeMonth{})
+
+	if req.IncomeMonth != "" {
+		orm = orm.Where("month = ?",req.IncomeMonth)
+		currentDate = req.IncomeMonth
+	}else {
+		currentDate = now.Format("2006-01")
 	}
+	var incomeList []models2.HostIncomeMonth
+	orm.Model(&models2.HostIncomeMonth{}).Where("host_id in ?",hostIds).Find(&incomeList)
+	incomeMapInfo := make(map[int64]models2.HostIncomeMonth,0)
+	for _,row:=range incomeList{
+		incomeMapInfo[row.HostId] = row
+	}
+
+	newList :=make([]interface{},0)
+	for _,row:=range  hostList{
+		IncomeDat,ok := incomeMapInfo[int64(row.Id)]
+
+		if ok{
+			IncomeDat.GrossProfit = utils.RoundDecimal((IncomeDat.Cost / IncomeDat.Income) * 100)
+			row.IncomeDat = IncomeDat
+		}else {
+			row.IncomeDat = make(map[string]interface{},0)
+		}
+		newList = append(newList,row)
+	}
+
 	result:=map[string]interface{}{
 		"month":currentDate,
 		"day":now.Day(),
 	}
-	//实际上是 对主机列表进行分页。 分页的主机 然后在这个列表内查询数据
-	//获取当月
-	for _,row:=range result{
-
-		fmt.Println("row~",row)
-	}
 
 
-	e.PageOK(result, int(count), req.GetPageIndex(), req.GetPageSize(), "查询成功")
+	result["dat"] = newList
+	e.PageOK(result, int(hostCount), req.GetPageIndex(), req.GetPageSize(), "查询成功")
 }
 
 // GetPage 获取RsHostIncome列表
@@ -110,9 +138,22 @@ func (e RsHostIncome) GetPage(c *gin.Context) {
 
 	result := make([]interface{}, 0)
 
+	var hostIds []int
+	for _, row := range list {
+		hostIds = append(hostIds,row.HostId)
+	}
+	var hostList []*models.RsHost
+	e.Orm.Model(&models.RsHost{}).Where("id in ?",hostIds).Find(&hostList)
+
+	hostInfoMap:=make(map[int]*models.RsHost,0)
+
+	for _,row:=range hostList{
+		hostInfoMap[row.Id] = row
+	}
 	for _, row := range list {
 
 		row.BuName = buMap[row.BuId]
+		row.HostRow = hostInfoMap[row.HostId]
 		result = append(result, row)
 	}
 	e.PageOK(result, int(count), req.GetPageIndex(), req.GetPageSize(), "查询成功")
