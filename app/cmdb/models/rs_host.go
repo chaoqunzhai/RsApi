@@ -52,7 +52,7 @@ type RsHost struct {
 	Business      []RsBusiness `json:"business" gorm:"many2many:host_bind_business;foreignKey:id;joinForeignKey:host_id;references:id;joinReferences:business_id;"`
 	Tag           []RsTag      `json:"tag" gorm:"many2many:host_bind_tag;foreignKey:id;joinForeignKey:host_id;references:id;joinReferences:tag_id;"`
 
-
+	CostAlgorithm string `json:"cost_algorithm" gorm:"-"`
 	IncomeDat interface{} `json:"income_dat" gorm:"-"`
 	models.ExtendUserBy
 	models.ModelTime

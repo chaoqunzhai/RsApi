@@ -60,21 +60,36 @@ func (e RsHostIncome) Compute(c *gin.Context) {
 	}else {
 		currentDate = now.Format("2006-01")
 	}
-	var incomeList []models2.HostIncomeMonth
-	orm.Model(&models2.HostIncomeMonth{}).Where("host_id in ?",hostIds).Find(&incomeList)
-	incomeMapInfo := make(map[int64]models2.HostIncomeMonth,0)
+
+	var incomeList []models2.HostIncome
+	e.Orm.Model(&models2.HostIncome{}).Where("host_id in ?",hostIds).Find(&incomeList)
+	incomeMapInfo := make(map[int64]models2.HostIncome,0)
 	for _,row:=range incomeList{
-		incomeMapInfo[row.HostId] = row
+		incomeMapInfo[int64(row.HostId)] = row
+	}
+
+	var incomeMonthList []models2.HostIncomeMonth
+	orm.Model(&models2.HostIncomeMonth{}).Where("host_id in ?",hostIds).Find(&incomeMonthList)
+	incomeMonthMapInfo := make(map[int64]models2.HostIncomeMonth,0)
+	for _,row:=range incomeMonthList{
+		incomeMonthMapInfo[row.HostId] = row
 	}
 
 	newList :=make([]interface{},0)
 	for _,row:=range  hostList{
-		IncomeDat,ok := incomeMapInfo[int64(row.Id)]
+		IncomeDat,ok := incomeMonthMapInfo[int64(row.Id)]
 
-		if ok{
-			IncomeDat.GrossProfit = utils.RoundDecimal((IncomeDat.Cost / IncomeDat.Income) * 100)
+		if ok && IncomeDat.Income >0 && IncomeDat.Cost > 0 {
+			IncomeDat.GrossProfit = utils.RoundDecimal((IncomeDat.Income -  IncomeDat.Cost) / IncomeDat.Income)
 			row.IncomeDat = IncomeDat
+
+			Income,ok2 :=incomeMapInfo[int64(row.Id)]
+			if ok2{
+				row.CostAlgorithm = Income.CostAlgorithm
+			}
+
 		}else {
+			IncomeDat.GrossProfit = 0
 			row.IncomeDat = make(map[string]interface{},0)
 		}
 		newList = append(newList,row)

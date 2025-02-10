@@ -96,7 +96,7 @@ func (e Crontab) ComputeMonth(c *gin.Context) {
 	}
 	currentTime := time.Now()
 	month := currentTime.Format("2006-01")
-	//day :=currentTime.Format(time.DateOnly)
+
 	var hostIds []int64
 	e.Orm.Model(&models.Host{}).Select("id").Scan(&hostIds)
 

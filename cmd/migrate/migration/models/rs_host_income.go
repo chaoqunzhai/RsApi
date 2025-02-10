@@ -2,6 +2,8 @@ package models
 
 import (
 	"go-admin/common/models"
+	"go-admin/common/utils"
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -44,6 +46,13 @@ type HostIncomeMonth struct {
 	Income            float64      `json:"income" gorm:"预估收益"`
 	Cost float64 `json:"cost" gorm:"成本"`
 	GrossProfit interface{} `json:"gross_profit" gorm:"-"`
+}
+func (e *HostIncomeMonth) AfterFind(tx *gorm.DB) (err error) {
+
+	e.Income = utils.RoundDecimal(e.Income)
+	e.Cost = utils.RoundDecimal(e.Cost)
+
+	return nil
 }
 func (HostIncomeMonth) TableName() string {
 	return "rs_host_income_month"
