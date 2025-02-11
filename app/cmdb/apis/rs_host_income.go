@@ -80,9 +80,14 @@ func (e RsHostIncome) Compute(c *gin.Context) {
 		IncomeDat,ok := incomeMonthMapInfo[int64(row.Id)]
 
 		if ok && IncomeDat.Income >0 && IncomeDat.Cost > 0 {
-			IncomeDat.GrossProfit = utils.RoundDecimal((IncomeDat.Income -  IncomeDat.Cost) / IncomeDat.Income)
-			row.IncomeDat = IncomeDat
 
+			row.IncomeDat = IncomeDat
+			GrossProfit := utils.RoundDecimal((IncomeDat.Income -  IncomeDat.Cost) / IncomeDat.Income) * 100
+			if GrossProfit >= 100 {
+				IncomeDat.GrossProfit = 100
+			}else {
+				IncomeDat.GrossProfit = GrossProfit
+			}
 			Income,ok2 :=incomeMapInfo[int64(row.Id)]
 			if ok2{
 				row.CostAlgorithm = Income.CostAlgorithm

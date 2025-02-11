@@ -1,10 +1,8 @@
 package models
 
 import (
-	"gorm.io/gorm"
-	"time"
-
 	"go-admin/common/models"
+	"gorm.io/gorm"
 )
 
 type RsHostIncome struct {
@@ -23,7 +21,7 @@ type RsHostIncome struct {
 	SlaPrice          string          `json:"slaPrice" gorm:"type:double;comment:SlaPrice"`
 	SlaInfo           string          `json:"slaInfo" gorm:"type:longtext;comment:SlaInfo"`
 	SettleStatus      string          `json:"settleStatus" gorm:"type:bigint;comment:SettleStatus"`
-	SettleTime        time.Time       `json:"settleTime" gorm:"type:datetime(3);comment:SettleTime"`
+	SettleTime        string `json:"settleTime" gorm:"varchar(15);结算时间"`
 	SettleBandwidth   string          `json:"settleBandwidth" gorm:"type:double;comment:SettleBandwidth"`
 	SettlePrice       float64         `json:"settlePrice" gorm:"结算收益"`
 	TotalBandwidth    string          `json:"totalBandwidth" gorm:"type:double;comment:TotalBandwidth"`

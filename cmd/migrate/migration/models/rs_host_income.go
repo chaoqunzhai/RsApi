@@ -1,7 +1,6 @@
 package models
 
 import (
-	"go-admin/common/models"
 	"go-admin/common/utils"
 	"gorm.io/gorm"
 	"time"
@@ -9,7 +8,7 @@ import (
 
 type HostIncome struct {
 	Model
-	AlgDay            string       `json:"algDay"  gorm:"index;comment:计算时间"`
+	AlgDay            string       `json:"algDay"  gorm:"varchar(15);index;comment:计算时间"`
 	CreatedAt         time.Time    `json:"createdAt" gorm:"comment:计算时间"`
 	HostId            int          `json:"hostId" gorm:"index;comment:主机ID"`
 	Isp               int          `json:"isp" gorm:"index;comment:运营商ID"`
@@ -25,7 +24,7 @@ type HostIncome struct {
 	SlaPrice          float64      `json:"slaPrice" gorm:"SLA扣款费用"`
 	SlaInfo           string       `json:"slaInfo" gorm:"varchar(50);触发SLA原因"`
 	SettleStatus      int          `json:"settleStatus" gorm:"default:1;是否已经结算 1:未结算 2:已结算"`
-	SettleTime        models.XTime `json:"settleTime" gorm:"结算时间"`
+	SettleTime        string `json:"settleTime" gorm:"varchar(15);结算时间"`
 	SettleBandwidth   float64      `json:"settleBandwidth" gorm:"结算带宽"`
 	SettlePrice       float64      `json:"settlePrice" gorm:"结算收益"`
 	TotalBandwidth    float64      `json:"totalBandwidth" gorm:"总跑量"`

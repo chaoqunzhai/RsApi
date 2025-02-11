@@ -206,6 +206,25 @@ func (e Crontab) DataBurning(c *gin.Context) {
 	e.OK("","记录成功")
 	return
 }
+
+func (e Crontab) OpenApiAmount(c *gin.Context) {
+	err := e.MakeContext(c).
+		MakeOrm().
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
+	//开始采集第三方openApi结算的收益， 都是晚上执行 然后白天的数据
+	costAlgorithm := costAlg.OpenApiLinWu{}
+	costAlgorithm.SetupDb(sdk.Runtime.GetDb())
+	costAlgorithm.StartHostAmount()
+
+	e.OK("", "successful")
+	return
+}
+
 func (e Crontab) WatchOnlineUsage(c *gin.Context) {
 	err := e.MakeContext(c).
 		MakeOrm().

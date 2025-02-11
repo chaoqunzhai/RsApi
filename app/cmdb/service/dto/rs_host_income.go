@@ -94,7 +94,7 @@ func (s *RsHostIncomeInsertReq) Generate(model *models.RsHostIncome) {
 	model.SlaPrice = s.SlaPrice
 	model.SlaInfo = s.SlaInfo
 	model.SettleStatus = s.SettleStatus
-	model.SettleTime = s.SettleTime
+
 	model.SettleBandwidth = s.SettleBandwidth
 	model.TotalBandwidth = s.TotalBandwidth
 	model.HeartbeatNum = s.HeartbeatNum
@@ -144,7 +144,7 @@ func (s *RsHostIncomeUpdateReq) Generate(model *models.RsHostIncome) {
 	model.SlaPrice = s.SlaPrice
 	model.SlaInfo = s.SlaInfo
 	model.SettleStatus = s.SettleStatus
-	model.SettleTime = s.SettleTime
+
 	model.SettleBandwidth = s.SettleBandwidth
 	model.TotalBandwidth = s.TotalBandwidth
 	model.HeartbeatNum = s.HeartbeatNum
