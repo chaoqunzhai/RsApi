@@ -16,6 +16,7 @@ import (
 )
 
 type CostAlgorithm struct {
+	BacktrackInt int
 	Orm         *gorm.DB
 	Metrics     []*interface{}
 	BusinessMap map[int]Business
@@ -145,8 +146,8 @@ func (c *CostAlgorithm) StartHostCompute() {
 	c.BuPrice()
 	//构造主机的业务SN
 	c.HostBuSn(hostIds)
-	//准备完毕 开始计算
-	c.ComputeMixedAlg()
+	//开始计算
+	c.BacktrackComputeMixedAlg()
 }
 func (c *CostAlgorithm) HostBuSn(hostIds []int) {
 	nowTime := time.Now()
@@ -227,19 +228,25 @@ func (c *CostAlgorithm) BuPrice() {
 
 }
 
+func (c *CostAlgorithm) BacktrackComputeMixedAlg() {
+	for i := 0; i < c.BacktrackInt; i++ {
+		now := time.Now()
+		// 计算昨天的日期
+		yesterday := now.AddDate(0, 0, -i)
+
+		// 计算昨天的 0 点
+		startOfYesterday := time.Date(yesterday.Year(), yesterday.Month(), yesterday.Day(), 0, 0, 0, 0, yesterday.Location())
+
+		// 计算昨天的 23:59:59
+		endOfYesterday := startOfYesterday.Add(24*time.Hour - time.Second)
+
+		c.ComputeMixedAlg(startOfYesterday,endOfYesterday)
+	}
+}
 // 获取即可 进行费用计算 + 利用率计算 + SLA计算
-func (c *CostAlgorithm) ComputeMixedAlg() {
+func (c *CostAlgorithm) ComputeMixedAlg(startOfYesterday,endOfYesterday time.Time) {
 
 	now := time.Now()
-	// 计算昨天的日期
-	yesterday := now.AddDate(0, 0, -1)
-
-	// 计算昨天的 0 点
-	startOfYesterday := time.Date(yesterday.Year(), yesterday.Month(), yesterday.Day(), 0, 0, 0, 0, yesterday.Location())
-
-	// 计算昨天的 23:59:59
-	endOfYesterday := startOfYesterday.Add(24*time.Hour - time.Second)
-
 	c.PromReq.Setup = 300
 	c.PromReq.Start = fmt.Sprintf("%v", startOfYesterday.Unix())
 	c.PromReq.End = fmt.Sprintf("%v", endOfYesterday.Unix())
@@ -593,3 +600,4 @@ func (c *CostAlgorithm) InsertDb(host *Host) {
 		c.Orm.Create(&RsHostIncome)
 	}
 }
+

@@ -13,6 +13,7 @@ import (
 	"go-admin/costAlg"
 	"io/ioutil"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -94,37 +95,49 @@ func (e Crontab) ComputeMonth(c *gin.Context) {
 		e.Error(500, err, err.Error())
 		return
 	}
+
 	currentTime := time.Now()
-	month := currentTime.Format("2006-01")
+
 
 	var hostIds []int64
 	e.Orm.Model(&models.Host{}).Select("id").Scan(&hostIds)
 
 
+	backtrackStr:=c.Query("backtrack")
+	backtrackInt :=1
+	if backtrackStr != ""{
+		backtrackInt,_=strconv.Atoi(backtrackStr)
+	}
+
 	for _,row:=range hostIds{
-		var hostRow []models.HostIncome
-		e.Orm.Model(&models.HostIncome{}).Where("host_id = ? and alg_day like ? and record_m = 0",row,month+"%").Find(&hostRow)
 
-		monthIncome :=0.0
-		monthCost :=0.0
-		for _,incomeRow:=range hostRow{
-			monthCost +=incomeRow.DayCost
-			monthIncome+=incomeRow.Income
+		for i := 0; i < backtrackInt; i++ {
+			month := currentTime.AddDate(0, 0, -i).Format("2006-01")
+			var hostRow []models.HostIncome
+			e.Orm.Model(&models.HostIncome{}).Where("host_id = ? and alg_day like ? and record_m = 0",row,month+"%").Find(&hostRow)
 
-			e.Orm.Model(&models.HostIncome{}).Where("id = ?",incomeRow.Id).Updates(map[string]interface{}{
-				"record_m":1,
-			})
-		}
-		var HostIncomeMonth models.HostIncomeMonth
-		e.Orm.Model(&models.HostIncomeMonth{}).Where("host_id = ? and month = ?",row,month).Limit(1).Find(&HostIncomeMonth)
-		HostIncomeMonth.HostId = row
-		HostIncomeMonth.Month = month
-		HostIncomeMonth.Income +=utils.RoundDecimal(monthIncome)
-		HostIncomeMonth.Cost +=utils.RoundDecimal(monthCost)
-		if HostIncomeMonth.Id == 0 {
-			e.Orm.Create(&HostIncomeMonth)
-		}else {
-			e.Orm.Save(&HostIncomeMonth)
+			monthIncome :=0.0
+			monthCost :=0.0
+			for _,incomeRow:=range hostRow{
+				monthCost +=incomeRow.DayCost
+				monthIncome+=incomeRow.Income
+
+				e.Orm.Model(&models.HostIncome{}).Where("id = ?",incomeRow.Id).Updates(map[string]interface{}{
+					"record_m":1,
+				})
+			}
+			var HostIncomeMonth models.HostIncomeMonth
+			e.Orm.Model(&models.HostIncomeMonth{}).Where("host_id = ? and month = ?",row,month).Limit(1).Find(&HostIncomeMonth)
+			HostIncomeMonth.HostId = row
+			HostIncomeMonth.Month = month
+			HostIncomeMonth.Income +=utils.RoundDecimal(monthIncome)
+			HostIncomeMonth.Cost +=utils.RoundDecimal(monthCost)
+			if HostIncomeMonth.Id == 0 {
+				e.Orm.Create(&HostIncomeMonth)
+			}else {
+				e.Orm.Save(&HostIncomeMonth)
+			}
+
 		}
 	}
 	e.OK("","记录成功")
@@ -216,10 +229,16 @@ func (e Crontab) OpenApiAmount(c *gin.Context) {
 		e.Error(500, err, err.Error())
 		return
 	}
+	parentDayStr := c.Query("day")
+	parentDay :=0
+	if parentDayStr != ""{
+		parentDay,_ = strconv.Atoi(parentDayStr)
+	}
+	fmt.Println("parentDay",parentDay)
 	//开始采集第三方openApi结算的收益， 都是晚上执行 然后白天的数据
 	costAlgorithm := costAlg.OpenApiLinWu{}
 	costAlgorithm.SetupDb(sdk.Runtime.GetDb())
-	costAlgorithm.StartHostAmount()
+	costAlgorithm.LoopData(parentDay)
 
 	e.OK("", "successful")
 	return
@@ -251,9 +270,17 @@ func (e Crontab) Algorithm(c *gin.Context) {
 		e.Error(500, err, err.Error())
 		return
 	}
+	backtrackStr:=c.Query("backtrack")
+	backtrackInt :=1
+	if backtrackStr != ""{
+		backtrackInt,_=strconv.Atoi(backtrackStr)
+	}
+
 
 	startTime := time.Now()
-	costAlgorithm := costAlg.CostAlgorithm{}
+	costAlgorithm := costAlg.CostAlgorithm{
+		BacktrackInt:backtrackInt,
+	}
 	costAlgorithm.SetupDb(sdk.Runtime.GetDb())
 	costAlgorithm.StartHostCompute()
 
@@ -263,3 +290,4 @@ func (e Crontab) Algorithm(c *gin.Context) {
 	e.OK(result, "successful")
 	return
 }
+

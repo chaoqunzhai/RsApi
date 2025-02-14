@@ -85,13 +85,22 @@ func (c *OpenApiLinWu) SetupDb(dbs map[string]*gorm.DB) {
 	c.url = "https://openapi.linkfog.cn/openapi/v2/queryDeviceRevenueByPage"
 }
 
+func (c *OpenApiLinWu) LoopData(parentDay int) {
 
-func (c *OpenApiLinWu) StartHostAmount() {
+	for i := 0; i < parentDay; i++ {
+		// 计算日期：当前时间 + i 天
+		futureDate := time.Now().AddDate(0,0,-i).Format(time.DateOnly)
+		// 格式化日期为 YYYY-MM-DD
+		c.StartHostAmount(futureDate)
+	}
+
+}
+func (c *OpenApiLinWu) StartHostAmount(workDate string) {
 	//请求
 
-	fmt.Println("开始", c.workDate)
+
 	jsonData := map[string]interface{}{
-		"workDate": c.workDate,
+		"workDate": workDate,
 		"pageNo":   1,
 		"pageSize": 10000,
 	}
@@ -149,6 +158,7 @@ func (c *OpenApiLinWu) StartHostAmount() {
 		if hostIncome.Id == 0 {
 			fmt.Printf("领雾 sn:%v  cmdb.id:%v HostIncome.alg_day:%v 不存在\n",row.Sn,hostRow.Id,c.workDate)
 			continue
+
 		}
 		hostIncome.SettleStatus = 2
 		hostIncome.SettleTime = c.workDate
