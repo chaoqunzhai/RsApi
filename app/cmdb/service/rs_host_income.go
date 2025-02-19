@@ -48,7 +48,7 @@ func (e *RsHostIncome) GetPage(c *dto.RsHostIncomeGetPageReq, p *actions.DataPer
 		cDto.MakeCondition(c.GetNeedSearch()),
 		cDto.Paginate(c.GetPageSize(), c.GetPageIndex()),
 		actions.Permission(data.TableName(), p),
-	).
+	).Order("alg_day desc").
 		Find(list).Limit(-1).Offset(-1).
 		Count(count).Error
 	if err != nil {

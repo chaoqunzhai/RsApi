@@ -2,6 +2,7 @@ package apis
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-admin-team/go-admin-core/sdk"
@@ -9,9 +10,13 @@ import (
 	_ "github.com/go-admin-team/go-admin-core/sdk/pkg/response"
 	"go-admin/app/jobs/watch"
 	"go-admin/cmd/migrate/migration/models"
+	"go-admin/common/prometheus"
+	"go-admin/common/qiniu"
 	"go-admin/common/utils"
+	"go-admin/config"
 	"go-admin/costAlg"
 	"io/ioutil"
+	"net/url"
 	"os"
 	"strconv"
 	"strings"
@@ -220,6 +225,85 @@ func (e Crontab) DataBurning(c *gin.Context) {
 	return
 }
 
+
+func (e Crontab) QiNiuAmount(c *gin.Context) {
+	err := e.MakeContext(c).
+		MakeOrm().
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
+	//读取prom 中 node_uname_info{business=~"jinshan"} 的数据
+	query := fmt.Sprintf("node_uname_info{business=~\"jinshan\"}")
+
+	queryUrl, err := url.Parse(func() string {
+		vv, _ := url.JoinPath(config.ExtConfig.Prometheus.Endpoint, "/api/v1/query")
+		return vv
+	}())
+
+	parameters := url.Values{}
+	parameters.Add("time", fmt.Sprintf("%v",time.Now().Unix()))
+
+	parameters.Add("query", query)
+	queryUrl.RawQuery = parameters.Encode()
+
+	ProResult, err := prometheus.GetPromNodeInfoResult(queryUrl)
+
+	if err != nil {
+
+		e.Error(-1,errors.New("数据不存在"),"")
+		return
+	}
+	if len(ProResult.Data.Result) == 0 {
+		e.Error(-1,errors.New("数据不存在"),"")
+		return
+	}
+
+	algDay:=time.Now().AddDate(0,0,-1).Format(time.DateOnly)
+	qiNiuUrl:="/supplier/outer/sirius/supply/external/out_api/getDataAndReturn"
+	for _,row:=range ProResult.Data.Result {
+		//主机名
+		hostName :=row.Metric.Instance
+		deviceId :=row.Metric.Sn
+
+		//hostName 是CMDB里面的数据
+		var host models.Host
+		e.Orm.Model(&models.Host{}).Select("id").Where("host_name = ?",hostName).Limit(1).Find(&host)
+		if host.Id == 0 {continue}
+
+		//拿deviceId 去 七牛的API里面查询到费用
+
+		params :=map[string]interface{}{
+			"device_id":deviceId,
+			"srm_channel":"1000122751",
+			"start_date":algDay,
+			"end_date":algDay,
+		}
+		dat,getErr :=qiniu.GetQueryQiNiu(qiNiuUrl,params)
+		if getErr!=nil{
+
+			fmt.Println("getErr",getErr.Error())
+			continue
+		}
+
+		for _, miniRow :=range dat.Data{
+			var hostIncome models.HostIncome
+			e.Orm.Model(&models.HostIncome{}).Select("id").Where("host_id = ? and alg_day = ?",host.Id, miniRow.Date).Limit(1).Find(&hostIncome)
+			if hostIncome.Id == 0 {continue}
+			e.Orm.Model(&models.HostIncome{}).Where("id = ?",hostIncome.Id).Updates(map[string]interface{}{
+				"settle_bandwidth":miniRow.ChargeDay95,
+			})
+
+		}
+
+
+	}
+	e.OK("","successful")
+	return
+
+}
 func (e Crontab) OpenApiAmount(c *gin.Context) {
 	err := e.MakeContext(c).
 		MakeOrm().
@@ -234,7 +318,7 @@ func (e Crontab) OpenApiAmount(c *gin.Context) {
 	if parentDayStr != ""{
 		parentDay,_ = strconv.Atoi(parentDayStr)
 	}
-	fmt.Println("parentDay",parentDay)
+
 	//开始采集第三方openApi结算的收益， 都是晚上执行 然后白天的数据
 	costAlgorithm := costAlg.OpenApiLinWu{}
 	costAlgorithm.SetupDb(sdk.Runtime.GetDb())

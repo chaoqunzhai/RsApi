@@ -81,8 +81,9 @@ func (e RsHostIncome) Compute(c *gin.Context) {
 
 		if ok && IncomeDat.Income >0 && IncomeDat.Cost > 0 {
 
-			row.IncomeDat = IncomeDat
-			GrossProfit := utils.RoundDecimal((IncomeDat.Income -  IncomeDat.Cost) / IncomeDat.Income) * 100
+
+			GrossProfit := utils.RoundDecimal((IncomeDat.Income -  IncomeDat.Cost) / IncomeDat.Income * 100 )
+			fmt.Println("GrossProfit!!!",GrossProfit)
 			if GrossProfit >= 100 {
 				IncomeDat.GrossProfit = 100
 			}else {
@@ -92,7 +93,7 @@ func (e RsHostIncome) Compute(c *gin.Context) {
 			if ok2{
 				row.CostAlgorithm = Income.CostAlgorithm
 			}
-
+			row.IncomeDat = IncomeDat
 		}else {
 			IncomeDat.GrossProfit = 0
 			row.IncomeDat = make(map[string]interface{},0)

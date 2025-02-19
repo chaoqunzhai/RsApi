@@ -19,6 +19,8 @@ func registerCrontabRouter(v1 *gin.RouterGroup) {
 		//第三方结算收益计算
 		r.GET("openApi/amount",api.OpenApiAmount)
 
+		//七牛结算收益计算
+		r.GET("qiNiu/amount",api.QiNiuAmount)
 		r.GET("watchOnlineUsage", api.WatchOnlineUsage)
 		//Data burning 数据刻录,保存一些每天在变化的数据
 		r.GET("dataBurning",api.DataBurning)

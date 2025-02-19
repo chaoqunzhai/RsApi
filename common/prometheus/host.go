@@ -59,7 +59,6 @@ func RequestQueryPromResult(title, query string, req *dto.RsHostMonitorFlow, isM
 
 		return ""
 	}
-
 	if len(ProResult.Data.Result) > 0 {
 		if len(ProResult.Data.Result[0].Value) > 1 {
 			return fmt.Sprintf("%v", ProResult.Data.Result[0].Value[1])
