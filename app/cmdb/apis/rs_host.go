@@ -291,18 +291,20 @@ func (e RsHost) Switch(c *gin.Context) {
 		})
 
 		//同时执行远程shell命令
+		fmt.Println("远程修改 标记",req.RemoteTag)
+		if req.RemoteTag  {
+			command := remoteCommand.Command{
+				Orm:        e.Orm,
+				CreateBy:   user.GetUserId(c),
+				HostId:     host.Id,
+				RemotePort: host.RemotePort,
+				JobId:      JobId,
+			}
+			go func() {
+				command.BusinessSwitching(strings.Join(buEnList, "-"))
+			}()
 
-		command := remoteCommand.Command{
-			Orm:        e.Orm,
-			CreateBy:   user.GetUserId(c),
-			HostId:     host.Id,
-			RemotePort: host.RemotePort,
-			JobId:      JobId,
 		}
-		go func() {
-			command.BusinessSwitching(strings.Join(buEnList, "-"))
-		}()
-
 		e.Orm.Create(&models2.OperationLog{
 			CreateUser: user.GetUserName(c),
 			Action:     "POST",

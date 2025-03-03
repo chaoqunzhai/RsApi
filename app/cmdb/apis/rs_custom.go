@@ -58,6 +58,56 @@ func (e RsCustom) GetPage(c *gin.Context) {
 	e.PageOK(list, int(count), req.GetPageIndex(), req.GetPageSize(), "查询成功")
 }
 
+
+
+
+func (e RsCustom) Integration(c *gin.Context) {
+	req := dto.RsCustomIntegrationReq{}
+	s := service.RsCustom{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
+	// 设置创建人
+	req.SetCreateBy(user.GetUserId(c))
+
+	//先创建 客户
+	RsCustomDto:=models.RsCustom{
+		Name: req.Name,
+		Type: req.Type,
+		Cooperation: req.Cooperation,
+		Region: req.Region,
+		Address: req.Address,
+		Desc: req.Desc,
+	}
+	err=e.Orm.Create(&RsCustomDto).Error
+	if err!=nil{
+		e.Error(500, err, err.Error())
+		return
+	}
+	//创建联系人
+	e.Orm.Create(&models.RsCustomUser{
+		UserName: req.UserName,
+		BuId: req.BuId,
+		CustomId: RsCustomDto.Id,
+		Phone: req.Phone,
+		Email: req.Email,
+		Region: req.UserRegion,
+		Dept: req.Dept,
+		Duties: req.Duties,
+		Desc: req.Desc,
+		Address: req.UserAddress,
+	})
+
+
+	e.OK("", "创建成功")
+}
 // Get 获取RsCustom
 // @Summary 获取RsCustom
 // @Description 获取RsCustom
