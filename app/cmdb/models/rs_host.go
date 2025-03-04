@@ -54,6 +54,7 @@ type RsHost struct {
 
 	CostAlgorithm string `json:"cost_algorithm" gorm:"-"`
 	IncomeDat interface{} `json:"income_dat" gorm:"-"`
+	BusinessList interface{} `json:"business_list" gorm:"-"`
 	models.ExtendUserBy
 	models.ModelTime
 	models.ControlBy

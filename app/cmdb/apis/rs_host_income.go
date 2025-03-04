@@ -42,9 +42,9 @@ func (e RsHostIncome) Compute(c *gin.Context) {
 	p := actions.GetPermissionFromContext(c)
 	_=s.GetPage(&req, p, &hostList, &hostCount)
 	//查询的话 实际上是 先查询rsHost数据获取到hostId
-	hostIds:=make([]int64,0)
+	hostIds:=make([]int,0)
 	for _,row:=range hostList {
-		hostIds = append(hostIds,int64(row.Id))
+		hostIds = append(hostIds,row.Id)
 	}
 
 	now := time.Now()
@@ -85,6 +85,8 @@ func (e RsHostIncome) Compute(c *gin.Context) {
 	}
 
 	newList :=make([]interface{},0)
+
+	BusinessMapData := service.GetHostBindBusinessMap(e.Orm, hostIds)
 	for _,row:=range  hostList{
 		IncomeDat,ok := incomeMonthMapInfo[int64(row.Id)]
 
@@ -107,6 +109,12 @@ func (e RsHostIncome) Compute(c *gin.Context) {
 			IncomeDat.GrossProfit = 0
 			row.IncomeDat = make(map[string]interface{},0)
 		}
+
+		if BusinessDat, isOk := BusinessMapData[row.Id]; isOk {
+
+			row.BusinessList = BusinessDat
+		}
+
 		newList = append(newList,row)
 	}
 
