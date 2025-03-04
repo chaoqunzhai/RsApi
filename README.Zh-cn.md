@@ -104,7 +104,7 @@ env GOOS=windows GOARCH=amd64 go build  -o rs-api
 
 # or
 # linux
-env GOOS=linux GOARCH=amd64 go build -o rs-api -ldflags "-X main.Version=10.4"
+env GOOS=linux GOARCH=amd64 go build -o rs-api -ldflags "-X main.Version=10.6"
 
 ```
 

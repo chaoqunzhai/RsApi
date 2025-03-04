@@ -1,6 +1,7 @@
 package apis
 
 import (
+	"encoding/json"
 	"fmt"
 	models2 "go-admin/cmd/migrate/migration/models"
 
@@ -60,7 +61,43 @@ func (e RsCustom) GetPage(c *gin.Context) {
 
 
 
-
+func (e RsCustom) UpdateIntegration(c *gin.Context) {
+	req := dto.RsCustomIntegrationUpdateReq{}
+	s := service.RsCustom{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
+	if req.Id > 0 {
+		e.Orm.Model(&models.RsCustom{}).Where("id = ?",req.Id).Updates(map[string]interface{}{
+			"desc":req.Desc,
+			"name":req.Name,
+			"type":req.Type,
+			"cooperation":req.Cooperation,
+			"region":req.Region,
+			"address":req.Address,
+		})
+	}
+	if req.CustomUserId > 0 {
+		e.Orm.Model(&models.RsCustomUser{}).Where("id = ?",req.CustomUserId).Updates(map[string]interface{}{
+			"user_name":req.Desc,
+			"region":req.UserRegion,
+			"bu_id":req.BuId,
+			"phone":req.Phone,
+			"email":req.Email,
+			"dept":req.Dept,
+			"duties":req.Duties,
+			"address":req.UserAddress,
+		})
+	}
+	e.OK("", "更新成功")
+}
 func (e RsCustom) Integration(c *gin.Context) {
 	req := dto.RsCustomIntegrationReq{}
 	s := service.RsCustom{}
@@ -137,8 +174,24 @@ func (e RsCustom) Get(c *gin.Context) {
 		e.Error(500, err, fmt.Sprintf("获取RsCustom失败，\r\n失败信息 %s", err.Error()))
 		return
 	}
+	// 将结构体序列化为 map
+	customMap := make(map[string]interface{})
+	bindUserMap := make(map[string]interface{})
+	var bindUser models.RsCustomUser2
+	e.Orm.Model(&bindUser).Where("custom_id = ?",object.Id).Limit(1).Find(&bindUser)
 
-	e.OK(object, "查询成功")
+	personJSON, _ := json.Marshal(object)
+	json.Unmarshal(personJSON, &customMap)
+
+	addressJSON, _ := json.Marshal(bindUser)
+	json.Unmarshal(addressJSON, &bindUserMap)
+
+	// 合并两个 map
+	for k, v := range customMap {
+		bindUserMap[k] = v
+	}
+
+	e.OK(bindUserMap, "查询成功")
 }
 
 // Insert 创建RsCustom

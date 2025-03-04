@@ -44,7 +44,7 @@ type RsCustomInsertReq struct {
 	common.ControlBy
 }
 type RsCustomIntegrationReq struct {
-	Id          int    `json:"-" comment:"主键编码"` // 主键编码
+
 	Desc        string `json:"desc" comment:"描述信息"`
 	Name        string `json:"name" comment:"客户名称"`
 	Type        int    `json:"type" comment:"客户类型,customer_type"`
@@ -52,10 +52,29 @@ type RsCustomIntegrationReq struct {
 	Region      string `json:"region" comment:"所在地区"`
 	Address     string `json:"address" comment:"地址"`
 
-	UserId       int    `json:"-" comment:"主键编码"` // 主键编码
 	UserName string `json:"userName" comment:"姓名"`
 	UserRegion string `json:"user_region"`
-	CustomId int    `json:"customId" comment:"所属客户"`
+	BuId     int    `json:"buId" comment:"所属商务人员"`
+	Phone    string `json:"phone" comment:"联系号码"`
+	Email    string `json:"email" comment:"联系邮箱"`
+	Dept     string `json:"dept" comment:"部门"`
+	Duties   string `json:"duties" comment:"职务"`
+	UserAddress  string `json:"user_address" comment:"详细地址"`
+	common.ControlBy
+}
+
+type RsCustomIntegrationUpdateReq struct {
+	Id          int    `json:"id" comment:"主键编码"` // 主键编码
+	Desc        string `json:"desc" comment:"描述信息"`
+	Name        string `json:"name" comment:"客户名称"`
+	Type        int    `json:"type" comment:"客户类型,customer_type"`
+	Cooperation int    `json:"cooperation" comment:"合作状态,work_status"`
+	Region      string `json:"region" comment:"所在地区"`
+	Address     string `json:"address" comment:"地址"`
+
+	CustomUserId       int    `json:"custom_user_id" comment:"主键编码"` // 主键编码
+	UserName string `json:"userName" comment:"姓名"`
+	UserRegion string `json:"user_region"`
 	BuId     int    `json:"buId" comment:"所属商务人员"`
 	Phone    string `json:"phone" comment:"联系号码"`
 	Email    string `json:"email" comment:"联系邮箱"`

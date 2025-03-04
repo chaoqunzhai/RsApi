@@ -24,5 +24,6 @@ func registerRsCustomRouter(v1 *gin.RouterGroup, authMiddleware *jwt.GinJWTMiddl
 		r.PUT("/:id", actions.PermissionAction(), api.Update)
 		r.DELETE("", api.Delete)
 		r.POST("/integration",actions.PermissionAction(), api.Integration)
+		r.PUT("/integration/:id",actions.PermissionAction(), api.UpdateIntegration)
 	}
 }

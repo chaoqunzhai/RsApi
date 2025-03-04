@@ -50,7 +50,16 @@ func (e RsHostIncome) Compute(c *gin.Context) {
 	now := time.Now()
 
 	// 获取当前日期
+	var mavValue string
+	computeDay :=0
+	maxSql :=fmt.Sprintf("SELECT MAX(created_at)  FROM rs_host_income where alg_day LIKE \"%v%%\"",req.IncomeMonth)
+	e.Orm.Raw(maxSql).Scan(&mavValue)
 
+	if mavValue !=""{
+		if parsedTime, err2 := time.Parse(time.RFC3339, mavValue);err2== nil{
+			computeDay = parsedTime.Day()
+		}
+	}
 	var currentDate string
 	orm :=e.Orm.Model(&models2.HostIncomeMonth{})
 
@@ -83,7 +92,7 @@ func (e RsHostIncome) Compute(c *gin.Context) {
 
 
 			GrossProfit := utils.RoundDecimal((IncomeDat.Income -  IncomeDat.Cost) / IncomeDat.Income * 100 )
-			fmt.Println("GrossProfit!!!",GrossProfit)
+
 			if GrossProfit >= 100 {
 				IncomeDat.GrossProfit = 100
 			}else {
@@ -103,10 +112,10 @@ func (e RsHostIncome) Compute(c *gin.Context) {
 
 	result:=map[string]interface{}{
 		"month":currentDate,
-		"day":now.Day(),
+		"day":computeDay,
 	}
 
-
+	fmt.Println("computeDay",computeDay)
 	result["dat"] = newList
 	e.PageOK(result, int(hostCount), req.GetPageIndex(), req.GetPageSize(), "查询成功")
 }
