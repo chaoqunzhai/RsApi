@@ -83,6 +83,16 @@ func (e RsHostIncome) Compute(c *gin.Context) {
 	for _,row:=range incomeMonthList{
 		incomeMonthMapInfo[row.HostId] = row
 	}
+	// 数据汇总
+
+	// 结算汇总
+	var MonthIncome float64
+	sql1 :=fmt.Sprintf("SELECT SUM(income)  FROM rs_host_income_month where  month = '%v'",currentDate)
+	e.Orm.Raw(sql1).Scan(&MonthIncome)
+	// 成本汇总
+	var MonthCost float64
+	sql2 :=fmt.Sprintf("SELECT SUM(cost)  FROM rs_host_income_month where  month = '%v'",currentDate)
+	e.Orm.Raw(sql2).Scan(&MonthCost)
 
 	newList :=make([]interface{},0)
 
@@ -121,6 +131,9 @@ func (e RsHostIncome) Compute(c *gin.Context) {
 	result:=map[string]interface{}{
 		"month":currentDate,
 		"day":computeDay,
+		"monthIncome":utils.RoundDecimal(MonthIncome),
+		"monthCost":utils.RoundDecimal(MonthCost),
+		"monthProfit":utils.RoundDecimal((MonthIncome -  MonthCost) / MonthIncome * 100 ),
 	}
 
 	fmt.Println("computeDay",computeDay)
