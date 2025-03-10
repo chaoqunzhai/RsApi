@@ -44,7 +44,7 @@ type RsCustomInsertReq struct {
 	common.ControlBy
 }
 type RsCustomIntegrationReq struct {
-
+	//客户信息
 	Desc        string `json:"desc" comment:"描述信息"`
 	Name        string `json:"name" comment:"客户名称"`
 	Type        int    `json:"type" comment:"客户类型,customer_type"`
@@ -52,6 +52,7 @@ type RsCustomIntegrationReq struct {
 	Region      string `json:"region" comment:"所在地区"`
 	Address     string `json:"address" comment:"地址"`
 
+	//联系人
 	UserName string `json:"userName" comment:"姓名"`
 	UserRegion string `json:"user_region"`
 	BuId     int    `json:"buId" comment:"所属商务人员"`
@@ -60,6 +61,24 @@ type RsCustomIntegrationReq struct {
 	Dept     string `json:"dept" comment:"部门"`
 	Duties   string `json:"duties" comment:"职务"`
 	UserAddress  string `json:"user_address" comment:"详细地址"`
+
+
+	//合同
+
+	ContractName           string                     `json:"contract_name" comment:"合同名称"`
+	ContractNumber         string                     `json:"contract_number" comment:"合同编号"`
+	ContractSignatoryId    int                        `json:"contract_signatoryId" comment:"签订人"`
+	UserId         int                        `json:"userId" comment:"联系人名称"`
+	ContractType           int                        `json:"contract_type" comment:"合同类型,contract_type"`
+	SettlementType int                        `json:"contract_settlementType" comment:"结算方式,settlement_type"`
+	ContractStartTimeAt    string                     `json:"contract_startTimeAt" comment:"合同开始时间"`
+	ContractEndTimeAt      string                     `json:"contract_endTimeAt" comment:"合同结束时间"`
+	ContractAccountName    string                     `json:"contract_accountName" comment:"开户名称"`
+	ContractBankAccount    string                     `json:"contract_bankAccount" comment:"银行账号"`
+	ContractBankName       string                     `json:"contract_bankName" comment:"开户银行"`
+	ContractIdentifyNumber string                     `json:"contract_identifyNumber" comment:"纳税人识别号"`
+
+	BandwidthFees  []RsBandwidthFeesInsertReq `json:"bandwidthFees"`
 	common.ControlBy
 }
 

@@ -1,9 +1,12 @@
 package apis
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	models2 "go-admin/cmd/migrate/migration/models"
+	"go-admin/global"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-admin-team/go-admin-core/sdk/api"
@@ -142,7 +145,51 @@ func (e RsCustom) Integration(c *gin.Context) {
 		Address: req.UserAddress,
 	})
 
+	RsContractRow := &models.RsContract{
+		AccountName: req.ContractAccountName,
+		BankAccount: req.ContractBankAccount,
+		BankName: req.ContractBankName,
+		Name: req.ContractName,
+		Number: req.ContractNumber,
+		SignatoryId: req.ContractSignatoryId,
+		Type: req.ContractType,
+		IdentifyNumber: req.ContractIdentifyNumber,
+		Desc: req.Desc,
+		Address: req.UserAddress,
+	}
+	//创建合同
+	if req.ContractStartTimeAt != "" {
+		if star, err := time.ParseInLocation(time.DateOnly, req.ContractStartTimeAt, global.LOC); err == nil {
+			RsContractRow.StartTime = sql.NullTime{
+				Time:  star,
+				Valid: true,
+			}
+		}
 
+	} else {
+		RsContractRow.StartTime = sql.NullTime{}
+	}
+
+	if req.ContractEndTimeAt != "" {
+		if end, err := time.ParseInLocation(time.DateOnly, req.ContractEndTimeAt , global.LOC); err == nil {
+			RsContractRow.EndTime = sql.NullTime{
+				Time:  end,
+				Valid: true,
+			}
+		}
+
+	} else {
+		RsContractRow.StartTime = sql.NullTime{}
+	}
+
+	e.Orm.Create(&RsContractRow)
+
+	for _, row := range req.BandwidthFees {
+		var bandRow models.RsBandwidthFees
+		row.Generate(&bandRow)
+		bandRow.ContractId = RsContractRow.Id
+		_ = e.Orm.Create(&bandRow)
+	}
 	e.OK("", "创建成功")
 }
 // Get 获取RsCustom
