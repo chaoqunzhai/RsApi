@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	models2 "go-admin/cmd/migrate/migration/models"
+	"go-admin/common/utils"
 	"go-admin/global"
 	"time"
 
@@ -99,6 +100,84 @@ func (e RsCustom) UpdateIntegration(c *gin.Context) {
 			"address":req.UserAddress,
 		})
 	}
+
+	if req.ContractId > 0 {
+		var dataRsContract = models.RsContract{}
+		e.Orm.Model(&models.RsContract{}).Where("id = ?",req.ContractId).First(&dataRsContract)
+
+		dataRsContract.Name = req.Name
+		dataRsContract.Number = req.ContractNumber
+		dataRsContract.BuId = req.BuId
+		dataRsContract.SignatoryId = req.ContractSignatoryId
+		dataRsContract.UserId = req.UserId
+		dataRsContract.Type = req.Type
+		dataRsContract.SettlementType = req.ContractSettlementType
+
+		dataRsContract.AccountName = req.ContractAccountName
+		dataRsContract.BankAccount = req.ContractBankName
+		dataRsContract.BankName = req.ContractBankName
+		dataRsContract.IdentifyNumber = req.ContractIdentifyNumber
+		dataRsContract.Address = req.Address
+		dataRsContract.Phone = req.Phone
+
+
+		if req.ContractStartTimeAt != "" {
+			if star, err := time.ParseInLocation(time.DateOnly, req.ContractStartTimeAt, global.LOC); err == nil {
+				dataRsContract.StartTime = sql.NullTime{
+					Time:  star,
+					Valid: true,
+				}
+			}
+
+		} else {
+			dataRsContract.StartTime = sql.NullTime{}
+		}
+
+		if req.ContractEndTimeAt != "" {
+			if end, err := time.ParseInLocation(time.DateOnly, req.ContractEndTimeAt, global.LOC); err == nil {
+				dataRsContract.EndTime = sql.NullTime{
+					Time:  end,
+					Valid: true,
+				}
+			}
+
+		} else {
+			dataRsContract.StartTime = sql.NullTime{}
+		}
+		e.Orm.Save(&dataRsContract)
+		hasIds := make([]int, 0)
+		var RsBandwidthFeesList []models.RsBandwidthFees
+		e.Orm.Model(&models.RsBandwidthFees{}).Select("id").Where("contract_id = ?", req.ContractId).Find(&RsBandwidthFeesList)
+
+		for _, row := range RsBandwidthFeesList {
+			hasIds = append(hasIds, row.Id)
+		}
+
+		updateId := make([]int, 0)
+		var diffIds []int
+		if len(req.BandwidthFees) == 0 {
+			diffIds = hasIds
+		} else {
+			for _, row := range req.BandwidthFees {
+				var bandRow models.RsBandwidthFees
+				if row.Id > 0 { //更新
+					e.Orm.Model(&bandRow).First(&bandRow, row.GetId())
+					row.Generate(&bandRow)
+					bandRow.ContractId = req.ContractId
+					updateId = append(updateId, row.Id)
+					e.Orm.Save(&bandRow)
+				} else { //创建
+					row.Generate(&bandRow)
+					bandRow.ContractId = req.ContractId
+					err = e.Orm.Create(&bandRow).Error
+				}
+			}
+			diffIds = utils.DifferenceInt(hasIds, updateId)
+		}
+
+		e.Orm.Model(&models.RsBandwidthFees{}).Where("id in ?", diffIds).Delete(&models.RsBandwidthFees{})
+
+	}
 	e.OK("", "更新成功")
 }
 func (e RsCustom) Integration(c *gin.Context) {
@@ -132,7 +211,7 @@ func (e RsCustom) Integration(c *gin.Context) {
 		return
 	}
 	//创建联系人
-	e.Orm.Create(&models.RsCustomUser{
+	RsCustomUserRow := models.RsCustomUser{
 		UserName: req.UserName,
 		BuId: req.BuId,
 		CustomId: RsCustomDto.Id,
@@ -143,7 +222,8 @@ func (e RsCustom) Integration(c *gin.Context) {
 		Duties: req.Duties,
 		Desc: req.Desc,
 		Address: req.UserAddress,
-	})
+	}
+	e.Orm.Create(&RsCustomUserRow)
 
 	RsContractRow := &models.RsContract{
 		AccountName: req.ContractAccountName,
@@ -152,6 +232,7 @@ func (e RsCustom) Integration(c *gin.Context) {
 		Name: req.ContractName,
 		Number: req.ContractNumber,
 		SignatoryId: req.ContractSignatoryId,
+		SettlementType:req.ContractSettlementType,
 		Type: req.ContractType,
 		IdentifyNumber: req.ContractIdentifyNumber,
 		Desc: req.Desc,
@@ -181,7 +262,9 @@ func (e RsCustom) Integration(c *gin.Context) {
 	} else {
 		RsContractRow.StartTime = sql.NullTime{}
 	}
-
+	RsContractRow.CustomId = RsCustomDto.Id
+	RsContractRow.BuId = req.BuId
+	RsContractRow.UserId = RsCustomUserRow.Id
 	e.Orm.Create(&RsContractRow)
 
 	for _, row := range req.BandwidthFees {
@@ -224,8 +307,12 @@ func (e RsCustom) Get(c *gin.Context) {
 	// 将结构体序列化为 map
 	customMap := make(map[string]interface{})
 	bindUserMap := make(map[string]interface{})
+	contractMap := make(map[string]interface{})
 	var bindUser models.RsCustomUser2
 	e.Orm.Model(&bindUser).Where("custom_id = ?",object.Id).Limit(1).Find(&bindUser)
+
+	var bindContract models.RsContract2
+	e.Orm.Model(&bindContract).Where("custom_id = ?",object.Id).Limit(1).Find(&bindContract)
 
 	personJSON, _ := json.Marshal(object)
 	json.Unmarshal(personJSON, &customMap)
@@ -233,11 +320,19 @@ func (e RsCustom) Get(c *gin.Context) {
 	addressJSON, _ := json.Marshal(bindUser)
 	json.Unmarshal(addressJSON, &bindUserMap)
 
+
+	contractJSON, _ := json.Marshal(bindContract)
+	json.Unmarshal(contractJSON, &contractMap)
+
+
 	// 合并两个 map
 	for k, v := range customMap {
 		bindUserMap[k] = v
 	}
 
+	for k, v := range contractMap {
+		bindUserMap[k] = v
+	}
 	e.OK(bindUserMap, "查询成功")
 }
 
