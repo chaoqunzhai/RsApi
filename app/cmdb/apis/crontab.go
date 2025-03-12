@@ -226,7 +226,7 @@ func (e Crontab) DataBurning(c *gin.Context) {
 }
 
 
-func (e Crontab) QiNiuAmount(c *gin.Context) {
+func (e Crontab) JsAmount(c *gin.Context) {
 	err := e.MakeContext(c).
 		MakeOrm().
 		Errors
@@ -300,6 +300,111 @@ func (e Crontab) QiNiuAmount(c *gin.Context) {
 
 
 	}
+	e.OK("","successful")
+	return
+
+}
+func (e Crontab) JSAmount(c *gin.Context) {
+	err := e.MakeContext(c).
+		MakeOrm().
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
+	//读取prom 中 node_uname_info{business=~"jinshan"} 的数据
+	query := fmt.Sprintf("node_uname_info{business=~\"jinshan\"}")
+
+	queryUrl, err := url.Parse(func() string {
+		vv, _ := url.JoinPath(config.ExtConfig.Prometheus.Endpoint, "/api/v1/query")
+		return vv
+	}())
+
+	parameters := url.Values{}
+	parameters.Add("time", fmt.Sprintf("%v",time.Now().Unix()))
+
+	parameters.Add("query", query)
+	queryUrl.RawQuery = parameters.Encode()
+
+	ProResult, err := prometheus.GetPromNodeInfoResult(queryUrl)
+
+	if err != nil {
+
+		e.Error(-1,errors.New("数据不存在"),"")
+		return
+	}
+	if len(ProResult.Data.Result) == 0 {
+		e.Error(-1,errors.New("数据不存在"),"")
+		return
+	}
+
+	algDay:=time.Now().AddDate(0,0,-1).Format(time.DateOnly)
+	qiNiuUrl:="/supplier/outer/sirius/supply/external/out_api/getDataAndReturn"
+	for _,row:=range ProResult.Data.Result {
+		//主机名
+		hostName :=row.Metric.Instance
+		deviceId :=row.Metric.Sn
+
+		//hostName 是CMDB里面的数据
+		var host models.Host
+		e.Orm.Model(&models.Host{}).Select("id").Where("host_name = ?",hostName).Limit(1).Find(&host)
+		if host.Id == 0 {continue}
+
+		//拿deviceId 去 金山的API里面查询到费用
+
+		params :=map[string]interface{}{
+			"device_id":deviceId,
+			"srm_channel":"1000122751",
+			"start_date":algDay,
+			"end_date":algDay,
+		}
+		dat,getErr :=qiniu.GetQueryQiNiu(qiNiuUrl,params)
+		if getErr!=nil{
+
+			fmt.Println("getErr",getErr.Error())
+			continue
+		}
+
+		for _, miniRow :=range dat.Data{
+			var hostIncome models.HostIncome
+			e.Orm.Model(&models.HostIncome{}).Select("id").Where("host_id = ? and alg_day = ?",host.Id, miniRow.Date).Limit(1).Find(&hostIncome)
+			if hostIncome.Id == 0 {continue}
+			e.Orm.Model(&models.HostIncome{}).Where("id = ?",hostIncome.Id).Updates(map[string]interface{}{
+				"settle_bandwidth":miniRow.ChargeDay95,
+			})
+
+		}
+
+
+	}
+	// 暂时 金山的预购收益= 结算收益
+
+	var bu models.Business
+	e.Orm.Model(&models.Business{}).Where("name = '金山云'").Limit(1).Find(&bu)
+	buIds :=make([]string,0)
+	buIds = append(buIds,fmt.Sprintf("%v",bu.Id))
+	var childrenIds []string
+	e.Orm.Model(&models.Business{}).Select("id").Where("parent_id = ?",bu.Id).Find(&childrenIds)
+	buIds = append(buIds,childrenIds...)
+	var bindHostId []string
+
+	e.Orm.Raw(fmt.Sprintf("select host_id from host_bind_business where business_id in (%v)", strings.Join(buIds,","))).Scan(&bindHostId)
+
+
+	var HostIncomeList []models.HostIncome
+	e.Orm.Model(&models.HostIncome{}).Select("id,settle_price,income").Where("settle_price = 0 and host_id in ?",bindHostId).Find(&HostIncomeList)
+
+	for _,row:=range HostIncomeList{
+		if row.SettlePrice !=0 {
+			continue
+		}
+		e.Orm.Model(&models.HostIncome{}).Where("id = ?",row.Id).Updates(map[string]interface{}{
+			"settle_price":row.Income,
+			"record_m":0,
+		})
+	}
+
 	e.OK("","successful")
 	return
 

@@ -100,24 +100,29 @@ func (e RsHostIncome) Compute(c *gin.Context) {
 	for _,row:=range  hostList{
 		IncomeDat,ok := incomeMonthMapInfo[int64(row.Id)]
 
-		if ok && IncomeDat.Income >0 && IncomeDat.Cost > 0 {
+		if ok {
 
-
-			GrossProfit := utils.RoundDecimal((IncomeDat.Income -  IncomeDat.Cost) / IncomeDat.Income * 100 )
-
-			if GrossProfit >= 100 {
-				IncomeDat.GrossProfit = 100
+			if IncomeDat.Income >0{
+				Income,ok2 :=incomeMapInfo[int64(row.Id)]
+				if ok2{
+					row.CostAlgorithm = Income.CostAlgorithm
+				}
+				row.IncomeDat = 0
 			}else {
-				IncomeDat.GrossProfit = GrossProfit
+				row.IncomeDat = make(map[string]interface{},0)
 			}
-			Income,ok2 :=incomeMapInfo[int64(row.Id)]
-			if ok2{
-				row.CostAlgorithm = Income.CostAlgorithm
+			if IncomeDat.Cost > 0 {
+				GrossProfit := utils.RoundDecimal((IncomeDat.Income -  IncomeDat.Cost) / IncomeDat.Income * 100 )
+
+				if GrossProfit >= 100 {
+					IncomeDat.GrossProfit = 100
+				}else {
+					IncomeDat.GrossProfit = GrossProfit
+				}
+			}else {
+				IncomeDat.GrossProfit = 0
+
 			}
-			row.IncomeDat = IncomeDat
-		}else {
-			IncomeDat.GrossProfit = 0
-			row.IncomeDat = make(map[string]interface{},0)
 		}
 
 		if BusinessDat, isOk := BusinessMapData[row.Id]; isOk {
@@ -136,7 +141,7 @@ func (e RsHostIncome) Compute(c *gin.Context) {
 		"monthProfit":utils.RoundDecimal((MonthIncome -  MonthCost) / MonthIncome * 100 ),
 	}
 
-	fmt.Println("computeDay",computeDay)
+	//fmt.Println("computeDay",computeDay)
 	result["dat"] = newList
 	e.PageOK(result, int(hostCount), req.GetPageIndex(), req.GetPageSize(), "查询成功")
 }
